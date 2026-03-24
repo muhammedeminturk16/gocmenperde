@@ -11,6 +11,42 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+/* Loader text boyutunu mobilde küçült */
+@media (max-width: 768px) {
+  .loader-text {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+  }
+}
+/* Mobilde cursor elementlerini gizle */
+@media (max-width: 768px) {
+  .cursor-dot, .cursor-ring {
+    display: none !important;
+  }
+}
+/* Mobilde menü toggle'ı göster */
+@media (max-width: 640px) {
+  .mobile-toggle {
+    display: flex !important;
+  }
+  nav {
+    display: none; /* Mevcut nav'i gizle */
+  }
+}
+@media (max-width: 768px) {
+  .section {
+    padding-top: 90px !important; /* Header yüksekliği kadar boşluk */
+  }
+  .hero {
+    height: auto !important; /* 100vh yerine otomatik yükseklik */
+    min-height: 100vh;
+  }
+}
+header {
+  z-index: 1000 !important; /* Diğer elementlerin üstünde olsun */
+}
+.hero-content {
+  z-index: 2; /* Hero içeriği arka planın üstünde */
+}
 /* ─── DESIGN TOKENS ─────────────────────────────── */
 :root {
   --gold:       #c9a84c;
@@ -990,6 +1026,16 @@ footer span{color:var(--gold)}
 </div>
 
 <script>
+// Loader'ı mobilde hızlıca gizle
+window.addEventListener('load', () => {
+  const loader = document.getElementById('loader');
+  // Mobil cihazlarda 1 saniye sonra gizle
+  const delay = window.innerWidth <= 768 ? 1000 : 1800;
+  setTimeout(() => {
+    loader.classList.add('hide');
+    setTimeout(() => loader.remove(), 700); // Tamamen sil
+  }, delay);
+});
 /* ─── CURSOR ─── */
 const dot = document.getElementById('cursorDot');
 const ring = document.getElementById('cursorRing');

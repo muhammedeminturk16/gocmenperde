@@ -11,19 +11,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-#mobileMenu button{
-  background:none;
-  border:none;
-  color:white;
-  text-align:left;
-  font-size:1rem;
-  letter-spacing:2px;
-  padding:10px 0;
-  cursor:pointer;
-}
-#mobileMenu button:hover{
-  color:var(--gold);
-}
 /* ─── DESIGN TOKENS ─────────────────────────────── */
 :root {
   --gold:       #c9a84c;
@@ -579,32 +566,6 @@ footer span{color:var(--gold)}
 }
 </style>
 </head>
-<!-- MOBILE MENU -->
-<div id="mobileMenu" style="
-position:fixed;
-top:0;left:-100%;
-width:260px;height:100%;
-background:#0f0e0d;
-z-index:2000;
-padding:40px 20px;
-transition:0.4s;
-display:flex;
-flex-direction:column;
-gap:20px;
-">
-  <button onclick="go('home');toggleMenu()">Anasayfa</button>
-  <button onclick="go('products');toggleMenu()">Koleksiyon</button>
-  <button onclick="go('cart');toggleMenu()">Sepetim</button>
-  <button onclick="go('contact');toggleMenu()">İletişim</button>
-</div>
-
-<div id="menuOverlay" onclick="toggleMenu()" style="
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.5);
-z-index:1500;
-display:none;
-"></div>
 <body>
 
 <!-- CURSOR -->
@@ -1029,41 +990,6 @@ display:none;
 </div>
 
 <script>
-const express = require("express");
-const app = express();
-const cors = require("cors");
-
-app.use(cors());
-app.use(express.json());
-
-let products = [];
-
-app.get("/products", (req,res)=>{
-  res.json(products);
-});
-
-app.post("/add-product", (req,res)=>{
-  products.push(req.body);
-  res.send("Eklendi");
-});
-
-app.listen(3000, ()=>console.log("Server çalışıyor"));
-/* ─── MOBILE MENU ─── */
-function toggleMenu(){
-  const menu = document.getElementById('mobileMenu');
-  const overlay = document.getElementById('menuOverlay');
-
-  if(menu.style.left === "0px"){
-    menu.style.left = "-100%";
-    overlay.style.display = "none";
-  } else {
-    menu.style.left = "0px";
-    overlay.style.display = "block";
-  }
-}
-
-/* hamburger butonunu değiştir */
-document.getElementById('mobileToggle').onclick = toggleMenu;
 /* ─── CURSOR ─── */
 const dot = document.getElementById('cursorDot');
 const ring = document.getElementById('cursorRing');
@@ -1284,4 +1210,3 @@ document.querySelectorAll('.product-card,.gallery-item,.review-card,.feature-ite
   el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
   obs.observe(el);
 });
-</script>

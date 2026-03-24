@@ -11,83 +11,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-#loader {
-  background: var(--ink); /* Siyah arka plan */
-  z-index: 9999; /* Diğer elementlerin üstünde olsun */
-  transition: opacity 0.6s ease; /* Yumuşak geçiş */
-}
-
-#loader.hide {
-  opacity: 0;
-  pointer-events: none; /* Tıklamalara izin vermem */
-}
-
-/* Mobilde yükleyici metni boyutunu küçült */
-@media (max-width: 768px) {
-  .loader-text {
-    font-size: 2rem; /* Daha küçük yazı boyutu */
-  }
-  .loader-line {
-    width: 150px; /* Çizgi uzunluğu */
-  }
-}
-.section {
-  display: none; /* Varsayılan olarak gizle */
-  position: relative;
-  z-index: 1; /* Yükleyiciden alt küme */
-}
-
-.section.active {
-  display: block; /* Aktif section'ı göster */
-}
-
-/* Mobilde section yüksekliğini düzelt */
-@media (max-width: 768px) {
-  #home {
-    padding-top: 0 !important;
-  }
-  .hero {
-    min-height: 100vh; /* Ekranı tam doldur */
-  }
-}
-
-/* Loader text boyutunu mobilde küçült */
-@media (max-width: 768px) {
-  .loader-text {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-  }
-}
-/* Mobilde cursor elementlerini gizle */
-@media (max-width: 768px) {
-  .cursor-dot, .cursor-ring {
-    display: none !important;
-  }
-}
-/* Mobilde menü toggle'ı göster */
-@media (max-width: 640px) {
-  .mobile-toggle {
-    display: flex !important;
-  }
-  nav {
-    display: none; /* Mevcut nav'i gizle */
-  }
-}
-@media (max-width: 768px) {
-  .section {
-    padding-top: 90px !important; /* Header yüksekliği kadar boşluk */
-  }
-  .hero {
-    height: auto !important; /* 100vh yerine otomatik yükseklik */
-    min-height: 100vh;
-  }
-}
-header {
-  z-index: 1000 !important; /* Diğer elementlerin üstünde olsun */
-}
-.hero-content {
-  z-index: 2; /* Hero içeriği arka planın üstünde */
-}
-/* ─── DESIGN TOKENS ─────────────────────────────── */
 :root {
   --gold:       #c9a84c;
   --gold-light: #e8d5a3;
@@ -104,30 +27,31 @@ header {
   --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* ─── RESET & BASE ──────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--cream);color:var(--ink);font-family:var(--ff-body);font-weight:300;overflow-x:hidden;cursor:none}
 
-/* ─── CUSTOM CURSOR ─────────────────────────────── */
 .cursor{position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:multiply;transition:transform 0.1s}
 .cursor-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;transform:translate(-50%,-50%)}
 .cursor-ring{width:32px;height:32px;border:1.5px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;transform:translate(-50%,-50%);transition:0.15s ease-out}
 body:hover .cursor-dot{opacity:1}
 
-/* ─── LOADER ────────────────────────────────────── */
-#loader{position:fixed;inset:0;background:var(--ink);z-index:9998;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.6s}
+#loader{position:fixed;inset:0;background:var(--ink);z-index:9998;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.6s ease}
 #loader.hide{opacity:0;pointer-events:none}
 .loader-text{font-family:var(--ff-display);font-size:clamp(2rem,5vw,4rem);color:var(--gold);letter-spacing:8px;text-transform:uppercase}
 .loader-line{width:0;height:1px;background:var(--gold);animation:lineGrow 1.8s ease forwards 0.3s}
 @keyframes lineGrow{to{width:200px}}
 
-/* ─── SCROLLBAR ─────────────────────────────────── */
+@media (max-width:768px){
+  .loader-text{font-size:clamp(1.5rem,4vw,2.5rem)}
+  .loader-line{width:150px}
+  .cursor-dot, .cursor-ring{display:none !important}
+}
+
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--cream)}
 ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
 
-/* ─── HEADER ────────────────────────────────────── */
 header{
   position:fixed;top:0;left:0;right:0;z-index:1000;
   padding:0 5%;
@@ -201,17 +125,19 @@ nav{display:flex;align-items:center;gap:8px}
 }
 .nav-cart:hover .cart-badge{background:var(--ink);color:white}
 
-/* ─── MOBILE MENU TOGGLE ────────────────────────── */
 .mobile-toggle{display:none;background:none;border:none;cursor:none;flex-direction:column;gap:5px;padding:8px}
 .mobile-toggle span{display:block;width:24px;height:1.5px;background:var(--ink);transition:var(--transition)}
+.mobile-menu{display:none;position:fixed;top:75px;left:0;right:0;background:rgba(247,244,239,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:30px 5%;flex-direction:column;gap:20px;z-index:999}
+.mobile-menu.open{display:flex}
+.mobile-nav-link{background:none;border:none;font-family:var(--ff-body);font-size:1rem;font-weight:500;color:var(--slate);letter-spacing:2px;text-transform:uppercase;padding:15px 0;border-bottom:1px solid var(--border);text-align:left}
 
-/* ─── SECTIONS ──────────────────────────────────── */
-.section{display:none;min-height:100vh;padding-top:75px}
+@media (max-width:640px){
+  .mobile-toggle{display:flex !important}
+  nav{display:none !important}
+}
+
+.section{display:none;min-height:100vh;padding-top:75px;position:relative;z-index:1}
 .section.active{display:block}
-.fade-in{animation:fadeUp 0.7s ease both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-
-/* ─── HERO ──────────────────────────────────────── */
 #home{padding-top:0}
 .hero{
   position:relative;height:100vh;
@@ -285,7 +211,6 @@ nav{display:flex;align-items:center;gap:8px}
 .scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(201,168,76,0.8),transparent);animation:scrollAnim 2s ease-in-out infinite}
 @keyframes scrollAnim{0%,100%{transform:scaleY(0.5);opacity:0.3}50%{transform:scaleY(1);opacity:1}}
 
-/* ─── FEATURES STRIP ────────────────────────────── */
 .features-strip{
   background:white;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
   padding:30px 5%;
@@ -307,7 +232,6 @@ nav{display:flex;align-items:center;gap:8px}
 .feature-text h4{font-size:0.8rem;font-weight:600;color:var(--ink);margin-bottom:2px}
 .feature-text p{font-size:0.7rem;color:var(--slate);letter-spacing:0.5px}
 
-/* ─── GALLERY ───────────────────────────────────── */
 .gallery-section{padding:80px 5%}
 .section-header{max-width:1400px;margin:0 auto 50px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
 .section-tag{font-size:0.65rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
@@ -349,7 +273,6 @@ nav{display:flex;align-items:center;gap:8px}
 .gallery-item:hover .gallery-overlay{opacity:1}
 .gallery-label{color:white;font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;font-weight:500}
 
-/* ─── PRODUCTS PAGE ─────────────────────────────── */
 #products{background:var(--warm-white)}
 .products-hero{
   padding:100px 5% 60px;max-width:1400px;margin:auto;
@@ -433,7 +356,6 @@ nav{display:flex;align-items:center;gap:8px}
 }
 .add-btn:hover{background:var(--gold);color:var(--ink)}
 
-/* ─── CART ──────────────────────────────────────── */
 #cart{background:var(--warm-white)}
 .cart-container{max-width:1000px;margin:0 auto;padding:100px 5% 80px}
 .cart-title{font-family:var(--ff-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:40px}
@@ -503,7 +425,6 @@ nav{display:flex;align-items:center;gap:8px}
 }
 .clear-btn:hover{background:#c0392b;color:white}
 
-/* ─── CONTACT ───────────────────────────────────── */
 #contact{background:var(--ink)}
 .contact-container{max-width:1400px;margin:auto;padding:120px 5% 80px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
 .contact-left .section-tag{color:var(--gold)}
@@ -559,7 +480,6 @@ nav{display:flex;align-items:center;gap:8px}
 .review-text{font-family:var(--ff-display);font-size:1.05rem;font-weight:400;color:var(--ink);line-height:1.8;font-style:italic;margin-bottom:20px}
 .review-author{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--slate);font-weight:500}
 
-/* ─── MODAL ─────────────────────────────────────── */
 .modal-overlay{
   position:fixed;inset:0;z-index:2000;
   background:rgba(15,14,13,0.95);backdrop-filter:blur(10px);
@@ -601,7 +521,6 @@ nav{display:flex;align-items:center;gap:8px}
 .modal-feat{display:flex;align-items:center;gap:10px;font-size:0.8rem;color:var(--slate)}
 .modal-feat i{color:var(--gold);font-size:0.9rem;width:16px}
 
-/* ─── TOAST ─────────────────────────────────────── */
 .toast{
   position:fixed;bottom:30px;right:30px;z-index:3000;
   background:var(--ink);color:white;
@@ -613,7 +532,6 @@ nav{display:flex;align-items:center;gap:8px}
 }
 .toast.show{transform:translateX(0)}
 
-/* ─── FOOTER ────────────────────────────────────── */
 footer{
   background:var(--ink);color:rgba(247,244,239,0.4);
   text-align:center;padding:30px 5%;
@@ -622,7 +540,6 @@ footer{
 }
 footer span{color:var(--gold)}
 
-/* ─── RESPONSIVE ────────────────────────────────── */
 @media(max-width:900px){
   .features-inner{grid-template-columns:repeat(2,1fr)}
   .gallery-grid{grid-template-columns:1fr 1fr}
@@ -634,16 +551,14 @@ footer span{color:var(--gold)}
   .modal-img-col{min-height:250px;max-height:300px}
 }
 @media(max-width:640px){
-  nav{display:none}
-  .mobile-toggle{display:flex}
   .features-inner{grid-template-columns:1fr 1fr}
   .hero-title{font-size:3.5rem}
   .cart-footer{flex-direction:column;align-items:flex-start}
 }
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
-
 <!-- CURSOR -->
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -652,6 +567,16 @@ footer span{color:var(--gold)}
 <div id="loader">
   <div class="loader-text">GÖÇMEN PERDE</div>
   <div class="loader-line"></div>
+</div>
+
+<!-- MOBİL MENÜ EKLENDİ -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-nav-link" onclick="go('home'); closeMobileMenu()">Anasayfa</button>
+  <button class="mobile-nav-link" onclick="go('products'); closeMobileMenu()">Koleksiyon</button>
+  <button class="mobile-nav-link" onclick="go('contact'); closeMobileMenu()">İletişim</button>
+  <button class="mobile-nav-link nav-cart" onclick="go('cart'); closeMobileMenu()">
+    Sepet <span class="cart-badge" id="cartCountMobile">0</span>
+  </button>
 </div>
 
 <!-- TOAST -->
@@ -677,15 +602,14 @@ footer span{color:var(--gold)}
         <span class="cart-badge" id="cartCount">0</span>
       </button>
     </nav>
-    <button class="mobile-toggle" id="mobileToggle" onclick="go('products')">
+    <button class="mobile-toggle" id="mobileToggle" onclick="toggleMobileMenu()">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<!-- ═══════════ HOME ═══════════ -->
+<!-- ANA SAYFA -->
 <section id="home" class="section active">
-
   <div class="hero">
     <div class="hero-bg"></div>
     <div class="hero-pattern"></div>
@@ -803,7 +727,7 @@ footer span{color:var(--gold)}
   </footer>
 </section>
 
-<!-- ═══════════ PRODUCTS ═══════════ -->
+<!-- ÜRÜNLER SAYFASI -->
 <section id="products" class="section">
   <div class="products-hero">
     <div class="section-tag">Koleksiyonumuz</div>
@@ -929,7 +853,7 @@ footer span{color:var(--gold)}
   </footer>
 </section>
 
-<!-- ═══════════ CART ═══════════ -->
+<!-- SEPET SAYFASI -->
 <section id="cart" class="section">
   <div class="cart-container">
     <h1 class="cart-title">Sipariş <em style="color:var(--gold);font-style:italic">Listeniz</em></h1>
@@ -980,7 +904,7 @@ footer span{color:var(--gold)}
   </footer>
 </section>
 
-<!-- ═══════════ CONTACT ═══════════ -->
+<!-- İLETİŞİM SAYFASI -->
 <section id="contact" class="section">
   <div class="contact-container">
     <div class="contact-left">
@@ -1040,10 +964,10 @@ footer span{color:var(--gold)}
   </footer>
 </section>
 
-<!-- ═══════════ PRODUCT MODAL ═══════════ -->
+<!-- ÜRÜN MODAL -->
 <div class="modal-overlay" id="productModal" onclick="closeModal(event)">
   <div class="modal-box">
-    <button class="modal-close" onclick="document.getElementById('productModal').classList.remove('open')">
+    <button class="modal-close" onclick="document.getElementById('productModal').classList.remove('open'); document.body.style.overflow = '';">
       <i class="fas fa-xmark"></i>
     </button>
     <div class="modal-img-col" onmousemove="zoomImg(event)" onmouseleave="resetImgZoom()">
@@ -1066,31 +990,7 @@ footer span{color:var(--gold)}
 </div>
 
 <script>
-// Yükleyiciyi mobilde hızlıca kaldır
-window.addEventListener('DOMContentLoaded', () => {
-  const loader = document.getElementById('loader');
-  if (loader) {
-    // Mobil cihazlarda 1 saniye sonra gizle
-    const delay = window.innerWidth <= 768 ? 1000 : 1800;
-    setTimeout(() => {
-      loader.style.opacity = '0'; // Opaklığı sıfırla
-      setTimeout(() => {
-        loader.remove(); // Tamamen DOM'dan kaldır
-      }, 600); // Transition süresini bekle
-    }, delay);
-  }
-});
-// Loader'ı mobilde hızlıca gizle
-window.addEventListener('load', () => {
-  const loader = document.getElementById('loader');
-  // Mobil cihazlarda 1 saniye sonra gizle
-  const delay = window.innerWidth <= 768 ? 1000 : 1800;
-  setTimeout(() => {
-    loader.classList.add('hide');
-    setTimeout(() => loader.remove(), 700); // Tamamen sil
-  }, delay);
-});
-/* ─── CURSOR ─── */
+/* ÖZEL İMLEÇ */
 const dot = document.getElementById('cursorDot');
 const ring = document.getElementById('cursorRing');
 document.addEventListener('mousemove', e => {
@@ -1112,15 +1012,27 @@ document.querySelectorAll('button,a,[onclick]').forEach(el => {
   });
 });
 
-/* ─── LOADER ─── */
+/* YÜKLEYİCİ (LOADER) - TEK KODLA DÜZELTİLDİ */
 window.addEventListener('load', () => {
+  const loader = document.getElementById('loader');
+  const delay = window.innerWidth <= 768 ? 1000 : 1800;
   setTimeout(() => {
-    document.getElementById('loader').classList.add('hide');
-    setTimeout(() => document.getElementById('loader').remove(), 700);
-  }, 1800);
+    loader.classList.add('hide');
+    document.getElementById('home').classList.add('fade-in');
+    setTimeout(() => loader.remove(), 600);
+  }, delay);
 });
 
-/* ─── NAVIGATION ─── */
+/* MOBİL MENÜ FONKSİYONLARI */
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+/* SAYFA GEÇİŞLERİ */
 function go(id) {
   document.querySelectorAll('.section').forEach(s => {
     s.classList.remove('active');
@@ -1129,20 +1041,21 @@ function go(id) {
   const target = document.getElementById(id);
   target.style.display = 'block';
   target.classList.add('active');
-  target.classList.remove('fade-in');
   void target.offsetWidth;
   target.classList.add('fade-in');
   window.scrollTo({top:0, behavior:'smooth'});
   if (id === 'cart') renderCart();
 }
-// init display
-document.querySelectorAll('.section').forEach(s => {
-  if(!s.classList.contains('active')) s.style.display = 'none';
-});
 
-/* ─── CART STATE ─── */
+/* SEPET İŞLEMLERİ */
 let basket = [];
 let total = 0;
+
+function updateCartBadges() {
+  const count = basket.reduce((a,b) => a + b.qty, 0);
+  document.getElementById('cartCount').innerText = count;
+  document.getElementById('cartCountMobile').innerText = count;
+}
 
 function addToCart(name, price, inputId, isMeter) {
   const qty = inputId ? parseInt(document.getElementById(inputId).value) || 1 : 1;
@@ -1155,23 +1068,22 @@ function addToCart(name, price, inputId, isMeter) {
     basket.push({name, price, qty, sub: price * qty, isMeter});
   }
   total = basket.reduce((a,b) => a + b.sub, 0);
-  document.getElementById('cartCount').innerText = basket.reduce((a,b) => a + b.qty, 0);
+  updateCartBadges();
   showToast('✓ Sepete eklendi: ' + name);
-  renderCart();
 }
 
 function removeItem(idx) {
   total -= basket[idx].sub;
   basket.splice(idx, 1);
   total = basket.reduce((a,b) => a + b.sub, 0);
-  document.getElementById('cartCount').innerText = basket.reduce((a,b) => a + b.qty, 0);
+  updateCartBadges();
   renderCart();
 }
 
 function clearCart() {
   if(!confirm('Sepet temizlensin mi?')) return;
   basket = []; total = 0;
-  document.getElementById('cartCount').innerText = 0;
+  updateCartBadges();
   renderCart();
 }
 
@@ -1231,7 +1143,7 @@ function sendWhatsApp() {
   window.open('https://api.whatsapp.com/send?phone=905012110958&text=' + encodeURIComponent(msg));
 }
 
-/* ─── MODAL ─── */
+/* MODAL İŞLEMLERİ */
 function openModal(title, src, price, desc, tag) {
   document.getElementById('mTitle').innerText = title;
   document.getElementById('mImg').src = src;
@@ -1264,7 +1176,7 @@ function resetImgZoom() {
   document.getElementById('mImg').style.transform = 'scale(1)';
 }
 
-/* ─── FILTER ─── */
+/* FİLTRELEME */
 function filterProducts(cat, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -1277,7 +1189,7 @@ function filterProducts(cat, btn) {
   });
 }
 
-/* ─── TOAST ─── */
+/* BİLDİRİM (TOAST) */
 function showToast(msg) {
   const toast = document.getElementById('toast');
   toast.innerText = msg;
@@ -1285,7 +1197,7 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-/* ─── STICKY HEADER ─── */
+/* SABİT BAŞLIK */
 window.addEventListener('scroll', () => {
   const h = document.getElementById('mainHeader');
   if(window.scrollY > 20) {
@@ -1295,7 +1207,7 @@ window.addEventListener('scroll', () => {
   }
 });
 
-/* ─── INTERSECTION OBSERVER ANIMATIONS ─── */
+/* SCROLL ANİMASYONLARI */
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if(e.isIntersecting) {
@@ -1310,3 +1222,6 @@ document.querySelectorAll('.product-card,.gallery-item,.review-card,.feature-ite
   el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
   obs.observe(el);
 });
+</script>
+</body>
+</html>

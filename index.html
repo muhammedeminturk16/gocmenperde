@@ -22,17 +22,15 @@
 /* Diğer fonksiyonlar aynı kalır */
 
 /* Siparişi Gönderme (DÜZELTİLMİŞ) */
-function submitOrder(){
-  // Tüm alanları doğrula
+function submitOrder() {
+  // Zorunlu alanları kontrol et (ad, telefon, adres boş mu?)
   const name = document.getElementById('f-name').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
   const addr = document.getElementById('f-addr').value.trim();
-  const note = document.getElementById('f-note').value.trim();
-  const paymentMethod = document.getElementById('f-payment').value;
-
-  if(!name || !phone || !addr) { 
-    showToast('⚠ Lütfen tüm zorunlu alanları (Ad Soyad, Telefon, Adres) doldurun'); 
-    return; 
+  
+  if (!name || !phone || !addr) {
+    showToast('⚠ Lütfen ad, telefon ve adresi doldur!');
+    return;
   }
 
   // Ödeme yöntemine göre ek doğrulama
@@ -46,7 +44,35 @@ function submitOrder(){
     items: basket,
     total: total.toLocaleString('tr-TR') + ' TL'
   };
+  // Sipariş bilgilerini toplama
+  const orderInfo = `
+    Ad Soyad: ${name}<br>
+    Telefon: ${phone}<br>
+    Adres: ${addr}<br>
+    Toplam Tutar: ${total.toLocaleString('tr-TR')} TL<br>
+    Ürünler: ${basket.map(item => item.name).join(', ')}
+  `;
 
+  // EmailJS'e gönder
+  emailjs.send(
+    "service_ek1695p", // Service ID (değiştirme)
+    "template_o4bnwvi", // Template ID (değiştirme)
+    {
+      // Burada "to_email" yerine şablonunuzda kullandığın değişken adını yazmalısın
+      // Eğer şablonda "to_email" kullandın, aşağıdaki satırı değiştirme
+      to_email: "muhammedeminturk.16@gmail.com", // Kendi e-posta adresin
+      order_details: orderInfo // Sipariş detayları (şablonda {{order_details}} olarak kullan)
+    }
+  )
+  .then(() => {
+    showToast('✅ Sipariş gönderildi!');
+    clearCart();
+    document.getElementById('successModal').classList.add('open');
+  })
+  .catch(() => {
+    showToast('❌ Hata: Lütfen tekrar dene veya WhatsApp ile iletişime geç');
+  });
+}
   // Kredi kartı bilgilerini ekle (güvenlik notu: Email üzerinden kart bilgisi göndermek tehlikelidir!)
   if(paymentMethod === 'kredikarti'){
     const cardNumber = document.getElementById('f-cardnumber').value.replace(/\s/g, ''); // Boşlukları kaldır

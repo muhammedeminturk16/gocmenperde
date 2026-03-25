@@ -1662,57 +1662,6 @@ document.querySelectorAll('.product-card,.gallery-item,.review-card,.feature-ite
   el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
   obs.observe(el);
 });
-document.addEventListener("DOMContentLoaded", function () {
-
-  const form = document.querySelector("form");
-
-  if (!form) return;
-
-  form.addEventListener("submit", function () {
-
-    function sendOrderToWhatsApp() {
-  let phone = "905XXXXXXXXX";
-
-  let message = "🛒 Yeni Sipariş\n\n";
-
-  if (typeof cart !== "undefined") {
-    cart.forEach(item => {
-      message += `• ${item.name} x${item.qty} - ${item.price * item.qty} TL\n`;
-    });
-
-    message += "\nToplam: " + (typeof getCartTotal === "function" ? getCartTotal() : "") + " TL\n";
-  }
-
-  let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
-
-  window.open(url, "_blank");
-}
-document.addEventListener("DOMContentLoaded", function () {
-
-  const form = document.querySelector("form");
-
-  if (!form) return;
-
-  form.addEventListener("submit", function (e) {
-
-    // ⛔ sayfanın yenilenmesini engelle
-    e.preventDefault();
-
-    // 📧 EmailJS çalıştır (zaten sende var olan sistem tetiklenecek)
-    // Eğer sendForm kullanıyorsan:
-    emailjs.sendForm('service_ek1695p','template_o4bnwvi', this)
-    .then(function() {
-
-        // ✅ Mail gönderildi → WhatsApp aç
-        sendOrderToWhatsApp();
-
-    }, function(error) {
-        console.log("Hata:", error);
-    });
-
-  });
-
-});
 </script>
 
 </body>

@@ -169,9 +169,34 @@ nav { display:flex;align-items:center;gap:8px }
 }
 
 @media(max-width:900px){ 
-.products-layout {grid-template-columns:1fr;padding:40px 5% 80px;}}
-@media(max-width:900px){.products-layout {grid-template-columns:1fr;padding:40px 5% 80px;}}
-.products-content {min-width:0;width:100%;}
+./* Desktop */
+.products-layout { 
+  max-width:1400px;
+  margin:auto;
+  padding:100px 5% 80px;
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:40px;
+  align-items:start;
+}
+
+/* Tablet */
+@media(max-width:900px){ 
+  .products-layout {
+    grid-template-columns:1fr;
+    padding:40px 5% 80px;
+  }
+}
+
+/* Büyük ekran fix (TV / geniş monitör) */
+@media(min-width:1400px){
+  .products-layout {
+    max-width:1600px;
+    grid-template-columns:320px 1fr;
+  }
+}.products-content {
+  width:100%;
+}
 .filters-panel { background:white;padding:24px;border-radius:var(--radius);border:1px solid var(--border);height:fit-content;position:sticky;top:100px }
 @media(max-width:900px){ .filters-panel{display:none;position:fixed;top:75px;left:5%;width:90%;z-index:1000;max-height:80vh;overflow-y:auto} .filters-panel.open{display:block} }
 .filter-group { margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border) }
@@ -190,7 +215,11 @@ nav { display:flex;align-items:center;gap:8px }
 .products-hero { display:none }
 .category-label { font-family:var(--ff-display);font-size:1.5rem;font-weight:700;color:var(--ink);margin-bottom:30px;display:flex;align-items:center;gap:16px }
 .category-label::after { content:'';flex:1;height:1px;background:var(--border) }
-.products-grid {display:grid;grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));gap:24px;margin-bottom:60px;width:100%;}
+.products-grid {
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+}
 @media(max-width:600px){.products-grid {grid-template-columns:1fr 1fr;gap:16px;}}
 @media(max-width:400px){.products-grid {grid-template-columns:1fr;}}
 .product-card { background:white;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);transition:var(--transition);cursor:pointer;position:relative }

@@ -1670,16 +1670,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   form.addEventListener("submit", function () {
 
-    // Mail gönderildikten sonra WhatsApp aç
-    setTimeout(() => {
-      sendOrderToWhatsApp();
-    }, 1200);
-
-  });
-
-});
-function sendOrderToWhatsApp() {
-  let phone = "905XXXXXXXXX"; // kendi numaran
+    function sendOrderToWhatsApp() {
+  let phone = "905XXXXXXXXX";
 
   let message = "🛒 Yeni Sipariş\n\n";
 
@@ -1695,6 +1687,32 @@ function sendOrderToWhatsApp() {
 
   window.open(url, "_blank");
 }
+document.addEventListener("DOMContentLoaded", function () {
+
+  const form = document.querySelector("form");
+
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+
+    // ⛔ sayfanın yenilenmesini engelle
+    e.preventDefault();
+
+    // 📧 EmailJS çalıştır (zaten sende var olan sistem tetiklenecek)
+    // Eğer sendForm kullanıyorsan:
+    emailjs.sendForm('service_ek1695p','template_o4bnwvi', this)
+    .then(function() {
+
+        // ✅ Mail gönderildi → WhatsApp aç
+        sendOrderToWhatsApp();
+
+    }, function(error) {
+        console.log("Hata:", error);
+    });
+
+  });
+
+});
 </script>
 
 </body>

@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 
 <html lang="tr">
@@ -332,63 +333,6 @@ nav{display:flex;align-items:center;gap:8px}
 
 footer{background:var(--ink);color:rgba(247,244,239,0.4);text-align:center;padding:30px 5%;font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;border-top:1px solid rgba(201,168,76,0.1)}
 footer span{color:var(--gold)}
-/* Sitenin en altındaki </style> etiketinden hemen önce burayı ekle */
-
-@media (max-width: 768px) {
-    /* Modal kutusunu telefon ekranına sığdır */
-    .modal-box {
-        flex-direction: column !important; 
-        max-height: 90vh !important;
-        width: 92% !important;
-        margin: auto !important;
-    }
-
-    /* Resmi küçült ki yazılar aşağıdan taşmasın */
-    .modal-img-col {
-        height: 200px !important; /* Resim boyutu mobilde artık daha derli toplu */
-        width: 100% !important;
-    }
-
-    /* Yazı alanını düzenle */
-    .modal-info-col {
-        padding: 15px !important;
-        overflow-y: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 8px !important;
-    }
-
-    /* Başlık ve fiyatın birbirine girmesini engelle */
-    .modal-title {
-        font-size: 1.3rem !important;
-        margin: 0 !important;
-        line-height: 1.2 !important;
-    }
-
-    .modal-price {
-        font-size: 1.1rem !important;
-        margin: 5px 0 !important;
-    }
-
-    /* Gereksiz ipucunu ve zoom efektini mobilde kapat */
-    .modal-zoom-hint {
-        display: none !important;
-    }
-    
-    #mImg {
-        transform: none !important;
-    }
-
-    /* Alttaki özellik listesini (Bursa işçiliği vs.) küçült */
-    .modal-features {
-        font-size: 0.75rem !important;
-        display: grid !important;
-        grid-template-columns: 1fr 1fr;
-        gap: 5px !important;
-        margin-top: 10px !important;
-    }
-}
-
 </style>
 
 </head>
@@ -1340,4 +1284,3 @@ document.querySelectorAll('.product-card,.gallery-item,.review-card,.feature-ite
   obs.observe(el);
 });
 </script>
-

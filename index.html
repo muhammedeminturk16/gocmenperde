@@ -1078,7 +1078,7 @@ body, html {
     <button id="paymentSentBtn" class="payment-sent-btn hidden" onclick="submitOrder()">
       <i class="fas fa-check"></i> Ödemeyi Yaptım
     </button>
-   <button onclick="sendOrderToWhatsApp()">Siparişi WhatsApp ile Gönder</button>
+<button onclick="completeOrder()">Siparişi Tamamla</button>
   </div>
 </div>
 ```
@@ -1678,6 +1678,15 @@ function sendOrderToWhatsApp() {
   let url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 
   window.open(url, "_blank");
+}
+function completeOrder() {
+  // 1. Mail gönder
+  sendOrder(); 
+
+  // 2. 1 saniye bekle (mail garanti gitsin)
+  setTimeout(() => {
+    sendOrderToWhatsApp();
+  }, 1000);
 }
 </script>
 

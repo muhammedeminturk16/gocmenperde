@@ -606,6 +606,32 @@ footer span { color:var(--gold) }
       </div>
     </div>
     
+    <!-- ÜRÜN 1: Tek Kişilik Çarşaf Sarı — indirimli: 300 TL, eski: 400 TL -->
+    <div class="product-card" data-cat="perde" data-price="300">
+      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf',this)"><i class="far fa-heart"></i></button>
+      <div class="product-img-wrap">
+        <img src="resimler/carsafsari.jpg" alt="Tek Kişilik Çarşaf Sarı" loading="lazy">
+        <span class="product-badge discount">%25 İNDİRİM</span>
+        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf','resimler/carsafsari.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)">
+          <i class="fas fa-expand-alt"></i>
+        </button>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Tek Kişilik Çarşaf Sarı</div>
+        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+        <div class="product-bottom">
+          <div class="product-price">
+            <span class="old-price">400 TL</span>
+            <span class="current-price">300 TL <span class="price-unit">/ adet</span></span>
+          </div>
+          <div class="qty-wrap">
+            <input type="number" class="qty-input" id="q-carsaf" value="1" min="1">
+            <button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Sarı',300,'q-carsaf',false)">+ Ekle</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- ÜRÜN 2: Çift Kişilik Çarşaf — indirimli: 350 TL, eski: 450 TL -->
     <div class="product-card" data-cat="perde" data-price="350">
       <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf',this)"><i class="far fa-heart"></i></button>

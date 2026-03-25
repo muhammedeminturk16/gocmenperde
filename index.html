@@ -511,7 +511,27 @@ footer span{color:var(--gold)}
       </div>
       <div class="category-label">Tüm Ürünler</div>
       <div class="products-grid">
-        <div class="product-card" data-cat="perde" data-price="200" data-features="utu">
+       <div class="product-card" data-cat="perde" data-price="300">
+  <button class="fav-btn" onclick="toggleFavorite('Yeni Model Perde',this)"><i class="far fa-heart"></i></button>
+  <div class="product-img-wrap">
+    <img src="resimler/yeni_perde.jpg" alt="Tek Kişilik Çarşaf" loading="lazy">
+    <span class="product-badge">Yeni Ürün</span>
+    <button class="product-zoom" onclick="openModal('Çarşaf','resimler/yeni_perde.jpg','300 TL / mt','her türlü yatak için uygundur','Çarşaf')"><i class="fas fa-expand"></i></button>
+  </div>
+  <div class="product-info">
+    <div class="product-name">Tek Kişilik Çarşaf</div>
+    <div class="product-desc">Her türlü renk  mevcuttur istediğiniz rengi sipariş verirken belirtiniz · Ütü istemez</div>
+    <div class="product-bottom">
+      <div><div class="product-price">300 TL<small> / mt</small></div></div>
+      <div class="qty-wrap">
+        <input type="number" class="qty-input" id="q-Çarşaf" value="1" min="1">
+        <button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf',300,'q-yeniperde',false)">+ Ekle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+         <div class="product-card" data-cat="perde" data-price="200" data-features="utu">
           <button class="fav-btn" onclick="toggleFavorite('Saray Tül Perde',this)"><i class="far fa-heart"></i></button>
           <div class="product-img-wrap">
             <img src="resimler/dikili_perde.jpeg" alt="Saray Tül" loading="lazy">

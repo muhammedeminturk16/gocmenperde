@@ -1201,16 +1201,20 @@ function closeModal(e){
 function openGalleryModal(src, title, desc){
   openModal(title, src, '', desc, 'Dükkanımız');
 }
-function zoomImg(e){
-  const img  = document.getElementById('mImg');
-  const rect = img.getBoundingClientRect();
-  const x    = ((e.clientX - rect.left) / rect.width) * 100;
-  const y    = ((e.clientY - rect.top)  / rect.height) * 100;
-  img.style.transformOrigin = `${x}% ${y}%`;
-  img.style.transform       = 'scale(2.2)';
+function zoomImg(e) {
+    const img = document.getElementById('mImg');
+    const container = e.currentTarget; // modal-img-col
+    const rect = container.getBoundingClientRect();
+const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    
+    img.style.transformOrigin = `${x}% ${y}%`;
+    img.style.transform = 'scale(2.5)'; 
 }
-function resetImgZoom(){
-  document.getElementById('mImg').style.transform = 'scale(1)';
+function resetImgZoom() {
+    const img = document.getElementById('mImg');
+    img.style.transform = 'scale(1)';
+    img.style.transformOrigin = 'center';
 }
 
 /* ─── Filtreler ─── */

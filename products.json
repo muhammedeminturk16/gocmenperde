@@ -377,4 +377,25 @@
       "Çekme": "İlk yıkamada hafif çekme normal"
     }
   }
-]
+],
+{
+  "id": "yeni-urun-1",
+  "name": "Ürün Adı",
+  "desc": "Açıklama buraya.",
+  "image": "resimler/foto.jpg",
+  "price": 500,
+  "oldPrice": 650,
+  "cat": "carsaf",
+  "unit": "adet",
+  "isMeter": false,
+  "features": "utu",
+  "badge": "%25 İNDİRİM",
+  "active": true,
+  "specs": {
+    "Malzeme": "%100 Pamuk"
+  },
+  "care": {
+    "Makine Yıkama": "40°C"
+  }
+}
+

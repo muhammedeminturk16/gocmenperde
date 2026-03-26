@@ -718,7 +718,7 @@ let PRODUCTS = [];
 
 async function loadProducts(){
   try{
-    const res = await fetch('/products.json?v=' + Date.now());
+    const res = await fetch('products.json?v=' + Date.now());
     PRODUCTS = await res.json();
     renderProducts(PRODUCTS);
     initObserver();

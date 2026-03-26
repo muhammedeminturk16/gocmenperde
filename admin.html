@@ -685,17 +685,65 @@ function showPage(id){
 // ─── Toast ───
 function aToast(msg){ const t=document.getElementById('aToast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),4000); }
 
-// Token'ı kodun içine yazmıyoruz, GitHub hata vermesin diye:
+// --- GitHub Entegrasyonu ---
 let GITHUB_TOKEN = localStorage.getItem('gh_token');
 
 if (!GITHUB_TOKEN) {
-    GITHUB_TOKEN = prompt("Lütfen GitHub Access Token giriniz (Sadece ilk seferde istenir):");
-    if (GITHUB_TOKEN) localStorage.setItem('gh_token', GITHUB_TOKEN);
+    GITHUB_TOKEN = prompt("Sisteme erişim için lütfen GitHub Token kodunuzu girin:");
+    if (GITHUB_TOKEN) {
+        localStorage.setItem('gh_token', GITHUB_TOKEN);
+    }
 }
 
 const REPO_OWNER = 'gocmenperde';
 const REPO_NAME = 'gocmenperde';
 const FILE_PATH = 'products.json';
+
+async function updateGithubFile(newData) {
+    try {
+        const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+        
+        // 1. Mevcut dosya bilgisini (sha) al
+        const getFile = await fetch(url, {
+            headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+        });
+        
+        if (!getFile.ok) throw new Error("Dosya bilgisi alınamadı. Token hatalı olabilir.");
+        
+        const fileData = await getFile.json();
+        const sha = fileData.sha;
+
+        // 2. Güncelleme yap
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "Authorization": `token ${GITHUB_TOKEN}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: "Admin Paneli: Ürün listesi güncellendi",
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))),
+                sha: sha
+            })
+        });
+
+        if (response.ok) {
+            alert("✅ Ürünler başarıyla kaydedildi! Siteniz 1-2 dakika içinde güncellenecektir.");
+        } else {
+            const errorInfo = await response.json();
+            alert("❌ Kaydedilemedi: " + errorInfo.message);
+        }
+    } catch (err) {
+        alert("Hata: " + err.message);
+    }
+}
+
+// Kaydet butonuna tıklandığında çalıştır (Butonun id'sini kontrol et, genellikle saveBtn olur)
+document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'saveBtn' || e.target.innerText.includes('JSON\'U KAYDET')) {
+        updateGithubFile(PRODUCTS);
+    }
+});
 
 
 </script>

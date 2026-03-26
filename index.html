@@ -166,9 +166,32 @@ nav{display:flex;align-items:center;gap:8px}
 .review-author{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--slate);font-weight:500}
 
 /* ── Products ── */
-#products{background:var(--warm-white)}
-.products-layout{width:100%;padding:40px 40px 40px;display:grid;grid-template-columns:280px 1fr;gap:40px;align-items:start}
-@media(max-width:900px){.products-layout{grid-template-columns:1fr;padding:20px}}
+#products{background:var(--warm-white);padding-top:75px}
+
+.products-layout{
+  box-sizing:border-box;
+  width:100%;
+  padding:40px 40px 60px 40px;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:32px;
+  align-items:start;
+}
+
+@media(min-width:1400px){
+  .products-layout{
+    padding:40px 60px 60px 60px;
+    grid-template-columns:280px 1fr;
+  }
+}
+
+@media(max-width:900px){
+  .products-layout{
+    grid-template-columns:1fr;
+    padding:20px 16px 40px;
+  }
+}
+
 .filters-panel{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:28px;position:sticky;top:95px}
 @media(max-width:900px){.filters-panel{display:none;position:static}.filters-panel.open{display:block}}
 .filter-group{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
@@ -179,17 +202,31 @@ nav{display:flex;align-items:center;gap:8px}
 .filter-option label{font-size:0.85rem;color:var(--slate);cursor:pointer}
 .price-inputs{display:flex;gap:8px;align-items:center}
 .price-inputs input{width:50%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:0.8rem}
-.mobile-filter-toggle{display:none;margin:20px 5% 0;padding:14px 24px;background:var(--ink);color:white;border:none;border-radius:50px;cursor:pointer;font-size:0.75rem;text-transform:uppercase;letter-spacing:2px}
+.mobile-filter-toggle{display:none;margin:20px 16px 0;padding:14px 24px;background:var(--ink);color:white;border:none;border-radius:50px;cursor:pointer;font-size:0.75rem;text-transform:uppercase;letter-spacing:2px}
 @media(max-width:900px){.mobile-filter-toggle{display:inline-flex;align-items:center;gap:8px}}
+
 .sort-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:10px;padding:16px 20px;background:white;border-radius:var(--radius);border:1px solid var(--border)}
 #searchInput{flex:1;max-width:300px;padding:10px 18px;border:1px solid var(--border);border-radius:50px;font-size:0.8rem;background:var(--cream);font-family:var(--ff-body)}
 #sortSelect{padding:10px 20px;border:1px solid var(--border);border-radius:50px;font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;background:var(--cream);font-family:var(--ff-body);cursor:pointer}
-.products-content{width:100%}
+
+.products-content{min-width:0;width:100%}
+
 .category-label{font-family:var(--ff-display);font-size:1.5rem;font-weight:700;color:var(--ink);margin-bottom:24px;display:flex;align-items:center;gap:16px}
 .category-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.products-grid{width:100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
-@media(max-width:600px){.products-grid{grid-template-columns:1fr 1fr;gap:14px}}
-@media(max-width:400px){.products-grid{grid-template-columns:1fr}}
+
+.products-grid{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;
+}
+
+@media(max-width:600px){
+  .products-grid{grid-template-columns:1fr 1fr;gap:12px}
+}
+@media(max-width:400px){
+  .products-grid{grid-template-columns:1fr}
+}
 
 /* ── Product Cards ── */
 .product-card{background:white;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);transition:var(--transition);cursor:pointer;position:relative}
@@ -197,7 +234,7 @@ nav{display:flex;align-items:center;gap:8px}
 .fav-btn.active{color:#c0392b}
 .fav-btn:hover{transform:scale(1.1)}
 .product-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--gold-light)}
-.product-img-wrap{position:relative;height:260px;overflow:hidden;background:var(--cream)}
+.product-img-wrap{position:relative;height:240px;overflow:hidden;background:var(--cream)}
 .product-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s var(--transition)}
 .product-card:hover .product-img-wrap img{transform:scale(1.07)}
 .product-badge{position:absolute;top:14px;left:14px;background:var(--ink);color:var(--gold);font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;font-weight:600;padding:5px 12px;border-radius:50px}
@@ -205,9 +242,9 @@ nav{display:flex;align-items:center;gap:8px}
 .product-zoom{position:absolute;bottom:14px;right:14px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:0.95rem;opacity:0;transition:var(--transition);box-shadow:0 4px 16px rgba(0,0,0,0.15)}
 .product-card:hover .product-zoom{opacity:1}
 .product-zoom:hover{background:var(--gold);color:white;transform:scale(1.1)}
-.product-info{padding:20px}
-.product-name{font-family:var(--ff-display);font-size:1.25rem;font-weight:600;color:var(--ink);margin-bottom:6px}
-.product-desc{font-size:0.78rem;color:var(--slate);margin-bottom:16px;line-height:1.7}
+.product-info{padding:18px}
+.product-name{font-family:var(--ff-display);font-size:1.2rem;font-weight:600;color:var(--ink);margin-bottom:6px}
+.product-desc{font-size:0.78rem;color:var(--slate);margin-bottom:14px;line-height:1.7}
 .product-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .product-price{display:flex;flex-direction:column;gap:2px}
 .old-price{text-decoration:line-through;color:#a0a0a0;font-size:0.82rem;font-weight:400}
@@ -406,7 +443,7 @@ nav{display:flex;align-items:center;gap:8px}
 .portrait-caption h3{font-family:var(--ff-display);font-size:1.5rem;font-weight:600;color:white;margin-bottom:4px}
 .portrait-caption p{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
 
-/* ── Modal: Ürüne özel detay tab'ları ── */
+/* ── Modal Tabs ── */
 .modal-tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--cream);border-radius:8px;padding:4px}
 .modal-tab{flex:1;background:none;border:none;cursor:pointer;padding:8px 12px;border-radius:6px;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;color:var(--slate);font-family:var(--ff-body);transition:var(--transition)}
 .modal-tab.active{background:white;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,0.08)}
@@ -425,55 +462,11 @@ nav{display:flex;align-items:center;gap:8px}
 /* ── Footer ── */
 footer{background:var(--ink);color:rgba(247,244,239,0.4);text-align:center;padding:30px 5%;font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;border-top:1px solid rgba(201,168,76,0.1)}
 footer span{color:var(--gold)}
-/* GENEL FULL WIDTH FIX (ANA SORUN) */
-body, html {
-  width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: hidden;
-}
-
-.section {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-/* ANA WRAPPER GENİŞLETME */
-.products-layout {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  padding-left: 40px !important;
-  padding-right: 40px !important;
-  grid-template-columns: 300px 1fr !important;
-}
-
-/* ÜRÜNLER ALANI TAM YAYILSIN */
-.products-content {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-/* GRID TAM EKRAN DOLSUN */
-.products-grid {
-  width: 100% !important;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
-}
-
-/* HEADER DA DAR KALMASIN */
-.header-inner {
-  max-width: 100% !important;
-}
-
-/* GENEL CONTAINER VARSA ONU DA KIR */
-.container {
-  max-width: 100% !important;
-}
 </style>
 
 </head>
 
 <!-- Mobil Menü -->
-
 <div id="mobileMenu">
   <div class="menu-logo">Göçmen Perde</div>
   <button onclick="go('home');toggleMenu()"><i class="fas fa-home" style="margin-right:10px;color:var(--gold)"></i>Anasayfa</button>
@@ -486,7 +479,6 @@ body, html {
 <div class="overlay" id="globalOverlay" onclick="closeAllPopups()"></div>
 
 <!-- Açılır Popuplar -->
-
 <div class="search-bar" id="searchBar">
   <input type="text" id="headerSearchInput" placeholder="Ürün ara..." style="width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;font-family:var(--ff-body)">
   <div id="searchResults"></div>
@@ -502,7 +494,6 @@ body, html {
 </div>
 
 <!-- Başarılı Sipariş Modalı -->
-
 <div class="success-modal" id="successModal">
   <div class="success-box">
     <i class="fas fa-check-circle"></i>
@@ -554,7 +545,6 @@ body, html {
 </header>
 
 <!-- Anasayfa -->
-
 <section id="home" class="section active">
   <div class="hero">
     <div class="hero-bg"></div>
@@ -615,7 +605,6 @@ body, html {
 </section>
 
 <!-- Ürünler -->
-
 <section id="products" class="section">
   <button class="mobile-filter-toggle" onclick="document.getElementById('filtersPanel').classList.toggle('open')"><i class="fas fa-filter"></i> Filtreleri Aç/Kapat</button>
   <div class="products-layout">
@@ -642,281 +631,277 @@ body, html {
       </div>
     </div>
 
-```
-<div class="products-content">
-  <div class="sort-bar">
-    <input type="text" id="searchInput" placeholder="🔍 Ürün ara..." oninput="applyFilters()">
-    <select id="sortSelect" onchange="applyFilters()">
-      <option value="popular">En Çok Satan</option>
-      <option value="price-asc">Fiyat (Artan)</option>
-      <option value="price-desc">Fiyat (Azalan)</option>
-    </select>
-  </div>
-  <div class="category-label">Tüm Ürünler</div>
-  <div class="products-grid">
-
-    <!-- Tek Kişilik Çarşaf -->
-    <div class="product-card" data-cat="perde" data-price="300">
-      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsaf.jpg" alt="Tek Kişilik Çarşaf" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf','resimler/carsaf.jpg','Her türlü yatak için uygundur. Lütfen renk tercihinizi sipariş notunda belirtiniz.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+    <div class="products-content">
+      <div class="sort-bar">
+        <input type="text" id="searchInput" placeholder="🔍 Ürün ara..." oninput="applyFilters()">
+        <select id="sortSelect" onchange="applyFilters()">
+          <option value="popular">En Çok Satan</option>
+          <option value="price-asc">Fiyat (Artan)</option>
+          <option value="price-desc">Fiyat (Azalan)</option>
+        </select>
       </div>
-      <div class="product-info">
-        <div class="product-name">Tek Kişilik Çarşaf</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf',300,'q-carsaf',false)">+ Ekle</button></div>
+      <div class="category-label">Tüm Ürünler</div>
+      <div class="products-grid">
+
+        <!-- Tek Kişilik Çarşaf -->
+        <div class="product-card" data-cat="perde" data-price="300">
+          <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsaf.jpg" alt="Tek Kişilik Çarşaf" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf','resimler/carsaf.jpg','Her türlü yatak için uygundur. Lütfen renk tercihinizi sipariş notunda belirtiniz.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Tek Kişilik Çarşaf</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf',300,'q-carsaf',false)">+ Ekle</button></div>
+            </div>
+          </div>
         </div>
+
+        <!-- Tek Kişilik Çarşaf Pembe -->
+        <div class="product-card" data-cat="perde" data-price="300">
+          <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Pembe',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsafpembe.jpg" alt="Tek Kişilik Çarşaf Pembe" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Pembe','resimler/carsafpembe.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Tek Kişilik Çarşaf Pembe</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf1" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Pembe',300,'q-carsaf1',false)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tek Kişilik Çarşaf Kahverengi -->
+        <div class="product-card" data-cat="perde" data-price="300">
+          <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Kahverengi',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsafkahve.jpg" alt="Tek Kişilik Çarşaf Kahverengi" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Kahverengi','resimler/carsafkahve.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Tek Kişilik Çarşaf Kahverengi</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf2" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Kahverengi',300,'q-carsaf2',false)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tek Kişilik Çarşaf Mor -->
+        <div class="product-card" data-cat="perde" data-price="300">
+          <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Mor',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsafmor.jpg" alt="Tek Kişilik Çarşaf Mor" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Mor','resimler/carsafmor.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Tek Kişilik Çarşaf Mor</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf3" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Mor',300,'q-carsaf3',false)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tek Kişilik Çarşaf Gri -->
+        <div class="product-card" data-cat="perde" data-price="300">
+          <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Gri',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsafgri.jpg" alt="Tek Kişilik Çarşaf Gri" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Gri','resimler/carsafgri.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Tek Kişilik Çarşaf Gri</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf4" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Gri',300,'q-carsaf4',false)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tek Kişilik Çarşaf Beyaz -->
+        <div class="product-card" data-cat="perde" data-price="300">
+          <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Beyaz',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsafbeyaz.jpg" alt="Tek Kişilik Çarşaf Beyaz" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Beyaz','resimler/carsafbeyaz.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Tek Kişilik Çarşaf Beyaz</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf5" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Beyaz',300,'q-carsaf5',false)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tek Kişilik Çarşaf Mavi -->
+        <div class="product-card" data-cat="perde" data-price="300">
+          <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Mavi',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsafmavi.jpg" alt="Tek Kişilik Çarşaf Mavi" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Mavi','resimler/carsafmavi.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Tek Kişilik Çarşaf Mavi</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf6" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Mavi',300,'q-carsaf6',false)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tek Kişilik Çarşaf Sarı -->
+        <div class="product-card" data-cat="perde" data-price="300">
+          <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Sarı',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsafsari.jpg" alt="Tek Kişilik Çarşaf Sarı" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Sarı','resimler/carsafsari.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Tek Kişilik Çarşaf Sarı</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf7" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Sarı',300,'q-carsaf7',false)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Çift Kişilik Çarşaf -->
+        <div class="product-card" data-cat="perde" data-price="350">
+          <button class="fav-btn" onclick="toggleFavorite('Çift Kişilik Çarşaf',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/carsaf1.jpg" alt="Çift Kişilik Çarşaf" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Çift Kişilik Çarşaf','resimler/carsaf1.jpg','Her türlü yatak için uygundur. Lütfen renk tercihinizi sipariş notunda belirtiniz.','Çarşaf',350,450)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Çift Kişilik Çarşaf</div>
+            <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">450 TL</span><span class="current-price">350 TL <span class="price-unit">/ adet</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf8" value="1" min="1"><button class="add-btn" onclick="addToCart('Çift Kişilik Çarşaf',350,'q-carsaf8',false)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saray Tül -->
+        <div class="product-card" data-cat="perde" data-price="200" data-features="utu">
+          <button class="fav-btn" onclick="toggleFavorite('Saray Tül Perde',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/dikili_perde.jpeg" alt="Saray Tül" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Saray Tül Perde','resimler/dikili_perde.jpeg','Bursa üretimi özel örme tül kumaş. Ütü istemez, dayanıklı ve ışık geçiren yapısıyla odanıza ferahlık katar.','Tül Perde',200,267,'mt')"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Saray Tül Perde</div>
+            <div class="product-desc">Bursa üretimi örme tül · Ütü istemez · Işık geçiren</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">267 TL</span><span class="current-price">200 TL <span class="price-unit">/ mt</span></span></div>
+              <div class="qty-wrap"><input type="number" class="qty-input" id="q-saraytul" value="1" min="1"><button class="add-btn" onclick="addToCart('Saray Tül Perde',200,'q-saraytul',true)">+ Ekle</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ekonomik Fon -->
+        <div class="product-card" data-cat="perde" data-price="2500">
+          <button class="fav-btn" onclick="toggleFavorite('Ekonomik Fon Perde',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/kumas_fon_renkli.jpeg" alt="Ekonomik Fon" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Ekonomik Fon Perde','resimler/kumas_fon_renkli.jpeg','Renk seçeneği geniş, kaliteli dekoratif fon perde. Dikim dahil fiyattır.','Fon Perde',2500,3333)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Ekonomik Fon Perde</div>
+            <div class="product-desc">Geniş renk skalası · Dikim dahil · Dekoratif model</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">3.333 TL</span><span class="current-price">2.500 TL</span></div>
+              <button class="add-btn" onclick="addToCart('Ekonomik Fon Perde',2500,null,false)">+ Ekle</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIP Premium Fon -->
+        <div class="product-card" data-cat="perde" data-price="4500" data-features="karartma,premium">
+          <button class="fav-btn" onclick="toggleFavorite('VIP Premium Fon Perde',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/brillant_fon.jpeg" alt="VIP Premium Fon" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('VIP Premium Fon Perde','resimler/brillant_fon.jpeg','Kadife dokulu, karartma özellikli lüks fon perde. Işık sızdırmaz yapısı ve asil görünümüyle yatak odalarına özel tasarlanmıştır. Dikim dahil fiyattır.','Lüks Fon Perde',4500,6000)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">VIP Premium Fon</div>
+            <div class="product-desc">Kadife doku · Karartma özellikli · Lüks seri</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">6.000 TL</span><span class="current-price">4.500 TL</span></div>
+              <button class="add-btn" onclick="addToCart('VIP Premium Fon Perde',4500,null,false)">+ Ekle</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Örtü Set 3+3+1+1 -->
+        <div class="product-card" data-cat="koltuk" data-price="1500">
+          <button class="fav-btn" onclick="toggleFavorite('Koltuk Örtü Seti 3+3+1+1',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/koltuk_ortusu.jpeg" alt="Örtü Set 3+3+1+1" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Koltuk Örtü Seti (3+3+1+1)','resimler/koltuk_ortusu.jpeg','Esnek bürümcük kumaş, 2 adet üçlü ve 2 adet tekli koltuk için eksiksiz set. Tüm renkler mevcuttur.','Koltuk Örtüsü',1500,2000)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Örtü Set (3+3+1+1)</div>
+            <div class="product-desc">Bürümcük kumaş · 2 üçlü + 2 tekli · Esnek form</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">2.000 TL</span><span class="current-price">1.500 TL</span></div>
+              <button class="add-btn" onclick="addToCart('Koltuk Örtü Seti 3+3+1+1',1500,null,false)">+ Ekle</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Örtü Set 3+3 -->
+        <div class="product-card" data-cat="koltuk" data-price="1200">
+          <button class="fav-btn" onclick="toggleFavorite('Koltuk Örtü Seti 3+3',this)"><i class="far fa-heart"></i></button>
+          <div class="product-img-wrap">
+            <img src="resimler/koltuk_ortusu.jpeg" alt="Örtü Set 3+3" loading="lazy">
+            <span class="product-badge discount">%25 İNDİRİM</span>
+            <button class="product-zoom" onclick="event.stopPropagation();openModal('Koltuk Örtü Seti (3+3)','resimler/koltuk_ortusu.jpeg','Esnek bürümcük kumaş, 2 adet üçlü koltuk için set. Solmaz renkleri ve uzun ömürlü yapısıyla mobilyanızı korur.','Koltuk Örtüsü',1200,1600)"><i class="fas fa-expand-alt"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-name">Örtü Set (3+3)</div>
+            <div class="product-desc">Bürümcük kumaş · 2 adet üçlü koltuk · Solmaz renk</div>
+            <div class="product-bottom">
+              <div class="product-price"><span class="old-price">1.600 TL</span><span class="current-price">1.200 TL</span></div>
+              <button class="add-btn" onclick="addToCart('Koltuk Örtü Seti 3+3',1200,null,false)">+ Ekle</button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <!-- Tek Kişilik Çarşaf Pembe -->
-    <div class="product-card" data-cat="perde" data-price="300">
-      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Pembe',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsafpembe.jpg" alt="Tek Kişilik Çarşaf Pembe" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Pembe','resimler/carsafpembe.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Tek Kişilik Çarşaf Pembe</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf1" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Pembe',300,'q-carsaf1',false)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tek Kişilik Çarşaf Kahverengi -->
-    <div class="product-card" data-cat="perde" data-price="300">
-      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Kahverengi',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsafkahve.jpg" alt="Tek Kişilik Çarşaf Kahverengi" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Kahverengi','resimler/carsafkahve.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Tek Kişilik Çarşaf Kahverengi</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf2" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Kahverengi',300,'q-carsaf2',false)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tek Kişilik Çarşaf Mor -->
-    <div class="product-card" data-cat="perde" data-price="300">
-      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Mor',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsafmor.jpg" alt="Tek Kişilik Çarşaf Mor" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Mor','resimler/carsafmor.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Tek Kişilik Çarşaf Mor</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf3" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Mor',300,'q-carsaf3',false)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tek Kişilik Çarşaf Gri -->
-    <div class="product-card" data-cat="perde" data-price="300">
-      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Gri',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsafgri.jpg" alt="Tek Kişilik Çarşaf Gri" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Gri','resimler/carsafgri.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Tek Kişilik Çarşaf Gri</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf4" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Gri',300,'q-carsaf4',false)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tek Kişilik Çarşaf Beyaz -->
-    <div class="product-card" data-cat="perde" data-price="300">
-      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Beyaz',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsafbeyaz.jpg" alt="Tek Kişilik Çarşaf Beyaz" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Beyaz','resimler/carsafbeyaz.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Tek Kişilik Çarşaf Beyaz</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf5" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Beyaz',300,'q-carsaf5',false)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tek Kişilik Çarşaf Mavi -->
-    <div class="product-card" data-cat="perde" data-price="300">
-      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Mavi',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsafmavi.jpg" alt="Tek Kişilik Çarşaf Mavi" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Mavi','resimler/carsafmavi.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Tek Kişilik Çarşaf Mavi</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf6" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Mavi',300,'q-carsaf6',false)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tek Kişilik Çarşaf Sarı -->
-    <div class="product-card" data-cat="perde" data-price="300">
-      <button class="fav-btn" onclick="toggleFavorite('Tek Kişilik Çarşaf Sarı',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsafsari.jpg" alt="Tek Kişilik Çarşaf Sarı" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Tek Kişilik Çarşaf Sarı','resimler/carsafsari.jpg','Her türlü yatak için uygundur.','Çarşaf',300,400)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Tek Kişilik Çarşaf Sarı</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">400 TL</span><span class="current-price">300 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf7" value="1" min="1"><button class="add-btn" onclick="addToCart('Tek Kişilik Çarşaf Sarı',300,'q-carsaf7',false)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Çift Kişilik Çarşaf -->
-    <div class="product-card" data-cat="perde" data-price="350">
-      <button class="fav-btn" onclick="toggleFavorite('Çift Kişilik Çarşaf',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/carsaf1.jpg" alt="Çift Kişilik Çarşaf" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Çift Kişilik Çarşaf','resimler/carsaf1.jpg','Her türlü yatak için uygundur. Lütfen renk tercihinizi sipariş notunda belirtiniz.','Çarşaf',350,450)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Çift Kişilik Çarşaf</div>
-        <div class="product-desc">Her türlü renk mevcuttur. Ütü istemez, pamuklu doku.</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">450 TL</span><span class="current-price">350 TL <span class="price-unit">/ adet</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-carsaf8" value="1" min="1"><button class="add-btn" onclick="addToCart('Çift Kişilik Çarşaf',350,'q-carsaf8',false)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Saray Tül -->
-    <div class="product-card" data-cat="perde" data-price="200" data-features="utu">
-      <button class="fav-btn" onclick="toggleFavorite('Saray Tül Perde',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/dikili_perde.jpeg" alt="Saray Tül" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Saray Tül Perde','resimler/dikili_perde.jpeg','Bursa üretimi özel örme tül kumaş. Ütü istemez, dayanıklı ve ışık geçiren yapısıyla odanıza ferahlık katar.','Tül Perde',200,267,'mt')"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Saray Tül Perde</div>
-        <div class="product-desc">Bursa üretimi örme tül · Ütü istemez · Işık geçiren</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">267 TL</span><span class="current-price">200 TL <span class="price-unit">/ mt</span></span></div>
-          <div class="qty-wrap"><input type="number" class="qty-input" id="q-saraytul" value="1" min="1"><button class="add-btn" onclick="addToCart('Saray Tül Perde',200,'q-saraytul',true)">+ Ekle</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ekonomik Fon -->
-    <div class="product-card" data-cat="perde" data-price="2500">
-      <button class="fav-btn" onclick="toggleFavorite('Ekonomik Fon Perde',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/kumas_fon_renkli.jpeg" alt="Ekonomik Fon" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Ekonomik Fon Perde','resimler/kumas_fon_renkli.jpeg','Renk seçeneği geniş, kaliteli dekoratif fon perde. Dikim dahil fiyattır.','Fon Perde',2500,3333)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Ekonomik Fon Perde</div>
-        <div class="product-desc">Geniş renk skalası · Dikim dahil · Dekoratif model</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">3.333 TL</span><span class="current-price">2.500 TL</span></div>
-          <button class="add-btn" onclick="addToCart('Ekonomik Fon Perde',2500,null,false)">+ Ekle</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- VIP Premium Fon -->
-    <div class="product-card" data-cat="perde" data-price="4500" data-features="karartma,premium">
-      <button class="fav-btn" onclick="toggleFavorite('VIP Premium Fon Perde',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/brillant_fon.jpeg" alt="VIP Premium Fon" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('VIP Premium Fon Perde','resimler/brillant_fon.jpeg','Kadife dokulu, karartma özellikli lüks fon perde. Işık sızdırmaz yapısı ve asil görünümüyle yatak odalarına özel tasarlanmıştır. Dikim dahil fiyattır.','Lüks Fon Perde',4500,6000)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">VIP Premium Fon</div>
-        <div class="product-desc">Kadife doku · Karartma özellikli · Lüks seri</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">6.000 TL</span><span class="current-price">4.500 TL</span></div>
-          <button class="add-btn" onclick="addToCart('VIP Premium Fon Perde',4500,null,false)">+ Ekle</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Örtü Set 3+3+1+1 -->
-    <div class="product-card" data-cat="koltuk" data-price="1500">
-      <button class="fav-btn" onclick="toggleFavorite('Koltuk Örtü Seti 3+3+1+1',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/koltuk_ortusu.jpeg" alt="Örtü Set 3+3+1+1" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Koltuk Örtü Seti (3+3+1+1)','resimler/koltuk_ortusu.jpeg','Esnek bürümcük kumaş, 2 adet üçlü ve 2 adet tekli koltuk için eksiksiz set. Tüm renkler mevcuttur.','Koltuk Örtüsü',1500,2000)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Örtü Set (3+3+1+1)</div>
-        <div class="product-desc">Bürümcük kumaş · 2 üçlü + 2 tekli · Esnek form</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">2.000 TL</span><span class="current-price">1.500 TL</span></div>
-          <button class="add-btn" onclick="addToCart('Koltuk Örtü Seti 3+3+1+1',1500,null,false)">+ Ekle</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Örtü Set 3+3 -->
-    <div class="product-card" data-cat="koltuk" data-price="1200">
-      <button class="fav-btn" onclick="toggleFavorite('Koltuk Örtü Seti 3+3',this)"><i class="far fa-heart"></i></button>
-      <div class="product-img-wrap">
-        <img src="resimler/koltuk_ortusu.jpeg" alt="Örtü Set 3+3" loading="lazy">
-        <span class="product-badge discount">%25 İNDİRİM</span>
-        <button class="product-zoom" onclick="event.stopPropagation();openModal('Koltuk Örtü Seti (3+3)','resimler/koltuk_ortusu.jpeg','Esnek bürümcük kumaş, 2 adet üçlü koltuk için set. Solmaz renkleri ve uzun ömürlü yapısıyla mobilyanızı korur.','Koltuk Örtüsü',1200,1600)"><i class="fas fa-expand-alt"></i></button>
-      </div>
-      <div class="product-info">
-        <div class="product-name">Örtü Set (3+3)</div>
-        <div class="product-desc">Bürümcük kumaş · 2 adet üçlü koltuk · Solmaz renk</div>
-        <div class="product-bottom">
-          <div class="product-price"><span class="old-price">1.600 TL</span><span class="current-price">1.200 TL</span></div>
-          <button class="add-btn" onclick="addToCart('Koltuk Örtü Seti 3+3',1200,null,false)">+ Ekle</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-```
-
   </div>
   <footer style="background:var(--cream);border-top:1px solid var(--border);color:var(--slate)"><p>© 2026 <span>Göçmen Perde</span> — Tüm Hakları Saklıdır · Osmangazi, Bursa</p></footer>
 </section>
 
 <!-- Sepet -->
-
 <section id="cart" class="section">
   <div class="cart-container">
     <h1 class="cart-title">Sipariş <span>Listeniz</span></h1>
@@ -934,67 +919,63 @@ body, html {
           </select>
         </div>
 
-```
-    <!-- Kredi Kartı Alanları -->
-    <div id="creditCardFields" class="form-group full hidden">
-      <div class="card-preview">
-        <div class="card-chip"></div>
-        <div class="card-logos"><i id="cardTypeIcon" class="far fa-credit-card"></i></div>
-        <div class="card-number-preview" id="previewCardNumber">**** **** **** ****</div>
-        <div class="card-details-row">
-          <div><span style="font-size:0.7rem;opacity:0.7;text-transform:uppercase">Kart Sahibi</span><div class="card-holder-preview" id="previewCardHolder">AD SOYAD</div></div>
-          <div><span style="font-size:0.7rem;opacity:0.7;text-transform:uppercase">Son Kullanma</span><div class="card-expiry-preview" id="previewExpiry">AA/YY</div></div>
+        <!-- Kredi Kartı Alanları -->
+        <div id="creditCardFields" class="form-group full hidden">
+          <div class="card-preview">
+            <div class="card-chip"></div>
+            <div class="card-logos"><i id="cardTypeIcon" class="far fa-credit-card"></i></div>
+            <div class="card-number-preview" id="previewCardNumber">**** **** **** ****</div>
+            <div class="card-details-row">
+              <div><span style="font-size:0.7rem;opacity:0.7;text-transform:uppercase">Kart Sahibi</span><div class="card-holder-preview" id="previewCardHolder">AD SOYAD</div></div>
+              <div><span style="font-size:0.7rem;opacity:0.7;text-transform:uppercase">Son Kullanma</span><div class="card-expiry-preview" id="previewExpiry">AA/YY</div></div>
+            </div>
+          </div>
+          <div class="form-grid" style="margin-top:16px">
+            <div class="form-group full"><label>Kart Numarası</label><input type="text" id="f-cardnumber" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this);updateCardPreview()"></div>
+            <div class="form-group"><label>Kart Sahibinin Adı</label><input type="text" id="f-cardholder" class="form-input" placeholder="AD SOYAD" oninput="updateCardPreview()"></div>
+            <div class="form-group"><label>Son Kullanma Tarihi</label><input type="text" id="f-expiry" class="form-input" placeholder="AA/YY" maxlength="5" oninput="formatExpiry(this);updateCardPreview()"></div>
+            <div class="form-group"><label>CVV</label><input type="password" id="f-cvv" class="form-input" placeholder="***" maxlength="3" oninput="onlyNumbers(this)"></div>
+          </div>
+        </div>
+
+        <!-- Havale/EFT Alanları -->
+        <div id="bankTransferFields" class="form-group full hidden">
+          <div class="bank-info-box">
+            <h4><i class="fas fa-university" style="color:var(--gold);margin-right:8px"></i>Havale / EFT Bilgileri</h4>
+            <p><strong>Banka:</strong> Kuveytürk</p>
+            <p><strong>IBAN:</strong> TR05 0020 5000 0951 3424 0000 01 <button class="iban-copy" onclick="copyIBAN()">Kopyala</button></p>
+            <p><strong>Alıcı:</strong> Zeynel Türkoğlu</p>
+            <p style="margin-top:15px;font-size:0.85rem;color:var(--gold-dark)"><i class="fas fa-info-circle"></i> Ödemenizi yaptıktan sonra "Ödemeyi Yaptım" butonuna tıklayınız.</p>
+          </div>
+        </div>
+
+        <div class="form-group full"><label>Teslimat Adresi *</label><textarea id="f-addr" class="form-input form-textarea" placeholder="Mahalle, Sokak, Bina No, Daire — Osmangazi / Bursa"></textarea></div>
+        <div class="form-group full"><label>Ek Notlar (opsiyonel)</label><input type="text" id="f-note" class="form-input" placeholder="Renk tercihi, ölçü, özel istek..."></div>
+      </div>
+    </div>
+
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div>
+        <button class="clear-btn" onclick="clearCart()"><i class="fas fa-trash-can"></i> Sepeti Temizle</button>
+        <div class="total-display" style="margin-top:20px">
+          <span class="total-label">Toplam Tutar</span>
+          <div class="total-amount" id="totalAmount">0 <span>TL</span></div>
         </div>
       </div>
-      <div class="form-grid" style="margin-top:16px">
-        <div class="form-group full"><label>Kart Numarası</label><input type="text" id="f-cardnumber" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this);updateCardPreview()"></div>
-        <div class="form-group"><label>Kart Sahibinin Adı</label><input type="text" id="f-cardholder" class="form-input" placeholder="AD SOYAD" oninput="updateCardPreview()"></div>
-        <div class="form-group"><label>Son Kullanma Tarihi</label><input type="text" id="f-expiry" class="form-input" placeholder="AA/YY" maxlength="5" oninput="formatExpiry(this);updateCardPreview()"></div>
-        <div class="form-group"><label>CVV</label><input type="password" id="f-cvv" class="form-input" placeholder="***" maxlength="3" oninput="onlyNumbers(this)"></div>
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-end">
+        <button id="paymentSentBtn" class="payment-sent-btn hidden" onclick="submitOrder()">
+          <i class="fas fa-check"></i> Ödemeyi Yaptım
+        </button>
+        <button class="wa-btn" id="submitOrderBtn" onclick="submitOrder()">
+          <i class="fab fa-whatsapp" style="font-size:1.3rem"></i> Siparişi WhatsApp ile Onayla
+        </button>
       </div>
     </div>
-
-    <!-- Havale/EFT Alanları -->
-    <div id="bankTransferFields" class="form-group full hidden">
-      <div class="bank-info-box">
-        <h4><i class="fas fa-university" style="color:var(--gold);margin-right:8px"></i>Havale / EFT Bilgileri</h4>
-        <p><strong>Banka:</strong> Kuveytürk</p>
-        <p><strong>IBAN:</strong> TR05 0020 5000 0951 3424 0000 01 <button class="iban-copy" onclick="copyIBAN()">Kopyala</button></p>
-        <p><strong>Alıcı:</strong> Zeynel Türkoğlu</p>
-        <p style="margin-top:15px;font-size:0.85rem;color:var(--gold-dark)"><i class="fas fa-info-circle"></i> Ödemenizi yaptıktan sonra "Ödemeyi Yaptım" butonuna tıklayınız.</p>
-      </div>
-    </div>
-
-    <div class="form-group full"><label>Teslimat Adresi *</label><textarea id="f-addr" class="form-input form-textarea" placeholder="Mahalle, Sokak, Bina No, Daire — Osmangazi / Bursa"></textarea></div>
-    <div class="form-group full"><label>Ek Notlar (opsiyonel)</label><input type="text" id="f-note" class="form-input" placeholder="Renk tercihi, ölçü, özel istek..."></div>
-  </div>
-</div>
-
-<div class="cart-footer" id="cartFooter" style="display:none">
-  <div>
-    <button class="clear-btn" onclick="clearCart()"><i class="fas fa-trash-can"></i> Sepeti Temizle</button>
-    <div class="total-display" style="margin-top:20px">
-      <span class="total-label">Toplam Tutar</span>
-      <div class="total-amount" id="totalAmount">0 <span>TL</span></div>
-    </div>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-end">
-    <button id="paymentSentBtn" class="payment-sent-btn hidden" onclick="submitOrder()">
-      <i class="fas fa-check"></i> Ödemeyi Yaptım
-    </button>
-    <button class="wa-btn" id="submitOrderBtn" onclick="submitOrder()">
-      <i class="fab fa-whatsapp" style="font-size:1.3rem"></i> Siparişi WhatsApp ile Onayla
-    </button>
-  </div>
-</div>
-```
-
   </div>
   <footer style="background:var(--warm-white);border-top:1px solid var(--border);color:var(--slate)"><p>© 2026 <span>Göçmen Perde</span> — Tüm Hakları Saklıdır</p></footer>
 </section>
 
 <!-- İletişim -->
-
 <section id="contact" class="section">
   <div class="contact-container">
     <div class="contact-left">
@@ -1019,11 +1000,7 @@ body, html {
 </section>
 
 <!-- Hakkımızda -->
-
 <section id="about" class="section">
-
-  <!-- Hero -->
-
   <div class="about-hero">
     <div class="about-hero-bg"></div>
     <div class="about-hero-pattern"></div>
@@ -1034,30 +1011,14 @@ body, html {
     </div>
   </div>
 
-  <!-- İstatistikler -->
-
   <div class="about-stats">
     <div class="about-stats-inner">
-      <div class="stat-item">
-        <span class="stat-number">30+</span>
-        <span class="stat-label">Yıllık Tecrübe</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">5.000+</span>
-        <span class="stat-label">Mutlu Müşteri</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">500+</span>
-        <span class="stat-label">Ürün Çeşidi</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">%100</span>
-        <span class="stat-label">Memnuniyet Garantisi</span>
-      </div>
+      <div class="stat-item"><span class="stat-number">30+</span><span class="stat-label">Yıllık Tecrübe</span></div>
+      <div class="stat-item"><span class="stat-number">5.000+</span><span class="stat-label">Mutlu Müşteri</span></div>
+      <div class="stat-item"><span class="stat-number">500+</span><span class="stat-label">Ürün Çeşidi</span></div>
+      <div class="stat-item"><span class="stat-number">%100</span><span class="stat-label">Memnuniyet Garantisi</span></div>
     </div>
   </div>
-
-  <!-- Hikâyemiz -->
 
   <div class="about-story">
     <div class="about-story-inner">
@@ -1073,7 +1034,7 @@ body, html {
       <div class="about-story-text">
         <div class="section-tag">Hikâyemiz</div>
         <h2>Bir Ustalık <em>Mirası</em></h2>
-        <p>Göçmen Perde, 1993 yılında Zeynel Türkoğlu'un küçük bir dükkan açmasıyla Bursa Osmangazi'de hayat buldu. Zeynel Bey, mesleğini yalnızca bir geçim kaynağı olarak değil, bir sanat olarak benimsedi. Her perdede bir evinin ruhunu, her kumaşta bir ailenin hikâyesini gördü.</p>
+        <p>Göçmen Perde, 1993 yılında Zeynel Türkoğlu'nun küçük bir dükkan açmasıyla Bursa Osmangazi'de hayat buldu. Zeynel Bey, mesleğini yalnızca bir geçim kaynağı olarak değil, bir sanat olarak benimsedi. Her perdede bir evinin ruhunu, her kumaşta bir ailenin hikâyesini gördü.</p>
         <p>Yıllar içinde mağaza büyüdü; ama asıl büyüyen şey müşteri güveni oldu. Binlerce Bursa evi, oturma odalarının perdelerini, yatak odalarının tüllerini, koltuk örtülerini Zeynel Bey'in elinden aldı. Bugün hâlâ aynı özen, aynı el emeği ve aynı kişisel ilgiyle hizmet vermeye devam ediyoruz.</p>
         <p>Showroomumuzda yüzlerce kumaş örneği, onlarca hazır model ve özel dikim seçenekleriyle Bursa'nın en kapsamlı perde mağazası olmaktan gurur duyuyoruz. Her müşterimizin evine özel çözümler sunmak, bize en büyük tatmini veriyor.</p>
         <div class="about-quote">
@@ -1084,8 +1045,6 @@ body, html {
     </div>
   </div>
 
-  <!-- Değerlerimiz -->
-
   <div class="about-values">
     <div class="about-values-inner">
       <div style="text-align:center;max-width:600px;margin:0 auto">
@@ -1094,41 +1053,15 @@ body, html {
         <p style="font-size:0.88rem;color:var(--slate);line-height:1.8;margin-top:16px">30 yıldır aynı ilkelerle çalışıyoruz. İşin sırrı basit: kaliteden ödün vermemek, müşteriye doğruyu söylemek, verilen sözü tutmak.</p>
       </div>
       <div class="about-values-grid">
-        <div class="value-card">
-          <div class="value-icon"><i class="fas fa-scissors"></i></div>
-          <h3>Özel Dikim Uzmanlığı</h3>
-          <p>Her pencere farklı, her oda farklı. Standart ölçüler yerine sizin pencerenize, sizin zevkinize göre biçilmiş perdeler üretiyoruz. Ölçü alımından montaja kadar tüm süreç bize ait.</p>
-        </div>
-        <div class="value-card">
-          <div class="value-icon"><i class="fas fa-award"></i></div>
-          <h3>Kalite Güvencesi</h3>
-          <p>Kullandığımız her kumaş, seçtiğimiz her aksesuar titizlikle test edilmiştir. Yıllarca solmayan renkler, düşmeyen dikişler ve şeklini koruyun kumaşlar sunmak önceliğimizdir.</p>
-        </div>
-        <div class="value-card">
-          <div class="value-icon"><i class="fas fa-handshake"></i></div>
-          <h3>Dürüst Danışmanlık</h3>
-          <p>Bütçenizi göz önünde bulundurur, gerçekten ihtiyacınız olan ürünü öneriri, fazlasını satmaya çalışmayız. Müşterimizin memnuniyeti uzun vadeli ilişkimizin temelidir.</p>
-        </div>
-        <div class="value-card">
-          <div class="value-icon"><i class="fas fa-truck"></i></div>
-          <h3>Kapıdan Montaja</h3>
-          <p>Sipariş verdiğiniz anda işimiz başlar. Bursa içi teslimat ve profesyonel montaj hizmetimizle perdeniz tam istediğiniz gibi, tam zamanında evinizde asılı olur.</p>
-        </div>
-        <div class="value-card">
-          <div class="value-icon"><i class="fas fa-palette"></i></div>
-          <h3>Geniş Koleksiyon</h3>
-          <p>Tülden fona, kadifeden bürümcüğe, karartma perdeden dekoratif modellere kadar 500'den fazla kumaş ve model seçeneği. Her tarza, her bütçeye uygun çözümler.</p>
-        </div>
-        <div class="value-card">
-          <div class="value-icon"><i class="fas fa-rotate-left"></i></div>
-          <h3>Satış Sonrası Destek</h3>
-          <p>Alışverişiniz bitmedi, ilişkimiz başladı. Ürünlerinizde yaşanan herhangi bir sorun için bizi arayın, çözüm üretelim. Memnun olmayan müşteri ile ayrılmayız.</p>
-        </div>
+        <div class="value-card"><div class="value-icon"><i class="fas fa-scissors"></i></div><h3>Özel Dikim Uzmanlığı</h3><p>Her pencere farklı, her oda farklı. Standart ölçüler yerine sizin pencerenize, sizin zevkinize göre biçilmiş perdeler üretiyoruz. Ölçü alımından montaja kadar tüm süreç bize ait.</p></div>
+        <div class="value-card"><div class="value-icon"><i class="fas fa-award"></i></div><h3>Kalite Güvencesi</h3><p>Kullandığımız her kumaş, seçtiğimiz her aksesuar titizlikle test edilmiştir. Yıllarca solmayan renkler, düşmeyen dikişler ve şeklini koruyan kumaşlar sunmak önceliğimizdir.</p></div>
+        <div class="value-card"><div class="value-icon"><i class="fas fa-handshake"></i></div><h3>Dürüst Danışmanlık</h3><p>Bütçenizi göz önünde bulundurur, gerçekten ihtiyacınız olan ürünü önerir, fazlasını satmaya çalışmayız. Müşterimizin memnuniyeti uzun vadeli ilişkimizin temelidir.</p></div>
+        <div class="value-card"><div class="value-icon"><i class="fas fa-truck"></i></div><h3>Kapıdan Montaja</h3><p>Sipariş verdiğiniz anda işimiz başlar. Bursa içi teslimat ve profesyonel montaj hizmetimizle perdeniz tam istediğiniz gibi, tam zamanında evinizde asılı olur.</p></div>
+        <div class="value-card"><div class="value-icon"><i class="fas fa-palette"></i></div><h3>Geniş Koleksiyon</h3><p>Tülden fona, kadifeden bürümcüğe, karartma perdeden dekoratif modellere kadar 500'den fazla kumaş ve model seçeneği. Her tarza, her bütçeye uygun çözümler.</p></div>
+        <div class="value-card"><div class="value-icon"><i class="fas fa-rotate-left"></i></div><h3>Satış Sonrası Destek</h3><p>Alışverişiniz bitmedi, ilişkimiz başladı. Ürünlerinizde yaşanan herhangi bir sorun için bizi arayın, çözüm üretelim. Memnun olmayan müşteri ile ayrılmayız.</p></div>
       </div>
     </div>
   </div>
-
-  <!-- Kurucu & Ekip -->
 
   <div class="about-team">
     <div class="about-team-inner">
@@ -1138,25 +1071,13 @@ body, html {
         <div>
           <p>Zeynel Türkoğlu, henüz genç yaşta perde sektörüne girerek bu işi bir meslek olarak değil, bir tutku olarak benimsedi. Onlarca yıl boyunca Bursa'nın en seçkin evleri, en özel otelleri ve en prestijli mekanları Zeynel Bey'in elinden çıkan perdelerle donatıldı.</p>
           <p>Teknik bilgisini sanatsal bir duyarlılıkla birleştiren Zeynel Bey, size doğru kumaşı, doğru rengi ve doğru modeli önerme konusunda Bursa'nın en güvenilir isimlerinden biri. Mağazamıza girdiğinizde kuru bir satıcıyla değil, gerçek bir uzmanla konuştuğunuzu hissedersiniz.</p>
-          <p>Her müşterisinin evini kendi evi gibi gören, verdiği söze sadık, işini seven bir usta: Zeynel Türkoğlu .</p>
+          <p>Her müşterisinin evini kendi evi gibi gören, verdiği söze sadık, işini seven bir usta: Zeynel Türkoğlu.</p>
         </div>
         <div class="about-team-features">
-          <div class="team-feat">
-            <div class="team-feat-icon"><i class="fas fa-graduation-cap"></i></div>
-            <div><h4>30+ Yıl Sektör Deneyimi</h4><p>Tekstil ve perde sektöründe derin bilgi birikimi, kumaş teknolojileri ve trende hâkim.</p></div>
-          </div>
-          <div class="team-feat">
-            <div class="team-feat-icon"><i class="fas fa-ruler-combined"></i></div>
-            <div><h4>Kişisel Ölçü ve Danışmanlık</h4><p>Her müşteri için bizzat ölçü alır, mekânı değerlendirir ve en doğru çözümü önerir.</p></div>
-          </div>
-          <div class="team-feat">
-            <div class="team-feat-icon"><i class="fas fa-star"></i></div>
-            <div><h4>Google'da 5 Yıldız</h4><p>Binlerce mutlu müşterinin değerlendirmesiyle Bursa'nın en çok tercih edilen perde ustası.</p></div>
-          </div>
-          <div class="team-feat">
-            <div class="team-feat-icon"><i class="fas fa-map-marker-alt"></i></div>
-            <div><h4>Osmangazi'nin Güvenilir Adresi</h4><p>1993'ten bu yana aynı yerde, aynı özenle. Bursa halkının vazgeçilmez perde durağı.</p></div>
-          </div>
+          <div class="team-feat"><div class="team-feat-icon"><i class="fas fa-graduation-cap"></i></div><div><h4>30+ Yıl Sektör Deneyimi</h4><p>Tekstil ve perde sektöründe derin bilgi birikimi, kumaş teknolojileri ve trende hâkim.</p></div></div>
+          <div class="team-feat"><div class="team-feat-icon"><i class="fas fa-ruler-combined"></i></div><div><h4>Kişisel Ölçü ve Danışmanlık</h4><p>Her müşteri için bizzat ölçü alır, mekânı değerlendirir ve en doğru çözümü önerir.</p></div></div>
+          <div class="team-feat"><div class="team-feat-icon"><i class="fas fa-star"></i></div><div><h4>Google'da 5 Yıldız</h4><p>Binlerce mutlu müşterinin değerlendirmesiyle Bursa'nın en çok tercih edilen perde ustası.</p></div></div>
+          <div class="team-feat"><div class="team-feat-icon"><i class="fas fa-map-marker-alt"></i></div><div><h4>Osmangazi'nin Güvenilir Adresi</h4><p>1993'ten bu yana aynı yerde, aynı özenle. Bursa halkının vazgeçilmez perde durağı.</p></div></div>
         </div>
       </div>
       <div class="about-team-portrait">
@@ -1178,6 +1099,8 @@ body, html {
 
   <footer><p>© 2026 <span>Göçmen Perde</span> — Tüm Hakları Saklıdır · Osmangazi, Bursa</p></footer>
 </section>
+
+<!-- Product Modal -->
 <div class="modal-overlay" id="productModal" onclick="closeModalOverlay(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="closeProductModal()"><i class="fas fa-xmark"></i></button>
@@ -1190,33 +1113,23 @@ body, html {
       <div class="modal-tag" id="mTag"></div>
       <h2 class="modal-title" id="mTitle"></h2>
       <div class="modal-price-wrap" id="mPriceWrap"></div>
-
-```
-  <!-- Tab Sistemi -->
-  <div class="modal-tabs">
-    <button class="modal-tab active" onclick="switchTab('desc')">Açıklama</button>
-    <button class="modal-tab" onclick="switchTab('specs')">Özellikler</button>
-    <button class="modal-tab" onclick="switchTab('care')">Bakım</button>
-  </div>
-
-  <div class="modal-tab-content active" id="tab-desc">
-    <p class="modal-desc" id="mDesc"></p>
-    <div class="modal-features" id="mFeatures"></div>
-  </div>
-
-  <div class="modal-tab-content" id="tab-specs">
-    <div class="modal-specs" id="mSpecs"></div>
-  </div>
-
-  <div class="modal-tab-content" id="tab-care">
-    <div class="modal-specs" id="mCare"></div>
-  </div>
-
-  <!-- Sepete Ekle (modal içi) -->
-  <div class="modal-add-wrap" id="mAddWrap"></div>
-</div>
-```
-
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab('desc')">Açıklama</button>
+        <button class="modal-tab" onclick="switchTab('specs')">Özellikler</button>
+        <button class="modal-tab" onclick="switchTab('care')">Bakım</button>
+      </div>
+      <div class="modal-tab-content active" id="tab-desc">
+        <p class="modal-desc" id="mDesc"></p>
+        <div class="modal-features" id="mFeatures"></div>
+      </div>
+      <div class="modal-tab-content" id="tab-specs">
+        <div class="modal-specs" id="mSpecs"></div>
+      </div>
+      <div class="modal-tab-content" id="tab-care">
+        <div class="modal-specs" id="mCare"></div>
+      </div>
+      <div class="modal-add-wrap" id="mAddWrap"></div>
+    </div>
   </div>
 </div>
 
@@ -1300,7 +1213,6 @@ function go(id){
   window.scrollTo({top:0, behavior:'smooth'});
   if(id === 'cart') renderCart();
 }
-// İlk yüklemede gizle
 document.querySelectorAll('.section').forEach(s => {
   if(!s.classList.contains('active')) s.style.display = 'none';
 });
@@ -1480,12 +1392,10 @@ function togglePaymentFields(){
   const btFields  = document.getElementById('bankTransferFields');
   const submitBtn = document.getElementById('submitOrderBtn');
   const paidBtn   = document.getElementById('paymentSentBtn');
-
   ccFields.classList.add('hidden');
   btFields.classList.add('hidden');
   submitBtn.classList.remove('hidden');
   paidBtn.classList.add('hidden');
-
   if(method === 'kredikarti') ccFields.classList.remove('hidden');
   else if(method === 'havale'){
     btFields.classList.remove('hidden');
@@ -1522,7 +1432,7 @@ function updateCardPreview(){
   else                 icon.className='far fa-credit-card';
 }
 
-/* ─── WhatsApp Mesaj Gönder ─── */
+/* ─── WhatsApp ─── */
 function sendWhatsApp(name, phone, method, addr, note, lines, totalTL){
   const odemeLabels = {kapida:'Kapıda Ödeme', havale:'Havale/EFT', kredikarti:'Kredi Kartı'};
   const odeme = odemeLabels[method] || method;
@@ -1535,25 +1445,21 @@ function sendWhatsApp(name, phone, method, addr, note, lines, totalTL){
     (note ? '📝 *Not:* ' + note + '\n' : '') +
     '\n📦 *Ürünler:*\n' + lines + '\n\n' +
     '💰 *TOPLAM: ' + totalTL.toLocaleString('tr-TR') + ' TL*';
-
   const encoded = encodeURIComponent(msg);
-  const waUrl   = 'https://wa.me/' + WA_NUMBER + '?text=' + encoded;
-  window.open(waUrl, '_blank');
+  window.open('https://wa.me/' + WA_NUMBER + '?text=' + encoded, '_blank');
 }
 
-/* ─── Sipariş Gönder (Mail + WhatsApp) ─── */
+/* ─── Sipariş Gönder ─── */
 function submitOrder(){
   const name   = document.getElementById('f-name').value.trim();
   const phone  = document.getElementById('f-phone').value.trim();
   const addr   = document.getElementById('f-addr').value.trim();
   const note   = document.getElementById('f-note').value.trim();
   const method = document.getElementById('f-payment').value;
-
   if(!name){ showToast('⚠️ Lütfen adınızı girin'); return; }
   if(!phone){ showToast('⚠️ Lütfen telefon numaranızı girin'); return; }
   if(!addr){ showToast('⚠️ Lütfen teslimat adresinizi girin'); return; }
   if(!basket.length){ showToast('Sepetiniz boş'); return; }
-
   if(method === 'kredikarti'){
     const cardNum = document.getElementById('f-cardnumber').value.replace(/\s/g,'');
     const cvv     = document.getElementById('f-cvv').value;
@@ -1564,20 +1470,16 @@ function submitOrder(){
     if(!expiry.includes('/') || expiry.length !== 5){ showToast('Son kullanma AA/YY formatında olmalıdır'); return; }
     if(!holder){ showToast('Kart sahibinin adını giriniz'); return; }
   }
-
   const btnId   = (method === 'havale') ? 'paymentSentBtn' : 'submitOrderBtn';
   const btn     = document.getElementById(btnId);
   const origHTML = btn.innerHTML;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
   btn.disabled  = true;
-
   const odemeLabels = {kapida:'Kapıda Ödeme', havale:'Havale/EFT', kredikarti:'Kredi Kartı'};
   const odeme = odemeLabels[method] || method;
-
   const lines = basket.map(i =>
     i.name + ' | ' + i.qty + ' ' + (i.isMeter?'mt':'adet') + ' × ' + i.price.toLocaleString('tr-TR') + ' TL = ' + i.sub.toLocaleString('tr-TR') + ' TL'
   ).join('\n');
-
   const mailMsg =
     'Müşteri   : ' + name + '\n' +
     'Telefon   : ' + phone + '\n' +
@@ -1586,45 +1488,27 @@ function submitOrder(){
     'Not       : ' + (note||'-') + '\n\n' +
     'ÜRÜNLER\n' + lines + '\n\n' +
     'TOPLAM    : ' + total.toLocaleString('tr-TR') + ' TL';
-
-  // Mail gönder
   fetch('https://api.emailjs.com/api/v1.0/email/send', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
-      service_id:   EMAILJS_SERVICE_ID,
-      template_id:  EMAILJS_TEMPLATE_ID,
-      user_id:      EMAILJS_USER_ID,
-      accessToken:  EMAILJS_ACCESS_TOKEN,
+      service_id: EMAILJS_SERVICE_ID, template_id: EMAILJS_TEMPLATE_ID,
+      user_id: EMAILJS_USER_ID, accessToken: EMAILJS_ACCESS_TOKEN,
       template_params: {
-        from_name:      name,
-        from_phone:     phone,
-        reply_to:       'noreply@gocmenperde.com',
-        message:        mailMsg,
-        to_name:        'Göçmen Perde',
-        order_total:    total.toLocaleString('tr-TR') + ' TL',
-        payment_method: odeme,
-        delivery_addr:  addr
+        from_name: name, from_phone: phone, reply_to: 'noreply@gocmenperde.com',
+        message: mailMsg, to_name: 'Göçmen Perde',
+        order_total: total.toLocaleString('tr-TR') + ' TL',
+        payment_method: odeme, delivery_addr: addr
       }
     })
   })
   .then(res => {
-    btn.innerHTML = origHTML;
-    btn.disabled  = false;
-    // Mail başarılı veya başarısız olsa da WhatsApp'a yönlendir
-    if(!res.ok) console.warn('Mail gönderilemedi, WhatsApp\'a yönlendiriliyor...');
-
-    // Sepeti temizle
-    const savedBasket = [...basket];
-    const savedTotal  = total;
+    btn.innerHTML = origHTML; btn.disabled = false;
+    const savedBasket = [...basket]; const savedTotal = total;
     basket = []; total = 0;
     document.getElementById('cartCount').innerText = 0;
     saveCartToStorage();
-
-    // Success modal göster
     document.getElementById('successModal').classList.add('open');
-
-    // WhatsApp'a yönlendir (kısa gecikme ile modal görünsün)
     setTimeout(() => {
       sendWhatsApp(name, phone, method, addr, note, savedBasket.map(i =>
         i.name + ' | ' + i.qty + ' ' + (i.isMeter?'mt':'adet') + ' × ' + i.price.toLocaleString('tr-TR') + ' TL = ' + i.sub.toLocaleString('tr-TR') + ' TL'
@@ -1632,19 +1516,12 @@ function submitOrder(){
     }, 1200);
   })
   .catch(err => {
-    console.error('Mail hatası:', err);
-    btn.innerHTML = origHTML;
-    btn.disabled  = false;
-
-    // Mail başarısız olsa bile WhatsApp ile devam et
-    const savedBasket = [...basket];
-    const savedTotal  = total;
+    btn.innerHTML = origHTML; btn.disabled = false;
+    const savedBasket = [...basket]; const savedTotal = total;
     basket = []; total = 0;
     document.getElementById('cartCount').innerText = 0;
     saveCartToStorage();
-
     document.getElementById('successModal').classList.add('open');
-
     setTimeout(() => {
       sendWhatsApp(name, phone, method, addr, note, savedBasket.map(i =>
         i.name + ' | ' + i.qty + ' ' + (i.isMeter?'mt':'adet') + ' × ' + i.price.toLocaleString('tr-TR') + ' TL = ' + i.sub.toLocaleString('tr-TR') + ' TL'
@@ -1653,63 +1530,59 @@ function submitOrder(){
   });
 }
 
-/* ─── Ürün Veritabanı (detaylar) ─── */
+/* ─── Ürün Detayları ─── */
 const PRODUCT_DETAILS = {
   'Tek Kişilik Çarşaf': {
-    features: ['fas fa-check-circle|Pamuklu dokuma kumaş, ciltle dost', 'fas fa-tshirt|Ütü gerektirmez — çıkar giymez!', 'fas fa-palette|Tüm renkler stokta mevcut', 'fas fa-ruler|Tek kişilik yatak ölçüsü (160×220 cm)'],
+    features: ['fas fa-check-circle|Pamuklu dokuma kumaş, ciltle dost','fas fa-tshirt|Ütü gerektirmez — çıkar giymez!','fas fa-palette|Tüm renkler stokta mevcut','fas fa-ruler|Tek kişilik yatak ölçüsü (160×220 cm)'],
     specs: [['Malzeme','%100 Pamuk'],['Ölçü','160 × 220 cm'],['Bakım','Makinede 40°C'],['Renk Seçenekleri','8+ Renk'],['Seri','Ekonomik Sezon']],
     care: [['Makine Yıkama','40°C veya soğuk program'],['Kurutma','Doğal kurumaya bırakın'],['Ütü','Gerekmez — özel bitim işlemi'],['Beyazlatıcı','Kullanmayın'],['Kuru Temizleme','Gerekmez']]
   },
   'Çift Kişilik Çarşaf': {
-    features: ['fas fa-check-circle|Pamuklu dokuma kumaş, ciltle dost', 'fas fa-tshirt|Ütü gerektirmez — rahat kullanım', 'fas fa-palette|Tüm renkler stokta mevcut', 'fas fa-ruler|Çift kişilik yatak ölçüsü (200×220 cm)'],
+    features: ['fas fa-check-circle|Pamuklu dokuma kumaş, ciltle dost','fas fa-tshirt|Ütü gerektirmez','fas fa-palette|Tüm renkler stokta mevcut','fas fa-ruler|200 × 220 cm'],
     specs: [['Malzeme','%100 Pamuk'],['Ölçü','200 × 220 cm'],['Bakım','Makinede 40°C'],['Renk Seçenekleri','8+ Renk'],['Seri','Ekonomik Sezon']],
-    care: [['Makine Yıkama','40°C veya soğuk program'],['Kurutma','Doğal kurumaya bırakın'],['Ütü','Gerekmez — özel bitim işlemi'],['Beyazlatıcı','Kullanmayın'],['Kuru Temizleme','Gerekmez']]
+    care: [['Makine Yıkama','40°C veya soğuk program'],['Kurutma','Doğal kurumaya bırakın'],['Ütü','Gerekmez'],['Beyazlatıcı','Kullanmayın'],['Kuru Temizleme','Gerekmez']]
   },
   'Saray Tül Perde': {
-    features: ['fas fa-check-circle|Bursa\'da dokunan özel örme tül', 'fas fa-sun|Işık geçiren yapısıyla ferah görünüm', 'fas fa-tshirt|Ütü istemez, şeklini korur', 'fas fa-ruler|Metre başı satış — istediğiniz uzunluk'],
-    specs: [['Malzeme','%100 Polyester Örme'],['Satış Birimi','Metre (mt)'],['En','280 cm (standart)'],['Bakım','Makinede 30°C, narin'],['Üretim','Bursa Yerli Üretim']],
-    care: [['Makine Yıkama','30°C narin program'],['Kurutma','Doğal, sarkmadan kuruyun'],['Ütü','Gerekmez, soğuk düklebilir'],['Ağartıcı','Kesinlikle kullanmayın'],['Düzeltme','Islak iken şekil verin']]
+    features: ['fas fa-check-circle|Bursa\'da dokunan özel örme tül','fas fa-sun|Işık geçiren yapısıyla ferah görünüm','fas fa-tshirt|Ütü istemez','fas fa-ruler|Metre başı satış'],
+    specs: [['Malzeme','%100 Polyester Örme'],['Satış Birimi','Metre (mt)'],['En','280 cm'],['Bakım','Makinede 30°C'],['Üretim','Bursa Yerli Üretim']],
+    care: [['Makine Yıkama','30°C narin program'],['Kurutma','Doğal, sarkmadan'],['Ütü','Gerekmez'],['Ağartıcı','Kullanmayın'],['Düzeltme','Islak iken şekil verin']]
   },
   'Ekonomik Fon Perde': {
-    features: ['fas fa-check-circle|Geniş renk arşivinden seçin', 'fas fa-scissors|Dikim dahil fiyat — ek ücret yok', 'fas fa-palette|40+ renk seçeneği mevcuttur', 'fas fa-home|Salon, yatak odası ve çocuk odalarına uygun'],
+    features: ['fas fa-check-circle|Geniş renk arşivinden seçin','fas fa-scissors|Dikim dahil fiyat','fas fa-palette|40+ renk seçeneği','fas fa-home|Tüm odalara uygun'],
     specs: [['Malzeme','Polyester-Pamuk Karışım'],['Dikim','Dahil'],['Montaj','Ekstra ücretli'],['Renk','40+ Seçenek'],['Teslim','3–5 İş Günü']],
-    care: [['Makine Yıkama','40°C normal program'],['Kurutma','Doğal kuruyun, direkt güneş olmadan'],['Ütü','Orta ısı — ters çevirin'],['Yıkama Sıklığı','6 ayda bir önerilir'],['Toz Alma','Haftalık silkeleme']]
+    care: [['Makine Yıkama','40°C normal program'],['Kurutma','Doğal, direkt güneş olmadan'],['Ütü','Orta ısı — ters çevirin'],['Yıkama Sıklığı','6 ayda bir'],['Toz Alma','Haftalık silkeleme']]
   },
   'VIP Premium Fon Perde': {
-    features: ['fas fa-crown|Kadife dokulu lüks kumaş seri', 'fas fa-moon|Karartma özellikli — ışık sızdırmaz', 'fas fa-scissors|Dikim dahil — tam ölçüye göre', 'fas fa-star|Otel ve konut projelerinde tercih edilen'],
-    specs: [['Malzeme','Kadife Dokulu Blackout'],['Karartma','%100 Işık Geçirmez'],['Dikim','Dahil'],['Seri','VIP Premium Koleksiyon'],['Teslim','5–7 İş Günü']],
-    care: [['Yıkama','Kuru temizleme önerilir'],['Ev Yıkama','30°C çok narin, yalnız'],['Ütü','Ters çevirin, düşük ısı'],['Güneş','Direkt güneşte solma riski az'],['Toz Alma','Hafif vakum ile']]
+    features: ['fas fa-crown|Kadife dokulu lüks kumaş','fas fa-moon|Karartma özellikli','fas fa-scissors|Dikim dahil','fas fa-star|Otel ve konut projelerinde tercih'],
+    specs: [['Malzeme','Kadife Dokulu Blackout'],['Karartma','%100 Işık Geçirmez'],['Dikim','Dahil'],['Seri','VIP Premium'],['Teslim','5–7 İş Günü']],
+    care: [['Yıkama','Kuru temizleme önerilir'],['Ev Yıkama','30°C çok narin'],['Ütü','Ters çevirin, düşük ısı'],['Güneş','Solma riski az'],['Toz Alma','Hafif vakum']]
   },
   'Koltuk Örtü Seti 3+3+1+1': {
-    features: ['fas fa-check-circle|Esnek bürümcük kumaş — her koltuk formuna uyar', 'fas fa-couch|2 üçlü + 2 tekli — eksiksiz salon seti', 'fas fa-palette|Tüm renkler ve desenler mevcut', 'fas fa-tshirt|Makinede yıkanabilir, solmaz renkler'],
-    specs: [['Malzeme','%100 Bürümcük Polyester'],['İçerik','2 Üçlü + 2 Tekli Örtü'],['Esneklik','Tam esnek, her koltuk tipine uyar'],['Renk','Geniş renk kataloğu'],['Bakım','Makinede 30°C']],
-    care: [['Makine Yıkama','30°C narin program, çevirmeli'],['Kurutma','Koltuk üzerinde sererek kuruyun'],['Ütü','Orta ısı — hafif nemli iken'],['Renk','Renkli olanları ayrı yıkayın'],['Çekme','İlk yıkamada hafif çekme normal']]
+    features: ['fas fa-check-circle|Esnek bürümcük kumaş','fas fa-couch|2 üçlü + 2 tekli set','fas fa-palette|Tüm renkler mevcut','fas fa-tshirt|Makinede yıkanabilir'],
+    specs: [['Malzeme','%100 Bürümcük Polyester'],['İçerik','2 Üçlü + 2 Tekli'],['Esneklik','Her koltuk tipine uyar'],['Renk','Geniş katalog'],['Bakım','Makinede 30°C']],
+    care: [['Makine Yıkama','30°C narin program'],['Kurutma','Koltuk üzerinde sererek'],['Ütü','Orta ısı'],['Renk','Renkli olanları ayrı yıkayın'],['Çekme','İlk yıkamada normal']]
   },
   'Koltuk Örtü Seti 3+3': {
-    features: ['fas fa-check-circle|Esnek bürümcük kumaş — her koltuk formuna uyar', 'fas fa-couch|2 adet üçlü koltuk için ideal set', 'fas fa-palette|Tüm renkler ve desenler mevcut', 'fas fa-tshirt|Makinede yıkanabilir, solmaz renkler'],
-    specs: [['Malzeme','%100 Bürümcük Polyester'],['İçerik','2 Adet Üçlü Koltuk Örtüsü'],['Esneklik','Tam esnek, her koltuk tipine uyar'],['Renk','Geniş renk kataloğu'],['Bakım','Makinede 30°C']],
-    care: [['Makine Yıkama','30°C narin program'],['Kurutma','Koltuk üzerinde sererek kuruyun'],['Ütü','Orta ısı — hafif nemli iken'],['Renk','Renkli olanları ayrı yıkayın'],['Çekme','İlk yıkamada hafif çekme normal']]
+    features: ['fas fa-check-circle|Esnek bürümcük kumaş','fas fa-couch|2 üçlü koltuk seti','fas fa-palette|Tüm renkler mevcut','fas fa-tshirt|Makinede yıkanabilir'],
+    specs: [['Malzeme','%100 Bürümcük Polyester'],['İçerik','2 Adet Üçlü Örtü'],['Esneklik','Her koltuk tipine uyar'],['Renk','Geniş katalog'],['Bakım','Makinede 30°C']],
+    care: [['Makine Yıkama','30°C narin program'],['Kurutma','Koltuk üzerinde sererek'],['Ütü','Orta ısı'],['Renk','Renkli olanları ayrı yıkayın'],['Çekme','İlk yıkamada normal']]
   }
 };
 
 function getProductDetails(title){
-  // Başlıktan en yakın eşleşmeyi bul
   for(const key of Object.keys(PRODUCT_DETAILS)){
-    if(title.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(title.split(' ').slice(0,3).join(' ').toLowerCase())){
+    if(title.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(title.split(' ').slice(0,3).join(' ').toLowerCase()))
       return PRODUCT_DETAILS[key];
-    }
   }
-  // Çarşaf için genel
   if(title.toLowerCase().includes('çarşaf')) return PRODUCT_DETAILS['Tek Kişilik Çarşaf'];
-  // Default
   return {
-    features: ['fas fa-check-circle|Kaliteli Bursa işçiliği', 'fas fa-star|Zeynel Türkoğlu güvencesi', 'fas fa-truck|Bursa içi teslimat', 'fas fa-rotate-left|Memnuniyet garantisi'],
-    specs: [['Menşei','Bursa, Türkiye'],['Kalite','Yüksek kalite standart'],['Garanti','Memnuniyet garantisi']],
+    features: ['fas fa-check-circle|Kaliteli Bursa işçiliği','fas fa-star|Zeynel Türkoğlu güvencesi','fas fa-truck|Bursa içi teslimat','fas fa-rotate-left|Memnuniyet garantisi'],
+    specs: [['Menşei','Bursa, Türkiye'],['Kalite','Yüksek standart'],['Garanti','Memnuniyet garantisi']],
     care: [['Bakım','Ürüne özel bilgi için arayın'],['Yıkama','Etiket bilgisine göre'],['Ütü','Ürüne göre değişir']]
   };
 }
 
-/* ─── Modal Tab Sistemi ─── */
+/* ─── Modal Tab ─── */
 function switchTab(tabId){
   document.querySelectorAll('.modal-tab').forEach((t,i) => {
     t.classList.toggle('active', ['desc','specs','care'][i] === tabId);
@@ -1719,66 +1592,43 @@ function switchTab(tabId){
 }
 
 /* ─── Modal ─── */
-function openModal(title, src, desc, tag, price, oldPrice, unit, qtyInputId, isMeter){
+function openModal(title, src, desc, tag, price, oldPrice, unit){
   document.getElementById('mTitle').innerText = title;
   document.getElementById('mImg').src         = src;
   document.getElementById('mTag').innerText   = tag || '';
-
-  // Fiyat
   const priceWrap = document.getElementById('mPriceWrap');
   const unitStr   = unit ? ' / ' + unit : '';
   const discBadge = document.getElementById('mDiscountBadge');
   if(oldPrice && oldPrice > price){
     const pct = Math.round((1 - price/oldPrice)*100);
-    priceWrap.innerHTML =
-      '<div class="modal-old-price">' + oldPrice.toLocaleString('tr-TR') + ' TL</div>' +
-      '<div class="modal-current-price">' + price.toLocaleString('tr-TR') + ' TL<span class="modal-price-unit">' + unitStr + '</span></div>';
-    discBadge.innerText = '%' + pct + ' İNDİRİM';
+    priceWrap.innerHTML = '<div class="modal-old-price">'+oldPrice.toLocaleString('tr-TR')+' TL</div><div class="modal-current-price">'+price.toLocaleString('tr-TR')+' TL<span class="modal-price-unit">'+unitStr+'</span></div>';
+    discBadge.innerText = '%'+pct+' İNDİRİM';
     discBadge.classList.remove('hidden');
   } else if(price > 0){
-    priceWrap.innerHTML =
-      '<div class="modal-normal-price">' + price.toLocaleString('tr-TR') + ' TL<span class="modal-price-unit">' + unitStr + '</span></div>';
+    priceWrap.innerHTML = '<div class="modal-normal-price">'+price.toLocaleString('tr-TR')+' TL<span class="modal-price-unit">'+unitStr+'</span></div>';
     discBadge.classList.add('hidden');
   } else {
-    priceWrap.innerHTML = '';
-    discBadge.classList.add('hidden');
+    priceWrap.innerHTML = ''; discBadge.classList.add('hidden');
   }
-
-  // Ürün detaylarını al
   const det = getProductDetails(title);
-
-  // Açıklama tab
   document.getElementById('mDesc').innerText = desc || '';
-  const featEl = document.getElementById('mFeatures');
-  featEl.innerHTML = det.features.map(f => {
+  document.getElementById('mFeatures').innerHTML = det.features.map(f => {
     const [icon, text] = f.split('|');
-    return '<div class="modal-feat"><i class="' + icon + '"></i> ' + text + '</div>';
+    return '<div class="modal-feat"><i class="'+icon+'"></i> '+text+'</div>';
   }).join('');
-
-  // Özellikler tab
   document.getElementById('mSpecs').innerHTML = det.specs.map(([k,v]) =>
-    '<div class="modal-spec-row"><span class="modal-spec-key">' + k + '</span><span class="modal-spec-val">' + v + '</span></div>'
+    '<div class="modal-spec-row"><span class="modal-spec-key">'+k+'</span><span class="modal-spec-val">'+v+'</span></div>'
   ).join('');
-
-  // Bakım tab
   document.getElementById('mCare').innerHTML = det.care.map(([k,v]) =>
-    '<div class="modal-spec-row"><span class="modal-spec-key">' + k + '</span><span class="modal-spec-val">' + v + '</span></div>'
+    '<div class="modal-spec-row"><span class="modal-spec-key">'+k+'</span><span class="modal-spec-val">'+v+'</span></div>'
   ).join('');
-
-  // Sepete ekle butonu (modal içi)
   const addWrap = document.getElementById('mAddWrap');
   if(price > 0){
-    const modalQtyId = 'modal-qty-' + Date.now();
-    addWrap.innerHTML =
-      '<input type="number" class="modal-qty-input" id="' + modalQtyId + '" value="1" min="1">' +
-      '<button class="modal-add-btn" onclick="addToCart(\'' + title.replace(/'/g,"\\'") + '\',' + price + ',\'' + modalQtyId + '\',' + (isMeter?'true':'false') + ');showToast(\'✓ Sepete eklendi\')"><i class="fas fa-bag-shopping" style="margin-right:8px"></i>Sepete Ekle</button>';
-  } else {
-    addWrap.innerHTML = '';
-  }
-
-  // Aktif tab'ı sıfırla
+    const modalQtyId = 'modal-qty-'+Date.now();
+    const isMeter = unit === 'mt';
+    addWrap.innerHTML = '<input type="number" class="modal-qty-input" id="'+modalQtyId+'" value="1" min="1"><button class="modal-add-btn" onclick="addToCart(\''+title.replace(/'/g,"\\'")+'\','+price+',\''+modalQtyId+'\','+isMeter+');showToast(\'✓ Sepete eklendi\')"><i class="fas fa-bag-shopping" style="margin-right:8px"></i>Sepete Ekle</button>';
+  } else { addWrap.innerHTML = ''; }
   switchTab('desc');
-
   resetImgZoom();
   document.getElementById('productModal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1814,7 +1664,7 @@ function openGalleryModal(src, title, desc){
   document.body.style.overflow = 'hidden';
 }
 
-/* ─── Zoom (sadece masaüstü) ─── */
+/* ─── Zoom ─── */
 function zoomImg(e){
   if(window.innerWidth <= 700) return;
   const img  = document.getElementById('mImg');
@@ -1844,7 +1694,6 @@ function applyFilters(){
   const featK     = document.getElementById('feat-karartma').checked;
   const featU     = document.getElementById('feat-utu').checked;
   const featP     = document.getElementById('feat-premium').checked;
-
   const cards = document.querySelectorAll('.product-card');
   cards.forEach(card => {
     const cat      = card.dataset.cat;
@@ -1853,7 +1702,6 @@ function applyFilters(){
     const desc     = card.querySelector('.product-desc').innerText.toLowerCase();
     const features = card.dataset.features ? card.dataset.features.split(',') : [];
     let show = true;
-
     if(search && !name.includes(search) && !desc.includes(search)) show = false;
     if(price < minPrice || price > maxPrice) show = false;
     if(!catAll && (catPerde || catKoltuk)){
@@ -1862,10 +1710,8 @@ function applyFilters(){
     if(featK && !features.includes('karartma')) show = false;
     if(featU && !features.includes('utu')) show = false;
     if(featP && !features.includes('premium')) show = false;
-
     card.style.display = show ? '' : 'none';
   });
-
   const visible = Array.from(cards).filter(c => c.style.display !== 'none');
   visible.sort((a,b) => {
     if(sort==='price-asc')  return parseInt(a.dataset.price) - parseInt(b.dataset.price);
@@ -1890,7 +1736,7 @@ window.addEventListener('scroll', () => {
     window.scrollY > 20 ? '0 4px 30px rgba(0,0,0,0.08)' : 'none';
 });
 
-/* ─── Intersection Observer (animasyon) ─── */
+/* ─── Intersection Observer ─── */
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if(e.isIntersecting){

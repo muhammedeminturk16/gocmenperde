@@ -8,25 +8,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{--gold:#c9a84c;--ink:#0f0e0d;--cream:#f7f4ef;--slate:#4a4743;--border:rgba(0,0,0,0.1);--radius:10px;--red:#c0392b;--green:#27ae60;--blue:#2980b9;--ff:'DM Sans',sans-serif;--ffd:'Cormorant Garamond',serif}
+:root{
+  --gold:#c9a84c;
+  --ink:#0f0e0d;
+  --cream:#f7f4ef;
+  --slate:#4a4743;
+  --border:rgba(0,0,0,0.1);
+  --radius:10px;
+  --red:#c0392b;
+  --green:#27ae60;
+  --blue:#2980b9;
+  --ff:'DM Sans',sans-serif;
+  --ffd:'Cormorant Garamond',serif;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--ff);background:#f0f2f5;color:var(--ink);min-height:100vh}
 
-/* Login */
+/* ── Login ── */
 #loginScreen{position:fixed;inset:0;background:var(–ink);display:flex;align-items:center;justify-content:center;z-index:9999}
 #loginScreen.hide{display:none}
 .login-box{background:white;border-radius:16px;padding:50px 40px;width:100%;max-width:380px;text-align:center}
-.login-box h1{font-family:var(–ffd);font-size:2rem;margin-bottom:6px;color:var(–ink)}
+.login-box h1{font-family:var(–ffd);font-size:2rem;margin-bottom:6px}
 .login-box p{font-size:0.8rem;color:var(–slate);margin-bottom:32px;letter-spacing:2px;text-transform:uppercase}
 .login-input{width:100%;padding:14px 18px;border:1px solid var(–border);border-radius:8px;font-size:0.95rem;font-family:var(–ff);background:var(–cream);margin-bottom:12px}
+.login-input:focus{outline:none;border-color:var(–gold)}
 .login-btn{width:100%;padding:14px;background:var(–ink);color:white;border:none;border-radius:8px;font-family:var(–ff);font-size:0.85rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:0.3s}
 .login-btn:hover{background:var(–gold);color:var(–ink)}
 .login-error{color:var(–red);font-size:0.8rem;margin-top:10px;display:none}
 
-/* Layout */
+/* ── Layout ── */
 #adminApp{display:none}
 #adminApp.show{display:flex;min-height:100vh}
-.sidebar{width:240px;background:var(–ink);color:white;padding:0;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+
+/* ── Sidebar ── */
+.sidebar{width:240px;background:var(–ink);color:white;padding:0;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;transition:transform 0.3s ease}
 .sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.08)}
 .sidebar-logo h2{font-family:var(–ffd);font-size:1.4rem;color:var(–gold)}
 .sidebar-logo p{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:4px}
@@ -38,13 +53,27 @@ body{font-family:var(--ff);background:#f0f2f5;color:var(--ink);min-height:100vh}
 .sidebar-footer{padding:20px 24px;border-top:1px solid rgba(255,255,255,0.08)}
 .logout-btn{width:100%;padding:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);border-radius:8px;cursor:pointer;font-family:var(–ff);font-size:0.8rem;transition:0.2s}
 .logout-btn:hover{background:var(–red);color:white;border-color:var(–red)}
+
+/* ── Mobile Topbar ── */
+.mobile-topbar{display:none;align-items:center;justify-content:space-between;padding:14px 18px;background:var(–ink);color:white;position:sticky;top:0;z-index:200}
+.mobile-topbar-title{font-family:var(–ffd);font-size:1.2rem;color:var(–gold)}
+.hamburger-btn{background:none;border:none;color:white;font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:0.2s}
+.hamburger-btn:hover{background:rgba(255,255,255,0.1)}
+
+/* ── Overlay (mobil sidebar arkası) ── */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;backdrop-filter:blur(2px)}
+.sidebar-overlay.open{display:block}
+
+/* ── Main ── */
 .main-content{flex:1;padding:32px;overflow-y:auto;min-width:0}
 .page{display:none}.page.active{display:block}
+
+/* ── Page Header ── */
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
 .page-header h1{font-family:var(–ffd);font-size:2rem;font-weight:700}
 .page-header h1 em{color:var(–gold);font-style:italic}
 
-/* Stats */
+/* ── Stats ── */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px}
 .stat-card{background:white;border-radius:var(–radius);padding:24px;border:1px solid var(–border);position:relative;overflow:hidden}
 .stat-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px}
@@ -57,7 +86,7 @@ body{font-family:var(--ff);background:#f0f2f5;color:var(--ink);min-height:100vh}
 .stat-number{font-family:var(–ffd);font-size:2.2rem;font-weight:700;color:var(–ink);line-height:1}
 .stat-label{font-size:0.75rem;color:var(–slate);margin-top:6px;text-transform:uppercase;letter-spacing:1px}
 
-/* Toolbar & Tablo */
+/* ── Toolbar ── */
 .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
 .btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:var(–ff);font-size:0.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:0.2s;display:inline-flex;align-items:center;gap:8px}
 .btn-primary{background:var(–ink);color:white}.btn-primary:hover{background:var(–gold);color:var(–ink)}
@@ -65,8 +94,10 @@ body{font-family:var(--ff);background:#f0f2f5;color:var(--ink);min-height:100vh}
 .btn-danger{background:var(–red);color:white}.btn-danger:hover{background:#a93226}
 .btn-outline{background:white;color:var(–slate);border:1px solid var(–border)}.btn-outline:hover{border-color:var(–gold);color:var(–gold)}
 .search-box{flex:1;max-width:280px;padding:10px 16px;border:1px solid var(–border);border-radius:8px;font-family:var(–ff);font-size:0.85rem;background:white}
-.table-wrap{background:white;border-radius:var(–radius);border:1px solid var(–border);overflow:hidden}
-table{width:100%;border-collapse:collapse}
+
+/* ── Tablo ── */
+.table-wrap{background:white;border-radius:var(–radius);border:1px solid var(–border);overflow:hidden;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:500px}
 th{text-align:left;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(–slate);padding:14px 16px;border-bottom:1px solid var(–border);background:#fafafa;font-weight:600}
 td{padding:14px 16px;border-bottom:1px solid var(–border);font-size:0.88rem;vertical-align:middle}
 tr:last-child td{border-bottom:none}
@@ -87,74 +118,31 @@ tr:hover td{background:#fafdf5}
 .icon-btn.toggle{background:rgba(39,174,96,0.1);color:var(–green)}.icon-btn.toggle:hover{background:var(–green);color:white}
 .icon-btn.toggle.off{background:rgba(192,57,43,0.1);color:var(–red)}.icon-btn.toggle.off:hover{background:var(–red);color:white}
 
-/* Modal Form */
+/* ── Modal ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .modal-bg.open{display:flex}
-.form-modal{background:white;border-radius:16px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto}
-.form-modal-header{padding:24px 28px 20px;border-bottom:1px solid var(–border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:white;z-index:10}
+.form-modal{background:white;border-radius:16px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto}
+.form-modal-header{padding:24px 28px 20px;border-bottom:1px solid var(–border);display:flex;justify-content:space-between;align-items:center}
 .form-modal-header h3{font-family:var(–ffd);font-size:1.5rem;font-weight:700}
 .form-modal-body{padding:28px}
-.form-modal-footer{padding:20px 28px;border-top:1px solid var(–border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:white}
+.form-modal-footer{padding:20px 28px;border-top:1px solid var(–border);display:flex;justify-content:flex-end;gap:10px}
 .close-modal-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(–cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(–slate)}
 .close-modal-btn:hover{background:var(–red);color:white}
-
-/* Form Elemanları */
 .fg{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
 .fg label{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(–slate);font-weight:600}
 .fg input,.fg select,.fg textarea{padding:12px 16px;border:1px solid var(–border);border-radius:8px;font-family:var(–ff);font-size:0.9rem;background:var(–cream);transition:border-color 0.2s}
 .fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(–gold)}
 .fg textarea{resize:vertical;min-height:80px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.section-divider{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(–gold);font-weight:700;padding:16px 0 8px;border-top:1px solid var(–border);margin-top:8px;display:flex;align-items:center;gap:10px}
-.section-divider i{font-size:0.8rem}
-
-/* Key-Value (Specs/Care) */
-.kv-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
-.kv-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center}
-.kv-row input{padding:10px 12px;border:1px solid var(–border);border-radius:8px;font-family:var(–ff);font-size:0.85rem;background:var(–cream)}
-.kv-row input:focus{outline:none;border-color:var(–gold)}
-.kv-del{width:30px;height:30px;border:none;background:rgba(192,57,43,0.1);color:var(–red);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:0.2s;flex-shrink:0}
-.kv-del:hover{background:var(–red);color:white}
-.kv-add-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1px dashed var(–border);border-radius:8px;background:none;cursor:pointer;font-family:var(–ff);font-size:0.8rem;color:var(–slate);transition:0.2s}
-.kv-add-btn:hover{border-color:var(–gold);color:var(–gold)}
-
-/* Resim Yükleme */
-.img-upload-area{border:2px dashed var(–border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:0.3s;position:relative;background:var(–cream)}
-.img-upload-area:hover,.img-upload-area.dragover{border-color:var(–gold);background:rgba(201,168,76,0.05)}
-.img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.img-upload-icon{font-size:2rem;color:var(–gold);margin-bottom:8px}
-.img-upload-text{font-size:0.85rem;color:var(–slate)}
-.img-upload-text strong{color:var(–ink)}
-.img-preview-box{width:100%;height:160px;border-radius:10px;object-fit:cover;border:1px solid var(–border);margin-top:12px;display:none}
-.img-preview-box.show{display:block}
-.upload-progress{margin-top:10px;display:none}
-.upload-progress-bar{height:4px;background:var(–border);border-radius:2px;overflow:hidden}
-.upload-progress-fill{height:100%;background:var(–gold);width:0;transition:width 0.3s;border-radius:2px}
-.upload-status{font-size:0.78rem;margin-top:6px;text-align:center}
-
-/* Switch */
+.img-preview{width:100%;height:120px;border-radius:8px;object-fit:cover;border:1px solid var(–border);margin-top:8px;display:none}
+.img-preview.show{display:block}
 .switch-wrap{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(–cream);border-radius:8px;border:1px solid var(–border)}
 .switch{width:44px;height:24px;background:#ccc;border-radius:12px;position:relative;cursor:pointer;transition:0.3s;flex-shrink:0}
 .switch.on{background:var(–green)}
 .switch::after{content:’’;position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:0.3s}
 .switch.on::after{left:23px}
 
-/* Toast */
-.a-toast{position:fixed;bottom:24px;right:24px;z-index:5000;background:var(–ink);color:white;padding:14px 22px;border-radius:10px;font-size:0.82rem;border-left:3px solid var(–gold);transform:translateX(120%);transition:transform 0.4s;pointer-events:none;max-width:320px}
-.a-toast.show{transform:translateX(0)}
-
-/* GitHub Token Uyarı */
-.token-banner{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:10px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;font-size:0.85rem}
-.token-banner i{color:var(–gold);font-size:1.1rem;flex-shrink:0}
-.token-banner a{color:var(–gold);font-weight:600;cursor:pointer;text-decoration:underline}
-
-/* Kampanya & Bildirim */
-.campaign-card{background:white;border-radius:var(–radius);padding:24px;border:1px solid var(–border);margin-bottom:16px}
-.campaign-card h3{font-family:var(–ffd);font-size:1.2rem;font-weight:600;margin-bottom:8px}
-.campaign-card p{font-size:0.85rem;color:var(–slate);margin-bottom:16px}
-.campaign-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:600;margin-bottom:12px}
-.campaign-badge.active{background:rgba(39,174,96,0.1);color:var(–green)}
-.campaign-badge.paused{background:rgba(201,168,76,0.1);color:var(–gold)}
+/* ── Bildirimler ── */
 .notif-list{display:flex;flex-direction:column;gap:12px}
 .notif-item{background:white;border-radius:var(–radius);padding:20px;border:1px solid var(–border);display:flex;align-items:flex-start;gap:16px}
 .notif-icon{width:40px;height:40px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem}
@@ -164,7 +152,15 @@ tr:hover td{background:#fafdf5}
 .notif-desc{font-size:0.82rem;color:var(–slate);line-height:1.6}
 .notif-time{font-size:0.72rem;color:#bbb;margin-top:6px}
 
-/* Ayarlar */
+/* ── Kampanya ── */
+.campaign-card{background:white;border-radius:var(–radius);padding:24px;border:1px solid var(–border);margin-bottom:16px}
+.campaign-card h3{font-family:var(–ffd);font-size:1.2rem;font-weight:600;margin-bottom:8px}
+.campaign-card p{font-size:0.85rem;color:var(–slate);margin-bottom:16px}
+.campaign-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:600;margin-bottom:12px}
+.campaign-badge.active{background:rgba(39,174,96,0.1);color:var(–green)}
+.campaign-badge.paused{background:rgba(201,168,76,0.1);color:var(–gold)}
+
+/* ── Ayarlar ── */
 .settings-section{background:white;border-radius:var(–radius);border:1px solid var(–border);margin-bottom:20px;overflow:hidden}
 .settings-section-header{padding:18px 24px;border-bottom:1px solid var(–border);font-weight:600;font-size:0.9rem;background:#fafafa;display:flex;align-items:center;gap:10px}
 .settings-section-header i{color:var(–gold)}
@@ -174,12 +170,41 @@ tr:hover td{background:#fafdf5}
 .settings-row-label h4{font-size:0.88rem;font-weight:500;margin-bottom:2px}
 .settings-row-label p{font-size:0.78rem;color:var(–slate)}
 
+/* ── Toast ── */
+.a-toast{position:fixed;bottom:24px;right:24px;z-index:5000;background:var(–ink);color:white;padding:14px 22px;border-radius:10px;font-size:0.82rem;border-left:3px solid var(–gold);transform:translateX(120%);transition:transform 0.4s;pointer-events:none}
+.a-toast.show{transform:translateX(0)}
+
+/* ── Responsive ── */
 @media(max-width:768px){
-.sidebar{display:none}
+/* Mobile topbar göster */
+.mobile-topbar{display:flex}
+
+/* Sidebar: sayfanın soluna konumlandır, drawer gibi */
+.sidebar{
+position:fixed;
+top:0; left:0; bottom:0;
+z-index:400;
+transform:translateX(-100%);
+transition:transform 0.3s ease;
+height:100%;
+}
+.sidebar.open{transform:translateX(0)}
+
+/* Ana içerik üstten başlasın */
+#adminApp.show{flex-direction:column}
+.main-content{padding:18px}
+
 .stats-grid{grid-template-columns:1fr 1fr}
 .form-row{grid-template-columns:1fr}
-.main-content{padding:16px}
-th:nth-child(3),td:nth-child(3){display:none}
+
+/* Dashboard grid tek sütun */
+#page-dashboard > div[style*=“grid-template-columns:1fr 1fr”]{
+display:flex!important;
+flex-direction:column!important;
+}
+
+.a-toast{right:12px;left:12px;bottom:16px;transform:translateY(120%)}
+.a-toast.show{transform:translateY(0)}
 }
 </style>
 
@@ -192,16 +217,31 @@ th:nth-child(3),td:nth-child(3){display:none}
   <div class="login-box">
     <h1>Göçmen Perde</h1>
     <p>Admin Paneli</p>
-    <input type="password" class="login-input" id="loginPass" placeholder="Şifre" onkeydown="if(event.key==='Enter')doLogin()">
+    <input type="password" class="login-input" id="loginPass" placeholder="Şifre">
     <button class="login-btn" onclick="doLogin()"><i class="fas fa-lock" style="margin-right:8px"></i>Giriş Yap</button>
     <p class="login-error" id="loginError">Yanlış şifre!</p>
   </div>
 </div>
 
+<!-- Sidebar Overlay (mobil) -->
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
 <!-- Admin Paneli -->
 
 <div id="adminApp">
-  <div class="sidebar">
+
+  <!-- Mobile Topbar -->
+
+  <div class="mobile-topbar">
+    <button class="hamburger-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <span class="mobile-topbar-title">Göçmen Perde</span>
+    <button class="hamburger-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+
+  <!-- Sidebar -->
+
+  <div class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <h2>Göçmen Perde</h2>
       <p>Admin Paneli</p>
@@ -219,6 +259,8 @@ th:nth-child(3),td:nth-child(3){display:none}
     </div>
   </div>
 
+  <!-- Ana İçerik -->
+
   <div class="main-content">
 
 ```
@@ -227,10 +269,6 @@ th:nth-child(3),td:nth-child(3){display:none}
   <div class="page-header">
     <h1>Merhaba, <em>Zeynel Bey</em> 👋</h1>
     <div style="font-size:0.82rem;color:var(--slate)" id="dashDate"></div>
-  </div>
-  <div id="tokenBanner" class="token-banner" style="display:none">
-    <i class="fas fa-key"></i>
-    <span>GitHub Token girilmemiş. Ürün kaydetme çalışmaz. <a onclick="setupToken()">Token Gir →</a></span>
   </div>
   <div class="stats-grid">
     <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-boxes-stacked"></i></div><div class="stat-number" id="statTotal">—</div><div class="stat-label">Toplam Ürün</div></div>
@@ -277,7 +315,7 @@ th:nth-child(3),td:nth-child(3){display:none}
       <option value="active">Aktif</option>
       <option value="inactive">Pasif</option>
     </select>
-    <button class="btn btn-success" onclick="saveToGitHub()" style="margin-left:auto"><i class="fas fa-cloud-upload-alt"></i> GitHub'a Kaydet</button>
+    <button class="btn btn-success" onclick="saveProductsJSON()" style="margin-left:auto" id="saveBtn"><i class="fas fa-cloud-upload-alt"></i> GitHub'a Kaydet</button>
   </div>
   <div class="table-wrap">
     <table>
@@ -302,19 +340,25 @@ th:nth-child(3),td:nth-child(3){display:none}
   <div class="campaign-card">
     <span class="campaign-badge active"><i class="fas fa-circle" style="font-size:0.5rem"></i> Aktif Kampanya</span>
     <h3>Sezon Sonu %25 İndirim</h3>
-    <p>Tüm ürünlerde geçerli sezon sonu kampanyası.</p>
+    <p>Tüm ürünlerde geçerli sezon sonu kampanyası. İndirimli fiyatlar products.json'da tanımlı.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="aToast('Kampanya düzenleme yakında aktif!')"><i class="fas fa-edit"></i> Düzenle</button>
       <button class="btn btn-danger" onclick="aToast('Kampanya durduruldu (simülasyon)')"><i class="fas fa-pause"></i> Durdur</button>
     </div>
   </div>
   <div class="campaign-card">
     <span class="campaign-badge paused"><i class="fas fa-circle" style="font-size:0.5rem"></i> Hazır / Pasif</span>
     <h3>İlk Sipariş Kuponu — ILKSIPARIS10</h3>
-    <p>Yeni müşterilere %10 indirim kuponu.</p>
+    <p>Yeni müşterilere %10 indirim kuponu. Sipariş formunda "ILKSIPARIS10" kodu girilince uygulanır.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn btn-success" onclick="aToast('Kupon kampanyası aktif!')"><i class="fas fa-play"></i> Aktive Et</button>
-      <button class="btn btn-outline" onclick="navigator.clipboard.writeText('ILKSIPARIS10');aToast('Kopyalandı: ILKSIPARIS10')"><i class="fas fa-copy"></i> Kodu Kopyala</button>
+      <button class="btn btn-outline" onclick="navigator.clipboard.writeText('ILKSIPARIS10').then(()=>aToast('Kupon kodu kopyalandı: ILKSIPARIS10'))"><i class="fas fa-copy"></i> Kodu Kopyala</button>
     </div>
+  </div>
+  <div class="campaign-card" style="border:2px dashed var(--border);background:transparent">
+    <h3 style="color:var(--slate)">Yeni Kampanya Oluştur</h3>
+    <p>Yeni indirim kampanyası, kupon kodu veya özel teklif oluşturun.</p>
+    <button class="btn btn-primary" onclick="aToast('Yakında aktif olacak!')"><i class="fas fa-plus"></i> Kampanya Oluştur</button>
   </div>
 </div>
 
@@ -328,55 +372,35 @@ th:nth-child(3),td:nth-child(3){display:none}
 <div class="page" id="page-settings">
   <div class="page-header"><h1>Sistem <em>Ayarları</em></h1></div>
   <div class="settings-section">
-    <div class="settings-section-header"><i class="fas fa-key"></i> GitHub Entegrasyonu</div>
+    <div class="settings-section-header"><i class="fas fa-store"></i> Mağaza Bilgileri</div>
     <div class="settings-body">
-      <div class="settings-row">
-        <div class="settings-row-label">
-          <h4>GitHub Token</h4>
-          <p id="tokenStatus">Kontrol ediliyor...</p>
-        </div>
-        <button class="btn btn-outline" onclick="setupToken()">Token Güncelle</button>
-      </div>
-      <div class="settings-row">
-        <div class="settings-row-label">
-          <h4>GitHub Repo</h4>
-          <p>gocmenperde / gocmenperde</p>
-        </div>
-        <button class="btn btn-outline" onclick="window.open('https://github.com/gocmenperde/gocmenperde','_blank')">Aç</button>
-      </div>
+      <div class="settings-row"><div class="settings-row-label"><h4>Mağaza Adı</h4><p>Göçmen Perde</p></div><button class="btn btn-outline" onclick="aToast('Düzenleme modu açıldı')">Düzenle</button></div>
+      <div class="settings-row"><div class="settings-row-label"><h4>WhatsApp Numarası</h4><p>0501 211 09 58</p></div><button class="btn btn-outline" onclick="aToast('Düzenleme modu açıldı')">Düzenle</button></div>
+      <div class="settings-row"><div class="settings-row-label"><h4>Adres</h4><p>Bağlarbaşı Mah. Osmangazi / Bursa</p></div><button class="btn btn-outline" onclick="aToast('Düzenleme modu açıldı')">Düzenle</button></div>
+      <div class="settings-row"><div class="settings-row-label"><h4>Çalışma Saatleri</h4><p>Pzt–Cmt 09:00–18:30</p></div><button class="btn btn-outline" onclick="aToast('Düzenleme modu açıldı')">Düzenle</button></div>
     </div>
   </div>
   <div class="settings-section">
     <div class="settings-section-header"><i class="fas fa-shield-alt"></i> Güvenlik</div>
     <div class="settings-body">
-      <div class="settings-row">
-        <div class="settings-row-label"><h4>Admin Şifresini Değiştir</h4></div>
-        <button class="btn btn-outline" onclick="showPasswordModal()">Değiştir</button>
-      </div>
+      <div class="settings-row"><div class="settings-row-label"><h4>Admin Şifresini Değiştir</h4><p>Son değişiklik: bilinmiyor</p></div><button class="btn btn-outline" onclick="showPasswordModal()">Değiştir</button></div>
+      <div class="settings-row"><div class="settings-row-label"><h4>GitHub Token</h4><p>Ürünleri GitHub'a kaydetmek için gerekli</p></div><button class="btn btn-outline" onclick="resetGithubToken()">Token Güncelle</button></div>
     </div>
   </div>
   <div class="settings-section">
     <div class="settings-section-header"><i class="fas fa-download"></i> Veri Yönetimi</div>
     <div class="settings-body">
-      <div class="settings-row">
-        <div class="settings-row-label"><h4>products.json İndir</h4><p>Yedeğini al</p></div>
-        <button class="btn btn-success" onclick="downloadJSON()"><i class="fas fa-download"></i> İndir</button>
-      </div>
-      <div class="settings-row">
-        <div class="settings-row-label"><h4>Siteyi Görüntüle</h4></div>
-        <button class="btn btn-outline" onclick="window.open('/','_blank')"><i class="fas fa-external-link-alt"></i> Aç</button>
-      </div>
+      <div class="settings-row"><div class="settings-row-label"><h4>products.json İndir</h4><p>Ürün veritabanını yedekle</p></div><button class="btn btn-success" onclick="downloadJSON()"><i class="fas fa-download"></i> İndir</button></div>
+      <div class="settings-row"><div class="settings-row-label"><h4>Siteyi Görüntüle</h4><p>Değişiklikler anında yansır</p></div><button class="btn btn-outline" onclick="window.open('/','_blank')"><i class="fas fa-external-link-alt"></i> Aç</button></div>
     </div>
   </div>
 </div>
 ```
 
-  </div>
-</div>
+  </div><!-- /main-content -->
+</div><!-- /adminApp -->
 
-<!-- ═══════════════════════════════════════════
-     ÜRÜN EKLE / DÜZENLE MODAL
-═══════════════════════════════════════════ -->
+<!-- Ürün Ekle/Düzenle Modal -->
 
 <div class="modal-bg" id="productModal">
   <div class="form-modal">
@@ -386,84 +410,45 @@ th:nth-child(3),td:nth-child(3){display:none}
     </div>
     <div class="form-modal-body">
       <input type="hidden" id="editIndex">
-
-```
-  <!-- TEMEL BİLGİLER -->
-  <div class="section-divider"><i class="fas fa-info-circle"></i> Temel Bilgiler</div>
-  <div class="fg"><label>Ürün Adı *</label><input type="text" id="f-name" placeholder="Ürün adını girin"></div>
-  <div class="fg"><label>Kısa Açıklama *</label><textarea id="f-desc" placeholder="Ürün açıklaması..."></textarea></div>
-  <div class="form-row">
-    <div class="fg"><label>Güncel Fiyat (TL) *</label><input type="number" id="f-price" placeholder="300"></div>
-    <div class="fg"><label>Eski Fiyat (TL)</label><input type="number" id="f-oldprice" placeholder="400"></div>
-  </div>
-  <div class="form-row">
-    <div class="fg">
-      <label>Kategori *</label>
-      <select id="f-cat">
-        <option value="carsaf">Çarşaf</option>
-        <option value="perde">Perde</option>
-        <option value="koltuk">Koltuk Örtüsü</option>
-      </select>
+      <div class="fg"><label>Ürün Adı *</label><input type="text" id="f-name" placeholder="Ürün adını girin"></div>
+      <div class="fg"><label>Kısa Açıklama *</label><textarea id="f-desc" placeholder="Ürün açıklaması..."></textarea></div>
+      <div class="form-row">
+        <div class="fg"><label>Güncel Fiyat (TL) *</label><input type="number" id="f-price" placeholder="300"></div>
+        <div class="fg"><label>Eski Fiyat (TL)</label><input type="number" id="f-oldprice" placeholder="400 (boş bırakılabilir)"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Kategori *</label>
+          <select id="f-cat">
+            <option value="carsaf">Çarşaf</option>
+            <option value="perde">Perde</option>
+            <option value="koltuk">Koltuk Örtüsü</option>
+          </select>
+        </div>
+        <div class="fg"><label>Birim</label>
+          <select id="f-unit">
+            <option value="adet">Adet</option>
+            <option value="mt">Metre (mt)</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>Resim Yolu</label><input type="text" id="f-image" placeholder="resimler/urun.jpg" oninput="previewImg()"><img id="imgPreview" class="img-preview" src="" alt=""></div>
+      <div class="fg"><label>İndirim Etiketi (opsiyonel)</label><input type="text" id="f-badge" placeholder="%25 İNDİRİM"></div>
+      <div class="fg"><label>Özellikler (virgülle ayırın)</label><input type="text" id="f-features" placeholder="karartma, ütü, premium"></div>
+      <div class="fg"><label>Stok Durumu</label>
+        <div class="switch-wrap">
+          <div class="switch on" id="activeSwitch" onclick="toggleSwitch()"></div>
+          <span id="activeSwitchLabel" style="font-size:0.85rem;font-weight:500;color:var(--green)">Aktif — Sitede görünüyor</span>
+        </div>
+      </div>
     </div>
-    <div class="fg">
-      <label>Birim</label>
-      <select id="f-unit">
-        <option value="adet">Adet</option>
-        <option value="mt">Metre (mt)</option>
-      </select>
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="fg"><label>İndirim Etiketi</label><input type="text" id="f-badge" placeholder="%25 İNDİRİM"></div>
-    <div class="fg"><label>Özellikler (virgülle)</label><input type="text" id="f-features" placeholder="karartma,utu,premium"></div>
-  </div>
-
-  <!-- RESİM YÜKLEME -->
-  <div class="section-divider"><i class="fas fa-image"></i> Ürün Görseli</div>
-  <div class="img-upload-area" id="imgUploadArea">
-    <input type="file" id="imgFileInput" accept="image/*" onchange="handleImageSelect(this)">
-    <div class="img-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-    <div class="img-upload-text"><strong>Resim seç</strong> veya buraya sürükle<br><span style="font-size:0.75rem;color:#aaa">JPG, PNG, WEBP — Maks 5MB</span></div>
-  </div>
-  <img id="imgPreviewBox" class="img-preview-box" src="" alt="">
-  <div class="upload-progress" id="uploadProgress">
-    <div class="upload-progress-bar"><div class="upload-progress-fill" id="uploadProgressFill"></div></div>
-    <div class="upload-status" id="uploadStatus"></div>
-  </div>
-  <div class="fg" style="margin-top:10px">
-    <label>Resim Yolu (otomatik dolar veya manuel gir)</label>
-    <input type="text" id="f-image" placeholder="resimler/urun.jpg" oninput="manualImgPreview()">
-  </div>
-
-  <!-- ÖZELLİKLER (SPECS) -->
-  <div class="section-divider"><i class="fas fa-list-ul"></i> Teknik Özellikler</div>
-  <div class="kv-list" id="specsList"></div>
-  <button class="kv-add-btn" onclick="addKvRow('specsList')"><i class="fas fa-plus"></i> Özellik Ekle (örn: Malzeme → %100 Pamuk)</button>
-
-  <!-- BAKIM (CARE) -->
-  <div class="section-divider"><i class="fas fa-hands-wash"></i> Bakım Talimatları</div>
-  <div class="kv-list" id="careList"></div>
-  <button class="kv-add-btn" onclick="addKvRow('careList')"><i class="fas fa-plus"></i> Bakım Talimatı Ekle (örn: Yıkama → 40°C)</button>
-
-  <!-- DURUM -->
-  <div class="section-divider"><i class="fas fa-toggle-on"></i> Stok Durumu</div>
-  <div class="fg">
-    <div class="switch-wrap">
-      <div class="switch on" id="activeSwitch" onclick="toggleSwitch()"></div>
-      <span id="activeSwitchLabel" style="font-size:0.85rem;font-weight:500;color:var(--green)">Aktif — Sitede görünüyor</span>
+    <div class="form-modal-footer">
+      <button class="btn btn-outline" onclick="closeProductModal()">İptal</button>
+      <button class="btn btn-success" onclick="saveProduct()"><i class="fas fa-save"></i> Kaydet</button>
     </div>
   </div>
 </div>
-<div class="form-modal-footer">
-  <button class="btn btn-outline" onclick="closeProductModal()">İptal</button>
-  <button class="btn btn-success" onclick="saveProduct()"><i class="fas fa-save"></i> Kaydet</button>
-</div>
-```
 
-  </div>
-</div>
-
-<!-- Şifre Modal -->
+<!-- Şifre Değiştir Modal -->
 
 <div class="modal-bg" id="passModal">
   <div class="form-modal" style="max-width:400px">
@@ -483,22 +468,13 @@ th:nth-child(3),td:nth-child(3){display:none}
 <div class="a-toast" id="aToast"></div>
 
 <script>
-// ══════════════════════════════════════════════════
-//  AYARLAR
-// ══════════════════════════════════════════════════
-const REPO_OWNER = 'gocmenperde';
-const REPO_NAME  = 'gocmenperde';
-const PRODUCTS_PATH = 'products.json';
+// ─── Şifre ───
 const ADMIN_PASS_KEY = 'gp_admin_pass';
-
 function getPass(){ return localStorage.getItem(ADMIN_PASS_KEY) || 'gocmen1993'; }
-function getToken(){ return localStorage.getItem('gh_token') || ''; }
 
-// ══════════════════════════════════════════════════
-//  GİRİŞ
-// ══════════════════════════════════════════════════
 function doLogin(){
-  if(document.getElementById('loginPass').value === getPass()){
+  const p = document.getElementById('loginPass').value;
+  if(p === getPass()){
     document.getElementById('loginScreen').classList.add('hide');
     document.getElementById('adminApp').classList.add('show');
     initAdmin();
@@ -511,49 +487,31 @@ function logout(){
   document.getElementById('loginScreen').classList.remove('hide');
   document.getElementById('adminApp').classList.remove('show');
   document.getElementById('loginPass').value='';
+  closeSidebar();
 }
-document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 
-// ══════════════════════════════════════════════════
-//  BAŞLATMA
-// ══════════════════════════════════════════════════
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// ─── Hamburger / Sidebar ───
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  const isOpen = sb.classList.contains('open');
+  if(isOpen){ closeSidebar(); } else { sb.classList.add('open'); ov.classList.add('open'); }
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// ─── Ürün Verisi ───
 let PRODUCTS = [];
 let activeSwitchState = true;
-
-async function initAdmin(){
-  document.getElementById('dashDate').innerText = new Date().toLocaleDateString('tr-TR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  checkTokenStatus();
-  await fetchProducts();
-  renderDashboard();
-  renderTable();
-  renderNotifs();
-}
-
-function checkTokenStatus(){
-  const t = getToken();
-  const banner = document.getElementById('tokenBanner');
-  const status = document.getElementById('tokenStatus');
-  if(!t){
-    banner.style.display='flex';
-    if(status) status.innerText = '⚠️ Token girilmemiş';
-  } else {
-    banner.style.display='none';
-    if(status) status.innerText = '✓ Token kayıtlı';
-  }
-}
-
-function setupToken(){
-  const t = prompt('GitHub Personal Access Token giriniz:\n\n(github.com → Settings → Developer Settings → Personal Access Tokens → Fine-grained tokens veya Classic)\n\nGerekli izin: repo → Contents → Read & Write', getToken());
-  if(t && t.trim()){
-    localStorage.setItem('gh_token', t.trim());
-    checkTokenStatus();
-    aToast('✓ Token kaydedildi!');
-  }
-}
 
 async function fetchProducts(){
   try{
     const r = await fetch('/products.json?v='+Date.now());
+    if(!r.ok) throw new Error('HTTP '+r.status);
     PRODUCTS = await r.json();
   } catch(e){
     PRODUCTS = [];
@@ -561,50 +519,53 @@ async function fetchProducts(){
   }
 }
 
-// ══════════════════════════════════════════════════
-//  DASHBOARD
-// ══════════════════════════════════════════════════
+function initAdmin(){
+  document.getElementById('dashDate').innerText = new Date().toLocaleDateString('tr-TR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  fetchProducts().then(()=>{ renderDashboard(); renderTable(); renderNotifs(); });
+}
+
+// ─── Dashboard ───
 function renderDashboard(){
   const total=PRODUCTS.length, active=PRODUCTS.filter(p=>p.active).length, disc=PRODUCTS.filter(p=>p.oldPrice&&p.active).length, inactive=PRODUCTS.filter(p=>!p.active).length;
   document.getElementById('statTotal').innerText=total;
   document.getElementById('statActive').innerText=active;
   document.getElementById('statDiscount').innerText=disc;
   document.getElementById('statInactive').innerText=inactive;
+
   const cats={carsaf:{label:'Çarşaflar',color:'#c9a84c'},perde:{label:'Perdeler',color:'#2980b9'},koltuk:{label:'Koltuk Örtüleri',color:'#27ae60'}};
-  document.getElementById('catChart').innerHTML=Object.entries(cats).map(([k,v])=>{
-    const count=PRODUCTS.filter(p=>p.cat===k&&p.active).length, pct=total?Math.round(count/total*100):0;
+  const chart=document.getElementById('catChart');
+  chart.innerHTML=Object.entries(cats).map(([k,v])=>{
+    const count=PRODUCTS.filter(p=>p.cat===k&&p.active).length;
+    const pct=total?Math.round(count/total*100):0;
     return `<div><div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px"><span>${v.label}</span><span style="font-weight:600">${count}</span></div><div style="height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${v.color};border-radius:4px;transition:width 0.6s"></div></div></div>`;
   }).join('');
+
+  const rem=document.getElementById('reminders');
   const msgs=[];
-  if(!getToken()) msgs.push({icon:'fas fa-key',color:'#e67e22',text:'GitHub Token girilmemiş! <a onclick="setupToken()" style="color:var(--gold);cursor:pointer;text-decoration:underline">Token gir →</a>'});
-  if(inactive>0) msgs.push({icon:'fas fa-eye-slash',color:'#c0392b',text:`<strong>${inactive} ürün</strong> pasif durumda.`});
+  if(inactive>0) msgs.push({icon:'fas fa-eye-slash',color:'#c0392b',text:`<strong>${inactive} ürün</strong> şu an pasif durumda ve sitede görünmüyor.`});
+  if(disc===0) msgs.push({icon:'fas fa-tag',color:'#e67e22',text:'Hiç indirimli ürün yok. Kampanya başlatmayı düşün!'});
+  if(active<5) msgs.push({icon:'fas fa-boxes-stacked',color:'#2980b9',text:'Ürün sayısı az. Yeni ürün eklemeyi düşün!'});
   if(!msgs.length) msgs.push({icon:'fas fa-check-circle',color:'#27ae60',text:'Her şey yolunda! Site aktif durumda.'});
-  document.getElementById('reminders').innerHTML=msgs.map(m=>`<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border:1px solid var(--border)"><i class="${m.icon}" style="color:${m.color};font-size:1rem;width:20px"></i><span style="font-size:0.85rem">${m.text}</span></div>`).join('');
+  rem.innerHTML=msgs.map(m=>`<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border:1px solid var(--border)"><i class="${m.icon}" style="color:${m.color};font-size:1rem;width:20px"></i><span style="font-size:0.85rem">${m.text}</span></div>`).join('');
 }
 
-// ══════════════════════════════════════════════════
-//  TABLO
-// ══════════════════════════════════════════════════
+// ─── Tablo ───
 const catLabels={carsaf:'Çarşaf',perde:'Perde',koltuk:'Koltuk Örtüsü'};
-
 function renderTable(list){
   const data=list||PRODUCTS;
   const tbody=document.getElementById('productTableBody');
   if(!data.length){ tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--slate);font-style:italic">Ürün bulunamadı</td></tr>'; return; }
-  tbody.innerHTML=data.map(p=>{
-    const ri=PRODUCTS.indexOf(p);
+  tbody.innerHTML=data.map((p)=>{
+    const realIdx=PRODUCTS.indexOf(p);
     return `<tr>
-      <td><div style="display:flex;align-items:center;gap:12px">
-        <img src="${p.image}" alt="" class="product-thumb" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22><rect fill=%22%23f0f2f5%22 width=%2248%22 height=%2248%22/><text x=%2224%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2220%22>📦</text></svg>'">
-        <div class="product-name-cell">${p.name}<small>${p.id}</small></div>
-      </div></td>
+      <td><div style="display:flex;align-items:center;gap:12px"><img src="${p.image}" alt="${p.name}" class="product-thumb" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22><rect fill=%22%23f0f0f0%22 width=%2248%22 height=%2248%22/><text x=%2224%22 y=%2228%22 text-anchor=%22middle%22 font-size=%2218%22>📦</text></svg>'"><div class="product-name-cell">${p.name}<small>${p.id}</small></div></div></td>
       <td><span class="badge-tag badge-cat">${catLabels[p.cat]||p.cat}</span></td>
-      <td><div class="price-cell">${p.price.toLocaleString('tr-TR')} TL${p.unit!=='adet'?' / '+p.unit:''}<span class="price-old">${p.oldPrice?p.oldPrice.toLocaleString('tr-TR')+' TL':''}</span></div></td>
+      <td><div class="price-cell">${p.price.toLocaleString('tr-TR')} TL${p.unit&&p.unit!=='adet'?' / '+p.unit:''}<span class="price-old">${p.oldPrice?p.oldPrice.toLocaleString('tr-TR')+' TL':''}</span></div></td>
       <td><span class="badge-tag ${p.active?'badge-active':'badge-inactive'}">${p.active?'Aktif':'Pasif'}</span></td>
       <td><div class="action-btns">
-        <button class="icon-btn edit" onclick="editProduct(${ri})" title="Düzenle"><i class="fas fa-pen"></i></button>
-        <button class="icon-btn toggle ${p.active?'':'off'}" onclick="toggleProduct(${ri})" title="${p.active?'Pasife Al':'Aktive Et'}"><i class="fas fa-${p.active?'eye':'eye-slash'}"></i></button>
-        <button class="icon-btn del" onclick="deleteProduct(${ri})" title="Sil"><i class="fas fa-trash"></i></button>
+        <button class="icon-btn edit" onclick="editProduct(${realIdx})" title="Düzenle"><i class="fas fa-pen"></i></button>
+        <button class="icon-btn toggle ${p.active?'':'off'}" onclick="toggleProduct(${realIdx})" title="${p.active?'Pasife Al':'Aktive Et'}"><i class="fas fa-${p.active?'eye':'eye-slash'}"></i></button>
+        <button class="icon-btn del" onclick="deleteProduct(${realIdx})" title="Sil"><i class="fas fa-trash"></i></button>
       </div></td>
     </tr>`;
   }).join('');
@@ -615,156 +576,24 @@ function filterTable(){
   const q=document.getElementById('adminSearch').value.toLowerCase();
   const cat=document.getElementById('catFilter').value;
   const status=document.getElementById('statusFilter').value;
-  renderTable(PRODUCTS.filter(p=>{
+  let filtered=PRODUCTS.filter(p=>{
     if(q&&!p.name.toLowerCase().includes(q)) return false;
     if(cat&&p.cat!==cat) return false;
     if(status==='active'&&!p.active) return false;
     if(status==='inactive'&&p.active) return false;
     return true;
-  }));
-}
-
-// ══════════════════════════════════════════════════
-//  KEY-VALUE (SPECS / CARE)
-// ══════════════════════════════════════════════════
-function addKvRow(listId, key='', val=''){
-  const list=document.getElementById(listId);
-  const row=document.createElement('div');
-  row.className='kv-row';
-  row.innerHTML=`
-    <input type="text" placeholder="Özellik adı (örn: Malzeme)" value="${key}">
-    <input type="text" placeholder="Değer (örn: %100 Pamuk)" value="${val}">
-    <button class="kv-del" onclick="this.parentElement.remove()" title="Sil"><i class="fas fa-times"></i></button>
-  `;
-  list.appendChild(row);
-}
-
-function getKvData(listId){
-  const obj={};
-  document.querySelectorAll(`#${listId} .kv-row`).forEach(row=>{
-    const inputs=row.querySelectorAll('input');
-    const k=inputs[0].value.trim(), v=inputs[1].value.trim();
-    if(k) obj[k]=v;
   });
-  return obj;
+  renderTable(filtered);
 }
 
-function populateKvList(listId, obj){
-  document.getElementById(listId).innerHTML='';
-  Object.entries(obj||{}).forEach(([k,v])=>addKvRow(listId,k,v));
-}
-
-// ══════════════════════════════════════════════════
-//  RESİM YÜKLEME
-// ══════════════════════════════════════════════════
-let uploadedImagePath = '';
-
-async function handleImageSelect(input){
-  const file = input.files[0];
-  if(!file) return;
-  if(file.size > 5*1024*1024){ aToast('⚠️ Resim 5MB\'dan büyük!'); return; }
-
-  // Önizleme göster
-  const reader = new FileReader();
-  reader.onload = e => {
-    const prev = document.getElementById('imgPreviewBox');
-    prev.src = e.target.result;
-    prev.classList.add('show');
-  };
-  reader.readAsDataURL(file);
-
-  // GitHub'a yükle
-  const token = getToken();
-  if(!token){ aToast('⚠️ Önce GitHub Token girin (Ayarlar)'); return; }
-
-  const ext = file.name.split('.').pop().toLowerCase();
-  const safeName = 'resimler/' + Date.now() + '.' + ext;
-  document.getElementById('f-image').value = safeName;
-  uploadedImagePath = safeName;
-
-  showUploadProgress(true, 'Resim yükleniyor...');
-
-  try{
-    const base64 = await fileToBase64(file);
-    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${safeName}`;
-
-    // Mevcut dosya var mı?
-    let sha = '';
-    try{
-      const check = await fetch(url, {headers:{Authorization:`token ${token}`}});
-      if(check.ok){ const d=await check.json(); sha=d.sha; }
-    } catch(e){}
-
-    const body = {
-      message: `Admin: Resim yüklendi — ${safeName}`,
-      content: base64
-    };
-    if(sha) body.sha = sha;
-
-    const res = await fetch(url, {
-      method:'PUT',
-      headers:{'Authorization':`token ${token}`,'Content-Type':'application/json'},
-      body: JSON.stringify(body)
-    });
-
-    if(res.ok){
-      showUploadProgress(false);
-      aToast('✓ Resim GitHub\'a yüklendi!');
-    } else {
-      const err = await res.json();
-      showUploadProgress(false);
-      aToast('❌ Resim yüklenemedi: ' + (err.message||'Bilinmeyen hata'));
-    }
-  } catch(e){
-    showUploadProgress(false);
-    aToast('❌ Hata: ' + e.message);
-  }
-}
-
-function fileToBase64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=()=>res(r.result.split(',')[1]);
-    r.onerror=rej;
-    r.readAsDataURL(file);
-  });
-}
-
-function showUploadProgress(show, msg=''){
-  const p=document.getElementById('uploadProgress');
-  const fill=document.getElementById('uploadProgressFill');
-  const status=document.getElementById('uploadStatus');
-  if(show){
-    p.style.display='block';
-    status.innerText=msg;
-    fill.style.width='0';
-    setTimeout(()=>fill.style.width='70%',100);
-  } else {
-    fill.style.width='100%';
-    setTimeout(()=>{ p.style.display='none'; fill.style.width='0'; },800);
-  }
-}
-
-function manualImgPreview(){
-  const val=document.getElementById('f-image').value.trim();
-  const prev=document.getElementById('imgPreviewBox');
-  if(val){ prev.src=val; prev.classList.add('show'); prev.onerror=()=>prev.classList.remove('show'); }
-  else prev.classList.remove('show');
-}
-
-// ══════════════════════════════════════════════════
-//  MODAL AÇMA / KAPAMA
-// ══════════════════════════════════════════════════
+// ─── Ürün Ekle/Düzenle ───
 function openAddModal(){
   document.getElementById('formModalTitle').innerText='Yeni Ürün Ekle';
   document.getElementById('editIndex').value='';
-  ['f-name','f-desc','f-price','f-oldprice','f-badge','f-features','f-image'].forEach(id=>document.getElementById(id).value='');
+  ['f-name','f-desc','f-price','f-oldprice','f-image','f-badge','f-features'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-cat').value='carsaf';
   document.getElementById('f-unit').value='adet';
-  document.getElementById('imgPreviewBox').classList.remove('show');
-  document.getElementById('uploadProgress').style.display='none';
-  populateKvList('specsList',{});
-  populateKvList('careList',{});
+  document.getElementById('imgPreview').classList.remove('show');
   activeSwitchState=true; updateSwitch();
   document.getElementById('productModal').classList.add('open');
 }
@@ -774,35 +603,28 @@ function editProduct(idx){
   document.getElementById('formModalTitle').innerText='Ürün Düzenle';
   document.getElementById('editIndex').value=idx;
   document.getElementById('f-name').value=p.name;
-  document.getElementById('f-desc').value=p.desc;
+  document.getElementById('f-desc').value=p.desc||'';
   document.getElementById('f-price').value=p.price;
   document.getElementById('f-oldprice').value=p.oldPrice||'';
   document.getElementById('f-cat').value=p.cat;
-  document.getElementById('f-unit').value=p.unit;
-  document.getElementById('f-image').value=p.image;
+  document.getElementById('f-unit').value=p.unit||'adet';
+  document.getElementById('f-image').value=p.image||'';
   document.getElementById('f-badge').value=p.badge||'';
   document.getElementById('f-features').value=p.features||'';
-  const prev=document.getElementById('imgPreviewBox');
-  if(p.image){ prev.src=p.image; prev.classList.add('show'); } else prev.classList.remove('show');
-  populateKvList('specsList', p.specs||{});
-  populateKvList('careList', p.care||{});
+  previewImg();
   activeSwitchState=p.active; updateSwitch();
   document.getElementById('productModal').classList.add('open');
 }
 
-function closeProductModal(){ document.getElementById('productModal').classList.remove('open'); }
-
-// ══════════════════════════════════════════════════
-//  KAYDET / SİL / TOGGLE
-// ══════════════════════════════════════════════════
 function saveProduct(){
   const name=document.getElementById('f-name').value.trim();
   const desc=document.getElementById('f-desc').value.trim();
   const price=parseFloat(document.getElementById('f-price').value);
   if(!name){ aToast('⚠️ Ürün adı zorunlu'); return; }
   if(!price){ aToast('⚠️ Fiyat zorunlu'); return; }
-  const unitVal=document.getElementById('f-unit').value;
+
   const oldPriceVal=document.getElementById('f-oldprice').value;
+  const unitVal=document.getElementById('f-unit').value;
   const obj={
     id: '',
     name, desc,
@@ -815,13 +637,16 @@ function saveProduct(){
     features: document.getElementById('f-features').value.replace(/\s/g,''),
     badge: document.getElementById('f-badge').value||'',
     active: activeSwitchState,
-    specs: getKvData('specsList'),
-    care: getKvData('careList')
+    specs:{}, care:{}
   };
+
   const idx=document.getElementById('editIndex').value;
   if(idx!==''){
-    obj.id=PRODUCTS[parseInt(idx)].id;
-    PRODUCTS[parseInt(idx)]=obj;
+    const i=parseInt(idx);
+    obj.id=PRODUCTS[i].id;
+    obj.specs=PRODUCTS[i].specs||{};
+    obj.care=PRODUCTS[i].care||{};
+    PRODUCTS[i]=obj;
     aToast('✓ Ürün güncellendi: '+name);
   } else {
     obj.id=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'-'+Date.now();
@@ -845,33 +670,75 @@ function deleteProduct(idx){
   renderTable(); renderDashboard();
 }
 
-// ══════════════════════════════════════════════════
-//  GITHUB'A KAYDET
-// ══════════════════════════════════════════════════
-async function saveToGitHub(){
-  const token=getToken();
-  if(!token){ aToast('⚠️ GitHub Token girilmemiş! Ayarlar\'dan girin.'); setupToken(); return; }
+function closeProductModal(){ document.getElementById('productModal').classList.remove('open'); }
+
+function toggleSwitch(){ activeSwitchState=!activeSwitchState; updateSwitch(); }
+function updateSwitch(){
+  const sw=document.getElementById('activeSwitch'), lbl=document.getElementById('activeSwitchLabel');
+  if(activeSwitchState){ sw.classList.add('on'); lbl.textContent='Aktif — Sitede görünüyor'; lbl.style.color='var(--green)'; }
+  else { sw.classList.remove('on'); lbl.textContent='Pasif — Sitede görünmüyor'; lbl.style.color='var(--red)'; }
+}
+
+function previewImg(){
+  const val=document.getElementById('f-image').value.trim();
+  const prev=document.getElementById('imgPreview');
+  if(val){ prev.src=val; prev.classList.add('show'); prev.onerror=()=>prev.classList.remove('show'); }
+  else prev.classList.remove('show');
+}
+
+// ─── GitHub Entegrasyonu ───
+const REPO_OWNER='gocmenperde';
+const REPO_NAME='gocmenperde';
+const FILE_PATH='products.json';
+
+function getGithubToken(){
+  return localStorage.getItem('gh_token');
+}
+function resetGithubToken(){
+  localStorage.removeItem('gh_token');
+  const t=prompt('Yeni GitHub Token girin:');
+  if(t){ localStorage.setItem('gh_token',t); aToast('✓ Token güncellendi'); }
+}
+
+async function saveProductsJSON(){
+  const token=getGithubToken();
+  if(!token){
+    const t=prompt('GitHub Personal Access Token girin (repo yetkisi olmalı):');
+    if(!t){ aToast('⚠️ Token girilmedi, iptal edildi'); return; }
+    localStorage.setItem('gh_token',t);
+  }
   aToast('⏳ GitHub\'a kaydediliyor...');
+  await updateGithubFile(PRODUCTS);
+}
+
+async function updateGithubFile(newData){
+  const token=getGithubToken();
+  if(!token){ aToast('⚠️ GitHub token bulunamadı'); return; }
   try{
-    const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PRODUCTS_PATH}`;
-    const getFile=await fetch(url,{headers:{Authorization:`token ${token}`}});
-    if(!getFile.ok) throw new Error('Dosya bilgisi alınamadı. Token doğru mu?');
+    const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+    const getFile=await fetch(url,{headers:{"Authorization":`token ${token}`}});
+    if(!getFile.ok) throw new Error('Dosya bilgisi alınamadı. Token hatalı olabilir.');
     const fileData=await getFile.json();
     const sha=fileData.sha;
-    const content=btoa(unescape(encodeURIComponent(JSON.stringify(PRODUCTS,null,2))));
-    const res=await fetch(url,{
+
+    const response=await fetch(url,{
       method:'PUT',
-      headers:{Authorization:`token ${token}`,'Content-Type':'application/json'},
-      body:JSON.stringify({message:'Admin Paneli: Ürün listesi güncellendi',content,sha})
+      headers:{"Authorization":`token ${token}`,"Content-Type":"application/json"},
+      body:JSON.stringify({
+        message:'Admin Paneli: Ürün listesi güncellendi',
+        content:btoa(unescape(encodeURIComponent(JSON.stringify(newData,null,2)))),
+        sha
+      })
     });
-    if(res.ok){
-      aToast('✅ Kaydedildi! Site 1-2 dk içinde güncellenir.');
+
+    if(response.ok){
+      aToast('✅ Kaydedildi! Site 1-2 dk içinde güncellenecek.');
     } else {
-      const err=await res.json();
+      const err=await response.json();
       aToast('❌ Kaydedilemedi: '+(err.message||'Bilinmeyen hata'));
     }
-  } catch(e){
-    aToast('❌ Hata: '+e.message);
+  } catch(err){
+    aToast('❌ Hata: '+err.message);
   }
 }
 
@@ -881,14 +748,13 @@ function downloadJSON(){
   aToast('✓ products.json indirildi!');
 }
 
-// ══════════════════════════════════════════════════
-//  BİLDİRİMLER
-// ══════════════════════════════════════════════════
+// ─── Bildirimler ───
 function renderNotifs(){
   const notifs=[
-    {icon:'fas fa-store',cls:'order',title:'Site canlıya geçti!',desc:'gocmenperde.com.tr başarıyla yayında.',time:'Bugün'},
-    {icon:'fas fa-tag',cls:'warn',title:'Sezon kampanyası aktif',desc:'Tüm ürünlerde %25 indirim devam ediyor.',time:'Bugün'},
-    {icon:'fas fa-boxes-stacked',cls:'order',title:PRODUCTS.length+' ürün yüklendi',desc:`${PRODUCTS.filter(p=>p.active).length} aktif ürün mevcut.`,time:'Bugün'},
+    {icon:'fas fa-store',cls:'order',title:'Site canlıya geçti!',desc:'gocmenperde.com.tr başarıyla yayında. Ürünler JSON\'dan otomatik yükleniyor.',time:'Bugün'},
+    {icon:'fas fa-tag',cls:'warn',title:'Sezon kampanyası aktif',desc:'Tüm ürünlerde indirim devam ediyor. Kampanyayı "Kampanyalar" sekmesinden yönetebilirsiniz.',time:'Bugün'},
+    {icon:'fas fa-boxes-stacked',cls:'order',title:PRODUCTS.length+' ürün yüklendi',desc:`products.json'dan ${PRODUCTS.filter(p=>p.active).length} aktif ürün başarıyla yüklendi.`,time:'Bugün'},
+    {icon:'fab fa-whatsapp',cls:'order',title:'WhatsApp entegrasyonu aktif',desc:'Siparişler hem email hem WhatsApp üzerinden iletiliyor.',time:'Bugün'},
   ];
   document.getElementById('notifList').innerHTML=notifs.map(n=>`
     <div class="notif-item">
@@ -897,38 +763,39 @@ function renderNotifs(){
     </div>`).join('');
 }
 
-// ══════════════════════════════════════════════════
-//  SWITCH / SAYFA / ŞİFRE
-// ══════════════════════════════════════════════════
-function toggleSwitch(){ activeSwitchState=!activeSwitchState; updateSwitch(); }
-function updateSwitch(){
-  const sw=document.getElementById('activeSwitch'),lbl=document.getElementById('activeSwitchLabel');
-  if(activeSwitchState){ sw.classList.add('on'); lbl.textContent='Aktif — Sitede görünüyor'; lbl.style.color='var(--green)'; }
-  else { sw.classList.remove('on'); lbl.textContent='Pasif — Sitede görünmüyor'; lbl.style.color='var(--red)'; }
+// ─── Şifre Değiştir ───
+function showPasswordModal(){ document.getElementById('passModal').classList.add('open'); }
+function changePassword(){
+  const old=document.getElementById('oldPass').value;
+  const n1=document.getElementById('newPass').value;
+  const n2=document.getElementById('newPass2').value;
+  if(old!==getPass()){ aToast('⚠️ Mevcut şifre yanlış'); return; }
+  if(n1!==n2){ aToast('⚠️ Yeni şifreler eşleşmiyor'); return; }
+  if(n1.length<4){ aToast('⚠️ Şifre en az 4 karakter olmalı'); return; }
+  localStorage.setItem(ADMIN_PASS_KEY,n1);
+  document.getElementById('passModal').classList.remove('open');
+  ['oldPass','newPass','newPass2'].forEach(id=>document.getElementById(id).value='');
+  aToast('✓ Şifre başarıyla değiştirildi!');
 }
 
+// ─── Sayfa Geçişi ───
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.getAttribute('onclick')&&n.getAttribute('onclick').includes(id)));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
+  });
+  // Mobilde sayfaya geçince sidebar'ı kapat
+  closeSidebar();
 }
 
-function showPasswordModal(){ document.getElementById('passModal').classList.add('open'); }
-function changePassword(){
-  const old=document.getElementById('oldPass').value,n1=document.getElementById('newPass').value,n2=document.getElementById('newPass2').value;
-  if(old!==getPass()){ aToast('⚠️ Mevcut şifre yanlış'); return; }
-  if(n1!==n2){ aToast('⚠️ Şifreler eşleşmiyor'); return; }
-  if(n1.length<4){ aToast('⚠️ En az 4 karakter'); return; }
-  localStorage.setItem(ADMIN_PASS_KEY,n1);
-  document.getElementById('passModal').classList.remove('open');
-  aToast('✓ Şifre değiştirildi!');
-}
-
+// ─── Toast ───
 function aToast(msg){
   const t=document.getElementById('aToast');
-  t.innerHTML=msg;
+  t.innerText=msg;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),4500);
+  setTimeout(()=>t.classList.remove('show'),4000);
 }
 </script>
 

@@ -402,9 +402,11 @@ footer span{color:var(--gold)}
         <i class="fas fa-bag-shopping" style="font-size:0.9rem"></i> Sepet
         <span class="cart-badge" id="cartCount">0</span>
       </button>
-      <button class="nav-icon" onclick="window.location.href='/hesap.html'" title="Hesabım">
+      <button class="nav-icon" onclick="window.location.href='/hesabim.html'" title="Hesabım" id="userNavBtn">
   <i class="fas fa-user-circle"></i>
+  <span id="userNameText" style="font-size:0.7rem;letter-spacing:1px;margin-left:4px"></span>
 </button>
+
 
 
 
@@ -1113,10 +1115,10 @@ document.addEventListener('DOMContentLoaded', function() {
         <button onclick="go('contact');toggleMenu()"><i class="fas fa-envelope"></i> İLETİŞİM</button>
         
         <div style="border-top: 1px solid #444; margin-top: 10px; padding-top: 10px;">
-            <button onclick="window.location.href='hesap.html?mod=login';toggleMenu()">
+            <button onclick="window.location.href='hesabim.html?mod=login';toggleMenu()">
                 <i class="fas fa-sign-in-alt"></i> <span id="loginTextMobile">Giriş Yap</span>
             </button>
-            <button id="registerBtnMobile" onclick="window.location.href='hesap.html?mod=register';toggleMenu()">
+            <button id="registerBtnMobile" onclick="window.location.href='hesabim.html?mod=register';toggleMenu()">
                 <i class="fas fa-user-plus"></i> <span>Kayıt Ol</span>
             </button>
         </div>

@@ -69,10 +69,18 @@
     "badge": "%50 İNDİRİM",
     "active": true,
     "specs": {
-      "Krem tonlarında, sade ve şık tasarımıyla öne çıkan kare dokulu güneşlik perde, yaşam alanlarınıza ferah ve zarif bir görünüm kazandırır. Işığı dengeli şekilde filtreleyerek gün boyu doğal aydınlık sağlar, aynı zamanda dışarıdan görünümü azaltarak mahremiyet sunar.  Yüksek kaliteli kumaşı sayesinde uzun ömürlü kullanım imkânı sunan bu güneşlik, solmaya karşı dayanıklıdır ve kolay temizlenebilir yapısıyla pratiklik sağlar. Kornişe uyumlu tasarımı sayesinde montajı zahmetsizdir ve tüm perde modelleriyle uyum içinde kullanılabilir.  Modern ve klasik dekorasyonlara rahatlıkla uyum sağlayan krem renk kare desenli güneşlik perde, özellikle salon, oturma odası ve yatak odalarında ideal bir tercihtir.": ""
+      "En": "150-300 cm",
+      "Kumaş": "Polyester / Karışık",
+      "Stil": "Modern",
+      "Astar": "Yok",
+      "Desen": "Düz"
     },
     "care": {
-      "• 30°C’de hassas programda yıkanması önerilir • Ağartıcı kullanılmamalıdır • Düşük ısıda ütülenebilir • Kurutma makinesinde düşük devir tercih edilmelidir • Uzun ömürlü kullanım için nemli asılarak kurutulması tavsiye edilir.": ""
+      "Yıkama": "30°C hassas yıkama",
+      "Sıkma": "Düşük devirde",
+      "Kurutma": "Gölgede kurutun",
+      "Ütü": "Düşük ısıda ütüleyin",
+      "Kuru Temizleme": "Önerilmez"
     }
   },
   {
@@ -88,8 +96,20 @@
     "features": "Ütüistemezharikatüller",
     "badge": "%50 İNDİRİM",
     "active": true,
-    "specs": {},
-    "care": {}
+    "specs": {
+      "En": "150-300 cm",
+      "Kumaş": "Polyester / Karışık",
+      "Stil": "Modern",
+      "Astar": "Yok",
+      "Desen": "Düz"
+    },
+    "care": {
+      "Yıkama": "30°C hassas yıkama",
+      "Sıkma": "Düşük devirde",
+      "Kurutma": "Gölgede kurutun",
+      "Ütü": "Düşük ısıda ütüleyin",
+      "Kuru Temizleme": "Önerilmez"
+    }
   },
   {
     "id": "tl-perde-1774552678382",
@@ -104,8 +124,20 @@
     "features": "Ütüistemez",
     "badge": "%50 İNDİRİM",
     "active": true,
-    "specs": {},
-    "care": {}
+    "specs": {
+      "En": "150-300 cm",
+      "Kumaş": "Polyester / Karışık",
+      "Stil": "Modern",
+      "Astar": "Yok",
+      "Desen": "Düz"
+    },
+    "care": {
+      "Yıkama": "30°C hassas yıkama",
+      "Sıkma": "Düşük devirde",
+      "Kurutma": "Gölgede kurutun",
+      "Ütü": "Düşük ısıda ütüleyin",
+      "Kuru Temizleme": "Önerilmez"
+    }
   },
   {
     "id": "fon-perde-1774540697343",
@@ -121,10 +153,18 @@
     "badge": "1250 TL İNDİRİM",
     "active": true,
     "specs": {
-      "Evinize şıklık ve karakter katmak isteyenler için tasarlanan desenli fon perdeler, dekorasyonun tamamlayıcı en önemli parçalarından biridir. Modern ve klasik çizgileri bir araya getiren özel desenleri sayesinde salon, oturma odası ve yatak odalarında estetik bir görünüm sağlar.  Yüksek kaliteli kumaşı sayesinde güneş ışığını dengeli şekilde keser, iç mekânda daha konforlu ve huzurlu bir ortam oluşturur. Dayanıklı yapısı uzun ömürlü kullanım sunarken, kolay temizlenebilir özelliği ile pratiklik sağlar.  Farklı renk ve desen seçenekleri ile her tarza uyum sağlayan desenli fon perdeler, yaşam alanlarınıza sıcak ve zarif bir dokunuş katar.": ""
+      "En": "150-300 cm",
+      "Kumaş": "Polyester / Karışık",
+      "Stil": "Modern",
+      "Astar": "Yok",
+      "Desen": "Düz"
     },
     "care": {
-      "• 30°C’de hassas yıkama önerilir • Ağartıcı kullanılmamalıdır • Düşük ısıda ütülenebilir • Kurutma makinesinde düşük devir tercih edilmelidir • Direkt güneş ışığında uzun süre bırakılmaması önerilir": ""
+      "Yıkama": "30°C hassas yıkama",
+      "Sıkma": "Düşük devirde",
+      "Kurutma": "Gölgede kurutun",
+      "Ütü": "Düşük ısıda ütüleyin",
+      "Kuru Temizleme": "Önerilmez"
     }
   },
   {

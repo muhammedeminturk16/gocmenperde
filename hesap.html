@@ -364,6 +364,10 @@ function switchAuthTab(tab){
   document.getElementById('registerForm').style.display = tab==='register' ? 'block' : 'none';
 }
 
+// URL parametresine göre tab aç
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.get('mod') === 'register') switchAuthTab('register');
+
 // ── Giriş ──
 async function doLogin(){
   const email = document.getElementById('login-email').value.trim();
@@ -377,7 +381,7 @@ async function doLogin(){
   try{
     const r = await fetch('/api/auth?action=login',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,sifre}) });
     const d = await r.json();
-    if(!r.ok){ errEl.textContent=d.error; errEl.classList.add('show'); }
+    if(!r.ok){ errEl.textContent=d.error||'Giriş başarısız.'; errEl.classList.add('show'); }
     else { setToken(d.token); currentUser=d.user; showPanelScreen(); }
   }catch(e){ errEl.textContent='Bağlantı hatası. Lütfen tekrar deneyin.'; errEl.classList.add('show'); }
   btn.disabled=false; btn.innerHTML='<i class="fas fa-sign-in-alt" style="margin-right:8px"></i>Giriş Yap';
@@ -398,7 +402,7 @@ async function doRegister(){
   try{
     const r = await fetch('/api/auth?action=register',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ad_soyad,email,telefon,sifre}) });
     const d = await r.json();
-    if(!r.ok){ errEl.textContent=d.error; errEl.classList.add('show'); }
+    if(!r.ok){ errEl.textContent=d.error||'Kayıt başarısız.'; errEl.classList.add('show'); }
     else { setToken(d.token); currentUser=d.user; showPanelScreen(); showToast('🎉 Hoş geldiniz, '+d.user.ad_soyad+'!'); }
   }catch(e){ errEl.textContent='Bağlantı hatası.'; errEl.classList.add('show'); }
   btn.disabled=false; btn.innerHTML='<i class="fas fa-user-plus" style="margin-right:8px"></i>Kayıt Ol';
@@ -535,7 +539,7 @@ async function addAddress(){
     const r = await fetch('/api/auth?action=add-address',{method:'POST',headers:{Authorization:'Bearer '+getToken(),'Content-Type':'application/json'},body:JSON.stringify({baslik,adres})});
     const d = await r.json();
     if(d.success){ suc.classList.add('show'); document.getElementById('addr-title').value=''; document.getElementById('addr-text').value=''; loadAddresses(); setTimeout(()=>suc.classList.remove('show'),3000); }
-    else { err.textContent=d.error; err.classList.add('show'); }
+    else { err.textContent=d.error||'Hata oluştu.'; err.classList.add('show'); }
   }catch(e){ err.textContent='Hata oluştu.'; err.classList.add('show'); }
 }
 
@@ -558,7 +562,7 @@ async function updateProfile(){
     const r = await fetch('/api/auth?action=update',{method:'PUT',headers:{Authorization:'Bearer '+getToken(),'Content-Type':'application/json'},body:JSON.stringify({ad_soyad,telefon})});
     const d = await r.json();
     if(d.success){ suc.classList.add('show'); currentUser.ad_soyad=ad_soyad; fillUserUI(); setTimeout(()=>suc.classList.remove('show'),3000); }
-    else { err.textContent=d.error; err.classList.add('show'); }
+    else { err.textContent=d.error||'Hata oluştu.'; err.classList.add('show'); }
   }catch{ err.textContent='Hata oluştu.'; err.classList.add('show'); }
 }
 
@@ -568,12 +572,14 @@ async function changePassword(){
   const yeni2      = document.getElementById('pass-new2').value;
   const suc = document.getElementById('passSuccess'), err = document.getElementById('passError');
   suc.classList.remove('show'); err.classList.remove('show');
+  if(!eski_sifre||!yeni_sifre){ err.textContent='Tüm alanları doldurun.'; err.classList.add('show'); return; }
   if(yeni_sifre !== yeni2){ err.textContent='Yeni şifreler eşleşmiyor.'; err.classList.add('show'); return; }
+  if(yeni_sifre.length < 6){ err.textContent='Yeni şifre en az 6 karakter olmalı.'; err.classList.add('show'); return; }
   try{
     const r = await fetch('/api/auth?action=change-password',{method:'POST',headers:{Authorization:'Bearer '+getToken(),'Content-Type':'application/json'},body:JSON.stringify({eski_sifre,yeni_sifre})});
     const d = await r.json();
     if(d.success){ suc.classList.add('show'); ['pass-old','pass-new','pass-new2'].forEach(id=>document.getElementById(id).value=''); setTimeout(()=>suc.classList.remove('show'),3000); }
-    else { err.textContent=d.error; err.classList.add('show'); }
+    else { err.textContent=d.error||'Hata oluştu.'; err.classList.add('show'); }
   }catch{ err.textContent='Hata oluştu.'; err.classList.add('show'); }
 }
 

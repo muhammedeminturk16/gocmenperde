@@ -355,14 +355,15 @@ footer span{color:var(--gold)}
   <button onclick="go('about');toggleMenu()"><i class="fas fa-store" style="margin-right:10px;color:var(--gold)"></i>Hakkımızda</button>
   <button onclick="go('cart');toggleMenu()"><i class="fas fa-bag-shopping" style="margin-right:10px;color:var(--gold)"></i>Sepetim</button>
   <button onclick="go('contact');toggleMenu()"><i class="fas fa-map-marker-alt" style="margin-right:10px;color:var(--gold)"></i>İletişim</button>
-<div id="authButtonsMobile" style="border-top: 1px solid #333; margin-top: 10px;">
-    <button onclick="window.location.href='hesap.html?mod=login'; toggleMenu()" style="width:100%; text-align:left; padding:15px; background:none; border:none; color:white; display:flex; align-items:center; gap:10px;">
+<div id="authButtonsMobile" style="border-top: 1px solid #444; margin-top: 15px; padding-top: 10px;">
+    <button onclick="window.location.href='hesap.html?mod=login'; toggleMenu()" style="width:100%; text-align:left; padding:12px 20px; background:none; border:none; color:white; display:flex; align-items:center; gap:10px; font-size:14px;">
         <i class="fas fa-sign-in-alt"></i> <span id="loginTextMobile">Giriş Yap</span>
     </button>
-    <button onclick="window.location.href='hesap.html?mod=register'; toggleMenu()" style="width:100%; text-align:left; padding:15px; background:none; border:none; color:white; display:flex; align-items:center; gap:10px;">
-        <i class="fas fa-user-plus"></i> <span id="registerTextMobile">Kayıt Ol</span>
+    <button id="registerBtnMobile" onclick="window.location.href='hesap.html?mod=register'; toggleMenu()" style="width:100%; text-align:left; padding:12px 20px; background:none; border:none; color:white; display:flex; align-items:center; gap:10px; font-size:14px;">
+        <i class="fas fa-user-plus"></i> <span>Kayıt Ol</span>
     </button>
 </div>
+
 
 <div id="menuOverlay" onclick="toggleMenu()"></div>
 <div class="overlay" id="globalOverlay" onclick="closeAllPopups()"></div>
@@ -1092,25 +1093,25 @@ document.addEventListener('DOMContentLoaded', function() {
             if (user && user.ad_soyad) {
                 const ilkIsim = user.ad_soyad.trim().split(' ')[0];
                 
-                // İsimleri yerleştir
-                const mIsim = document.getElementById('userNameText');
-                if (mIsim) mIsim.innerText = ilkIsim;
+                // Masaüstü yazı değişimi
+                const dName = document.getElementById('userNameText');
+                if (dName) dName.innerText = ilkIsim;
                 
-                const mobIsim = document.getElementById('loginTextMobile');
-                if (mobIsim) mobIsim.innerText = ilkIsim;
+                // Mobil yazı değişimi
+                const mName = document.getElementById('loginTextMobile');
+                if (mName) mName.innerText = ilkIsim;
                 
-                // Kayıt Ol butonunu gizle
-                const regBtn = document.getElementById('registerTextMobile');
-                if (regBtn && regBtn.parentElement) {
-                    regBtn.parentElement.style.display = 'none';
-                }
+                // Kayıt ol butonunu gizle
+                const regBtn = document.getElementById('registerBtnMobile');
+                if (regBtn) regBtn.style.display = 'none';
             }
         }
-    } catch (e) {
-        console.error("Giriş kontrol hatası:", e);
+    } catch (err) {
+        console.log("Giriş kontrolünde ufak bir sorun çıktı, ama site çalışmaya devam eder.");
     }
 });
 </script>
+
 
 </body>
 </html>

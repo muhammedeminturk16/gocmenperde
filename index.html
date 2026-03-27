@@ -348,24 +348,29 @@ footer span{color:var(--gold)}
 </style>
 </head>
 
-<div id="mobileMenu">
-  <div class="menu-logo">Göçmen Perde</div>
-<div class="menu-list">
-    <button onclick="go('home');toggleMenu()"><i class="fas fa-home"></i> ANASAYFA</button>
-    <button onclick="go('products');toggleMenu()"><i class="fas fa-th-large"></i> KOLEKSİYON</button>
-    <button onclick="go('about');toggleMenu()"><i class="fas fa-info-circle"></i> HİKAYEMİZ</button>
-    <button onclick="go('reviews');toggleMenu()"><i class="fas fa-star"></i> YORUMLAR</button>
-    <button onclick="go('contact');toggleMenu()"><i class="fas fa-envelope"></i> İLETİŞİM</button>
-    
-    <div id="authButtonsMobile" style="border-top: 1px solid #444; margin-top: 10px; padding-top: 10px;">
-        <button onclick="window.location.href='hesap.html?mod=login'; toggleMenu()" style="width:100%; text-align:left; padding:12px 20px; background:none; border:none; color:white; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-sign-in-alt"></i> <span id="loginTextMobile">Giriş Yap</span>
-        </button>
-        <button id="registerBtnMobile" onclick="window.location.href='hesap.html?mod=register'; toggleMenu()" style="width:100%; text-align:left; padding:12px 20px; background:none; border:none; color:white; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-user-plus"></i> <span>Kayıt Ol</span>
-        </button>
+<div id="mobileMenu" class="mobile-menu">
+    <div class="menu-header">
+        <span class="menu-logo">GÖÇMEN PERDE</span>
+        <button class="close-menu" onclick="toggleMenu()">✕</button>
+    </div>
+    <div class="menu-list">
+        <button onclick="go('home');toggleMenu()"><i class="fas fa-home"></i> ANASAYFA</button>
+        <button onclick="go('products');toggleMenu()"><i class="fas fa-th-large"></i> KOLEKSİYON</button>
+        <button onclick="go('about');toggleMenu()"><i class="fas fa-info-circle"></i> HİKAYEMİZ</button>
+        <button onclick="go('reviews');toggleMenu()"><i class="fas fa-star"></i> YORUMLAR</button>
+        <button onclick="go('contact');toggleMenu()"><i class="fas fa-envelope"></i> İLETİŞİM</button>
+        
+        <div style="border-top: 1px solid #444; margin-top: 10px; padding-top: 10px;">
+            <button onclick="window.location.href='hesap.html?mod=login';toggleMenu()">
+                <i class="fas fa-sign-in-alt"></i> <span id="loginTextMobile">Giriş Yap</span>
+            </button>
+            <button id="registerBtnMobile" onclick="window.location.href='hesap.html?mod=register';toggleMenu()">
+                <i class="fas fa-user-plus"></i> <span>Kayıt Ol</span>
+            </button>
+        </div>
     </div>
 </div>
+
 
 
 

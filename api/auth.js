@@ -1,6 +1,5 @@
 const { Pool } = require('pg');
 
-// Vercel Settings -> Environment Variables kısmına eklediğimiz URL'yi kullanır
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -9,43 +8,41 @@ const pool = new Pool({
 });
 
 export default async function handler(req, res) {
-  // Tarayıcı izinleri (CORS) - Başka sayfalardan erişim için şart
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Sadece POST metodu kabul edilir' });
-  }
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'POST gerekli' });
 
   const { action, ad_soyad, email, telefon, sifre } = req.body;
 
   try {
     if (action === 'register') {
-      // musteriler tablosuna kayıt ekleme (sifre_hash yerine sifre kullanıyoruz)
+      // Senin tablonun sütun adı sifre_hash olduğu için burayı ona göre eşitledim
       const result = await pool.query(
-        'INSERT INTO musteriler (ad_soyad, email, telefon, sifre) VALUES ($1, $2, $3, $4) RETURNING id, ad_soyad',
+        'INSERT INTO musteriler (ad_soyad, email, telefon, sifre_hash) VALUES ($1, $2, $3, $4) RETURNING id, ad_soyad',
         [ad_soyad, email, telefon, sifre]
       );
-      
-      return res.status(200).json({ 
-        success: true, 
-        user: result.rows[0] 
-      });
+      return res.status(200).json({ success: true, user: result.rows[0] });
     }
     
-    return res.status(400).json({ error: 'Geçersiz işlem tipi' });
+    // Giriş yapma (Login) kısmını da ekledim ki dükkan tam çalışsın
+    if (action === 'login') {
+      const result = await pool.query(
+        'SELECT * FROM musteriler WHERE email = $1 AND sifre_hash = $2',
+        [email, sifre]
+      );
+      if (result.rows.length > 0) {
+        return res.status(200).json({ success: true, user: result.rows[0] });
+      } else {
+        return res.status(401).json({ success: false, error: 'E-posta veya şifre hatalı!' });
+      }
+    }
+
+    return res.status(400).json({ error: 'İşlem geçersiz' });
   } catch (error) {
-    console.error('Neon Veritabanı Hatası:', error.message);
-    
-    // Eğer tablo yoksa veya sütun ismi yanlışsa burada hata mesajını göreceğiz
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Veritabanı hatası: ' + error.message 
-    });
+    console.error('Hata:', error.message);
+    return res.status(500).json({ success: false, error: error.message });
   }
 }

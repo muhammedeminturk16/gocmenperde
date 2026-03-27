@@ -402,9 +402,10 @@ footer span{color:var(--gold)}
         <i class="fas fa-bag-shopping" style="font-size:0.9rem"></i> Sepet
         <span class="cart-badge" id="cartCount">0</span>
       </button>
-      <button class="nav-link" id="userAccountBtn" onclick="window.location.href='hesap.html'">
-    <i class="far fa-user"></i> <span id="userNameText">Giriş Yap</span>
+      <button class="nav-icon" onclick="window.location.href='/hesap.html'" title="Hesabım">
+  <i class="fas fa-user-circle"></i>
 </button>
+
 
 
 
@@ -1044,10 +1045,15 @@ async function submitOrder(){
 
   try{
     // Vercel API'ye gönder
-    await fetch('/api/order',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name,phone,address:addr,note,payment:method,items:savedBasket,total:savedTotal})
-    });
+    await fetch('/api/orders?action=create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    ...(localStorage.getItem('gp_token') ? {'Authorization':'Bearer '+localStorage.getItem('gp_token')} : {})
+  },
+  body: JSON.stringify({name, phone, address: addr, note, payment: method, items: savedBasket, total: savedTotal})
+});
+
   } catch(e){ console.warn('API hatası, WhatsApp ile devam ediliyor'); }
 
   btn.innerHTML=orig; btn.disabled=false;

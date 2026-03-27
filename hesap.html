@@ -24,28 +24,39 @@
 
     <script>
         async function kayitOl() {
-            const veri = {
-                action: 'register',
-                ad_soyad: document.getElementById('kayitAd').value,
-                email: document.getElementById('kayitEmail').value,
-                telefon: document.getElementById('kayitTel').value,
-                sifre: document.getElementById('kayitSifre').value
-            };
+    const buton = document.querySelector('button');
+    buton.innerText = 'İşleniyor...';
+    
+    try {
+        const veri = {
+            action: 'register',
+            ad_soyad: document.getElementById('kayitAd').value,
+            email: document.getElementById('kayitEmail').value,
+            telefon: document.getElementById('kayitTel').value,
+            sifre: document.getElementById('kayitSifre').value
+        };
 
-            const cevap = await fetch('/api/auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(veri)
-            });
+        const cevap = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(veri)
+        });
 
-            const sonuc = await cevap.json();
-            
-            if(sonuc.success) {
-                alert('Tebrikler! Kayıt başarılı.');
-            } else {
-                alert('Hata oluştu: ' + sonuc.error);
-            }
+        const sonuc = await cevap.json();
+        
+        if (sonuc.success) {
+            alert('Hoş geldin ' + sonuc.user.ad_soyad + '! Kaydın tamamlandı.');
+            location.reload(); // Sayfayı yenile
+        } else {
+            alert('Hata: ' + sonuc.error);
         }
+    } catch (err) {
+        alert('Bağlantı hatası: API sunucusuna ulaşılamadı.');
+    } finally {
+        buton.innerText = 'Kayıt Ol';
+    }
+}
+
     </script>
 </body>
 </html>

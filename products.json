@@ -2,7 +2,7 @@
   {
     "id": "izgili-tl-perde-1774588078918",
     "name": "Çizgili Tül Perde",
-    "desc": "Bu özel dokuma, Anadolu'nun köklü zarafetini modern mekanlara taşıyor. Zarif dikey çizgileri ve ince dokusuyla hem evinizde hem de ofisinizde sofistike bir atmosfer yaratın.",
+    "desc": "Bu özel dokuma, Anadolu'nun köklü zarafetini modern mekanlara taşıyor.",
     "image": "resimler/img_1141.jpeg",
     "price": 250,
     "oldPrice": 500,
@@ -12,8 +12,20 @@
     "features": "Ütüistemez",
     "badge": "%50 İNDİRİM",
     "active": true,
-    "specs": {},
-    "care": {}
+    "specs": {
+      "En-Boy": "Ölçüye Göre",
+      "Kumaş": "Polyester / Karışık",
+      "Stil": "Modern",
+      "Astar": "Yok",
+      "Desen": "Düz Çizgili"
+    },
+    "care": {
+      "Yıkama": "30°C hassas yıkama",
+      "Sıkma": "Düşük devirde",
+      "Kurutma": "Gölgede kurutun",
+      "Ütü": "Düşük ısıda ütüleyin",
+      "Kuru Temizleme": "Önerilmez"
+    }
   },
   {
     "id": "gnelik-beyaz-1774557732197",

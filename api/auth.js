@@ -23,7 +23,7 @@ if (sifre.length < 6)
 return res.status(400).json({ error: ‘Şifre en az 6 karakter olmalıdır.’ });
 
 ```
-  const existing = await sql`SELECT id FROM musteriler WHERE email = ${email}`;
+  const existing = await sql`SELECT id FROM musteriler WHERE email = ${email.toLowerCase()}`;
   if (existing.length > 0)
     return res.status(409).json({ error: 'Bu email zaten kayıtlı.' });
 
@@ -76,8 +76,9 @@ if (action === 'update' && req.method === 'PUT') {
   if (!user) return res.status(401).json({ error: 'Oturum geçersiz.' });
 
   const { ad_soyad, telefon } = req.body;
+  if (!ad_soyad) return res.status(400).json({ error: 'Ad soyad zorunludur.' });
   await sql`
-    UPDATE musteriler SET ad_soyad = ${ad_soyad}, telefon = ${telefon} WHERE id = ${user.id}
+    UPDATE musteriler SET ad_soyad = ${ad_soyad}, telefon = ${telefon || ''} WHERE id = ${user.id}
   `;
   return res.status(200).json({ success: true });
 }
@@ -88,6 +89,9 @@ if (action === 'change-password' && req.method === 'POST') {
   if (!user) return res.status(401).json({ error: 'Oturum geçersiz.' });
 
   const { eski_sifre, yeni_sifre } = req.body;
+  if (!eski_sifre || !yeni_sifre)
+    return res.status(400).json({ error: 'Mevcut ve yeni şifre zorunludur.' });
+
   const result = await sql`SELECT sifre_hash FROM musteriler WHERE id = ${user.id}`;
   if (!result.length) return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
 
@@ -121,6 +125,7 @@ if (action === 'delete-address' && req.method === 'POST') {
   const user = verifyToken(req);
   if (!user) return res.status(401).json({ error: 'Oturum geçersiz.' });
   const { id } = req.body;
+  if (!id) return res.status(400).json({ error: 'Adres ID zorunludur.' });
   await sql`DELETE FROM adresler WHERE id = ${id} AND musteri_id = ${user.id}`;
   return res.status(200).json({ success: true });
 }

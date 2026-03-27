@@ -49,7 +49,6 @@
 </div>
 
 <script>
-    // URL'den hangi sekmenin açılacağını anlar (mod=register gibi)
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.get('mod') === 'register') showForm('register');
 
@@ -63,14 +62,14 @@
     async function submitForm(type) {
         const btn = document.getElementById(type === 'login' ? 'lBtn' : 'rBtn');
         const data = type === 'login' 
-            ? { action: 'login', email: document.getElementById('lEmail').value, sifre: document.getElementById('lPass').value }
-            : { action: 'register', ad_soyad: document.getElementById('rName').value, email: document.getElementById('rEmail').value, telefon: document.getElementById('rPhone').value, sifre: document.getElementById('rPass').value };
+            ? { email: document.getElementById('lEmail').value, sifre: document.getElementById('lPass').value }
+            : { ad_soyad: document.getElementById('rName').value, email: document.getElementById('rEmail').value, telefon: document.getElementById('rPhone').value, sifre: document.getElementById('rPass').value };
 
         btn.disabled = true;
         btn.innerText = 'Bekleyiniz...';
 
         try {
-            const response = await fetch('/api/auth', {
+            const response = await fetch('/api/auth?action=' + type, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -78,6 +77,8 @@
             const res = await response.json();
 
             if(res.success) {
+                localStorage.setItem('token', res.token);
+                localStorage.setItem('user', JSON.stringify(res.user));
                 alert(type === 'login' ? 'Hoş geldiniz!' : 'Kaydınız başarıyla oluşturuldu!');
                 window.location.href = '/';
             } else {

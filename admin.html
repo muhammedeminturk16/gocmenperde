@@ -431,7 +431,26 @@ flex-direction:column!important;
           </select>
         </div>
       </div>
-      <div class="fg"><label>Resim Yolu</label><input type="text" id="f-image" placeholder="resimler/urun.jpg" oninput="previewImg()"><img id="imgPreview" class="img-preview" src="" alt=""></div>
+      <div class="fg">
+        <label>Ürün Resmi</label>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <!-- Dosya seç butonu -->
+          <div style="display:flex;gap:8px;align-items:center">
+            <label for="f-imageFile" style="display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:var(--ink);color:white;border-radius:8px;cursor:pointer;font-size:0.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;flex-shrink:0">
+              <i class="fas fa-image"></i> Resim Seç
+            </label>
+            <input type="file" id="f-imageFile" accept="image/*" style="display:none" onchange="handleImageSelect(this)">
+            <span id="f-imageFileName" style="font-size:0.8rem;color:var(--slate);font-style:italic">Dosya seçilmedi</span>
+          </div>
+          <!-- Yükleniyor göstergesi -->
+          <div id="imgUploadStatus" style="display:none;font-size:0.8rem;padding:8px 12px;background:#fff8e1;border-radius:6px;border:1px solid #f0c040;color:#7a5c00">
+            <i class="fas fa-spinner fa-spin"></i> GitHub'a yükleniyor...
+          </div>
+          <!-- Resim yolu (otomatik dolar, elle de girilebilir) -->
+          <input type="text" id="f-image" placeholder="resimler/urun.jpg" oninput="previewImg()" style="padding:10px 16px;border:1px solid var(--border);border-radius:8px;font-family:var(--ff);font-size:0.85rem;background:var(--cream)">
+          <img id="imgPreview" class="img-preview" src="" alt="">
+        </div>
+      </div>
       <div class="fg"><label>İndirim Etiketi (opsiyonel)</label><input type="text" id="f-badge" placeholder="%25 İNDİRİM"></div>
       <div class="fg"><label>Özellikler (virgülle ayırın)</label><input type="text" id="f-features" placeholder="karartma, ütü, premium"></div>
       <div class="fg"><label>Stok Durumu</label>
@@ -594,6 +613,9 @@ function openAddModal(){
   document.getElementById('f-cat').value='carsaf';
   document.getElementById('f-unit').value='adet';
   document.getElementById('imgPreview').classList.remove('show');
+  document.getElementById('f-imageFileName').textContent='Dosya seçilmedi';
+  document.getElementById('imgUploadStatus').style.display='none';
+  document.getElementById('f-imageFile').value='';
   activeSwitchState=true; updateSwitch();
   document.getElementById('productModal').classList.add('open');
 }
@@ -684,6 +706,102 @@ function previewImg(){
   const prev=document.getElementById('imgPreview');
   if(val){ prev.src=val; prev.classList.add('show'); prev.onerror=()=>prev.classList.remove('show'); }
   else prev.classList.remove('show');
+}
+
+// ─── Resim Seç & GitHub'a Yükle ───
+function handleImageSelect(input){
+  const file = input.files[0];
+  if(!file) return;
+
+  // Dosya adını göster
+  document.getElementById('f-imageFileName').textContent = file.name;
+
+  // Önce önizleme göster
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const prev = document.getElementById('imgPreview');
+    prev.src = e.target.result;
+    prev.classList.add('show');
+  };
+  reader.readAsDataURL(file);
+
+  // GitHub'a yükle
+  uploadImageToGithub(file);
+}
+
+async function uploadImageToGithub(file){
+  const token = getGithubToken();
+  if(!token){
+    const t = prompt('GitHub Personal Access Token girin:');
+    if(!t){ aToast('⚠️ Token girilmedi'); return; }
+    localStorage.setItem('gh_token', t);
+  }
+
+  const statusEl = document.getElementById('imgUploadStatus');
+  statusEl.style.display = 'block';
+
+  // Dosyayı base64'e çevir
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // data:image/jpeg;base64,XXXX → sadece XXXX kısmını al
+      resolve(reader.result.split(',')[1]);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  // Dosya adını temizle (Türkçe karakter vs.)
+  const safeName = file.name
+    .toLowerCase()
+    .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
+    .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
+    .replace(/\s+/g,'-')
+    .replace(/[^a-z0-9._-]/g,'');
+  const imagePath = `resimler/${safeName}`;
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${imagePath}`;
+
+  try{
+    // Dosya zaten varsa SHA al (üzerine yazabilmek için)
+    let sha = null;
+    try{
+      const existing = await fetch(url, { headers:{ Authorization:`token ${getGithubToken()}` } });
+      if(existing.ok){ const d = await existing.json(); sha = d.sha; }
+    } catch(e){}
+
+    const body = {
+      message: `Resim eklendi: ${safeName}`,
+      content: base64,
+    };
+    if(sha) body.sha = sha;
+
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers:{ Authorization:`token ${getGithubToken()}`, 'Content-Type':'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if(res.ok){
+      // Resim yolunu forma yaz
+      document.getElementById('f-image').value = imagePath;
+      statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:#27ae60"></i> Resim yüklendi: ' + imagePath;
+      statusEl.style.background = '#f0fff4';
+      statusEl.style.borderColor = '#27ae60';
+      statusEl.style.color = '#1a6b3c';
+      aToast('✅ Resim GitHub\'a yüklendi!');
+    } else {
+      const err = await res.json();
+      statusEl.innerHTML = '❌ Yükleme başarısız: ' + (err.message||'Bilinmeyen hata');
+      statusEl.style.background = '#fff0f0';
+      statusEl.style.borderColor = '#c0392b';
+      statusEl.style.color = '#c0392b';
+    }
+  } catch(err){
+    statusEl.innerHTML = '❌ Hata: ' + err.message;
+    statusEl.style.background = '#fff0f0';
+    statusEl.style.borderColor = '#c0392b';
+    statusEl.style.color = '#c0392b';
+  }
 }
 
 // ─── GitHub Entegrasyonu ───

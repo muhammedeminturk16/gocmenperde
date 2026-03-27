@@ -1,8 +1,4 @@
 const { neon } = require(’@neondatabase/serverless’);
-const jwt = require(‘jsonwebtoken’);
-
-const sql = neon(process.env.DATABASE_URL);
-const JWT_SECRET = process.env.JWT_SECRET || ‘gocmen-perde-secret-2024’;
 
 module.exports = async function handler(req, res) {
 res.setHeader(‘Access-Control-Allow-Origin’, ‘*’);
@@ -11,6 +7,13 @@ res.setHeader(‘Access-Control-Allow-Headers’, ‘Content-Type, Authorization
 if (req.method === ‘OPTIONS’) return res.status(200).end();
 
 const { action } = req.query;
+
+let sql;
+try {
+sql = neon(process.env.DATABASE_URL);
+} catch(e) {
+return res.status(500).json({ error: ’DB bağlantı hatası: ’ + e.message });
+}
 
 try {
 if (action === ‘create’ && req.method === ‘POST’) {
@@ -23,8 +26,8 @@ return res.status(400).json({ error: ‘Eksik bilgi.’ });
   try {
     const auth = req.headers.authorization;
     if (auth && auth.startsWith('Bearer ')) {
-      const decoded = jwt.verify(auth.slice(7), JWT_SECRET);
-      musteri_id = decoded.id;
+      const decoded = JSON.parse(Buffer.from(auth.slice(7), 'base64').toString());
+      musteri_id = decoded.id || null;
     }
   } catch {}
 
@@ -50,7 +53,7 @@ return res.status(400).json({ error: 'Geçersiz işlem.' });
 ```
 
 } catch (err) {
-console.error(‘Orders error:’, err);
+console.error(‘Orders error:’, err.message);
 return res.status(500).json({ error: ’Sunucu hatası: ’ + err.message });
 }
 };
@@ -59,6 +62,8 @@ function verifyToken(req) {
 try {
 const auth = req.headers.authorization;
 if (!auth || !auth.startsWith(’Bearer ’)) return null;
-return jwt.verify(auth.slice(7), JWT_SECRET);
+const decoded = JSON.parse(Buffer.from(auth.slice(7), ‘base64’).toString());
+if (!decoded.id || !decoded.email) return null;
+return decoded;
 } catch { return null; }
 }

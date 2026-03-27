@@ -13,13 +13,12 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'POST gerekli' });
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Sadece POST' });
 
   const { action, ad_soyad, email, telefon, sifre } = req.body;
 
   try {
     if (action === 'register') {
-      // Senin tablonun sütun adı sifre_hash olduğu için burayı ona göre eşitledim
       const result = await pool.query(
         'INSERT INTO musteriler (ad_soyad, email, telefon, sifre_hash) VALUES ($1, $2, $3, $4) RETURNING id, ad_soyad',
         [ad_soyad, email, telefon, sifre]
@@ -27,7 +26,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, user: result.rows[0] });
     }
     
-    // Giriş yapma (Login) kısmını da ekledim ki dükkan tam çalışsın
     if (action === 'login') {
       const result = await pool.query(
         'SELECT * FROM musteriler WHERE email = $1 AND sifre_hash = $2',
@@ -36,13 +34,11 @@ export default async function handler(req, res) {
       if (result.rows.length > 0) {
         return res.status(200).json({ success: true, user: result.rows[0] });
       } else {
-        return res.status(401).json({ success: false, error: 'E-posta veya şifre hatalı!' });
+        return res.status(401).json({ success: false, error: 'Bilgiler hatalı!' });
       }
     }
-
-    return res.status(400).json({ error: 'İşlem geçersiz' });
+    return res.status(400).json({ error: 'Geçersiz işlem' });
   } catch (error) {
-    console.error('Hata:', error.message);
     return res.status(500).json({ success: false, error: error.message });
   }
 }

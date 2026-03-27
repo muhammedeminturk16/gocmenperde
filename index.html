@@ -355,12 +355,13 @@ footer span{color:var(--gold)}
   <button onclick="go('about');toggleMenu()"><i class="fas fa-store" style="margin-right:10px;color:var(--gold)"></i>Hakkımızda</button>
   <button onclick="go('cart');toggleMenu()"><i class="fas fa-bag-shopping" style="margin-right:10px;color:var(--gold)"></i>Sepetim</button>
   <button onclick="go('contact');toggleMenu()"><i class="fas fa-map-marker-alt" style="margin-right:10px;color:var(--gold)"></i>İletişim</button>
-<button onclick="window.location.href='hesap.html'; toggleMenu()">
-    <i class="far fa-user"></i> <span id="userNameTextMobile">Giriş Yap</span>
-</button>
-<button onclick="window.location.href='hesap.html'; toggleMenu()" style="width: 100%; text-align: left; padding: 15px; background: none; border: none; color: white; display: flex; align-items: center; gap: 10px; font-family: inherit;">
-    <i class="far fa-user"></i> <span id="userNameTextMobile">Giriş Yap</span>
-</button>
+<div id="authButtonsMobile" style="border-top: 1px solid #333; margin-top: 10px;">
+    <button onclick="window.location.href='hesap.html?mod=login'; toggleMenu()" style="width: 100%; text-align: left; padding: 15px; background: none; border: none; color: white; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-sign-in-alt"></i> <span id="loginTextMobile">Giriş Yap</span>
+    </button>
+    <button onclick="window.location.href='hesap.html?mod=register'; toggleMenu()" style="width: 100%; text-align: left; padding: 15px; background: none; border: none; color: white; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-user-plus"></i> <span id="registerTextMobile">Kayıt Ol</span>
+    </button>
 </div>
 <div id="menuOverlay" onclick="toggleMenu()"></div>
 <div class="overlay" id="globalOverlay" onclick="closeAllPopups()"></div>
@@ -1089,18 +1090,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user && user.ad_soyad) {
             const ilkIsim = user.ad_soyad.trim().split(' ')[0];
             
-            // Masaüstü ismini değiştir
-            const dIsim = document.getElementById('userNameText');
-            if (dIsim) dIsim.innerText = ilkIsim;
+            // İsimleri yazdır
+            if(document.getElementById('userNameText')) document.getElementById('userNameText').innerText = ilkIsim;
+            if(document.getElementById('loginTextMobile')) document.getElementById('loginTextMobile').innerText = ilkIsim;
             
-            // Mobil ismini değiştir
-            const mIsim = document.getElementById('userNameTextMobile');
-            if (mIsim) mIsim.innerText = ilkIsim;
+            // Giriş yapılınca "Kayıt Ol" butonlarını gizle
+            const registerBtn = document.getElementById('registerTextMobile')?.parentElement;
+            if (registerBtn) registerBtn.style.display = 'none';
         }
     }
 });
 </script>
-
 
 </body>
 </html>

@@ -346,6 +346,28 @@ nav{display:flex;align-items:center;gap:8px}
 footer{background:var(--ink);color:rgba(247,244,239,0.4);text-align:center;padding:30px 5%;font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;border-top:1px solid rgba(201,168,76,0.1)}
 footer span{color:var(--gold)}
 </style>
+<style>
+  /* Menü açıldığında logonun üstüne binmesini engellemek için */
+  .mobile-toggle {
+    position: absolute !important;
+    right: 20px !important; /* Butonu sağ köşeye sabitler */
+    top: 30px !important;   /* Yukarıdan hizalar */
+    z-index: 9999;          /* Logonun altında kalmasın diye en üste çıkarır */
+    border: none;
+    background: transparent;
+  }
+
+  /* Çizgilerin boyutunu ve rengini düzenler */
+  .mobile-toggle span {
+    display: block;
+    width: 25px;
+    height: 2px;
+    margin: 5px 0;
+    background-color: #D4AF37; /* Altın rengi */
+    transition: 0.4s;
+  }
+</style>
+
 </head>
 
 <div id="menuOverlay" onclick="toggleMenu()"></div>

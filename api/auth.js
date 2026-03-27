@@ -1,17 +1,15 @@
 const { Pool } = require('pg');
 
-// Senin gönderdiğin en güncel bağlantı kodu:
-const connectionString = 'postgresql://neondb_owner:npg_RLwX8EZr0egy@ep-frosty-firefly-aluiy29f.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
-
+// Vercel Settings -> Environment Variables kısmına eklediğimiz URL'yi kullanır
 const pool = new Pool({
-  connectionString,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
 });
 
 export default async function handler(req, res) {
-  // Tarayıcı izinleri (CORS)
+  // Tarayıcı izinleri (CORS) - Başka sayfalardan erişim için şart
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -21,23 +19,33 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Sadece POST kabul edilir' });
+    return res.status(405).json({ error: 'Sadece POST metodu kabul edilir' });
   }
 
   const { action, ad_soyad, email, telefon, sifre } = req.body;
 
   try {
     if (action === 'register') {
+      // musteriler tablosuna kayıt ekleme (sifre_hash yerine sifre kullanıyoruz)
       const result = await pool.query(
-        'INSERT INTO musteriler (ad_soyad, email, telefon, sifre_hash) VALUES ($1, $2, $3, $4) RETURNING id, ad_soyad',
+        'INSERT INTO musteriler (ad_soyad, email, telefon, sifre) VALUES ($1, $2, $3, $4) RETURNING id, ad_soyad',
         [ad_soyad, email, telefon, sifre]
       );
-      return res.status(200).json({ success: true, user: result.rows[0] });
+      
+      return res.status(200).json({ 
+        success: true, 
+        user: result.rows[0] 
+      });
     }
     
-    return res.status(400).json({ error: 'Geçersiz işlem' });
+    return res.status(400).json({ error: 'Geçersiz işlem tipi' });
   } catch (error) {
-    console.error('Veritabanı hatası:', error.message);
-    return res.status(500).json({ success: false, error: error.message });
+    console.error('Neon Veritabanı Hatası:', error.message);
+    
+    // Eğer tablo yoksa veya sütun ismi yanlışsa burada hata mesajını göreceğiz
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Veritabanı hatası: ' + error.message 
+    });
   }
 }

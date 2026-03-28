@@ -245,6 +245,11 @@ tbody tr:hover td{background:#fdfcf8}
 .json-valid{font-size:0.72rem;margin-top:5px;padding:5px 10px;border-radius:6px;display:none}
 .json-valid.ok{background:var(--green-light);color:var(--green);display:flex;align-items:center;gap:5px}
 .json-valid.err{background:var(--red-light);color:var(--red);display:flex;align-items:center;gap:5px}
+.img-selected-list{display:none;flex-direction:column;gap:6px;margin-top:10px;padding:10px;border:1px dashed var(--border-2);border-radius:9px;background:#fff}
+.img-selected-item{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:0.78rem;color:var(--slate)}
+.img-selected-item b{font-size:0.76rem;color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.img-selected-item button{border:none;background:var(--red-light);color:var(--red);width:24px;height:24px;border-radius:6px;cursor:pointer}
+.img-selected-item button:hover{background:var(--red);color:#fff}
 
 /* ──────────── CARDS LAYOUT ──────────── */
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
@@ -812,6 +817,7 @@ tbody tr:hover td{background:#fdfcf8}
           <p style="font-size:0.72rem;margin-top:4px" id="f-imageFileName">JPG, PNG, WEBP — çoklu yükleme destekli</p>
         </div>
         <div class="img-status" id="imgUploadStatus"></div>
+        <div class="img-selected-list" id="selectedImageList"></div>
         <input type="text" id="f-image" placeholder="Ana görsel (otomatik ilk fotoğraf)" oninput="syncImagesFromSingleInput()" style="margin-top:8px;padding:10px 14px;border:1.5px solid var(--border-2);border-radius:9px;font-size:0.85rem;background:var(--cream);outline:none;transition:0.2s">
         <textarea id="f-images" placeholder="Ürün fotoğrafları (her satıra bir URL/yol):&#10;resimler/urun-1.jpg&#10;resimler/urun-2.jpg" oninput="previewImg()" style="margin-top:8px;min-height:90px;font-family:monospace;font-size:0.8rem"></textarea>
         <img id="imgPreview" style="width:100%;height:130px;border-radius:10px;object-fit:cover;border:1px solid var(--border);margin-top:8px;display:none" src="" alt="">
@@ -827,6 +833,7 @@ tbody tr:hover td{background:#fdfcf8}
           <button type="button" class="json-helper-btn" onclick="clearField('f-specs','specs-valid')"><i class="fas fa-trash"></i></button>
         </div>
         <textarea id="f-specs" placeholder="En: 150-300 cm&#10;Kumaş: Polyester&#10;Stil: Modern" oninput="validateStructuredField('f-specs','specs-valid')" style="min-height:80px;font-family:monospace;font-size:0.8rem"></textarea>
+        <p style="font-size:0.72rem;color:var(--slate-light)">Kolay giriş: satır satır <code style="background:#f5f5f5;padding:2px 6px;border-radius:5px">Anahtar: Değer</code> yazın (JSON veya süslü parantez gerekmez).</p>
         <div class="json-valid" id="specs-valid"></div>
       </div>
       <div class="fg">
@@ -836,6 +843,7 @@ tbody tr:hover td{background:#fdfcf8}
           <button type="button" class="json-helper-btn" onclick="clearField('f-care','care-valid')"><i class="fas fa-trash"></i></button>
         </div>
         <textarea id="f-care" placeholder="Yıkama: 30°C&#10;Ütü: Düşük ısı&#10;Kurutma: Gölgede kurutun" oninput="validateStructuredField('f-care','care-valid')" style="min-height:80px;font-family:monospace;font-size:0.8rem"></textarea>
+        <p style="font-size:0.72rem;color:var(--slate-light)">Örn: <code style="background:#f5f5f5;padding:2px 6px;border-radius:5px">Yıkama: 30°C</code>, <code style="background:#f5f5f5;padding:2px 6px;border-radius:5px">Ütü: Düşük ısı</code>.</p>
         <div class="json-valid" id="care-valid"></div>
       </div>
       <div class="fg"><label>Durum</label>
@@ -1482,6 +1490,7 @@ function openAddModal(){
   document.getElementById('f-imageFileName').textContent='JPG, PNG, WEBP — max 5MB';
   document.getElementById('imgUploadStatus').style.display='none';
   document.getElementById('f-imageFile').value='';
+  renderSelectedImages();
   ['specs-valid','care-valid'].forEach(id=>{const el=document.getElementById(id);el.className='json-valid';el.textContent='';});
   activeSwitchState=true; updateSwitch();
   document.getElementById('productModal').classList.add('open');
@@ -1504,8 +1513,8 @@ function editProduct(idx){
   document.getElementById('f-badge').value=p.badge||'';
   document.getElementById('f-features').value=p.features||'';
   document.getElementById('f-stock').value=p.stock!=null?p.stock:'';
-  document.getElementById('f-specs').value=p.specs&&Object.keys(p.specs).length?JSON.stringify(p.specs,null,2):'';
-  document.getElementById('f-care').value=p.care&&Object.keys(p.care).length?JSON.stringify(p.care,null,2):'';
+  document.getElementById('f-specs').value=p.specs&&Object.keys(p.specs).length?objectToLinePairs(p.specs):'';
+  document.getElementById('f-care').value=p.care&&Object.keys(p.care).length?objectToLinePairs(p.care):'';
   validateStructuredField('f-specs','specs-valid');
   validateStructuredField('f-care','care-valid');
   previewImg();
@@ -1871,6 +1880,7 @@ async function handleImageSelect(input){
   const files=Array.from(input.files||[]);
   if(!files.length) return;
   document.getElementById('f-imageFileName').textContent = files.length===1 ? files[0].name : `${files.length} dosya seçildi`;
+  renderSelectedImages();
   const token=getGithubToken();
   if(!token){
     const previews = await Promise.all(files.map(file => new Promise(resolve=>{
@@ -1881,6 +1891,8 @@ async function handleImageSelect(input){
     document.getElementById('f-image').value = previews[0] || '';
     document.getElementById('f-images').value = previews.join('\n');
     previewImg();
+    input.value='';
+    renderSelectedImages();
     aToast('⚠️ GitHub Token yok — yalnızca önizleme','error');
     return;
   }
@@ -1911,9 +1923,40 @@ async function handleImageSelect(input){
       document.getElementById('f-images').value=uploaded.join('\n');
       previewImg();
     }
+    input.value='';
+    renderSelectedImages();
     status.className='img-status done';status.innerHTML=`<i class="fas fa-check-circle"></i> ${uploaded.length} resim yüklendi`;
     aToast('✅ Resimler yüklendi','success');
   } catch(err){status.className='img-status error';status.innerHTML='<i class="fas fa-times-circle"></i> '+err.message;aToast('❌ '+err.message,'error');}
+}
+function getImageFileInput(){ return document.getElementById('f-imageFile'); }
+function renderSelectedImages(){
+  const wrap=document.getElementById('selectedImageList');
+  const input=getImageFileInput();
+  if(!wrap || !input) return;
+  const files=Array.from(input.files||[]);
+  if(!files.length){
+    wrap.style.display='none';
+    wrap.innerHTML='';
+    return;
+  }
+  wrap.style.display='flex';
+  wrap.innerHTML=files.map((file,idx)=>`<div class="img-selected-item">
+    <b title="${file.name}">${file.name}</b>
+    <button type="button" title="Listeden kaldır" onclick="removeSelectedUploadFile(${idx})"><i class="fas fa-xmark"></i></button>
+  </div>`).join('');
+}
+function removeSelectedUploadFile(index){
+  const input=getImageFileInput();
+  if(!input) return;
+  const files=Array.from(input.files||[]);
+  if(index<0 || index>=files.length) return;
+  files.splice(index,1);
+  const dt=new DataTransfer();
+  files.forEach(file=>dt.items.add(file));
+  input.files=dt.files;
+  document.getElementById('f-imageFileName').textContent = files.length ? (files.length===1 ? files[0].name : `${files.length} dosya seçildi`) : 'JPG, PNG, WEBP — max 5MB';
+  renderSelectedImages();
 }
 
 // ════════════════════════════════════

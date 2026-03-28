@@ -442,15 +442,7 @@ footer span{color:var(--gold)}
 .footer-links a{color:rgba(201,168,76,0.7);text-decoration:none;font-size:0.72rem;transition:color 0.3s}
 .footer-links a:hover{color:var(--gold)}
 
-.mobile-bottom-nav{
-display:none;position:fixed;left:0;right:0;bottom:0;
-padding:8px 10px calc(8px + env(safe-area-inset-bottom));
-background:#fff;border-top:1px solid rgba(201,168,76,0.18);
-box-shadow:0 -10px 30px rgba(0,0,0,0.08);z-index:1700;
-mix-blend-mode:normal !important;
-mix-blend-mode:normal !important;transition:transform .28s ease,opacity .28s ease;
-}
-@media(max-width:640px){.mobile-bottom-nav{display:none!important}}
+.mobile-bottom-nav{display:none!important}
 .mbn-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 8px;border-radius:8px;background:none;border:none;color:var(--slate);font-family:var(--ff-body);font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;transition:0.2s;position:relative;min-width:48px}
 .mbn-item:hover,.mbn-item.active-nav{color:var(--gold)}
 .mbn-item i{font-size:1.1rem}
@@ -906,15 +898,6 @@ body.cart-sheet-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:
   </div>
 </div>
 
-<!-- MOBİL BOTTOM NAV -->
-<nav class="mobile-bottom-nav">
-  <button class="mbn-item" onclick="go('home')" id="mbn-home"><i class="fas fa-home"></i><span>Anasayfa</span></button>
-  <button class="mbn-item" onclick="go('products')" id="mbn-products"><i class="fas fa-th-large"></i><span>Koleksiyon</span></button>
-  <button class="mbn-item" onclick="togglePopup('favoriteBar')" id="mbn-fav"><i class="far fa-heart"></i><span>Favoriler</span><span class="mbn-badge" id="favBadgeMobile" style="display:none">0</span></button>
-  <button class="mbn-item" onclick="go('cart')" id="mbn-cart"><i class="fas fa-bag-shopping"></i><span>Sepet</span><span class="mbn-badge" id="cartBadgeMobile">0</span></button>
-  <button class="mbn-item" onclick="toggleMenu()" id="mbn-menu"><i class="fas fa-bars"></i><span>Menü</span></button>
-</nav>
-
 <!-- MOBİL MENÜ -->
 <div id="mobileMenu">
   <div class="menu-logo">GÖÇMEN PERDE</div>
@@ -1041,7 +1024,10 @@ function needsDimensions(product){
   return isMeterProduct(product) || isSquareMeterProduct(product);
 }
 function isTulPerdeProduct(product){
-  return product?.cat === 'tul-perde';
+  const cat = String(product?.cat || '').toLowerCase();
+  if(cat === 'tul-perde') return true;
+  const haystack = `${product?.name || ''} ${product?.desc || ''}`.toLocaleLowerCase('tr');
+  return isMeterProduct(product) && (haystack.includes('tül perde') || haystack.includes('tul perde'));
 }
 function getPileMultiplier(pileType){
   if(pileType === 'seyrek') return 2;

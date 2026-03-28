@@ -963,8 +963,7 @@ let CATEGORIES = [
 
 async function loadProducts(){
   try{
-    const res = await fetch('products.json?v=' + Date.now());
-    const res = await fetch('products.json', { cache:'force-cache' });
+    const res = await fetch('products.json?v=' + Date.now(), { cache:'no-store' });
     PRODUCTS = await res.json();
     syncCategoriesFromAdmin();
     renderProducts(PRODUCTS);
@@ -1015,19 +1014,56 @@ function getPrimaryImage(product){
   return getProductImages(product)[0] || '';
 }
 
+function normalizeUnit(unit){
+  return String(unit || '').trim().toLowerCase();
+}
+function isSquareMeterProduct(product){
+  const u = normalizeUnit(product?.unit);
+  return !!(product?.isSquareMeter || u === 'm²' || u === 'm2' || u === 'metrekare');
+}
+function isMeterProduct(product){
+  const u = normalizeUnit(product?.unit);
+  return !!(product?.isMeter || u === 'mt' || u === 'metre' || u === 'm');
+}
+function needsDimensions(product){
+  return isMeterProduct(product) || isSquareMeterProduct(product);
+}
+function parseLocaleNumber(value){
+  if(value === null || value === undefined) return NaN;
+  const normalized = String(value).trim().replace(/\s/g,'').replace(',', '.');
+  return Number.parseFloat(normalized);
+}
+function roundTo2(value){
+  return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+}
+function formatQty(value){
+  const n = Number(value) || 0;
+  if(Number.isInteger(n)) return n.toString();
+  return n.toLocaleString('tr-TR', { minimumFractionDigits:0, maximumFractionDigits:2 });
+}
+function formatDimension(value){
+  return (Number(value) || 0).toLocaleString('tr-TR', { minimumFractionDigits:0, maximumFractionDigits:2 });
+}
+
 function buildCard(p){
   const qid = 'q-' + p.id;
+  const wid = 'w-' + p.id;
+  const hid = 'h-' + p.id;
   const isFav = favorites.some(f => f.id === p.id);
   const productImages = getProductImages(p);
   const primaryImage = getPrimaryImage(p);
+  const meterProduct = isMeterProduct(p);
+  const squareProduct = isSquareMeterProduct(p);
+  const requireSize = needsDimensions(p);
   const priceHTML = p.oldPrice
     ? `<span class="old-price">${p.oldPrice.toLocaleString('tr-TR')} TL</span>
        <span class="current-price">${p.price.toLocaleString('tr-TR')} TL <span class="price-unit">/ ${p.unit}</span></span>`
     : `<span class="current-price">${p.price.toLocaleString('tr-TR')} TL <span class="price-unit">/ ${p.unit}</span></span>`;
 
   const addBtn = `<div class="qty-wrap">
-    <input type="number" class="qty-input" id="${qid}" value="1" min="1">
-    <button class="add-btn" onclick="event.stopPropagation();addToCart('${p.name.replace(/'/g,"\\'")}',${p.price},'${qid}',${p.isMeter},'${p.id}')">+ Ekle</button>
+    ${squareProduct ? `<input type="text" class="qty-input" id="${qid}" value="0" readonly title="En × Boy ile otomatik hesaplanır">` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="qty-input" id="${qid}" value="1" ${meterProduct ? `title="Virgüllü değer girebilirsiniz"` : ''}>`}
+    ${requireSize ? `<input type="text" inputmode="decimal" class="qty-input" id="${wid}" placeholder="En (m)"><input type="text" inputmode="decimal" class="qty-input" id="${hid}" placeholder="Boy (m)">` : ''}
+    <button class="add-btn" onclick="event.stopPropagation();addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}')">+ Ekle</button>
   </div>`;
 
   return `<div class="product-card" data-cat="${p.cat}" data-price="${p.price}" data-features="${p.features||''}" data-id="${p.id}" onclick="openModalFromProduct('${p.id}');trackRecentlyViewed('${p.id}')">
@@ -1220,9 +1256,15 @@ function openModalFromProduct(id){
 
   const isFav = favorites.some(f => f.id === id);
   const qid = 'modal-qty-'+Date.now();
+  const wid = 'modal-width-'+Date.now();
+  const hid = 'modal-height-'+Date.now();
+  const meterProduct = isMeterProduct(p);
+  const squareProduct = isSquareMeterProduct(p);
+  const requireSize = needsDimensions(p);
   document.getElementById('mAddWrap').innerHTML = `
-    <input type="number" class="modal-qty-input" id="${qid}" value="1" min="1">
-    <button class="modal-add-btn" onclick="addToCart('${p.name.replace(/'/g,"\\'")}',${p.price},'${qid}',${p.isMeter},'${p.id}')">
+    ${squareProduct ? `<input type="text" class="modal-qty-input" id="${qid}" value="0" readonly title="En × Boy ile otomatik hesaplanır">` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="modal-qty-input" id="${qid}" value="1">`}
+    ${requireSize ? `<input type="text" inputmode="decimal" class="modal-qty-input" id="${wid}" placeholder="En (m)"><input type="text" inputmode="decimal" class="modal-qty-input" id="${hid}" placeholder="Boy (m)">` : ''}
+    <button class="modal-add-btn" onclick="addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}')">
       <i class="fas fa-bag-shopping" style="margin-right:8px"></i>Sepete Ekle
     </button>
     <button onclick="toggleFavoriteById('${p.id}')" id="modal-fav-btn" style="width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:${isFav?'#fff0f0':'white'};cursor:pointer;color:${isFav?'#c0392b':'var(--slate)'};display:flex;align-items:center;justify-content:center;font-size:1rem;transition:0.2s;flex-shrink:0">
@@ -1456,7 +1498,7 @@ function openCartSheet(item){
   const imgSrc = getPrimaryImage(product) || '';
   document.getElementById('cartSheetImg').src = imgSrc;
   document.getElementById('cartSheetName').innerText = item.name;
-  document.getElementById('cartSheetMeta').innerText = `${item.qty} ${item.isMeter?'mt':'adet'} • ${item.sub.toLocaleString('tr-TR')} TL`;
+  document.getElementById('cartSheetMeta').innerText = `${formatQty(item.qty)} ${item.unitLabel||'adet'} • ${item.sub.toLocaleString('tr-TR')} TL`;
   overlay.classList.add('open');
   sheet.classList.add('open');
   document.body.classList.add('cart-sheet-open');
@@ -1473,25 +1515,73 @@ function closeCartSheet(){
   }
 }
 
-function addToCart(name, price, inputId, isMeter, productId){
-  const qty = inputId ? (parseInt(document.getElementById(inputId)?.value)||1) : 1;
-  if(qty < 1){ showToast('Geçerli miktar giriniz'); return; }
-  const ex = basket.find(i => i.name === name);
-  if(ex){ ex.qty += qty; ex.sub += price*qty; }
-  else basket.push({name, price, qty, sub:price*qty, isMeter, id:productId||''});
+function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId){
+  const product = PRODUCTS.find(x => x.id === productId);
+  if(!product) return;
+  const meterProduct = isMeterProduct(product);
+  const squareProduct = isSquareMeterProduct(product);
+  const requireSize = needsDimensions(product);
+  const qtyRaw = document.getElementById(qtyInputId)?.value ?? '1';
+  const widthRaw = document.getElementById(widthInputId)?.value ?? '';
+  const heightRaw = document.getElementById(heightInputId)?.value ?? '';
+  const width = parseLocaleNumber(widthRaw);
+  const height = parseLocaleNumber(heightRaw);
+
+  if(requireSize && (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0)){
+    showToast('Lütfen en ve boy ölçülerini metre cinsinden girin');
+    return;
+  }
+
+  let qty = meterProduct ? parseLocaleNumber(qtyRaw) : parseInt(qtyRaw, 10);
+  if(squareProduct){
+    qty = roundTo2(width * height);
+    const qtyEl = document.getElementById(qtyInputId);
+    if(qtyEl) qtyEl.value = String(qty).replace('.', ',');
+  }
+  if(!Number.isFinite(qty) || qty <= 0){
+    showToast('Geçerli miktar giriniz');
+    return;
+  }
+  if(!meterProduct && !squareProduct) qty = Math.floor(qty);
+  qty = roundTo2(qty);
+  addToCart({
+    name: product.name,
+    price: Number(product.price) || 0,
+    qty,
+    id: product.id || '',
+    unitLabel: product.unit || 'adet',
+    isMeter: meterProduct,
+    width: requireSize ? roundTo2(width) : null,
+    height: requireSize ? roundTo2(height) : null,
+    area: requireSize ? roundTo2(width * height) : null,
+    requiresDimensions: requireSize
+  });
+}
+
+function addToCart(itemPayload){
+  const { name, price, qty, id, unitLabel, isMeter, width, height, area, requiresDimensions } = itemPayload;
+  const dimensionsKey = requiresDimensions ? `${width}x${height}` : '';
+  const ex = basket.find(i => i.id === id && ((i.dimensionsKey || '') === dimensionsKey));
+  if(ex){
+    ex.qty = roundTo2(ex.qty + qty);
+    ex.sub = roundTo2(ex.price * ex.qty);
+  } else {
+    basket.push({name, price, qty, sub:roundTo2(price*qty), isMeter, id, unitLabel:unitLabel||'adet', width, height, area, requiresDimensions, dimensionsKey});
+  }
   total = basket.reduce((a,b)=>a+b.sub,0);
   updateCartCount();
   showToast('✓ Sepete eklendi: '+name);
   saveCartToStorage();
-  const addedItem = basket.find(i => i.name === name);
+  const addedItem = basket.find(i => i.id === id && ((i.dimensionsKey || '') === dimensionsKey));
   if(addedItem) openCartSheet(addedItem);
 }
 
 function updateCartCount(){
   const n = basket.reduce((a,b)=>a+b.qty,0);
-  document.getElementById('cartCount').innerText = n;
-  const mc = document.getElementById('cartCountMobile'); if(mc) mc.innerText = n;
-  const mb = document.getElementById('cartBadgeMobile'); if(mb) mb.innerText = n;
+  const nText = formatQty(n);
+  document.getElementById('cartCount').innerText = nText;
+  const mc = document.getElementById('cartCountMobile'); if(mc) mc.innerText = nText;
+  const mb = document.getElementById('cartBadgeMobile'); if(mb) mb.innerText = nText;
 }
 
 function updateItemQty(idx,change){
@@ -1518,7 +1608,7 @@ function renderMiniCart(){
     <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
       <div>
         <div style="font-weight:500;font-size:0.88rem">${item.name}</div>
-        <div style="font-size:0.75rem;color:var(--slate)">${item.qty} ${item.isMeter?'mt':'adet'} × ${item.price.toLocaleString('tr-TR')} TL</div>
+        <div style="font-size:0.75rem;color:var(--slate)">${formatQty(item.qty)} ${item.unitLabel||'adet'} × ${item.price.toLocaleString('tr-TR')} TL${item.width&&item.height?` • Ölçü: ${formatDimension(item.width)}m × ${formatDimension(item.height)}m`:''}</div>
       </div>
       <div style="font-family:var(--ff-display);font-weight:700;color:var(--gold)">${item.sub.toLocaleString('tr-TR')} TL</div>
     </div>`).join('');
@@ -1535,10 +1625,10 @@ function renderCart(){
     <tr class="cart-row">
       <td>
         <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-sub">${item.qty} ${item.isMeter?'mt':'adet'} × ${item.price.toLocaleString('tr-TR')} TL</div>
+        <div class="cart-item-sub">${formatQty(item.qty)} ${item.unitLabel||'adet'} × ${item.price.toLocaleString('tr-TR')} TL${item.width&&item.height?` • En/Boy: ${formatDimension(item.width)}m × ${formatDimension(item.height)}m (Oran: 1:${formatDimension(item.height/item.width)})`:''}</div>
         <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
           <button class="qty-update-btn" onclick="updateItemQty(${i},-1)">−</button>
-          <span style="font-weight:600;min-width:20px;text-align:center">${item.qty}</span>
+          <span style="font-weight:600;min-width:20px;text-align:center">${formatQty(item.qty)}</span>
           <button class="qty-update-btn" onclick="updateItemQty(${i},1)">+</button>
         </div>
       </td>
@@ -1651,7 +1741,7 @@ function updateCardPreview(){
 // ── Sipariş ──
 function sendWhatsApp(name,phone,method,addr,note,items,totalTL){
   const labels={kapida:'Kapıda Ödeme',havale:'Havale/EFT',kredikarti:'Kredi Kartı'};
-  const msg='🛒 *YENİ SİPARİŞ — GÖÇMEN PERDE*\n\n👤 *Müşteri:* '+name+'\n📞 *Telefon:* '+phone+'\n💳 *Ödeme:* '+(labels[method]||method)+'\n📍 *Adres:* '+addr+(note?'\n📝 *Not:* '+note:'')+'\n\n📦 *Ürünler:*\n'+items.map(i=>` • ${i.name} | ${i.qty} ${i.isMeter?'mt':'adet'} × ${i.price.toLocaleString('tr-TR')} TL = ${i.sub.toLocaleString('tr-TR')} TL`).join('\n')+'\n\n💰 *TOPLAM: '+totalTL.toLocaleString('tr-TR')+' TL*';
+  const msg='🛒 *YENİ SİPARİŞ — GÖÇMEN PERDE*\n\n👤 *Müşteri:* '+name+'\n📞 *Telefon:* '+phone+'\n💳 *Ödeme:* '+(labels[method]||method)+'\n📍 *Adres:* '+addr+(note?'\n📝 *Not:* '+note:'')+'\n\n📦 *Ürünler:*\n'+items.map(i=>` • ${i.name} | ${formatQty(i.qty)} ${i.unitLabel||'adet'} × ${i.price.toLocaleString('tr-TR')} TL = ${i.sub.toLocaleString('tr-TR')} TL${i.width&&i.height?` | Ölçü: ${formatDimension(i.width)}m x ${formatDimension(i.height)}m`:''}`).join('\n')+'\n\n💰 *TOPLAM: '+totalTL.toLocaleString('tr-TR')+' TL*';
   window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(msg),'_blank');
 }
 
@@ -1687,6 +1777,8 @@ async function submitOrder(){
   if(!phone){ showToast('⚠️ Telefon numaranızı girin'); return; }
   if(!addr){ showToast('⚠️ Teslimat adresinizi girin'); return; }
   if(!basket.length){ showToast('Sepetiniz boş'); return; }
+  const missingSize = basket.find(i => i.requiresDimensions && (!i.width || !i.height));
+  if(missingSize){ showToast(`Siparişten önce ${missingSize.name} için en/boy girilmelidir`); return; }
   if(method==='kredikarti'){
     const cn=document.getElementById('f-cardnumber').value.replace(/\s/g,'');
     const cvv=document.getElementById('f-cvv').value;

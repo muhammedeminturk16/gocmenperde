@@ -442,7 +442,7 @@ footer span{color:var(--gold)}
 .footer-links a{color:rgba(201,168,76,0.7);text-decoration:none;font-size:0.72rem;transition:color 0.3s}
 .footer-links a:hover{color:var(--gold)}
 
-.mobile-bottom-nav{display:none!important}
+.mobile-bottom-nav{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:11990;background:rgba(15,14,13,0.94);border:1px solid rgba(201,168,76,0.24);border-radius:18px;padding:8px 6px;display:none;align-items:center;justify-content:space-between;gap:2px;box-shadow:0 10px 35px rgba(0,0,0,0.28);backdrop-filter:blur(10px)}
 .mbn-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 8px;border-radius:8px;background:none;border:none;color:var(--slate);font-family:var(--ff-body);font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;transition:0.2s;position:relative;min-width:48px}
 .mbn-item:hover,.mbn-item.active-nav{color:var(--gold)}
 .mbn-item i{font-size:1.1rem}
@@ -459,12 +459,10 @@ footer span{color:var(--gold)}
 .modal-thumb{width:58px;height:58px;flex-shrink:0;border-radius:10px;overflow:hidden;border:2px solid transparent;cursor:pointer;background:#f2f2f2}
 .modal-thumb.active{border-color:var(--gold)}
 .modal-thumb img{width:100%;height:100%;object-fit:cover}
-.cart-sheet-overlay{position:fixed;inset:0;background:rgba(15,14,13,0.45);backdrop-filter:blur(2px);z-index:12050;display:none}
+.cart-sheet-overlay{position:fixed;top:-12px;left:-12px;width:2px;height:2px;background:transparent;backdrop-filter:none;z-index:12050;display:none;pointer-events:none}
 .cart-sheet-overlay.open{display:block}
 .cart-sheet{position:fixed;left:0;right:0;bottom:0;z-index:12100;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -30px 80px rgba(0,0,0,0.25);padding:18px 16px calc(18px + env(safe-area-inset-bottom));transform:translateY(112%);transition:transform .35s ease;will-change:transform}
 .cart-sheet.open{transform:translateY(0)}
-/* İstenen düzeltme: alttaki siyah sepet panelini tamamen kapat */
-.cart-sheet-overlay,.cart-sheet{display:none !important}
 body.cart-sheet-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:translateY(120%)}
 .cart-sheet-handle{width:60px;height:5px;border-radius:999px;background:#d7d7d7;margin:0 auto 12px}
 .cart-sheet-title{display:flex;align-items:center;gap:8px;color:#16a34a;font-size:1.05rem;font-weight:700;margin-bottom:12px}
@@ -476,7 +474,7 @@ body.cart-sheet-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:
 .cart-sheet-btn{border:none;border-radius:12px;padding:12px 14px;font-size:0.8rem;font-weight:600;letter-spacing:.5px;cursor:pointer}
 .cart-sheet-btn.secondary{background:#f1f1f1;color:var(--ink)}
 .cart-sheet-btn.primary{background:var(--gold);color:var(--ink)}
-@media(max-width:640px){.cart-sheet,.cart-sheet-overlay{display:none!important}}
+@media(max-width:640px){.mobile-bottom-nav{display:flex}}
 .address-helper{margin-top:10px;padding:12px;background:#fffaf0;border:1px solid rgba(201,168,76,0.28);border-radius:10px}
 .address-helper select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-family:var(--ff-body)}
 .address-helper-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
@@ -935,6 +933,17 @@ body.cart-sheet-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:
     </div>
   </div>
   <button class="menu-close-btn" onclick="closeMobileMenuWrapper()"><i class="fas fa-xmark" style="margin-right:10px"></i>KAPAT</button>
+</div>
+
+<div class="mobile-bottom-nav" aria-label="Mobil alt menü">
+  <button class="mbn-item" id="mbn-home" onclick="go('home')"><i class="fas fa-house"></i><span>Ana Sayfa</span></button>
+  <button class="mbn-item" id="mbn-products" onclick="go('products')"><i class="fas fa-th-large"></i><span>Koleksiyon</span></button>
+  <button class="mbn-item" id="mbn-cart" onclick="go('cart')">
+    <i class="fas fa-bag-shopping"></i><span>Sepet</span>
+    <span class="mbn-badge" id="cartCountBottom">0</span>
+  </button>
+  <button class="mbn-item" onclick="window.location.href='hesabim.html'"><i class="fas fa-user"></i><span>Hesabım</span></button>
+  <button class="mbn-item" onclick="toggleMenu()"><i class="fas fa-bars"></i><span>Menü</span></button>
 </div>
 
 <script>
@@ -1679,6 +1688,7 @@ function updateCartCount(){
   document.getElementById('cartCount').innerText = nText;
   const mc = document.getElementById('cartCountMobile'); if(mc) mc.innerText = nText;
   const mb = document.getElementById('cartBadgeMobile'); if(mb) mb.innerText = nText;
+  const bb = document.getElementById('cartCountBottom'); if(bb) bb.innerText = nText;
 }
 
 function updateItemQty(idx,change){

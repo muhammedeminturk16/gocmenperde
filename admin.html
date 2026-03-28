@@ -1183,6 +1183,8 @@ async function loadCustomers(){
     ALL_CUSTOMERS = data.customers||[];
   } catch(e){
     ALL_CUSTOMERS = getSampleCustomers();
+    ALL_CUSTOMERS = [];
+    aToast('Müşteri listesi alınamadı. API bağlantısını kontrol edin.','error');
   }
   filterCustomers();
   const el = document.getElementById('statCustomers');
@@ -1208,7 +1210,6 @@ function filterCustomers(){
   else list.sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
   renderCustomerGrid(list);
 }
-
 function renderCustomerGrid(users){
   const grid = document.getElementById('customerGrid');
   if(!users.length){

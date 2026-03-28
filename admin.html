@@ -309,45 +309,98 @@ tr:hover td{background:#fafdf5}
   </div>
 </div>
 
-<!-- ══════════ SİPARİŞLER ══════════ -->
-<div class="page" id="page-orders">
-  <div class="page-header">
-    <h1>Sipariş <em>Yönetimi</em></h1>
-    <button class="btn btn-outline" onclick="loadAdminOrders()"><i class="fas fa-sync"></i> Yenile</button>
-  </div>
-  <div class="toolbar">
-    <input type="text" class="search-box" placeholder="🔍 Müşteri adı veya telefon..." id="orderSearch" oninput="filterOrders()">
-    <select class="filter-sel" id="orderStatusFilter" onchange="filterOrders()">
-      <option value="">Tüm Siparişler</option>
-      <option value="Beklemede">Beklemede</option>
-      <option value="Hazırlanıyor">Hazırlanıyor</option>
-      <option value="Kargoda">Kargoda</option>
-      <option value="Teslim Edildi">Teslim Edildi</option>
-      <option value="İptal">İptal</option>
-    </select>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Müşteri</th>
-          <th>Ürünler</th>
-          <th>Toplam</th>
-          <th>Ödeme</th>
-          <th>Durum</th>
-          <th>Tarih</th>
-          <th>İşlem</th>
-        </tr>
-      </thead>
-      <tbody id="ordersTableBody">
-        <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--slate)"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p style="font-size:0.78rem;color:var(--slate);margin-top:12px;text-align:right" id="orderCount"></p>
-</div>
+<─── Sipariş Yönetimi ───
+let ALL_ORDERS = [];
+let currentOrderId = null;
 
+async function loadAdminOrders(){
+  const tbody = document.getElementById('ordersTableBody');
+  if(!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--slate)"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td></tr>';
+  try {
+    const token = localStorage.getItem('gh_token') || '';
+    const r = await fetch('/api/orders?action=all', {
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': 'gocmen1993' }
+    });
+    const data = await r.json();
+    ALL_ORDERS = data.orders || [];
+    filterOrders();
+    // Dashboard stat
+    const el = document.getElementById('statOrders');
+    if(el) el.innerText = ALL_ORDERS.length;
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--red)">Siparişler yüklenemedi: ' + e.message + '</td></tr>';
+  }
+}
+
+function filterOrders(){
+  const status = document.getElementById('orderStatusFilter')?.value || '';
+  const filtered = status ? ALL_ORDERS.filter(o => o.durum === status) : ALL_ORDERS;
+  renderOrdersTable(filtered);
+}
+
+function renderOrdersTable(orders){
+  const tbody = document.getElementById('ordersTableBody');
+  if(!orders.length){
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--slate);font-style:italic">Sipariş bulunamadı</td></tr>';
+    return;
+  }
+  const statusColors = {'Beklemede':'#856404','Hazırlanıyor':'#055160','Kargoda':'#0c5460','Teslim Edildi':'#155724','İptal':'#721c24'};
+  const statusBg = {'Beklemede':'#fff3cd','Hazırlanıyor':'#cff4fc','Kargoda':'#d1ecf1','Teslim Edildi':'#d4edda','İptal':'#f8d7da'};
+  tbody.innerHTML = orders.map(o => {
+    const items = typeof o.urunler === 'string' ? JSON.parse(o.urunler) : (o.urunler || []);
+    const itemStr = items.slice(0,2).map(i => (i.name||i.ad||'?') + ' ×' + (i.quantity||i.adet||1)).join(', ') + (items.length > 2 ? '...' : '');
+    const durum = o.durum || 'Beklemede';
+    const date = new Date(o.created_at).toLocaleDateString('tr-TR');
+    return `<tr>
+      <td><strong>#${o.id}</strong></td>
+      <td><div style="font-weight:500">${o.musteri_adi}</div><div style="font-size:0.75rem;color:var(--slate)">${o.telefon}</div></td>
+      <td style="font-size:0.82rem;max-width:150px">${itemStr}</td>
+      <td class="price-cell">${Number(o.toplam).toLocaleString('tr-TR')} ₺</td>
+      <td><span style="display:inline-block;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;background:${statusBg[durum]||'#eee'};color:${statusColors[durum]||'#333'}">${durum}</span></td>
+      <td style="font-size:0.82rem">${date}</td>
+      <td><button class="icon-btn edit" onclick="openOrderModal(${o.id})" title="Detay"><i class="fas fa-eye"></i></button></td>
+    </tr>`;
+  }).join('');
+}
+
+function openOrderModal(id){
+  const o = ALL_ORDERS.find(x => x.id === id);
+  if(!o) return;
+  currentOrderId = id;
+  document.getElementById('orderModalTitle').innerText = 'Sipariş #' + id;
+  const items = typeof o.urunler === 'string' ? JSON.parse(o.urunler) : (o.urunler || []);
+  document.getElementById('orderModalBody').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="fg" style="margin:0"><label>Müşteri</label><div style="padding:10px;background:var(--cream);border-radius:8px">${o.musteri_adi} — ${o.telefon}</div></div>
+      <div class="fg" style="margin:0"><label>Adres</label><div style="padding:10px;background:var(--cream);border-radius:8px">${o.adres}</div></div>
+      <div class="fg" style="margin:0"><label>Ödeme</label><div style="padding:10px;background:var(--cream);border-radius:8px">${o.odeme_yontemi||'—'}</div></div>
+      <div class="fg" style="margin:0"><label>Ürünler</label><div style="padding:10px;background:var(--cream);border-radius:8px;font-size:0.85rem">${items.map(i=>`${i.name||i.ad} × ${i.quantity||i.adet||1} — ${Number((i.price||i.fiyat||0)*(i.quantity||i.adet||1)).toLocaleString('tr-TR')} ₺`).join('<br>')}</div></div>
+      ${o.siparis_notu ? `<div class="fg" style="margin:0"><label>Not</label><div style="padding:10px;background:#fff8e1;border-radius:8px">${o.siparis_notu}</div></div>` : ''}
+      <div class="fg" style="margin:0"><label>Toplam</label><div style="padding:10px;background:var(--cream);border-radius:8px;font-weight:700;font-size:1.1rem;color:var(--gold)">${Number(o.toplam).toLocaleString('tr-TR')} ₺</div></div>
+    </div>`;
+  document.getElementById('orderStatusSelect').value = o.durum || 'Beklemede';
+  document.getElementById('orderModal').classList.add('open');
+}
+
+async function updateOrderStatus(){
+  const durum = document.getElementById('orderStatusSelect').value;
+  try {
+    const r = await fetch('/api/orders?action=update-status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': 'gocmen1993' },
+      body: JSON.stringify({ id: currentOrderId, durum })
+    });
+    const data = await r.json();
+    if(data.success){
+      const o = ALL_ORDERS.find(x => x.id === currentOrderId);
+      if(o) o.durum = durum;
+      document.getElementById('orderModal').classList.remove('open');
+      filterOrders();
+      aToast('✓ Sipariş durumu güncellendi: ' + durum);
+    } else aToast('❌ ' + data.error);
+  } catch(e) { aToast('❌ Hata: ' + e.message); }
+}
 <!-- ══════════ MÜŞTERİLER ══════════ -->
 <div class="page" id="page-customers">
   <div class="page-header">

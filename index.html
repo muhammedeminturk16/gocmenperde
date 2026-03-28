@@ -432,10 +432,7 @@ footer span{color:var(--gold)}
 .mobile-bottom-nav{
 display:none;position:fixed;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));
 background:#ffffff;border:1px solid var(--border);border-radius:16px;z-index:2100;padding:8px 2px;
-box-shadow:0 -6px 24px rgba(0,0,0,0.14);overflow:hidden;transform:translateZ(0);isolation:isolate
-}
-@supports ((-webkit-backdrop-filter: blur(12px)) or (backdrop-filter: blur(12px))){
-  .mobile-bottom-nav{background:rgba(255,255,255,0.97);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+box-shadow:0 -6px 24px rgba(0,0,0,0.14);overflow:hidden
 }
 @media(max-width:640px){.mobile-bottom-nav{display:flex;justify-content:space-around;align-items:center}}
 .mbn-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 8px;border-radius:8px;background:none;border:none;color:var(--slate);font-family:var(--ff-body);font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;transition:0.2s;position:relative;min-width:48px}

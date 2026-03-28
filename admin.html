@@ -986,9 +986,9 @@ async function handleImageSelect(input) {
 // ════════════════════════════════════════════════════════
 //  GITHUB
 // ════════════════════════════════════════════════════════
-const REPO_OWNER = 'zeynel-turkoglu'; 
-const REPO_NAME = 'gocmenperde';      
-const FILE_PATH = 'products.json';
+const REPO_OWNER='gocmenperde';
+const REPO_NAME='gocmenperde';
+const FILE_PATH='products.json';
 function getGithubToken(){ return localStorage.getItem('gh_token'); }
 function resetGithubToken(){ localStorage.removeItem('gh_token'); const t=prompt('Yeni GitHub Token girin:'); if(t){localStorage.setItem('gh_token',t);aToast('✓ Token güncellendi');} }
 async function saveProductsJSON(){

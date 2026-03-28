@@ -482,6 +482,7 @@ body.cart-sheet-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:
 .cart-sheet-btn{border:none;border-radius:12px;padding:12px 14px;font-size:0.8rem;font-weight:600;letter-spacing:.5px;cursor:pointer}
 .cart-sheet-btn.secondary{background:#f1f1f1;color:var(--ink)}
 .cart-sheet-btn.primary{background:var(--gold);color:var(--ink)}
+@media(max-width:640px){.cart-sheet,.cart-sheet-overlay{display:none!important}}
 .address-helper{margin-top:10px;padding:12px;background:#fffaf0;border:1px solid rgba(201,168,76,0.28);border-radius:10px}
 .address-helper select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-family:var(--ff-body)}
 .address-helper-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
@@ -1607,10 +1608,11 @@ function addToCart(itemPayload){
   }
   total = basket.reduce((a,b)=>a+b.sub,0);
   updateCartCount();
+  closeCartSheet();
   showToast('✓ Sepete eklendi: '+name);
   saveCartToStorage();
   const addedItem = basket.find(i => i.id === id && ((i.dimensionsKey || '') === dimensionsKey));
-  if(addedItem) openCartSheet(addedItem);
+  if(addedItem && window.innerWidth > 640) openCartSheet(addedItem);
 }
 
 function updateCartCount(){

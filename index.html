@@ -1093,10 +1093,14 @@ function bindSquareMeterAutoCalc(product, qtyInputId, widthInputId, heightInputI
     const w = parseLocaleNumber(wEl.value);
     const h = parseLocaleNumber(hEl.value);
     if(Number.isFinite(w) && w > 0 && Number.isFinite(h) && h > 0){
-      const area = roundTo2(w * h);
+      const billedWidth = Math.max(w, 1);
+      const area = roundTo2(billedWidth * h);
       const total = roundTo2(area * (Number(product?.price) || 0));
       qtyEl.value = String(area).replace('.', ',');
-      if(infoEl) infoEl.textContent = `≈ ${area.toLocaleString('tr-TR')} m² • ${total.toLocaleString('tr-TR')} TL`;
+      if(infoEl){
+        const minWidthNote = billedWidth !== w ? ' (En minimum 1 m alındı)' : '';
+        infoEl.textContent = `≈ ${area.toLocaleString('tr-TR')} m² • ${total.toLocaleString('tr-TR')} TL${minWidthNote}`;
+      }
     } else if(infoEl){
       infoEl.textContent = 'En ve boy girildiğinde m² ve fiyat otomatik hesaplanır';
     }

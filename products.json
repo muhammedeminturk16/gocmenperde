@@ -1,11 +1,11 @@
 [
   {
-    "id": "plise-perde-antrasit---siyah---opak-1774730481031",
-    "name": "Plise Perde Antrasit - Siyah - Opak",
+    "id": "plise-perde-tababa--taba-kahve---opak-1774732053239",
+    "name": "Plise Perde Tababa / Taba Kahve - Opak",
     "desc": "Plise perdeler, özellikle dar alanlarda ve hareketli cam sistemlerinde maksimum verim sağlamak üzere tasarlanmıştır.",
-    "image": "resimler/1774730435176-IMG_1544.png",
+    "image": "resimler/1774731933026-IMG_1545.png",
     "images": [
-      "resimler/1774730435176-IMG_1544.png"
+      "resimler/1774731933026-IMG_1545.png"
     ],
     "price": 600,
     "oldPrice": 850,
@@ -13,6 +13,40 @@
     "unit": "adet",
     "isMeter": false,
     "isSquareMeter": false,
+    "features": "",
+    "badge": "250 TL İNDİRİM",
+    "discountType": "amount",
+    "discountValue": null,
+    "stock": null,
+    "active": true,
+    "specs": {
+      "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
+      "• Ray Sistemi": "Paslanmaya karşı dayanıklı eloksallı alüminyum profiller kullanılır. Bu, özellikle balkon gibi dış etkilere açık alanlarda dayanıklılık sağlar.",
+      "• Hareket Kabiliyeti": "İpli veya manuel (tutamaklı) sistemlerle aşağıdan yukarıya veya yukarıdan aşağıya doğru hareket ettirilebilir. \"Gece-Gündüz\" modellerinde iki farklı kumaş (tül ve güneşlik) aynı sistemde birleştirilebilir.",
+      "• Isı ve Işık Kontrolü": "Bazı modellerde bulunan \"Blackout\" veya \"Alüminyum Folyo Kaplı\" arka yüzeyler, güneş ışığını %90’a kadar yansıtır ve ısı yalıtımına katkı sağlar.",
+      "• Montaj Kolaylığı": "Cam balkon kanatlarına özel geçme aparatları ile vidalı veya yapıştırmalı (vidalanamayan alanlar için) seçeneklerle kolayca monte edilir."
+    },
+    "care": {
+      "1. Toz Alma": "Düzenli olarak yumuşak bir fırça eki takılmış elektrik süpürgesiyle veya mikrofiber bir bezle tozunu alabilirsiniz.",
+      "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
+      "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
+      "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
+    }
+  },
+  {
+    "id": "plise-perde-tas-grisi---opak-1774729445009",
+    "name": "Plise Perde Taş Grisi - Opak",
+    "desc": "Plise perdeler, özellikle dar alanlarda ve hareketli cam sistemlerinde maksimum verim sağlamak üzere tasarlanmıştır.",
+    "image": "resimler/1774729395156-IMG_1543.png",
+    "images": [
+      "resimler/1774729395156-IMG_1543.png"
+    ],
+    "price": 600,
+    "oldPrice": 850,
+    "cat": "plise-perde",
+    "unit": "m2",
+    "isMeter": false,
+    "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
     "stock": null,

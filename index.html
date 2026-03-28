@@ -485,7 +485,20 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 .promo-banner i{color:var(--gold);margin-top:2px}
 .promo-banner strong{display:block;font-size:0.82rem;color:var(--ink);margin-bottom:2px}
 .promo-banner span{font-size:0.74rem;color:var(--slate);line-height:1.45}
-@media(max-width:900px){.promo-banner-row{grid-template-columns:1fr}}
+.first-order-banner{position:relative;border-radius:18px;overflow:hidden;min-height:220px;margin-bottom:20px;border:1px solid rgba(201,168,76,0.35);box-shadow:0 18px 40px rgba(15,14,13,0.16);display:flex;align-items:flex-end}
+.first-order-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.02)}
+.first-order-banner::before{content:'';position:absolute;inset:0;background:linear-gradient(110deg,rgba(15,14,13,0.88) 12%,rgba(15,14,13,0.48) 55%,rgba(15,14,13,0.12) 100%)}
+.first-order-banner-content{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;width:100%;padding:20px;align-items:flex-end}
+.first-order-banner-text{max-width:500px}
+.first-order-banner-eyebrow{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.72);margin-bottom:8px;display:block}
+.first-order-banner-text h3{font-family:var(--ff-display);font-size:clamp(1.25rem,2.4vw,1.9rem);line-height:1.15;color:white;margin-bottom:8px}
+.first-order-banner-text p{font-size:0.82rem;color:rgba(247,244,239,0.84);max-width:430px;line-height:1.6}
+.coupon-chip{display:inline-flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.95);color:var(--ink);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.coupon-chip b{font-size:0.95rem;color:var(--gold-dark);letter-spacing:2px}
+.product-campaign-pill{position:absolute;left:12px;bottom:12px;z-index:5;padding:7px 10px;border-radius:999px;background:rgba(15,14,13,0.75);backdrop-filter:blur(4px);color:#fff;font-size:0.6rem;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;border:1px solid rgba(201,168,76,0.35)}
+.product-campaign-pill i{color:var(--gold);margin-right:5px}
+.product-campaign-tint{position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(0deg,rgba(15,14,13,0.5),rgba(15,14,13,0));pointer-events:none}
+@media(max-width:900px){.promo-banner-row{grid-template-columns:1fr}.first-order-banner{min-height:190px}}
 .checkout-membership-card{margin-bottom:18px;background:linear-gradient(135deg,#fff 0%,#f9f5ea 100%);border:1px solid rgba(201,168,76,0.35);border-radius:12px;padding:14px 16px}
 .checkout-membership-card h4{font-size:0.9rem;margin-bottom:6px}
 .checkout-membership-card p{font-size:0.78rem;color:var(--slate);line-height:1.5}
@@ -680,6 +693,17 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
       </div>
     </div>
     <div class="products-content">
+      <div class="first-order-banner">
+        <img src="resimler/foto6.jpg" alt="İlk sipariş kupon kampanyası" loading="lazy">
+        <div class="first-order-banner-content">
+          <div class="first-order-banner-text">
+            <span class="first-order-banner-eyebrow">Online'a özel kampanya</span>
+            <h3>İlk Siparişte Anında %10 İndirim Fırsatı</h3>
+            <p>Sepet adımında kupon alanına kodunuzu yazın, ilk siparişinizde kampanya otomatik olarak fiyatınıza uygulansın.</p>
+          </div>
+          <div class="coupon-chip"><span>Kupon Kodu</span><b>ILKSIPARIS10</b></div>
+        </div>
+      </div>
       <div class="promo-banner-row">
         <div class="promo-banner"><i class="fas fa-bolt"></i><div><strong>Haftanın Fırsatı</strong><span>Seçili tül perde modellerinde sepette ekstra %10 indirim.</span></div></div>
         <div class="promo-banner"><i class="fas fa-ruler-combined"></i><div><strong>Ücretsiz Ölçü Danışmanlığı</strong><span>Ölçüden emin değilseniz WhatsApp üzerinden hızlı destek alın.</span></div></div>
@@ -1184,7 +1208,7 @@ function formatDimension(value){
   return (Number(value) || 0).toLocaleString('tr-TR', { minimumFractionDigits:0, maximumFractionDigits:2 });
 }
 
-function buildCard(p){
+function buildCard(p, index=0){
   const qid = 'q-' + p.id;
   const wid = 'w-' + p.id;
   const hid = 'h-' + p.id;
@@ -1212,12 +1236,15 @@ function buildCard(p){
     <button class="add-btn" onclick="event.stopPropagation();addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','pile-${p.id}')">+ Ekle</button>
   </div>`;
 
+  const showCampaignSlot = index % 4 === 1;
+
   return `<div class="product-card" data-cat="${p.cat}" data-price="${p.price}" data-features="${p.features||''}" data-id="${p.id}" onclick="openModalFromProduct('${p.id}');trackRecentlyViewed('${p.id}')">
     <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${p.id}',this)">
       <i class="${isFav?'fas':'far'} fa-heart"></i>
     </button>
     <div class="product-img-wrap">
       <img src="${primaryImage}" alt="${p.name}" loading="lazy">
+      ${showCampaignSlot ? '<span class="product-campaign-tint"></span><span class="product-campaign-pill"><i class="fas fa-bullhorn"></i>Kampanya Alanı</span>' : ''}
       ${productImages.length>1?`<span class="product-gallery-meta"><i class="fas fa-images"></i> ${productImages.length} fotoğraf</span>`:''}
       ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
       <button class="product-zoom" onclick="event.stopPropagation();openModalFromProduct('${p.id}');trackRecentlyViewed('${p.id}')"><i class="fas fa-expand-alt"></i></button>
@@ -1240,7 +1267,7 @@ function renderProducts(list){
     grid.innerHTML = '<div class="products-loading" style="grid-column:1/-1">Bu kriterlere uygun ürün bulunamadı.</div>';
     return;
   }
-  grid.innerHTML = active.map(buildCard).join('');
+  grid.innerHTML = active.map((p, idx)=>buildCard(p, idx)).join('');
   active.forEach(p=>{
     if(isSquareMeterProduct(p)){
       bindSquareMeterAutoCalc(p, 'q-' + p.id, 'w-' + p.id, 'h-' + p.id, 'price-info-' + p.id);

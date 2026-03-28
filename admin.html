@@ -1182,7 +1182,8 @@ async function loadCustomers(){
     const data = await r.json();
     ALL_CUSTOMERS = data.customers||[];
   } catch(e){
-    ALL_CUSTOMERS = getSampleCustomers();
+    ALL_CUSTOMERS = [];
+    aToast('Müşteri listesi alınamadı. API bağlantısını kontrol edin.','error');
   }
   filterCustomers();
   const el = document.getElementById('statCustomers');

@@ -37,9 +37,13 @@ img,video,canvas,svg{max-width:100%}
 @keyframes lineGrow{to{width:200px}}
 .toast{position:fixed;bottom:30px;right:30px;z-index:12200;background:var(--ink);color:white;padding:16px 24px;border-radius:10px;font-size:0.8rem;font-weight:500;letter-spacing:1px;border-left:3px solid var(--gold);transform:translateX(120%);transition:transform 0.4s var(--transition);pointer-events:none;max-width:320px}
 .toast.show{transform:translateX(0)}
-@media(max-width:480px){.toast{right:12px;left:12px;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateY(120%)}.toast.show{transform:translateY(0)}}
-body.cart-sheet-open .toast{bottom:calc(250px + env(safe-area-inset-bottom))}
-@media(max-width:480px){body.cart-sheet-open .toast{bottom:calc(220px + env(safe-area-inset-bottom))}}
+@media(max-width:480px){
+  .toast{
+    right:12px;left:12px;top:calc(82px + env(safe-area-inset-top));bottom:auto;
+    transform:translateY(-130%);
+  }
+  .toast.show{transform:translateY(0)}
+}
 .hidden{display:none!important}
 .fade-in{animation:fadeUp 0.7s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
@@ -446,7 +450,7 @@ box-shadow:0 -10px 30px rgba(0,0,0,0.08);z-index:1700;
 mix-blend-mode:normal !important;
 mix-blend-mode:normal !important;transition:transform .28s ease,opacity .28s ease;
 }
-@media(max-width:640px){.mobile-bottom-nav{display:flex;justify-content:space-around;align-items:center}}
+@media(max-width:640px){.mobile-bottom-nav{display:none!important}}
 .mbn-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 8px;border-radius:8px;background:none;border:none;color:var(--slate);font-family:var(--ff-body);font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;transition:0.2s;position:relative;min-width:48px}
 .mbn-item:hover,.mbn-item.active-nav{color:var(--gold)}
 .mbn-item i{font-size:1.1rem}
@@ -478,6 +482,7 @@ body.cart-sheet-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:
 .cart-sheet-btn{border:none;border-radius:12px;padding:12px 14px;font-size:0.8rem;font-weight:600;letter-spacing:.5px;cursor:pointer}
 .cart-sheet-btn.secondary{background:#f1f1f1;color:var(--ink)}
 .cart-sheet-btn.primary{background:var(--gold);color:var(--ink)}
+@media(max-width:640px){.cart-sheet,.cart-sheet-overlay{display:none!important}}
 .address-helper{margin-top:10px;padding:12px;background:#fffaf0;border:1px solid rgba(201,168,76,0.28);border-radius:10px}
 .address-helper select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-family:var(--ff-body)}
 .address-helper-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
@@ -1603,10 +1608,11 @@ function addToCart(itemPayload){
   }
   total = basket.reduce((a,b)=>a+b.sub,0);
   updateCartCount();
+  closeCartSheet();
   showToast('✓ Sepete eklendi: '+name);
   saveCartToStorage();
   const addedItem = basket.find(i => i.id === id && ((i.dimensionsKey || '') === dimensionsKey));
-  if(addedItem) openCartSheet(addedItem);
+  if(addedItem && window.innerWidth > 640) openCartSheet(addedItem);
 }
 
 function updateCartCount(){
@@ -1898,21 +1904,9 @@ function hideToast(){
     toastTimer = null;
   }
 }
-function hideToast(){
-  const t=document.getElementById('toast');
-  if(!t) return;
-  t.classList.remove('show');
-  t.innerText='';
-  if(toastTimer){
-    clearTimeout(toastTimer);
-    toastTimer = null;
-  }
-}
 
 function showToast(msg){
   const t=document.getElementById('toast');
-  t.innerText=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3500);
   if(!t) return;
   if(!msg || !String(msg).trim()){
     hideToast();
@@ -1944,7 +1938,7 @@ function initObserver(){
 // ── Mobil bottom nav height fix ──
 function setMobileNavPadding(){
   const nav = document.querySelector('.mobile-bottom-nav');
-  if(nav && window.innerWidth<=640){
+  if(nav && window.innerWidth<=640 && getComputedStyle(nav).display!=='none'){
     const pad = nav.offsetHeight + 18;
     document.querySelectorAll('.section').forEach(s=>{
       s.style.paddingBottom = pad + 'px';

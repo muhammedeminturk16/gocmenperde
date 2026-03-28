@@ -3,7 +3,7 @@
 <head>
 <meta name="google-site-verification" content="4fU9nd_ZSO0GTHVDdpMuHk-tI7NE26mjVLU_gWoz2As" />
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="Göçmen Perde - Bursa'nın En Seçkin Perde ve Koltuk Örtüsü Mağazası. Osmangazi'de 30 yıllık tecrübe.">
 <title>Göçmen Perde | Bursa'nın Seçkin Perde Evi</title>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -432,6 +432,25 @@ footer span{color:var(--gold)}
 .mbn-item:hover,.mbn-item.active-nav{color:var(--gold)}
 .mbn-item i{font-size:1.1rem}
 .mbn-badge{position:absolute;top:0;right:6px;background:var(--gold);color:var(--ink);font-size:0.55rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* Bu kod her şeyi en dibe çeker ve boşluğu kapatır */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    background-color: #0f0e0d !important; /* Arka planı siyah yapar, çıkıntı görünmez */
+    overflow-x: hidden;
+}
+
+/* Alt menüyü (navbar) ekrana yapıştıran sihirli dokunuş */
+nav, footer, .bottom-nav, [class*="nav"], [class*="footer"] {
+    bottom: 0 !important;
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom) !important; /* iPhone çentiği için */
+}
+
 </style>
 </head>
 

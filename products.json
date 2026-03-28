@@ -10,15 +10,20 @@
     ],
     "price": 600,
     "oldPrice": 850,
-    "cat": "perde",
-    "unit": "adet",
+    "cat": "plise-perde",
+    "unit": "m2",
     "isMeter": false,
+    "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
     "stock": null,
     "active": true,
-    "specs": {},
-    "care": {}
+    "specs": {
+      "Madde 1": "İstediğiniz ölçüde yapılır"
+    },
+    "care": {
+      "Madde 1": "Silinebilir"
+    }
   },
   {
     "id": "kursunlu-desensiz-modern-duz-perde-1774694118154",
@@ -39,7 +44,7 @@
     ],
     "price": 299.99,
     "oldPrice": 499.99,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "mt",
     "isMeter": true,
     "features": "Ütü istemez",
@@ -67,8 +72,8 @@
     "image": "resimler/1774687325299-IMG_1471.jpeg",
     "price": 2000,
     "oldPrice": 2500,
-    "cat": "carsaf",
-    "unit": "adet",
+    "cat": "zebra-perde",
+    "unit": "m2",
     "isMeter": false,
     "features": "Premium Kalite",
     "badge": "500 TL İNDİRİM",
@@ -80,7 +85,8 @@
       "Kumaş": "Zebra",
       "Stil": "Modern"
     },
-    "care": {}
+    "care": {},
+    "isSquareMeter": true
   },
   {
     "id": "zebra-perde-1774657341307",
@@ -89,8 +95,8 @@
     "image": "resimler/1774658872713-IMG_1444.jpeg",
     "price": 1000,
     "oldPrice": 1500,
-    "cat": "perde",
-    "unit": "adet",
+    "cat": "zebra-perde",
+    "unit": "m2",
     "isMeter": false,
     "features": "Premium",
     "badge": "500 TL İNDİRİM",
@@ -107,7 +113,8 @@
       "Kurutma": "Gölgede kurutun",
       "Ütü": "Düşük ısıda",
       "Kuru Temizleme": "Önerilmez"
-    }
+    },
+    "isSquareMeter": true
   },
   {
     "id": "stor-perde-1774593801587",
@@ -116,8 +123,8 @@
     "image": "resimler/img_1364.webp",
     "price": 600,
     "oldPrice": 750,
-    "cat": "carsaf",
-    "unit": "adet",
+    "cat": "stor-perde",
+    "unit": "m2",
     "isMeter": false,
     "features": "",
     "badge": "150 TL İNDİRİM",
@@ -132,7 +139,8 @@
     "care": {
       "Kurutma": "Gölgede kurutun",
       "Temizleme": "Nemli bezle silinebilir, yıkama gerektirmez"
-    }
+    },
+    "isSquareMeter": true
   },
   {
     "id": "izgili-tl-perde-1774588078918",
@@ -141,7 +149,7 @@
     "image": "resimler/img_1141.jpeg",
     "price": 250,
     "oldPrice": 500,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "adet",
     "isMeter": false,
     "features": "Ütüistemez",
@@ -197,7 +205,7 @@
     "image": "resimler/1774556995420.png",
     "price": 200,
     "oldPrice": 400,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "adet",
     "isMeter": false,
     "features": "Ütüistemez",
@@ -225,7 +233,7 @@
     "image": "resimler/bambutul.PNG",
     "price": 300,
     "oldPrice": 600,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "mt",
     "isMeter": true,
     "features": "Ütüistemezharikatüller",
@@ -253,7 +261,7 @@
     "image": "resimler/tulperde.WEBP",
     "price": 250,
     "oldPrice": 500,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "mt",
     "isMeter": true,
     "features": "Ütüistemez",
@@ -281,7 +289,7 @@
     "image": "resimler/desenlifon.WEBP",
     "price": 5000,
     "oldPrice": 6250,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "adet",
     "isMeter": false,
     "features": "Ütüİstemez",
@@ -552,7 +560,7 @@
     "image": "resimler/dikili_perde.jpeg",
     "price": 200,
     "oldPrice": 267,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "mt",
     "isMeter": true,
     "features": "utu",
@@ -579,7 +587,7 @@
     "image": "resimler/kumas_fon_renkli.jpeg",
     "price": 2500,
     "oldPrice": 3333,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "adet",
     "isMeter": false,
     "features": "",
@@ -606,7 +614,7 @@
     "image": "resimler/brillant_fon.jpeg",
     "price": 4500,
     "oldPrice": 6000,
-    "cat": "perde",
+    "cat": "tul-perde",
     "unit": "adet",
     "isMeter": false,
     "features": "karartma,premium",

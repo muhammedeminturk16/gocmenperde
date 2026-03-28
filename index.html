@@ -437,6 +437,7 @@ padding:8px 10px calc(8px + env(safe-area-inset-bottom));
 background:#fff;border-top:1px solid rgba(201,168,76,0.18);
 box-shadow:0 -10px 30px rgba(0,0,0,0.08);z-index:1700;
 mix-blend-mode:normal !important;
+mix-blend-mode:normal !important;transition:transform .28s ease,opacity .28s ease;
 }
 @media(max-width:640px){.mobile-bottom-nav{display:flex;justify-content:space-around;align-items:center}}
 .mbn-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 8px;border-radius:8px;background:none;border:none;color:var(--slate);font-family:var(--ff-body);font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;transition:0.2s;position:relative;min-width:48px}
@@ -459,6 +460,9 @@ mix-blend-mode:normal !important;
 .cart-sheet-overlay.open{display:block}
 .cart-sheet{position:fixed;left:0;right:0;bottom:-110%;z-index:2100;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -30px 80px rgba(0,0,0,0.25);padding:18px 16px calc(18px + env(safe-area-inset-bottom));transition:bottom .35s ease}
 .cart-sheet.open{bottom:0}
+.cart-sheet{position:fixed;left:0;right:0;bottom:0;z-index:2100;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -30px 80px rgba(0,0,0,0.25);padding:18px 16px calc(18px + env(safe-area-inset-bottom));transform:translateY(112%);transition:transform .35s ease;will-change:transform}
+.cart-sheet.open{transform:translateY(0)}
+body.cart-sheet-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:translateY(120%)}
 .cart-sheet-handle{width:60px;height:5px;border-radius:999px;background:#d7d7d7;margin:0 auto 12px}
 .cart-sheet-title{display:flex;align-items:center;gap:8px;color:#16a34a;font-size:1.05rem;font-weight:700;margin-bottom:12px}
 .cart-sheet-body{display:flex;align-items:center;gap:12px;background:#f8f8f8;border:1px solid #ececec;border-radius:14px;padding:10px 12px}
@@ -1434,6 +1438,10 @@ function closeCartSheet(){
   document.getElementById('cartSheet')?.classList.remove('open');
   document.getElementById('cartSheetOverlay')?.classList.remove('open');
   document.body.classList.remove('cart-sheet-open');
+  if(cartSheetTimer){
+    clearTimeout(cartSheetTimer);
+    cartSheetTimer = null;
+  }
 }
 
 function addToCart(name, price, inputId, isMeter, productId){

@@ -1,11 +1,11 @@
 [
   {
-    "id": "plise-perde-tas-grisi---opak-1774729445009",
-    "name": "Plise Perde Taş Grisi - Opak",
+    "id": "plise-perde-antrasit---siyah---opak-1774730481031",
+    "name": "Plise Perde Antrasit - Siyah - Opak",
     "desc": "Plise perdeler, özellikle dar alanlarda ve hareketli cam sistemlerinde maksimum verim sağlamak üzere tasarlanmıştır.",
-    "image": "resimler/1774729395156-IMG_1543.png",
+    "image": "resimler/1774730435176-IMG_1544.png",
     "images": [
-      "resimler/1774729395156-IMG_1543.png"
+      "resimler/1774730435176-IMG_1544.png"
     ],
     "price": 600,
     "oldPrice": 850,
@@ -42,9 +42,9 @@
     "price": 600,
     "oldPrice": 850,
     "cat": "plise-perde",
-    "unit": "adet",
+    "unit": "m2",
     "isMeter": false,
-    "isSquareMeter": false,
+    "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
     "stock": null,
@@ -74,9 +74,9 @@
     "price": 600,
     "oldPrice": 850,
     "cat": "plise-perde",
-    "unit": "adet",
+    "unit": "m2",
     "isMeter": false,
-    "isSquareMeter": false,
+    "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
     "stock": null,

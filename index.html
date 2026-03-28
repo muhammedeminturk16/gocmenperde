@@ -544,7 +544,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
       <div class="nav-collection">
         <button class="nav-link" onclick="go('products')">Koleksiyon</button>
         <div class="collection-dropdown">
-          <button onclick="openCategoryFromMenu('perde')"><i class="fas fa-window-maximize" style="margin-right:8px;color:var(--gold)"></i>Perde Koleksiyonu</button>
+          <button onclick="openCategoryFromMenu('tul-perde')"><i class="fas fa-window-maximize" style="margin-right:8px;color:var(--gold)"></i>Tül Perdeler</button>
           <button onclick="openCategoryFromMenu('carsaf')"><i class="fas fa-bed" style="margin-right:8px;color:var(--gold)"></i>Çarşaf Koleksiyonu</button>
           <button onclick="openCategoryFromMenu('koltuk')"><i class="fas fa-couch" style="margin-right:8px;color:var(--gold)"></i>Koltuk Örtüsü</button>
         </div>
@@ -641,7 +641,10 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
         <div id="categoryFilterList">
           <div class="filter-option"><input type="checkbox" id="cat-all" checked onchange="applyFilters()"><label for="cat-all">Tümü</label></div>
           <div class="filter-option"><input type="checkbox" id="cat-carsaf" onchange="applyFilters()"><label for="cat-carsaf">Çarşaflar</label></div>
-          <div class="filter-option"><input type="checkbox" id="cat-perde" onchange="applyFilters()"><label for="cat-perde">Perdeler</label></div>
+          <div class="filter-option"><input type="checkbox" id="cat-tul-perde" onchange="applyFilters()"><label for="cat-tul-perde">Tül Perdeler</label></div>
+          <div class="filter-option"><input type="checkbox" id="cat-plise-perde" onchange="applyFilters()"><label for="cat-plise-perde">Plise Perdeler</label></div>
+          <div class="filter-option"><input type="checkbox" id="cat-stor-perde" onchange="applyFilters()"><label for="cat-stor-perde">Stor Perdeler</label></div>
+          <div class="filter-option"><input type="checkbox" id="cat-zebra-perde" onchange="applyFilters()"><label for="cat-zebra-perde">Zebra Perdeler</label></div>
           <div class="filter-option"><input type="checkbox" id="cat-koltuk" onchange="applyFilters()"><label for="cat-koltuk">Koltuk Örtüleri</label></div>
         </div>
       </div>
@@ -902,7 +905,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
   <div class="menu-logo">GÖÇMEN PERDE</div>
   <button onclick="go('home');toggleMenu()"><i class="fas fa-home" style="margin-right:10px;color:var(--gold)"></i>ANASAYFA</button>
   <button onclick="go('products');toggleMenu()"><i class="fas fa-th-large" style="margin-right:10px;color:var(--gold)"></i>KOLEKSİYON</button>
-  <button onclick="openCategoryFromMenu('perde')"><i class="fas fa-window-maximize" style="margin-right:10px;color:var(--gold)"></i>PERDELER</button>
+  <button onclick="openCategoryFromMenu('tul-perde')"><i class="fas fa-window-maximize" style="margin-right:10px;color:var(--gold)"></i>TÜL PERDELER</button>
   <button onclick="openCategoryFromMenu('carsaf')"><i class="fas fa-bed" style="margin-right:10px;color:var(--gold)"></i>ÇARŞAFLAR</button>
   <button onclick="openCategoryFromMenu('koltuk')"><i class="fas fa-couch" style="margin-right:10px;color:var(--gold)"></i>KOLTUK ÖRTÜLERİ</button>
   <button onclick="go('about');toggleMenu()"><i class="fas fa-info-circle" style="margin-right:10px;color:var(--gold)"></i>HİKAYEMİZ</button>
@@ -955,21 +958,19 @@ let PRODUCTS = [];
 // Kategoriler (admin'den senkronize edilir)
 let CATEGORIES = [
   {key:'carsaf',label:'Çarşaflar'},
-  {key:'perde',label:'Perdeler'},
   {key:'tul-perde',label:'Tül Perdeler'},
+  {key:'plise-perde',label:'Plise Perdeler'},
+  {key:'stor-perde',label:'Stor Perdeler'},
+  {key:'zebra-perde',label:'Zebra Perdeler'},
   {key:'koltuk',label:'Koltuk Örtüleri'}
 ];
+
+const AREA_PRICE_CATEGORIES = ['stor-perde','zebra-perde','plise-perde'];
 
 async function loadProducts(){
   try{
     const res = await fetch('products.json?v=' + Date.now(), { cache:'no-store' });
-    PRODUCTS = (await res.json()).map(p => {
-      const txt = `${p?.name || ''} ${p?.desc || ''}`.toLowerCase();
-      if(txt.includes('tül') || txt.includes('tul')){
-        return { ...p, cat:'tul-perde' };
-      }
-      return p;
-    });
+    PRODUCTS = (await res.json()).map(normalizeProductCatalog);
     syncCategoriesFromAdmin();
     renderProducts(PRODUCTS);
     renderRecentlyViewed();
@@ -985,6 +986,17 @@ function syncCategoriesFromAdmin(){
     const saved = localStorage.getItem('gp_categories');
     if(saved){ CATEGORIES = JSON.parse(saved); }
   } catch(e){}
+  const required = [
+    {key:'carsaf',label:'Çarşaflar'},
+    {key:'tul-perde',label:'Tül Perdeler'},
+    {key:'plise-perde',label:'Plise Perdeler'},
+    {key:'stor-perde',label:'Stor Perdeler'},
+    {key:'zebra-perde',label:'Zebra Perdeler'},
+    {key:'koltuk',label:'Koltuk Örtüleri'}
+  ];
+  required.forEach(cat=>{
+    if(!CATEGORIES.some(c=>c.key===cat.key)) CATEGORIES.push(cat);
+  });
   // Filtre panelini güncelle
   rebuildCategoryFilters();
 }
@@ -1022,9 +1034,30 @@ function getPrimaryImage(product){
 function normalizeUnit(unit){
   return String(unit || '').trim().toLowerCase();
 }
+function detectCurtainCategory(product){
+  const text = `${product?.name || ''} ${product?.desc || ''} ${product?.features || ''}`.toLocaleLowerCase('tr');
+  if(text.includes('plise')) return 'plise-perde';
+  if(text.includes('zebra')) return 'zebra-perde';
+  if(text.includes('stor')) return 'stor-perde';
+  if(text.includes('tül') || text.includes('tul')) return 'tul-perde';
+  if(String(product?.cat || '').toLowerCase()==='perde') return 'tul-perde';
+  return product?.cat;
+}
+function normalizeProductCatalog(product){
+  const next = { ...product };
+  const detectedCat = detectCurtainCategory(next);
+  if(detectedCat) next.cat = detectedCat;
+  if(AREA_PRICE_CATEGORIES.includes(next.cat)){
+    next.unit = 'm2';
+    next.isSquareMeter = true;
+    next.isMeter = false;
+  }
+  return next;
+}
 function isSquareMeterProduct(product){
   const u = normalizeUnit(product?.unit);
-  return !!(product?.isSquareMeter || u === 'm²' || u === 'm2' || u === 'metrekare');
+  const cat = String(product?.cat || '').toLowerCase();
+  return !!(product?.isSquareMeter || AREA_PRICE_CATEGORIES.includes(cat) || u === 'm²' || u === 'm2' || u === 'metrekare');
 }
 function isMeterProduct(product){
   const u = normalizeUnit(product?.unit);
@@ -1033,12 +1066,8 @@ function isMeterProduct(product){
 function needsDimensions(product){
   return isMeterProduct(product) || isSquareMeterProduct(product);
 }
-function isTulPerdeProduct(product){
-  const cat = String(product?.cat || '').toLowerCase();
-  if(['tul-perde','tulperde'].includes(cat)) return isMeterProduct(product);
-  const haystack = `${product?.name || ''} ${product?.desc || ''} ${product?.features || ''}`.toLocaleLowerCase('tr');
-  const hasTulKeyword = haystack.includes('tül perde') || haystack.includes('tul perde') || haystack.includes('tül') || haystack.includes('tul');
-  return isMeterProduct(product) && hasTulKeyword;
+function isPleatedMeterProduct(product){
+  return isMeterProduct(product) && !isSquareMeterProduct(product);
 }
 function getPileMultiplier(pileType){
   if(pileType === 'seyrek') return 2;
@@ -1123,21 +1152,21 @@ function buildCard(p){
   const primaryImage = getPrimaryImage(p);
   const meterProduct = isMeterProduct(p);
   const squareProduct = isSquareMeterProduct(p);
-  const tulPerdeProduct = isTulPerdeProduct(p);
+  const pleatedMeterProduct = isPleatedMeterProduct(p);
   const requireSize = needsDimensions(p);
-  const requireHeight = squareProduct || tulPerdeProduct;
+  const requireHeight = squareProduct || pleatedMeterProduct;
   const priceHTML = p.oldPrice
     ? `<span class="old-price">${p.oldPrice.toLocaleString('tr-TR')} TL</span>
        <span class="current-price">${p.price.toLocaleString('tr-TR')} TL <span class="price-unit">/ ${p.unit}</span></span>`
     : `<span class="current-price">${p.price.toLocaleString('tr-TR')} TL <span class="price-unit">/ ${p.unit}</span></span>`;
 
   const addBtn = `<div class="qty-wrap">
-    ${squareProduct || tulPerdeProduct ? `<input type="text" class="qty-input" id="${qid}" value="0" readonly>` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="qty-input" id="${qid}" value="1" ${meterProduct ? `title="Virgüllü değer girebilirsiniz"` : ''}>`}
+    ${squareProduct || pleatedMeterProduct ? `<input type="text" class="qty-input" id="${qid}" value="0" readonly>` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="qty-input" id="${qid}" value="1" ${meterProduct ? `title="Virgüllü değer girebilirsiniz"` : ''}>`}
     ${requireSize ? `<input type="text" inputmode="decimal" class="qty-input" id="${wid}" placeholder="En (m)">` : ''}
     ${requireHeight ? `<input type="text" inputmode="decimal" class="qty-input" id="${hid}" placeholder="Boy (m)">` : ''}
-    ${tulPerdeProduct ? `<select class="qty-input" id="pile-${p.id}" style="min-width:108px"><option value="seyrek">Seyrek Pile (2x)</option><option value="orta" selected>Orta Pile (2.5x)</option><option value="sik">Sık Pile (3x)</option></select>` : ''}
+    ${pleatedMeterProduct ? `<select class="qty-input" id="pile-${p.id}" style="min-width:108px"><option value="seyrek">Seyrek Pile (1m→2m)</option><option value="orta" selected>Orta Pile (1m→2.5m)</option><option value="sik">Sık Pile (1m→3m)</option></select>` : ''}
     ${squareProduct ? `<span id="${pid}" style="font-size:0.66rem;color:var(--slate);display:block;min-width:150px">En ve boy girildiğinde m² ve fiyat otomatik hesaplanır</span>` : ''}
-    ${tulPerdeProduct ? `<span id="${pid}" style="font-size:0.66rem;color:var(--slate);display:block;min-width:150px">En ve boy girip pile seçtiğinizde metre ve fiyat otomatik hesaplanır</span>` : ''}
+    ${pleatedMeterProduct ? `<span id="${pid}" style="font-size:0.66rem;color:var(--slate);display:block;min-width:150px">En/boy ve pile seçimine göre (1:2 / 1:2.5 / 1:3) metre ve fiyat otomatik hesaplanır</span>` : ''}
     <button class="add-btn" onclick="event.stopPropagation();addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','pile-${p.id}')">+ Ekle</button>
   </div>`;
 
@@ -1175,7 +1204,7 @@ function renderProducts(list){
       bindSquareMeterAutoCalc(p, 'q-' + p.id, 'w-' + p.id, 'h-' + p.id, 'price-info-' + p.id);
       return;
     }
-    if(isTulPerdeProduct(p)){
+    if(isPleatedMeterProduct(p)){
       bindTulPerdeAutoCalc(p, 'q-' + p.id, 'w-' + p.id, 'h-' + p.id, 'pile-' + p.id, 'price-info-' + p.id);
     }
   });
@@ -1346,15 +1375,15 @@ function openModalFromProduct(id){
   const meterProduct = isMeterProduct(p);
   const squareProduct = isSquareMeterProduct(p);
   const requireSize = needsDimensions(p);
-  const tulPerdeProduct = isTulPerdeProduct(p);
-  const requireHeight = squareProduct || tulPerdeProduct;
+  const pleatedMeterProduct = isPleatedMeterProduct(p);
+  const requireHeight = squareProduct || pleatedMeterProduct;
   document.getElementById('mAddWrap').innerHTML = `
-    ${squareProduct || tulPerdeProduct ? `<input type="text" class="modal-qty-input" id="${qid}" value="0" readonly>` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="modal-qty-input" id="${qid}" value="1">`}
+    ${squareProduct || pleatedMeterProduct ? `<input type="text" class="modal-qty-input" id="${qid}" value="0" readonly>` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="modal-qty-input" id="${qid}" value="1">`}
     ${requireSize ? `<input type="text" inputmode="decimal" class="modal-qty-input" id="${wid}" placeholder="En (m)">` : ''}
     ${requireHeight ? `<input type="text" inputmode="decimal" class="modal-qty-input" id="${hid}" placeholder="Boy (m)">` : ''}
-    ${tulPerdeProduct ? `<select class="modal-qty-input" id="modal-pile-${p.id}" style="min-width:130px"><option value="seyrek">Seyrek Pile (2x)</option><option value="orta" selected>Orta Pile (2.5x)</option><option value="sik">Sık Pile (3x)</option></select>` : ''}
+    ${pleatedMeterProduct ? `<select class="modal-qty-input" id="modal-pile-${p.id}" style="min-width:130px"><option value="seyrek">Seyrek Pile (1m→2m)</option><option value="orta" selected>Orta Pile (1m→2.5m)</option><option value="sik">Sık Pile (1m→3m)</option></select>` : ''}
     ${squareProduct ? `<span id="${pid}" style="font-size:0.72rem;color:var(--slate);display:block;flex:1 1 100%">En ve boy girildiğinde m² ve fiyat otomatik hesaplanır</span>` : ''}
-    ${tulPerdeProduct ? `<span id="${pid}" style="font-size:0.72rem;color:var(--slate);display:block;flex:1 1 100%">En ve boy girip pile seçtiğinizde metre ve fiyat otomatik hesaplanır</span>` : ''}
+    ${pleatedMeterProduct ? `<span id="${pid}" style="font-size:0.72rem;color:var(--slate);display:block;flex:1 1 100%">En/boy ve pile seçimine göre (1:2 / 1:2.5 / 1:3) metre ve fiyat otomatik hesaplanır</span>` : ''}
     <button class="modal-add-btn" onclick="addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','modal-pile-${p.id}')">
       <i class="fas fa-bag-shopping" style="margin-right:8px"></i>Sepete Ekle
     </button>
@@ -1363,7 +1392,7 @@ function openModalFromProduct(id){
     </button>`;
   if(squareProduct){
     bindSquareMeterAutoCalc(p, qid, wid, hid, pid);
-  } else if(tulPerdeProduct){
+  } else if(pleatedMeterProduct){
     bindTulPerdeAutoCalc(p, qid, wid, hid, `modal-pile-${p.id}`, pid);
   }
 
@@ -1638,9 +1667,9 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
   if(!product) return;
   const meterProduct = isMeterProduct(product);
   const squareProduct = isSquareMeterProduct(product);
-  const tulPerdeProduct = isTulPerdeProduct(product);
+  const pleatedMeterProduct = isPleatedMeterProduct(product);
   const requireSize = needsDimensions(product);
-  const requireHeight = squareProduct || tulPerdeProduct;
+  const requireHeight = squareProduct || pleatedMeterProduct;
   const qtyRaw = document.getElementById(qtyInputId)?.value ?? '1';
   const widthRaw = document.getElementById(widthInputId)?.value ?? '';
   const heightRaw = requireHeight ? (document.getElementById(heightInputId)?.value ?? '') : '';
@@ -1652,8 +1681,8 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
     showToast('Lütfen en ve boy ölçülerini metre cinsinden girin');
     return;
   }
-  if(tulPerdeProduct && (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0)){
-    showToast('Lütfen tül perde için en ve boy ölçülerini metre cinsinden girin');
+  if(pleatedMeterProduct && (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0)){
+    showToast('Lütfen perde için en ve boy ölçülerini metre cinsinden girin');
     return;
   }
 
@@ -1663,7 +1692,7 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
     const qtyEl = document.getElementById(qtyInputId);
     if(qtyEl) qtyEl.value = String(qty).replace('.', ',');
   }
-  if(tulPerdeProduct){
+  if(pleatedMeterProduct){
     const mult = getPileMultiplier(pileType);
     qty = roundTo2(width * height * mult);
     const qtyEl = document.getElementById(qtyInputId);
@@ -1685,7 +1714,7 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
     width: requireSize ? roundTo2(width) : null,
     height: requireHeight ? roundTo2(height) : null,
     area: requireHeight ? roundTo2(width * height) : null,
-    pileType: tulPerdeProduct ? pileType : null,
+    pileType: pleatedMeterProduct ? pileType : null,
     requiresDimensions: requireSize
   });
 }

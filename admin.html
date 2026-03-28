@@ -1006,18 +1006,55 @@ function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 // ════════════════════════════════════
 let PRODUCTS = [];
 let activeSwitchState = true;
+const AREA_PRICE_CATEGORIES = ['stor-perde','zebra-perde','plise-perde'];
+
+function detectCurtainCategory(product){
+  const text = `${product?.name || ''} ${product?.desc || ''} ${product?.features || ''}`.toLocaleLowerCase('tr');
+  if(text.includes('plise')) return 'plise-perde';
+  if(text.includes('zebra')) return 'zebra-perde';
+  if(text.includes('stor')) return 'stor-perde';
+  if(text.includes('tül') || text.includes('tul')) return 'tul-perde';
+  if(String(product?.cat || '').toLowerCase()==='perde') return 'tul-perde';
+  return product?.cat;
+}
+function normalizeProductCatalog(product){
+  const next = {...product};
+  const detectedCat = detectCurtainCategory(next);
+  if(detectedCat) next.cat = detectedCat;
+  if(AREA_PRICE_CATEGORIES.includes(next.cat)){
+    next.unit = 'm2';
+    next.isSquareMeter = true;
+    next.isMeter = false;
+  }
+  return next;
+}
+function getPileMeta(pileType){
+  if(pileType==='seyrek') return {label:'Seyrek',mult:2};
+  if(pileType==='sik') return {label:'Sık',mult:3};
+  return {label:'Orta',mult:2.5};
+}
+function getOrderItemSizeText(item){
+  if(!(item.width && item.height)) return '';
+  const w = Number(item.width);
+  const h = Number(item.height);
+  if(!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return '';
+  const area = Number(item.area || (w*h));
+  const ratio = (h / w).toLocaleString('tr-TR',{maximumFractionDigits:2});
+  const areaText = Number.isFinite(area) ? `${area.toLocaleString('tr-TR',{maximumFractionDigits:2})} m²` : '—';
+  return ` • Ölçü: ${w.toLocaleString('tr-TR',{maximumFractionDigits:2})}m × ${h.toLocaleString('tr-TR',{maximumFractionDigits:2})}m • Oran: 1:${ratio} • Alan: ${areaText}`;
+}
 
 async function fetchProducts(){
   try{
     const r = await fetch('/products.json?v='+Date.now());
     if(!r.ok) throw new Error('HTTP '+r.status);
-    PRODUCTS = await r.json();
+    PRODUCTS = (await r.json()).map(normalizeProductCatalog);
   } catch(e){
     PRODUCTS = [
       {id:'ornek-perde-1',name:'Blackout Perde',desc:'Karartma özellikli modern perde',price:450,oldPrice:600,cat:'perde',unit:'adet',image:'',badge:'%25 İndirim',features:'karartma,ütü,astarlı',active:true,stock:null},
       {id:'ornek-carsaf-1',name:'Pamuklu Çarşaf',desc:'Doğal pamuklu uyku çarşafı',price:280,oldPrice:null,cat:'carsaf',unit:'adet',image:'',badge:'',features:'pamuk,yumuşak',active:true,stock:10},
       {id:'ornek-koltuk-1',name:'Koltuk Örtüsü Seti',desc:'3+2+1 koltuk takımı örtüsü',price:320,oldPrice:380,cat:'koltuk',unit:'adet',image:'',badge:'',features:'likralı,yıkanabilir',active:false,stock:5}
-    ];
+    ].map(normalizeProductCatalog);
     aToast('⚠️ Ürünler yüklenemedi, demo veriler gösteriliyor');
   }
 }
@@ -1098,8 +1135,9 @@ function renderOrdersTable(orders){
     const items = typeof o.urunler==='string'?JSON.parse(o.urunler):(o.urunler||[]);
     const itemStr = items.slice(0,2).map(i=>{
       const qty = i.quantity || i.adet || 1;
-      const pileText = i.pileType ? ` • ${i.pileType==='sik'?'Sık':i.pileType==='seyrek'?'Seyrek':'Orta'} pile` : '';
-      const sizeText = (i.width && i.height) ? ` • ${Number(i.width).toLocaleString('tr-TR')}x${Number(i.height).toLocaleString('tr-TR')} m` : '';
+      const pileMeta = getPileMeta(i.pileType);
+      const pileText = i.pileType ? ` • ${pileMeta.label} pile (1:${pileMeta.mult})` : '';
+      const sizeText = getOrderItemSizeText(i);
       return `${i.name||i.ad||'?'} ×${qty}${sizeText}${pileText}`;
     }).join(', ')+(items.length>2?'…':'');
     const durum = o.durum||'Beklemede';
@@ -1139,9 +1177,10 @@ function openOrderModal(id){
     <div class="info-row"><label>Ürünler</label><span style="line-height:1.8">${items.map(i=>{
       const qty = i.quantity || i.adet || 1;
       const lineTotal = Number((i.price||i.fiyat||0) * qty).toLocaleString('tr-TR');
-      const sizeText = (i.width && i.height) ? ` • Ölçü: ${Number(i.width).toLocaleString('tr-TR')}m × ${Number(i.height).toLocaleString('tr-TR')}m` : '';
-      const pileText = i.pileType ? ` • Pile: ${i.pileType==='sik'?'Sık':i.pileType==='seyrek'?'Seyrek':'Orta'}` : '';
-      return `<span style="display:block">${i.name||i.ad} <strong>×${qty}</strong>${sizeText}${pileText} — <strong>${lineTotal} ₺</strong></span>`;
+      const sizeText = getOrderItemSizeText(i);
+      const pileMeta = getPileMeta(i.pileType);
+      const pileText = i.pileType ? ` • Pile: ${pileMeta.label} (1:${pileMeta.mult})` : '';
+      return `<span style="display:block;padding:10px 12px;border:1px solid #eef1f4;border-radius:10px;background:#fbfcfe;margin-bottom:8px">${i.name||i.ad} <strong>×${qty}</strong>${sizeText}${pileText} — <strong>${lineTotal} ₺</strong></span>`;
     }).join('')}</span></div>
     ${o.siparis_notu?`<div class="info-row" style="background:#fff8e1;border:1px solid rgba(201,168,76,0.3)"><label>Sipariş Notu</label><span>${o.siparis_notu}</span></div>`:''}
     <div class="info-row highlight"><label>Toplam Tutar</label><span>${Number(o.toplam).toLocaleString('tr-TR')} ₺</span></div>
@@ -1157,8 +1196,9 @@ function waOrder(id){
   const items = typeof o.urunler==='string'?JSON.parse(o.urunler):(o.urunler||[]);
   const itemStr = items.map(i=>{
     const qty = i.quantity || i.adet || 1;
-    const sizeText = (i.width && i.height) ? ` | Ölçü: ${Number(i.width).toLocaleString('tr-TR')}m x ${Number(i.height).toLocaleString('tr-TR')}m` : '';
-    const pileText = i.pileType ? ` | Pile: ${i.pileType==='sik'?'Sık':i.pileType==='seyrek'?'Seyrek':'Orta'}` : '';
+    const sizeText = getOrderItemSizeText(i).replaceAll(' • ',' | ');
+    const pileMeta = getPileMeta(i.pileType);
+    const pileText = i.pileType ? ` | Pile: ${pileMeta.label} (1:${pileMeta.mult})` : '';
     return `• ${i.name||i.ad} ×${qty}${sizeText}${pileText}`;
   }).join('\n');
   const msg = `Merhaba ${o.musteri_adi} Hanım/Bey 👋\n\nSipariş #${id} durumunuz: *${o.durum||'Beklemede'}*\n\nSiparişiniz:\n${itemStr}\n\nToplam: ${Number(o.toplam).toLocaleString('tr-TR')} ₺\n\nGöçmen Perde`;
@@ -1637,16 +1677,30 @@ function loadCategories(){
   const saved=localStorage.getItem(CAT_KEY);
   CATEGORIES=saved?JSON.parse(saved):[
     {key:'carsaf',label:'Çarşaflar',icon:'fas fa-bed',desc:'Uyku çarşafları'},
-    {key:'perde',label:'Perdeler',icon:'fas fa-curtains',desc:'Tüm perde çeşitleri'},
+    {key:'tul-perde',label:'Tül Perdeler',icon:'fas fa-wind',desc:'Pileli tül perde modelleri'},
+    {key:'plise-perde',label:'Plise Perdeler',icon:'fas fa-border-all',desc:'Plise perde çeşitleri (m² fiyatlı)'},
+    {key:'stor-perde',label:'Stor Perdeler',icon:'fas fa-up-down',desc:'Stor perde koleksiyonu (m² fiyatlı)'},
+    {key:'zebra-perde',label:'Zebra Perdeler',icon:'fas fa-grip-lines',desc:'Zebra perde koleksiyonu (m² fiyatlı)'},
     {key:'koltuk',label:'Koltuk Örtüleri',icon:'fas fa-couch',desc:'Koltuk ve kanepe örtüleri'}
   ];
+  CATEGORIES = CATEGORIES.filter(c=>c?.key!=='perde');
+  [
+    {key:'carsaf',label:'Çarşaflar',icon:'fas fa-bed',desc:'Uyku çarşafları'},
+    {key:'tul-perde',label:'Tül Perdeler',icon:'fas fa-wind',desc:'Pileli tül perde modelleri'},
+    {key:'plise-perde',label:'Plise Perdeler',icon:'fas fa-border-all',desc:'Plise perde çeşitleri (m² fiyatlı)'},
+    {key:'stor-perde',label:'Stor Perdeler',icon:'fas fa-up-down',desc:'Stor perde koleksiyonu (m² fiyatlı)'},
+    {key:'zebra-perde',label:'Zebra Perdeler',icon:'fas fa-grip-lines',desc:'Zebra perde koleksiyonu (m² fiyatlı)'},
+    {key:'koltuk',label:'Koltuk Örtüleri',icon:'fas fa-couch',desc:'Koltuk ve kanepe örtüleri'}
+  ].forEach(def=>{
+    if(!CATEGORIES.some(c=>c.key===def.key)) CATEGORIES.push(def);
+  });
 }
 function saveCategories(){localStorage.setItem(CAT_KEY,JSON.stringify(CATEGORIES));}
 
 function renderCatTable(){
   document.getElementById('catTableBody').innerHTML=CATEGORIES.map((c,i)=>{
     const count=PRODUCTS.filter(p=>p.cat===c.key).length;
-    const isDefault=['carsaf','perde','koltuk'].includes(c.key);
+    const isDefault=['carsaf','tul-perde','plise-perde','stor-perde','zebra-perde','koltuk'].includes(c.key);
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:var(--gold-light);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.85rem"><i class="${c.icon||'fas fa-folder'}"></i></div><div><strong style="font-size:0.88rem">${c.label}</strong>${c.desc?`<div style="font-size:0.74rem;color:var(--slate-light)">${c.desc}</div>`:''}</div></div></td>
       <td><code style="background:#f0f2f5;padding:3px 8px;border-radius:5px;font-size:0.8rem">${c.key}</code></td>

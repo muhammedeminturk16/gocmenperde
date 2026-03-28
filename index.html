@@ -480,6 +480,23 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 .address-helper select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-family:var(--ff-body)}
 .address-helper-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .address-helper-row button{background:none;border:none;color:var(--gold-dark);font-size:0.74rem;cursor:pointer;text-decoration:underline}
+.promo-banner-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.promo-banner{background:white;border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,0.04)}
+.promo-banner i{color:var(--gold);margin-top:2px}
+.promo-banner strong{display:block;font-size:0.82rem;color:var(--ink);margin-bottom:2px}
+.promo-banner span{font-size:0.74rem;color:var(--slate);line-height:1.45}
+@media(max-width:900px){.promo-banner-row{grid-template-columns:1fr}}
+.checkout-membership-card{margin-bottom:18px;background:linear-gradient(135deg,#fff 0%,#f9f5ea 100%);border:1px solid rgba(201,168,76,0.35);border-radius:12px;padding:14px 16px}
+.checkout-membership-card h4{font-size:0.9rem;margin-bottom:6px}
+.checkout-membership-card p{font-size:0.78rem;color:var(--slate);line-height:1.5}
+.membership-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.membership-actions button,.membership-actions a{border:none;cursor:pointer;border-radius:999px;padding:10px 14px;font-size:0.72rem;font-weight:600;letter-spacing:1px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.membership-actions .guest-btn{background:var(--ink);color:white}
+.membership-actions .register-btn{background:rgba(201,168,76,0.18);color:var(--gold-dark);border:1px solid rgba(201,168,76,0.38)}
+.checkout-hint{font-size:0.75rem;color:var(--slate);margin-top:8px}
+.address-parts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:10px}
+@media(max-width:640px){.address-parts{grid-template-columns:1fr}}
+.address-part-input{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;font-family:var(--ff-body);font-size:0.82rem;background:#fff}
 </style>
 </head>
 
@@ -663,6 +680,11 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
       </div>
     </div>
     <div class="products-content">
+      <div class="promo-banner-row">
+        <div class="promo-banner"><i class="fas fa-bolt"></i><div><strong>Haftanın Fırsatı</strong><span>Seçili tül perde modellerinde sepette ekstra %10 indirim.</span></div></div>
+        <div class="promo-banner"><i class="fas fa-ruler-combined"></i><div><strong>Ücretsiz Ölçü Danışmanlığı</strong><span>Ölçüden emin değilseniz WhatsApp üzerinden hızlı destek alın.</span></div></div>
+        <div class="promo-banner"><i class="fas fa-palette"></i><div><strong>2026 Renk Koleksiyonu</strong><span>Yeni sezon fon ve çarşaf tonları stoklara eklendi.</span></div></div>
+      </div>
       <div class="sort-bar">
         <input type="text" id="searchInput" placeholder="🔍 Ürün ara..." oninput="applyFilters()">
         <select id="sortSelect" onchange="applyFilters()">
@@ -690,9 +712,19 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
     <div id="cartContent"></div>
     <div class="order-form" id="orderForm" style="display:none">
       <h3><i class="fas fa-user-circle" style="color:var(--gold);margin-right:10px"></i>Teslimat ve Ödeme Bilgileri</h3>
+      <div class="checkout-membership-card">
+        <h4><i class="fas fa-user-shield" style="color:var(--gold);margin-right:6px"></i>Hızlı ödeme seçenekleri</h4>
+        <p id="checkoutMembershipText">Üyelik olmadan devam edebilirsiniz veya üyelik oluşturarak adreslerinizi kaydedip sonraki siparişleri daha hızlı tamamlayabilirsiniz.</p>
+        <div class="membership-actions">
+          <button type="button" class="guest-btn" id="guestCheckoutBtn" onclick="continueAsGuest()"><i class="fas fa-bag-shopping"></i>Üyeliksiz Devam Et</button>
+          <a href="/hesap.html" class="register-btn" id="createAccountBtn"><i class="fas fa-user-plus"></i>Üyelik Oluştur</a>
+        </div>
+        <div class="checkout-hint" id="checkoutHint">İsterseniz şimdi üye olup bu siparişte kullandığınız bilgileri hesabınıza ekleyebilirsiniz.</div>
+      </div>
       <div class="form-grid">
         <div class="form-group"><label>Ad Soyad *</label><input type="text" id="f-name" class="form-input" placeholder="Adınız Soyadınız"></div>
         <div class="form-group"><label>Telefon *</label><input type="tel" id="f-phone" class="form-input" placeholder="05xx xxx xx xx"></div>
+        <div class="form-group"><label>E-posta *</label><input type="email" id="f-email" class="form-input" placeholder="ornek@gmail.com"></div>
         <div class="form-group full"><label>Ödeme Yöntemi</label>
           <select id="f-payment" class="form-input" onchange="togglePaymentFields()">
             <option value="kapida">Kapıda Ödeme</option>
@@ -728,7 +760,13 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
         </div>
         <div class="form-group full">
           <label>Teslimat Adresi *</label>
-          <textarea id="f-addr" class="form-input form-textarea" placeholder="Mahalle, Sokak, Bina No, Daire — Osmangazi / Bursa"></textarea>
+          <div class="address-parts">
+            <input type="text" id="f-city" class="address-part-input" placeholder="İl (örn. Bursa)" oninput="syncAddressFromParts()">
+            <input type="text" id="f-district" class="address-part-input" placeholder="İlçe (örn. Osmangazi)" oninput="syncAddressFromParts()">
+            <input type="text" id="f-neighborhood" class="address-part-input" placeholder="Mahalle" oninput="syncAddressFromParts()">
+            <input type="text" id="f-street" class="address-part-input" placeholder="Cadde / Sokak / Apartman No" oninput="syncAddressFromParts()">
+          </div>
+          <textarea id="f-addr" class="form-input form-textarea" placeholder="Mahalle, Sokak, Bina No, Daire — Osmangazi / Bursa" oninput="syncPartsFromAddress(this.value)"></textarea>
           <div class="address-helper" id="savedAddressWrap" style="display:none">
             <div class="address-helper-row">
               <strong style="font-size:0.78rem;color:var(--gold-dark)">Kayıtlı Adreslerim</strong>
@@ -1620,6 +1658,7 @@ async function syncFavoriteWithServer(action, product){
 // ── Sepet ──
 let basket = [], total = 0;
 let cartSheetTimer = null;
+let guestCheckoutSelected = false;
 
 function openCartSheet(item){
   const sheet = document.getElementById('cartSheet');
@@ -1824,9 +1863,80 @@ function prefillOrderForm(){
     const u = JSON.parse(localStorage.getItem('user')||'{}');
     if(u.ad_soyad) document.getElementById('f-name').value = u.ad_soyad;
     if(u.telefon) document.getElementById('f-phone').value = u.telefon;
+    if(u.email) document.getElementById('f-email').value = u.email;
     if(u.adres) document.getElementById('f-addr').value = u.adres;
+    updateCheckoutMembershipState(Boolean(u && u.id));
+    syncPartsFromAddress(document.getElementById('f-addr').value || '');
   } catch(e){}
+  if(!getCurrentUser()){
+    updateCheckoutMembershipState(false);
+  }
   loadSavedAddressesForCart();
+}
+
+function getCurrentUser(){
+  try{
+    return JSON.parse(localStorage.getItem('user')||'null');
+  } catch(e){
+    return null;
+  }
+}
+
+function updateCheckoutMembershipState(isLoggedIn){
+  const text = document.getElementById('checkoutMembershipText');
+  const hint = document.getElementById('checkoutHint');
+  const guestBtn = document.getElementById('guestCheckoutBtn');
+  const createBtn = document.getElementById('createAccountBtn');
+  if(!text || !hint || !guestBtn || !createBtn) return;
+  if(isLoggedIn){
+    text.textContent = 'Hesabınızla devam ediyorsunuz. Kayıtlı adreslerinizi kullanabilir ve sipariş geçmişinizi Hesabım sayfasında takip edebilirsiniz.';
+    hint.textContent = 'Hazır bilgileriniz otomatik dolduruldu.';
+    guestBtn.style.display = 'none';
+    createBtn.style.display = 'none';
+    return;
+  }
+  text.textContent = guestCheckoutSelected
+    ? 'Üyeliksiz ödeme seçildi. Siparişi hemen tamamlayabilirsiniz.'
+    : 'Üyelik olmadan devam edebilirsiniz veya üyelik oluşturarak adreslerinizi kaydedip sonraki siparişleri daha hızlı tamamlayabilirsiniz.';
+  hint.textContent = guestCheckoutSelected
+    ? 'Dilerseniz daha sonra aynı bilgilerle üyelik oluşturabilirsiniz.'
+    : 'İsterseniz şimdi üye olup bu siparişte kullandığınız bilgileri hesabınıza ekleyebilirsiniz.';
+  guestBtn.style.display = 'inline-flex';
+  createBtn.style.display = 'inline-flex';
+}
+
+function continueAsGuest(){
+  guestCheckoutSelected = true;
+  updateCheckoutMembershipState(false);
+  showToast('Üyeliksiz ödeme modunda devam ediyorsunuz');
+}
+
+function syncAddressFromParts(){
+  const city = document.getElementById('f-city')?.value.trim();
+  const district = document.getElementById('f-district')?.value.trim();
+  const neighborhood = document.getElementById('f-neighborhood')?.value.trim();
+  const street = document.getElementById('f-street')?.value.trim();
+  const addrEl = document.getElementById('f-addr');
+  if(!addrEl) return;
+  const firstLine = [neighborhood, street].filter(Boolean).join(', ');
+  const secondLine = [district, city].filter(Boolean).join(' / ');
+  const fullAddress = [firstLine, secondLine].filter(Boolean).join(' — ');
+  if(fullAddress) addrEl.value = fullAddress;
+}
+
+function syncPartsFromAddress(addressText=''){
+  const raw = String(addressText || '').trim();
+  const parts = raw.split('—').map(s=>s.trim()).filter(Boolean);
+  const first = (parts[0] || '').split(',').map(s=>s.trim()).filter(Boolean);
+  const second = (parts[1] || '').split('/').map(s=>s.trim()).filter(Boolean);
+  const neighborhoodEl = document.getElementById('f-neighborhood');
+  const streetEl = document.getElementById('f-street');
+  const districtEl = document.getElementById('f-district');
+  const cityEl = document.getElementById('f-city');
+  if(neighborhoodEl) neighborhoodEl.value = first[0] || '';
+  if(streetEl) streetEl.value = first.slice(1).join(', ');
+  if(districtEl) districtEl.value = second[0] || '';
+  if(cityEl) cityEl.value = second[1] || '';
 }
 
 async function loadSavedAddressesForCart(){
@@ -1862,6 +1972,7 @@ function applySavedAddress(idx){
   const picked = savedAddresses[Number(idx)];
   if(!picked) return;
   document.getElementById('f-addr').value = picked.adres || '';
+  syncPartsFromAddress(picked.adres || '');
 }
 
 function saveCartToStorage(){ try{ localStorage.setItem('gpCart',JSON.stringify(basket)); }catch(e){} }
@@ -1940,11 +2051,14 @@ function saveOrderToLocalStorage(name,phone,method,addr,note,items,totalTL){
 async function submitOrder(){
   const name=document.getElementById('f-name').value.trim();
   const phone=document.getElementById('f-phone').value.trim();
+  const email=document.getElementById('f-email').value.trim().toLowerCase();
   const addr=document.getElementById('f-addr').value.trim();
   const note=document.getElementById('f-note').value.trim();
   const method=document.getElementById('f-payment').value;
   if(!name){ showToast('⚠️ Adınızı girin'); return; }
   if(!phone){ showToast('⚠️ Telefon numaranızı girin'); return; }
+  if(!email){ showToast('⚠️ E-posta adresinizi girin'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast('Geçerli bir e-posta adresi girin'); return; }
   if(!addr){ showToast('⚠️ Teslimat adresinizi girin'); return; }
   if(!basket.length){ showToast('Sepetiniz boş'); return; }
   const missingSize = basket.find(i => i.requiresDimensions && (!i.width || !i.height));
@@ -1977,10 +2091,34 @@ async function submitOrder(){
     });
   } catch(e){ console.warn('API hatası, devam ediyor'); }
 
+  await sendOrderEmailNotification({name,phone,email,addr,note,method,items:savedBasket,total:savedTotal});
+
   btn.innerHTML=orig; btn.disabled=false;
   basket=[]; total=0; updateCartCount(); saveCartToStorage();
   document.getElementById('successModal').classList.add('open');
   setTimeout(()=>sendWhatsApp(name,phone,method,addr,note,savedBasket,savedTotal),1200);
+}
+
+async function sendOrderEmailNotification({name,phone,email,addr,note,method,items,total}){
+  if(!(window.emailjs && typeof window.emailjs.send === 'function')) return;
+  const labels={kapida:'Kapıda Ödeme',havale:'Havale / EFT',kredikarti:'Kredi Kartı'};
+  const summary = items.map(i=>`${i.name} (${formatQty(i.qty)} ${i.unitLabel||'adet'})`).join(', ');
+  const payload = {
+    customer_name: name,
+    customer_phone: phone,
+    customer_email: email,
+    order_address: addr,
+    payment_method: labels[method] || method,
+    order_note: note || '-',
+    order_summary: summary,
+    order_total: `${Number(total || 0).toLocaleString('tr-TR')} TL`,
+    order_date: new Date().toLocaleString('tr-TR')
+  };
+  try{
+    await emailjs.send('service_gocmenperde','template_order_info',payload);
+  } catch(e){
+    console.warn('Email bildirim gönderilemedi', e);
+  }
 }
 
 // ── Kullanıcı Oturumu ──

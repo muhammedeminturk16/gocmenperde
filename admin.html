@@ -232,6 +232,10 @@ tbody tr:hover td{background:#fdfcf8}
 .fg textarea{resize:vertical;min-height:80px;line-height:1.6}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.discount-helper{margin-top:8px;padding:10px 12px;border:1px dashed var(--border-2);border-radius:9px;background:#faf8f2;font-size:0.77rem;color:var(--slate);line-height:1.5}
+.template-builder{margin-top:10px;border:1px dashed var(--border-2);border-radius:10px;padding:10px;background:#fff}
+.template-builder .inline{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.template-builder .inline input,.template-builder .inline select{flex:1;min-width:130px}
 
 /* ──────────── SWITCH ──────────── */
 .switch-wrap{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--cream);border-radius:9px;border:1.5px solid var(--border-2)}
@@ -808,7 +812,19 @@ tbody tr:hover td{background:#fdfcf8}
       </div>
       <div class="form-row">
         <div class="fg"><label>Stok Miktarı</label><input type="number" id="f-stock" placeholder="Sınırsız = boş bırak"></div>
-        <div class="fg"><label>İndirim Etiketi</label><input type="text" id="f-badge" placeholder="%25 İNDİRİM"></div>
+        <div class="fg">
+          <label>İndirim Etiketi</label>
+          <input type="text" id="f-badge" placeholder="%25 İNDİRİM">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+            <select id="f-discountType" onchange="updateDiscountBadgeFromInputs()">
+              <option value="manual">Manuel Etiket</option>
+              <option value="percent">Yüzde (%) ile</option>
+              <option value="amount">TL farkı ile</option>
+            </select>
+            <input type="number" id="f-discountValue" placeholder="25" min="0" step="0.01" oninput="updateDiscountBadgeFromInputs()">
+          </div>
+          <div class="discount-helper" id="discountHelper">Eski ve güncel fiyat girildiğinde etiket otomatik hesaplanır. İsterseniz manuel metin de yazabilirsiniz.</div>
+        </div>
       </div>
       <div class="fg">
         <label>Ürün Resmi</label>
@@ -833,7 +849,9 @@ tbody tr:hover td{background:#fdfcf8}
       <div class="fg">
         <label><i class="fas fa-list-check" style="color:var(--gold);margin-right:6px"></i>Teknik Özellikler</label>
         <div class="json-helper">
-          <button type="button" class="json-helper-btn" onclick="addSpecsTemplate('perde')"><i class="fas fa-plus"></i> Perde</button>
+          <button type="button" class="json-helper-btn" onclick="addSpecsTemplate('plise-perde')"><i class="fas fa-plus"></i> Plise Perde</button>
+          <button type="button" class="json-helper-btn" onclick="addSpecsTemplate('stor-perde')"><i class="fas fa-plus"></i> Stor Perde</button>
+          <button type="button" class="json-helper-btn" onclick="addSpecsTemplate('zebra-perde')"><i class="fas fa-plus"></i> Zebra Perde</button>
           <button type="button" class="json-helper-btn" onclick="addSpecsTemplate('carsaf')"><i class="fas fa-plus"></i> Çarşaf</button>
           <button type="button" class="json-helper-btn" onclick="addSpecsTemplate('koltuk')"><i class="fas fa-plus"></i> Koltuk</button>
           <button type="button" class="json-helper-btn" onclick="clearField('f-specs','specs-valid')"><i class="fas fa-trash"></i></button>
@@ -841,11 +859,33 @@ tbody tr:hover td{background:#fdfcf8}
         <textarea id="f-specs" placeholder="En: 150-300 cm&#10;Kumaş: Polyester&#10;Stil: Modern&#10;veya sadece satır satır yazın:&#10;Polyester kumaş&#10;Karartma özellikli" oninput="validateStructuredField('f-specs','specs-valid')" style="min-height:80px;font-family:monospace;font-size:0.8rem"></textarea>
         <p style="font-size:0.72rem;color:var(--slate-light)">Kolay giriş: JSON/parantez zorunlu değil. İsterseniz <code style="background:#f5f5f5;padding:2px 6px;border-radius:5px">Anahtar: Değer</code>, isterseniz sadece satır satır serbest metin yazın.</p>
         <div class="json-valid" id="specs-valid"></div>
+        <div class="template-builder">
+          <div class="inline">
+            <input type="text" id="specTemplateName" placeholder="Hazır buton adı (örn: Otel Serisi)">
+            <select id="specTemplateTarget">
+              <option value="specs">Teknik Özellikler</option>
+              <option value="care">Bakım Talimatları</option>
+            </select>
+          </div>
+          <textarea id="specTemplateContent" placeholder="Butona basılınca doldurulacak içerik...
+Örn:
+Kumaş: Blackout
+Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-size:0.8rem"></textarea>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+            <button type="button" class="btn btn-outline btn-sm" onclick="saveCustomTemplate()"><i class="fas fa-plus"></i> Yeni Hazır Buton Oluştur</button>
+          </div>
+          <div class="json-helper" id="customTemplateButtons" style="margin-top:8px"></div>
+        </div>
       </div>
       <div class="fg">
         <label><i class="fas fa-heart" style="color:var(--gold);margin-right:6px"></i>Bakım Talimatları</label>
         <div class="json-helper">
-          <button type="button" class="json-helper-btn" onclick="addCareTemplate()"><i class="fas fa-plus"></i> Standart</button>
+          <button type="button" class="json-helper-btn" onclick="addCareTemplate('standart')"><i class="fas fa-plus"></i> Standart</button>
+          <button type="button" class="json-helper-btn" onclick="addCareTemplate('plise-perde')"><i class="fas fa-plus"></i> Plise Perde</button>
+          <button type="button" class="json-helper-btn" onclick="addCareTemplate('stor-perde')"><i class="fas fa-plus"></i> Stor Perde</button>
+          <button type="button" class="json-helper-btn" onclick="addCareTemplate('zebra-perde')"><i class="fas fa-plus"></i> Zebra Perde</button>
+          <button type="button" class="json-helper-btn" onclick="addCareTemplate('carsaf')"><i class="fas fa-plus"></i> Çarşaf</button>
+          <button type="button" class="json-helper-btn" onclick="addCareTemplate('koltuk')"><i class="fas fa-plus"></i> Koltuk</button>
           <button type="button" class="json-helper-btn" onclick="clearField('f-care','care-valid')"><i class="fas fa-trash"></i></button>
         </div>
         <textarea id="f-care" placeholder="Yıkama: 30°C&#10;Ütü: Düşük ısı&#10;Kurutma: Gölgede kurutun&#10;veya sadece satır satır yazın:&#10;30 derecede yıkayın&#10;Düşük ısıda ütüleyin" oninput="validateStructuredField('f-care','care-valid')" style="min-height:80px;font-family:monospace;font-size:0.8rem"></textarea>
@@ -905,9 +945,10 @@ tbody tr:hover td{background:#fdfcf8}
       <div class="fg"><label>Kampanya Adı *</label><input type="text" id="cm-name" placeholder="örn: Yaz Sonu İndirimi"></div>
       <div class="fg"><label>Açıklama</label><textarea id="cm-desc" placeholder="Kampanya detayları..."></textarea></div>
       <div class="form-row">
-        <div class="fg"><label>İndirim Oranı (%)</label><input type="number" id="cm-discount" placeholder="25" min="1" max="100"></div>
-        <div class="fg"><label>Kupon Kodu</label><input type="text" id="cm-code" placeholder="YILBASI20"></div>
+        <div class="fg"><label>İndirim Tipi</label><select id="cm-discountType"><option value="percent">Yüzde (%)</option><option value="amount">TL Tutarı</option></select></div>
+        <div class="fg"><label>İndirim Değeri</label><input type="number" id="cm-discount" placeholder="25" min="0" step="0.01"></div>
       </div>
+      <div class="fg"><label>Kupon Kodu</label><input type="text" id="cm-code" placeholder="YILBASI20"></div>
       <div class="form-row">
         <div class="fg"><label>Başlangıç</label><input type="date" id="cm-start"></div>
         <div class="fg"><label>Bitiş</label><input type="date" id="cm-end"></div>
@@ -974,6 +1015,7 @@ function logout(){
   closeSidebar();
 }
 document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+['f-price','f-oldprice'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateDiscountBadgeFromInputs));
 
 // ════════════════════════════════════
 //  NAVIGATION
@@ -1571,7 +1613,9 @@ function addFavFromProduct(idx){
 function openAddModal(){
   document.getElementById('formModalTitle').innerText='Yeni Ürün Ekle';
   document.getElementById('editIndex').value='';
-  ['f-name','f-desc','f-price','f-oldprice','f-image','f-images','f-badge','f-features','f-specs','f-care','f-stock'].forEach(id=>document.getElementById(id).value='');
+  ['f-name','f-desc','f-price','f-oldprice','f-image','f-images','f-badge','f-features','f-specs','f-care','f-stock','f-discountValue'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-discountType').value='manual';
+  updateDiscountBadgeFromInputs();
   document.getElementById('f-cat').value=CATEGORIES[0]?.key||'carsaf';
   document.getElementById('f-unit').value='adet';
   document.getElementById('imgPreview').style.display='none';
@@ -1600,6 +1644,9 @@ function editProduct(idx){
   document.getElementById('f-image').value=imageList[0]||p.image||'';
   document.getElementById('f-images').value=imageList.join('\n');
   document.getElementById('f-badge').value=p.badge||'';
+  document.getElementById('f-discountType').value='manual';
+  document.getElementById('f-discountValue').value='';
+  updateDiscountBadgeFromInputs();
   document.getElementById('f-features').value=p.features||'';
   document.getElementById('f-stock').value=p.stock!=null?p.stock:'';
   document.getElementById('f-specs').value=p.specs&&Object.keys(p.specs).length?objectToLinePairs(p.specs):'';
@@ -1610,6 +1657,36 @@ function editProduct(idx){
   activeSwitchState=!!p.active;
   updateSwitch();
   document.getElementById('productModal').classList.add('open');
+}
+
+function calculateDiscountFromInputs(){
+  const price=parseFloat(document.getElementById('f-price').value);
+  const oldPrice=parseFloat(document.getElementById('f-oldprice').value);
+  if(!(oldPrice>price && price>0)) return null;
+  const diff=oldPrice-price;
+  const pct=(diff/oldPrice)*100;
+  return {diff,pct,price,oldPrice};
+}
+function updateDiscountBadgeFromInputs(){
+  const type=document.getElementById('f-discountType')?.value||'manual';
+  const val=parseFloat(document.getElementById('f-discountValue')?.value);
+  const badgeEl=document.getElementById('f-badge');
+  const helper=document.getElementById('discountHelper');
+  const calc=calculateDiscountFromInputs();
+  if(!badgeEl||!helper) return;
+  if(!calc){
+    helper.textContent='Eski fiyat, güncel fiyattan büyük olmalı. Örn: 1500 → 1200.';
+    return;
+  }
+  helper.textContent=`Eski: ${calc.oldPrice.toLocaleString('tr-TR')} TL • Yeni: ${calc.price.toLocaleString('tr-TR')} TL • Fark: ${calc.diff.toLocaleString('tr-TR')} TL (%${Math.round(calc.pct)})`;
+  if(type==='percent'){
+    const pct=Number.isFinite(val) && val>0 ? val : calc.pct;
+    badgeEl.value=`%${Math.round(pct)} İNDİRİM`;
+  }
+  if(type==='amount'){
+    const amt=Number.isFinite(val) && val>0 ? val : calc.diff;
+    badgeEl.value=`${Math.round(amt).toLocaleString('tr-TR')} TL İNDİRİM`;
+  }
 }
 
 function saveProduct(){
@@ -1633,6 +1710,8 @@ function saveProduct(){
     cat:document.getElementById('f-cat').value,unit:unitVal,isMeter:unitVal==='mt',isSquareMeter:unitVal==='m2',
     features:document.getElementById('f-features').value.replace(/\s*,\s*/g,',').trim(),
     badge:document.getElementById('f-badge').value||'',
+    discountType:document.getElementById('f-discountType').value||'manual',
+    discountValue:document.getElementById('f-discountValue').value?parseFloat(document.getElementById('f-discountValue').value):null,
     stock:stockVal!==''?parseInt(stockVal):null,
     active:activeSwitchState,
     specs:parseStructuredField('f-specs'),care:parseStructuredField('f-care')
@@ -1806,8 +1885,8 @@ function getCampaigns(){return JSON.parse(localStorage.getItem(CAMP_KEY)||'null'
 function saveCampaignsList(arr){localStorage.setItem(CAMP_KEY,JSON.stringify(arr));}
 function defaultCampaigns(){
   return [
-    {id:1,name:'Sezon Sonu %25 İndirim',desc:'Tüm ürünlerde geçerli sezon sonu kampanyası.',discount:25,code:'',start:'2025-01-01',end:'2025-12-31',active:true},
-    {id:2,name:'İlk Sipariş Kuponu',desc:'Yeni müşterilere %10 indirim.',discount:10,code:'ILKSIPARIS10',start:'2025-01-01',end:'2025-12-31',active:false}
+    {id:1,name:'Sezon Sonu %25 İndirim',desc:'Tüm ürünlerde geçerli sezon sonu kampanyası.',discount:25,discountType:'percent',code:'',start:'2025-01-01',end:'2025-12-31',active:true},
+    {id:2,name:'İlk Sipariş Kuponu',desc:'Yeni müşterilere %10 indirim.',discount:10,discountType:'percent',code:'ILKSIPARIS10',start:'2025-01-01',end:'2025-12-31',active:false}
   ];
 }
 
@@ -1824,7 +1903,7 @@ function renderCampaigns(){
       </div>
       <p class="campaign-desc">${c.desc}</p>
       <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-        ${c.discount?`<span class="badge" style="background:var(--gold-light);color:#8a6c1e"><i class="fas fa-percent"></i> %${c.discount} indirim</span>`:''}
+        ${c.discount?`<span class="badge" style="background:var(--gold-light);color:#8a6c1e"><i class="fas fa-${c.discountType==='amount'?'turkish-lira-sign':'percent'}"></i> ${c.discountType==='amount'?`${Number(c.discount).toLocaleString('tr-TR')} TL`: `%${Number(c.discount).toLocaleString('tr-TR')}`} indirim</span>`:''}
         ${c.code?`<span class="badge badge-cat"><i class="fas fa-tag"></i> ${c.code}</span>`:''}
         ${c.start?`<span class="badge" style="background:var(--blue-light);color:var(--blue)"><i class="fas fa-calendar"></i> ${c.start} → ${c.end||'∞'}</span>`:''}
       </div>
@@ -1839,6 +1918,7 @@ function openAddCampaignModal(){
   document.getElementById('campaignModalTitle').innerText='Yeni Kampanya';
   document.getElementById('editCampaignIdx').value='';
   ['cm-name','cm-desc','cm-discount','cm-code','cm-start','cm-end'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cm-discountType').value='percent';
   campaignSwState=true;updateCampaignSwitch();
   document.getElementById('campaignModal').classList.add('open');
 }
@@ -1850,6 +1930,7 @@ function editCampaign(i){
   document.getElementById('cm-desc').value=c.desc||'';
   document.getElementById('cm-discount').value=c.discount||'';
   document.getElementById('cm-code').value=c.code||'';
+  document.getElementById('cm-discountType').value=c.discountType||'percent';
   document.getElementById('cm-start').value=c.start||'';
   document.getElementById('cm-end').value=c.end||'';
   campaignSwState=!!c.active;updateCampaignSwitch();
@@ -1859,7 +1940,7 @@ function saveCampaign(){
   const name=document.getElementById('cm-name').value.trim();
   if(!name){aToast('⚠️ Kampanya adı zorunlu','error');return;}
   const list=getCampaigns();
-  const obj={id:Date.now(),name,desc:document.getElementById('cm-desc').value.trim(),discount:parseInt(document.getElementById('cm-discount').value)||0,code:document.getElementById('cm-code').value.trim().toUpperCase(),start:document.getElementById('cm-start').value,end:document.getElementById('cm-end').value,active:campaignSwState};
+  const obj={id:Date.now(),name,desc:document.getElementById('cm-desc').value.trim(),discount:parseFloat(document.getElementById('cm-discount').value)||0,discountType:document.getElementById('cm-discountType').value||'percent',code:document.getElementById('cm-code').value.trim().toUpperCase(),start:document.getElementById('cm-start').value,end:document.getElementById('cm-end').value,active:campaignSwState};
   const idx=document.getElementById('editCampaignIdx').value;
   if(idx!==''){list[parseInt(idx)]=obj;aToast('✓ Güncellendi','success');}
   else{list.push(obj);aToast('✓ Kampanya eklendi','success');}
@@ -1923,8 +2004,22 @@ function refreshDashboard(){
 // ════════════════════════════════════
 //  JSON HELPERS
 // ════════════════════════════════════
-const SPECS={perde:{"En":"150-300 cm","Kumaş":"Polyester","Stil":"Modern","Astar":"Yok"},carsaf:{"Boyut":"160x220 cm","Kumaş":"Pamuk","Renk":"Çok Renkli"},koltuk:{"Uyumluluk":"3+2+1 Takım","Kumaş":"Likralı","Renk":"Krem/Kahve"}};
-const CARE={"Yıkama":"30°C","Sıkma":"Düşük devir","Kurutma":"Gölgede kurutun","Ütü":"Düşük ısı","Kuru Temizleme":"Önerilmez"};
+const SPECS={
+  'plise-perde':{"Kumaş":"Plise Polyester","Işık Kontrolü":"Yarı geçirgen","Montaj":"Cam çıtasına uygun","Mekanizma":"İp kontrollü"},
+  'stor-perde':{"Kumaş":"Blackout / Screen","Mekanizma":"Zincirli sistem","Kasa":"Alüminyum","Temizlik":"Nemli bez"},
+  'zebra-perde':{"Kumaş":"Çift katmanlı zebra","Işık Ayarı":"Şerit geçişli","Mekanizma":"Zincirli","Stil":"Modern"},
+  carsaf:{"Boyut":"160x220 cm","Kumaş":"Pamuk","Renk":"Çok Renkli"},
+  koltuk:{"Uyumluluk":"3+2+1 Takım","Kumaş":"Likralı","Renk":"Krem/Kahve"}
+};
+const CARE={
+  standart:{"Yıkama":"30°C","Sıkma":"Düşük devir","Kurutma":"Gölgede kurutun","Ütü":"Düşük ısı","Kuru Temizleme":"Önerilmez"},
+  'plise-perde':{"Temizlik":"Nemli bezle silin","Makine":"Önerilmez","Kimyasal":"Ağartıcı kullanmayın"},
+  'stor-perde':{"Temizlik":"Haftalık toz alma","Leke":"Sabunlu bezle silin","Kurutma":"Direkt güneşte bekletmeyin"},
+  'zebra-perde':{"Temizlik":"Kuru/nemli bez","Ütü":"Uygulanmaz","Bakım":"Mekanizmayı zorlamayın"},
+  carsaf:{"Yıkama":"40°C","Kurutma":"Düşük ısı","Ütü":"Orta ısı"},
+  koltuk:{"Yıkama":"30°C hassas","Kurutma":"Asarak kurutun","Ütü":"Düşük ısı tersinden"}
+};
+const CUSTOM_TEMPLATE_KEY='gp_custom_templates';
 function objectToLinePairs(obj){return Object.entries(obj||{}).map(([k,v])=>`${k}: ${v}`).join('\n');}
 function linePairsToObject(raw){
   const out={};
@@ -1968,8 +2063,53 @@ function parseStructuredField(id){
   if(!v) return {};
   try{return JSON.parse(v);}catch(_){try{return linePairsToObject(v);}catch(e){return {};}}
 }
-function addSpecsTemplate(cat){document.getElementById('f-specs').value=objectToLinePairs(SPECS[cat]||SPECS.perde);validateStructuredField('f-specs','specs-valid');}
-function addCareTemplate(){document.getElementById('f-care').value=objectToLinePairs(CARE);validateStructuredField('f-care','care-valid');}
+function addSpecsTemplate(cat){document.getElementById('f-specs').value=objectToLinePairs(SPECS[cat]||SPECS['plise-perde']);validateStructuredField('f-specs','specs-valid');}
+function addCareTemplate(cat='standart'){document.getElementById('f-care').value=objectToLinePairs(CARE[cat]||CARE.standart);validateStructuredField('f-care','care-valid');}
+function getCustomTemplates(){return JSON.parse(localStorage.getItem(CUSTOM_TEMPLATE_KEY)||'[]');}
+function saveCustomTemplates(list){localStorage.setItem(CUSTOM_TEMPLATE_KEY,JSON.stringify(list));}
+function applyCustomTemplate(idx){
+  const tpl=getCustomTemplates()[idx];
+  if(!tpl) return;
+  const fid=tpl.target==='care'?'f-care':'f-specs';
+  const vid=tpl.target==='care'?'care-valid':'specs-valid';
+  document.getElementById(fid).value=tpl.content||'';
+  validateStructuredField(fid,vid);
+}
+function deleteCustomTemplate(idx){
+  const list=getCustomTemplates();
+  const item=list[idx];
+  if(!item) return;
+  if(!confirm(`"${item.name}" şablonu silinsin mi?`)) return;
+  list.splice(idx,1);
+  saveCustomTemplates(list);
+  renderCustomTemplateButtons();
+}
+function saveCustomTemplate(){
+  const name=document.getElementById('specTemplateName').value.trim();
+  const content=document.getElementById('specTemplateContent').value.trim();
+  const target=document.getElementById('specTemplateTarget').value;
+  if(!name||!content){aToast('⚠️ Şablon adı ve içerik zorunlu','error');return;}
+  const list=getCustomTemplates();
+  list.push({name,content,target});
+  saveCustomTemplates(list);
+  document.getElementById('specTemplateName').value='';
+  document.getElementById('specTemplateContent').value='';
+  renderCustomTemplateButtons();
+  aToast('✓ Hazır buton eklendi','success');
+}
+function renderCustomTemplateButtons(){
+  const box=document.getElementById('customTemplateButtons');
+  if(!box) return;
+  const list=getCustomTemplates();
+  if(!list.length){
+    box.innerHTML='<span style="font-size:0.74rem;color:var(--slate-light)">Özel hazır buton yok. Yukarıdan ekleyebilirsiniz.</span>';
+    return;
+  }
+  box.innerHTML=list.map((tpl,idx)=>`<span class="json-helper-btn" style="display:inline-flex;align-items:center;gap:6px">
+    <button type="button" onclick="applyCustomTemplate(${idx})" style="border:none;background:none;cursor:pointer;color:inherit">${tpl.name} (${tpl.target==='care'?'Bakım':'Teknik'})</button>
+    <button type="button" onclick="deleteCustomTemplate(${idx})" style="border:none;background:none;cursor:pointer;color:var(--red)"><i class="fas fa-xmark"></i></button>
+  </span>`).join('');
+}
 function clearField(fid,vid){document.getElementById(fid).value='';const el=document.getElementById(vid);el.className='json-valid';el.textContent='';}
 
 // ════════════════════════════════════
@@ -2181,6 +2321,8 @@ async function initAdmin(){
   renderTable();
   rebuildCatDropdowns();
   renderCatTable();
+  renderCampaigns();
+  renderCustomTemplateButtons();
   renderNotifs();
   updateTokenStatus();
   const favs=getFavs();

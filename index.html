@@ -526,6 +526,18 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 .first-order-banner-eyebrow{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.72);margin-bottom:8px;display:block}
 .first-order-banner-text h3{font-family:var(--ff-display);font-size:clamp(1.25rem,2.4vw,1.9rem);line-height:1.15;color:white;margin-bottom:8px}
 .first-order-banner-text p{font-size:0.82rem;color:rgba(247,244,239,0.84);max-width:430px;line-height:1.6}
+.discount-spotlight{position:relative;border-radius:18px;overflow:hidden;min-height:240px;margin-bottom:18px;border:1px solid rgba(201,168,76,0.4);box-shadow:0 22px 44px rgba(15,14,13,0.18);display:none;align-items:flex-end}
+.discount-spotlight img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.03)}
+.discount-spotlight::before{content:'';position:absolute;inset:0;background:linear-gradient(102deg,rgba(15,14,13,0.88) 12%,rgba(15,14,13,0.42) 62%,rgba(15,14,13,0.06) 100%)}
+.discount-spotlight-content{position:relative;z-index:2;width:100%;padding:20px;display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.discount-spotlight-title{font-family:var(--ff-display);font-size:clamp(1.2rem,2.2vw,1.8rem);color:#fff;line-height:1.2}
+.discount-spotlight-meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 8px}
+.discount-spotlight-chip{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.28);color:#fff;font-size:0.72rem;font-weight:600;backdrop-filter:blur(4px)}
+.discount-spotlight-price{display:flex;align-items:flex-end;gap:8px;color:#fff}
+.discount-spotlight-price .old{font-size:0.9rem;text-decoration:line-through;opacity:0.7}
+.discount-spotlight-price .new{font-family:var(--ff-display);font-size:1.7rem;font-weight:700}
+.discount-spotlight-btn{border:none;border-radius:10px;padding:10px 16px;background:var(--gold);color:var(--ink);font-weight:700;cursor:pointer}
+.discount-spotlight-btn:hover{background:#dfba56}
 .coupon-chip{display:inline-flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.95);color:var(--ink);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
 .coupon-chip b{font-size:0.95rem;color:var(--gold-dark);letter-spacing:2px}
 .product-campaign-pill{position:absolute;left:12px;bottom:12px;z-index:5;padding:7px 10px;border-radius:999px;background:rgba(15,14,13,0.75);backdrop-filter:blur(4px);color:#fff;font-size:0.6rem;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;border:1px solid rgba(201,168,76,0.35)}
@@ -732,6 +744,25 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
       </div>
     </div>
     <div class="products-content">
+      <div class="discount-spotlight" id="discountSpotlight">
+        <img id="discountSpotlightImg" src="" alt="İndirimli ürün görseli" loading="lazy">
+        <div class="discount-spotlight-content">
+          <div>
+            <span class="first-order-banner-eyebrow">Günün öne çıkan indirimi</span>
+            <h3 class="discount-spotlight-title" id="discountSpotlightTitle">İndirimli ürün burada görünecek</h3>
+            <p style="color:rgba(247,244,239,0.85);font-size:0.82rem;max-width:500px" id="discountSpotlightDesc"></p>
+            <div class="discount-spotlight-meta">
+              <span class="discount-spotlight-chip" id="discountSpotlightBadge">%0 İndirim</span>
+              <span class="discount-spotlight-chip" id="discountSpotlightSave">0 TL avantaj</span>
+            </div>
+            <div class="discount-spotlight-price">
+              <span class="old" id="discountSpotlightOld"></span>
+              <span class="new" id="discountSpotlightNew"></span>
+            </div>
+          </div>
+          <button class="discount-spotlight-btn" id="discountSpotlightBtn" onclick="scrollToDiscountedProduct()"><i class="fas fa-bag-shopping" style="margin-right:6px"></i>Ürünü İncele</button>
+        </div>
+      </div>
       <div class="first-order-banner">
         <img src="resimler/foto6.jpg" alt="İlk sipariş kupon kampanyası" loading="lazy">
         <div class="first-order-banner-content">
@@ -1106,6 +1137,7 @@ async function loadProducts(){
     hydrateProductSocialData();
     syncCategoriesFromAdmin();
     renderProducts(PRODUCTS);
+    updateDiscountSpotlight(PRODUCTS);
     renderRecentlyViewed();
     initObserver();
   } catch(e){
@@ -1551,6 +1583,41 @@ function liveSearch(q){
   ).join('');
 }
 
+let spotlightProductId='';
+function updateDiscountSpotlight(list){
+  const banner=document.getElementById('discountSpotlight');
+  if(!banner) return;
+  const candidates=(list||[]).filter(p=>p.active && Number(p.oldPrice)>Number(p.price));
+  if(!candidates.length){ banner.style.display='none'; spotlightProductId=''; return; }
+  candidates.sort((a,b)=>((b.oldPrice-b.price)-(a.oldPrice-a.price)) || (((b.oldPrice-b.price)/b.oldPrice)-((a.oldPrice-a.price)/a.oldPrice)));
+  const p=candidates[0];
+  const oldPrice=Number(p.oldPrice)||0;
+  const newPrice=Number(p.price)||0;
+  const diff=Math.max(0, oldPrice-newPrice);
+  const pct=oldPrice>0?Math.round((diff/oldPrice)*100):0;
+  spotlightProductId=p.id;
+  document.getElementById('discountSpotlightTitle').innerText=p.name;
+  document.getElementById('discountSpotlightDesc').innerText=p.desc||'Seçili ürünlerde sınırlı süreli özel indirim fırsatı.';
+  document.getElementById('discountSpotlightBadge').innerText=`%${pct} İndirim`;
+  document.getElementById('discountSpotlightSave').innerText=`${diff.toLocaleString('tr-TR')} TL avantaj`;
+  document.getElementById('discountSpotlightOld').innerText=`${oldPrice.toLocaleString('tr-TR')} TL`;
+  document.getElementById('discountSpotlightNew').innerText=`${newPrice.toLocaleString('tr-TR')} TL`;
+  const image=getPrimaryImage(p) || 'resimler/foto6.jpg';
+  const imgEl=document.getElementById('discountSpotlightImg');
+  imgEl.src=image;
+  imgEl.alt=`${p.name} indirimli ürün görseli`;
+  banner.style.display='flex';
+}
+function scrollToDiscountedProduct(){
+  if(!spotlightProductId) return;
+  const card=document.querySelector(`.product-card[data-id="${spotlightProductId}"]`);
+  if(card){
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    card.style.boxShadow='0 0 0 2px rgba(201,168,76,0.55), 0 18px 34px rgba(0,0,0,0.1)';
+    setTimeout(()=>{card.style.boxShadow='';},1600);
+  }
+}
+
 // ── Filtreler ──
 function applyFilters(){
   const search = document.getElementById('searchInput').value.toLowerCase();
@@ -1603,6 +1670,7 @@ function applyFilters(){
     : 'Tüm Ürünler';
   document.getElementById('categoryLabel').innerText = label + ' (' + filtered.length + ')';
   renderProducts(filtered);
+  updateDiscountSpotlight(filtered);
   initObserver();
 }
 

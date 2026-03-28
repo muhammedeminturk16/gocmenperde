@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -26,38 +25,38 @@
 body{font-family:var(--ff);background:#f0f2f5;color:var(--ink);min-height:100vh}
 
 /* ── Login ── */
-#loginScreen{position:fixed;inset:0;background:var(–ink);display:flex;align-items:center;justify-content:center;z-index:9999}
+#loginScreen{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:9999}
 #loginScreen.hide{display:none}
 .login-box{background:white;border-radius:16px;padding:50px 40px;width:100%;max-width:380px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,0.4)}
-.login-box h1{font-family:var(–ffd);font-size:2rem;margin-bottom:6px}
-.login-box p{font-size:0.8rem;color:var(–slate);margin-bottom:32px;letter-spacing:2px;text-transform:uppercase}
-.login-input{width:100%;padding:14px 18px;border:1px solid var(–border);border-radius:8px;font-size:0.95rem;font-family:var(–ff);background:var(–cream);margin-bottom:12px;outline:none;transition:border-color 0.2s}
-.login-input:focus{border-color:var(–gold)}
-.login-btn{width:100%;padding:14px;background:var(–ink);color:white;border:none;border-radius:8px;font-family:var(–ff);font-size:0.85rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:0.3s}
-.login-btn:hover{background:var(–gold);color:var(–ink)}
-.login-error{color:var(–red);font-size:0.8rem;margin-top:10px;display:none}
+.login-box h1{font-family:var(--ffd);font-size:2rem;margin-bottom:6px}
+.login-box p{font-size:0.8rem;color:var(--slate);margin-bottom:32px;letter-spacing:2px;text-transform:uppercase}
+.login-input{width:100%;padding:14px 18px;border:1px solid var(--border);border-radius:8px;font-size:0.95rem;font-family:var(--ff);background:var(--cream);margin-bottom:12px;outline:none;transition:border-color 0.2s}
+.login-input:focus{border-color:var(--gold)}
+.login-btn{width:100%;padding:14px;background:var(--ink);color:white;border:none;border-radius:8px;font-family:var(--ff);font-size:0.85rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:0.3s}
+.login-btn:hover{background:var(--gold);color:var(--ink)}
+.login-error{color:var(--red);font-size:0.8rem;margin-top:10px;display:none}
 
 /* ── Layout ── */
 #adminApp{display:none}
 #adminApp.show{display:flex;min-height:100vh}
 
 /* ── Sidebar ── */
-.sidebar{width:240px;background:var(–ink);color:white;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;transition:transform 0.3s ease;display:flex;flex-direction:column}
+.sidebar{width:240px;background:var(--ink);color:white;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;transition:transform 0.3s ease;display:flex;flex-direction:column}
 .sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.08)}
-.sidebar-logo h2{font-family:var(–ffd);font-size:1.4rem;color:var(–gold)}
+.sidebar-logo h2{font-family:var(--ffd);font-size:1.4rem;color:var(--gold)}
 .sidebar-logo p{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:4px}
 .sidebar-nav{padding:16px 0;flex:1}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;cursor:pointer;transition:0.2s;color:rgba(255,255,255,0.6);font-size:0.85rem;font-weight:500;border-left:3px solid transparent}
 .nav-item:hover{background:rgba(255,255,255,0.06);color:white}
-.nav-item.active{background:rgba(201,168,76,0.1);color:var(–gold);border-left-color:var(–gold)}
+.nav-item.active{background:rgba(201,168,76,0.1);color:var(--gold);border-left-color:var(--gold)}
 .nav-item i{width:18px;font-size:0.9rem}
 .sidebar-footer{padding:20px 24px;border-top:1px solid rgba(255,255,255,0.08)}
-.logout-btn{width:100%;padding:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);border-radius:8px;cursor:pointer;font-family:var(–ff);font-size:0.8rem;transition:0.2s}
-.logout-btn:hover{background:var(–red);color:white;border-color:var(–red)}
+.logout-btn{width:100%;padding:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);border-radius:8px;cursor:pointer;font-family:var(--ff);font-size:0.8rem;transition:0.2s}
+.logout-btn:hover{background:var(--red);color:white;border-color:var(--red)}
 
 /* ── Mobile Topbar ── */
-.mobile-topbar{display:none;align-items:center;justify-content:space-between;padding:14px 18px;background:var(–ink);color:white;position:sticky;top:0;z-index:200}
-.mobile-topbar-title{font-family:var(–ffd);font-size:1.2rem;color:var(–gold)}
+.mobile-topbar{display:none;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--ink);color:white;position:sticky;top:0;z-index:200}
+.mobile-topbar-title{font-family:var(--ffd);font-size:1.2rem;color:var(--gold)}
 .hamburger-btn{background:none;border:none;color:white;font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:0.2s}
 .hamburger-btn:hover{background:rgba(255,255,255,0.1)}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;backdrop-filter:blur(2px)}
@@ -67,53 +66,53 @@ body{font-family:var(--ff);background:#f0f2f5;color:var(--ink);min-height:100vh}
 .main-content{flex:1;padding:32px;overflow-y:auto;min-width:0}
 .page{display:none}.page.active{display:block}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
-.page-header h1{font-family:var(–ffd);font-size:2rem;font-weight:700}
-.page-header h1 em{color:var(–gold);font-style:italic}
+.page-header h1{font-family:var(--ffd);font-size:2rem;font-weight:700}
+.page-header h1 em{color:var(--gold);font-style:italic}
 
 /* ── Stats ── */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:28px}
-.stat-card{background:white;border-radius:var(–radius);padding:24px;border:1px solid var(–border);position:relative;overflow:hidden}
-.stat-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px}
-.stat-card.gold::before{background:var(–gold)}.stat-card.green::before{background:var(–green)}.stat-card.blue::before{background:var(–blue)}.stat-card.red::before{background:var(–red)}.stat-card.orange::before{background:var(–orange)}
+.stat-card{background:white;border-radius:var(--radius);padding:24px;border:1px solid var(--border);position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-card.gold::before{background:var(--gold)}.stat-card.green::before{background:var(--green)}.stat-card.blue::before{background:var(--blue)}.stat-card.red::before{background:var(--red)}.stat-card.orange::before{background:var(--orange)}
 .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:14px}
-.stat-card.gold .stat-icon{background:rgba(201,168,76,0.12);color:var(–gold)}
-.stat-card.green .stat-icon{background:rgba(39,174,96,0.12);color:var(–green)}
-.stat-card.blue .stat-icon{background:rgba(41,128,185,0.12);color:var(–blue)}
-.stat-card.red .stat-icon{background:rgba(192,57,43,0.12);color:var(–red)}
-.stat-card.orange .stat-icon{background:rgba(230,126,34,0.12);color:var(–orange)}
-.stat-number{font-family:var(–ffd);font-size:2.2rem;font-weight:700;color:var(–ink);line-height:1}
-.stat-label{font-size:0.75rem;color:var(–slate);margin-top:6px;text-transform:uppercase;letter-spacing:1px}
+.stat-card.gold .stat-icon{background:rgba(201,168,76,0.12);color:var(--gold)}
+.stat-card.green .stat-icon{background:rgba(39,174,96,0.12);color:var(--green)}
+.stat-card.blue .stat-icon{background:rgba(41,128,185,0.12);color:var(--blue)}
+.stat-card.red .stat-icon{background:rgba(192,57,43,0.12);color:var(--red)}
+.stat-card.orange .stat-icon{background:rgba(230,126,34,0.12);color:var(--orange)}
+.stat-number{font-family:var(--ffd);font-size:2.2rem;font-weight:700;color:var(--ink);line-height:1}
+.stat-label{font-size:0.75rem;color:var(--slate);margin-top:6px;text-transform:uppercase;letter-spacing:1px}
 
 /* ── Toolbar & Butonlar ── */
 .toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
-.btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:var(–ff);font-size:0.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:0.2s;display:inline-flex;align-items:center;gap:8px}
-.btn-primary{background:var(–ink);color:white}.btn-primary:hover{background:var(–gold);color:var(–ink)}
-.btn-success{background:var(–green);color:white}.btn-success:hover{background:#219a52}
-.btn-danger{background:var(–red);color:white}.btn-danger:hover{background:#a93226}
-.btn-outline{background:white;color:var(–slate);border:1px solid var(–border)}.btn-outline:hover{border-color:var(–gold);color:var(–gold)}
+.btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:var(--ff);font-size:0.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:0.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--ink);color:white}.btn-primary:hover{background:var(--gold);color:var(--ink)}
+.btn-success{background:var(--green);color:white}.btn-success:hover{background:#219a52}
+.btn-danger{background:var(--red);color:white}.btn-danger:hover{background:#a93226}
+.btn-outline{background:white;color:var(--slate);border:1px solid var(--border)}.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
 .btn-wa{background:#25D366;color:white}.btn-wa:hover{background:#1da851}
-.search-box{flex:1;max-width:280px;padding:10px 16px;border:1px solid var(–border);border-radius:8px;font-family:var(–ff);font-size:0.85rem;background:white;outline:none;transition:border-color 0.2s}
-.search-box:focus{border-color:var(–gold)}
-select.filter-sel{padding:10px 16px;border:1px solid var(–border);border-radius:8px;font-family:var(–ff);background:white;font-size:0.85rem;cursor:pointer;outline:none}
+.search-box{flex:1;max-width:280px;padding:10px 16px;border:1px solid var(--border);border-radius:8px;font-family:var(--ff);font-size:0.85rem;background:white;outline:none;transition:border-color 0.2s}
+.search-box:focus{border-color:var(--gold)}
+select.filter-sel{padding:10px 16px;border:1px solid var(--border);border-radius:8px;font-family:var(--ff);background:white;font-size:0.85rem;cursor:pointer;outline:none}
 
 /* ── Tablo ── */
-.table-wrap{background:white;border-radius:var(–radius);border:1px solid var(–border);overflow:hidden;overflow-x:auto}
+.table-wrap{background:white;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:500px}
-th{text-align:left;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(–slate);padding:14px 16px;border-bottom:1px solid var(–border);background:#fafafa;font-weight:600}
-td{padding:14px 16px;border-bottom:1px solid var(–border);font-size:0.88rem;vertical-align:middle}
+th{text-align:left;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--slate);padding:14px 16px;border-bottom:1px solid var(--border);background:#fafafa;font-weight:600}
+td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:0.88rem;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafdf5}
-.product-thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid var(–border)}
+.product-thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid var(--border)}
 .product-name-cell{font-weight:500;max-width:200px}
-.product-name-cell small{display:block;color:var(–slate);font-size:0.75rem;margin-top:2px}
+.product-name-cell small{display:block;color:var(--slate);font-size:0.75rem;margin-top:2px}
 
 /* ── Durum Etiketleri ── */
 .badge-tag{display:inline-block;padding:4px 10px;border-radius:20px;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.badge-active{background:rgba(39,174,96,0.1);color:var(–green)}
-.badge-inactive{background:rgba(192,57,43,0.1);color:var(–red)}
-.badge-cat{background:rgba(201,168,76,0.1);color:var(–gold)}
-.price-cell{font-family:var(–ffd);font-weight:700;font-size:1rem;color:var(–ink)}
-.price-old{text-decoration:line-through;color:#aaa;font-size:0.8rem;font-family:var(–ff);font-weight:400;display:block}
+.badge-active{background:rgba(39,174,96,0.1);color:var(--green)}
+.badge-inactive{background:rgba(192,57,43,0.1);color:var(--red)}
+.badge-cat{background:rgba(201,168,76,0.1);color:var(--gold)}
+.price-cell{font-family:var(--ffd);font-weight:700;font-size:1rem;color:var(--ink)}
+.price-old{text-decoration:line-through;color:#aaa;font-size:0.8rem;font-family:var(--ff);font-weight:400;display:block}
 
 /* ── Sipariş Durumu Renkleri ── */
 .status-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:0.5px}
@@ -126,89 +125,89 @@ tr:hover td{background:#fafdf5}
 /* ── Aksiyon butonları ── */
 .action-btns{display:flex;gap:6px}
 .icon-btn{width:32px;height:32px;border-radius:6px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:0.2s}
-.icon-btn.edit{background:rgba(41,128,185,0.1);color:var(–blue)}.icon-btn.edit:hover{background:var(–blue);color:white}
-.icon-btn.del{background:rgba(192,57,43,0.1);color:var(–red)}.icon-btn.del:hover{background:var(–red);color:white}
-.icon-btn.toggle{background:rgba(39,174,96,0.1);color:var(–green)}.icon-btn.toggle:hover{background:var(–green);color:white}
-.icon-btn.toggle.off{background:rgba(192,57,43,0.1);color:var(–red)}.icon-btn.toggle.off:hover{background:var(–red);color:white}
+.icon-btn.edit{background:rgba(41,128,185,0.1);color:var(--blue)}.icon-btn.edit:hover{background:var(--blue);color:white}
+.icon-btn.del{background:rgba(192,57,43,0.1);color:var(--red)}.icon-btn.del:hover{background:var(--red);color:white}
+.icon-btn.toggle{background:rgba(39,174,96,0.1);color:var(--green)}.icon-btn.toggle:hover{background:var(--green);color:white}
+.icon-btn.toggle.off{background:rgba(192,57,43,0.1);color:var(--red)}.icon-btn.toggle.off:hover{background:var(--red);color:white}
 .icon-btn.wa{background:rgba(37,211,102,0.12);color:#25D366}.icon-btn.wa:hover{background:#25D366;color:white}
-.icon-btn.view{background:rgba(41,128,185,0.1);color:var(–blue)}.icon-btn.view:hover{background:var(–blue);color:white}
+.icon-btn.view{background:rgba(41,128,185,0.1);color:var(--blue)}.icon-btn.view:hover{background:var(--blue);color:white}
 
 /* ── Modal ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .modal-bg.open{display:flex}
 .form-modal{background:white;border-radius:16px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto}
-.form-modal-header{padding:24px 28px 20px;border-bottom:1px solid var(–border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:white;z-index:10}
-.form-modal-header h3{font-family:var(–ffd);font-size:1.5rem;font-weight:700}
+.form-modal-header{padding:24px 28px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:white;z-index:10}
+.form-modal-header h3{font-family:var(--ffd);font-size:1.5rem;font-weight:700}
 .form-modal-body{padding:28px}
-.form-modal-footer{padding:20px 28px;border-top:1px solid var(–border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:white}
-.close-modal-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(–cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(–slate)}
-.close-modal-btn:hover{background:var(–red);color:white}
+.form-modal-footer{padding:20px 28px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;background:white}
+.close-modal-btn{width:32px;height:32px;border-radius:50%;border:none;background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(--slate)}
+.close-modal-btn:hover{background:var(--red);color:white}
 .fg{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-.fg label{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(–slate);font-weight:600}
-.fg input,.fg select,.fg textarea{padding:12px 16px;border:1px solid var(–border);border-radius:8px;font-family:var(–ff);font-size:0.9rem;background:var(–cream);transition:border-color 0.2s;outline:none}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(–gold)}
+.fg label{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--slate);font-weight:600}
+.fg input,.fg select,.fg textarea{padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-family:var(--ff);font-size:0.9rem;background:var(--cream);transition:border-color 0.2s;outline:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold)}
 .fg textarea{resize:vertical;min-height:80px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
 /* ── Switch ── */
-.switch-wrap{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(–cream);border-radius:8px;border:1px solid var(–border)}
+.switch-wrap{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--cream);border-radius:8px;border:1px solid var(--border)}
 .switch{width:44px;height:24px;background:#ccc;border-radius:12px;position:relative;cursor:pointer;transition:0.3s;flex-shrink:0}
-.switch.on{background:var(–green)}
-.switch::after{content:’’;position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:0.3s}
+.switch.on{background:var(--green)}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:0.3s}
 .switch.on::after{left:23px}
 
 /* ── JSON helpers ── */
 .json-helper{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
-.json-helper-btn{padding:4px 10px;background:var(–cream);border:1px solid var(–border);border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(–ff);color:var(–slate);transition:0.2s}
-.json-helper-btn:hover{border-color:var(–gold);color:var(–gold)}
-.json-hint{font-size:0.72rem;color:var(–slate);margin-top:4px;line-height:1.5}
+.json-helper-btn{padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:6px;font-size:0.72rem;cursor:pointer;font-family:var(--ff);color:var(--slate);transition:0.2s}
+.json-helper-btn:hover{border-color:var(--gold);color:var(--gold)}
+.json-hint{font-size:0.72rem;color:var(--slate);margin-top:4px;line-height:1.5}
 .json-valid{font-size:0.72rem;margin-top:4px;padding:4px 8px;border-radius:4px;display:none}
-.json-valid.ok{background:rgba(39,174,96,0.1);color:var(–green);display:block}
-.json-valid.err{background:rgba(192,57,43,0.1);color:var(–red);display:block}
+.json-valid.ok{background:rgba(39,174,96,0.1);color:var(--green);display:block}
+.json-valid.err{background:rgba(192,57,43,0.1);color:var(--red);display:block}
 
 /* ── Müşteri Kartı ── */
-.customer-card{background:white;border-radius:var(–radius);padding:20px;border:1px solid var(–border);display:flex;align-items:center;gap:16px;transition:0.2s}
-.customer-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);border-color:var(–gold)}
-.cust-avatar{width:48px;height:48px;border-radius:50%;background:var(–ink);display:flex;align-items:center;justify-content:center;color:var(–gold);font-family:var(–ffd);font-size:1.3rem;font-weight:700;flex-shrink:0}
+.customer-card{background:white;border-radius:var(--radius);padding:20px;border:1px solid var(--border);display:flex;align-items:center;gap:16px;transition:0.2s}
+.customer-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);border-color:var(--gold)}
+.cust-avatar{width:48px;height:48px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:var(--ffd);font-size:1.3rem;font-weight:700;flex-shrink:0}
 .cust-info{flex:1;min-width:0}
 .cust-name{font-weight:600;font-size:0.95rem;margin-bottom:2px}
-.cust-meta{font-size:0.78rem;color:var(–slate)}
+.cust-meta{font-size:0.78rem;color:var(--slate)}
 .cust-actions{display:flex;gap:8px}
 
 /* ── Kampanya ── */
-.campaign-card{background:white;border-radius:var(–radius);padding:24px;border:1px solid var(–border);margin-bottom:16px}
-.campaign-card h3{font-family:var(–ffd);font-size:1.2rem;font-weight:600;margin-bottom:8px}
-.campaign-card p{font-size:0.85rem;color:var(–slate);margin-bottom:16px}
+.campaign-card{background:white;border-radius:var(--radius);padding:24px;border:1px solid var(--border);margin-bottom:16px}
+.campaign-card h3{font-family:var(--ffd);font-size:1.2rem;font-weight:600;margin-bottom:8px}
+.campaign-card p{font-size:0.85rem;color:var(--slate);margin-bottom:16px}
 .campaign-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:600;margin-bottom:12px}
-.campaign-badge.active{background:rgba(39,174,96,0.1);color:var(–green)}
-.campaign-badge.paused{background:rgba(201,168,76,0.1);color:var(–gold)}
+.campaign-badge.active{background:rgba(39,174,96,0.1);color:var(--green)}
+.campaign-badge.paused{background:rgba(201,168,76,0.1);color:var(--gold)}
 
 /* ── Ayarlar ── */
-.settings-section{background:white;border-radius:var(–radius);border:1px solid var(–border);margin-bottom:20px;overflow:hidden}
-.settings-section-header{padding:18px 24px;border-bottom:1px solid var(–border);font-weight:600;font-size:0.9rem;background:#fafafa;display:flex;align-items:center;gap:10px}
-.settings-section-header i{color:var(–gold)}
+.settings-section{background:white;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:20px;overflow:hidden}
+.settings-section-header{padding:18px 24px;border-bottom:1px solid var(--border);font-weight:600;font-size:0.9rem;background:#fafafa;display:flex;align-items:center;gap:10px}
+.settings-section-header i{color:var(--gold)}
 .settings-body{padding:24px}
-.settings-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(–border)}
+.settings-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
 .settings-row:last-child{border-bottom:none}
 .settings-row-label h4{font-size:0.88rem;font-weight:500;margin-bottom:2px}
-.settings-row-label p{font-size:0.78rem;color:var(–slate)}
+.settings-row-label p{font-size:0.78rem;color:var(--slate)}
 
 /* ── Bildirimler ── */
-.notif-item{background:white;border-radius:var(–radius);padding:20px;border:1px solid var(–border);display:flex;align-items:flex-start;gap:16px;margin-bottom:12px}
+.notif-item{background:white;border-radius:var(--radius);padding:20px;border:1px solid var(--border);display:flex;align-items:flex-start;gap:16px;margin-bottom:12px}
 .notif-icon{width:40px;height:40px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem}
-.notif-icon.order{background:rgba(39,174,96,0.1);color:var(–green)}
-.notif-icon.warn{background:rgba(201,168,76,0.1);color:var(–gold)}
+.notif-icon.order{background:rgba(39,174,96,0.1);color:var(--green)}
+.notif-icon.warn{background:rgba(201,168,76,0.1);color:var(--gold)}
 .notif-title{font-weight:600;font-size:0.9rem;margin-bottom:4px}
-.notif-desc{font-size:0.82rem;color:var(–slate);line-height:1.6}
+.notif-desc{font-size:0.82rem;color:var(--slate);line-height:1.6}
 .notif-time{font-size:0.72rem;color:#bbb;margin-top:6px}
 
 /* ── Detail info box ── */
-.info-row{display:flex;flex-direction:column;gap:4px;padding:12px;background:var(–cream);border-radius:8px;margin-bottom:10px}
-.info-row label{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(–slate);font-weight:600}
-.info-row span{font-size:0.9rem;color:var(–ink)}
+.info-row{display:flex;flex-direction:column;gap:4px;padding:12px;background:var(--cream);border-radius:8px;margin-bottom:10px}
+.info-row label{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--slate);font-weight:600}
+.info-row span{font-size:0.9rem;color:var(--ink)}
 
 /* ── Toast ── */
-.a-toast{position:fixed;bottom:24px;right:24px;z-index:5000;background:var(–ink);color:white;padding:14px 22px;border-radius:10px;font-size:0.82rem;border-left:3px solid var(–gold);transform:translateX(120%);transition:transform 0.4s;pointer-events:none;max-width:320px}
+.a-toast{position:fixed;bottom:24px;right:24px;z-index:5000;background:var(--ink);color:white;padding:14px 22px;border-radius:10px;font-size:0.82rem;border-left:3px solid var(--gold);transform:translateX(120%);transition:transform 0.4s;pointer-events:none;max-width:320px}
 .a-toast.show{transform:translateX(0)}
 
 /* ── Responsive ── */
@@ -276,7 +275,6 @@ tr:hover td{background:#fafdf5}
 
   <div class="main-content">
 
-```
 <!-- ══════════ DASHBOARD ══════════ -->
 <div class="page active" id="page-dashboard">
   <div class="page-header">
@@ -470,14 +468,13 @@ tr:hover td{background:#fafdf5}
     </div>
   </div>
 </div>
-```
 
   </div><!-- /main-content -->
 </div><!-- /adminApp -->
 
 <!-- ══════════ SİPARİŞ DETAY MODAL ══════════ -->
 
-<div class="modal-bg" id="orderModal">
+<div class="modal-bg" id="orderModal" onclick="if(event.target === this) closeModal('orderModal')">
   <div class="form-modal" style="max-width:520px">
     <div class="form-modal-header">
       <h3 id="orderModalTitle">Sipariş Detayı</h3>
@@ -500,7 +497,7 @@ tr:hover td{background:#fafdf5}
 
 <!-- ══════════ MÜŞTERİ DETAY MODAL ══════════ -->
 
-<div class="modal-bg" id="customerModal">
+<div class="modal-bg" id="customerModal" onclick="if(event.target === this) closeModal('customerModal')">
   <div class="form-modal" style="max-width:480px">
     <div class="form-modal-header">
       <h3 id="customerModalTitle">Müşteri Detayı</h3>
@@ -516,7 +513,7 @@ tr:hover td{background:#fafdf5}
 
 <!-- ══════════ ÜRÜN EKLE/DÜZENLE MODAL ══════════ -->
 
-<div class="modal-bg" id="productModal">
+<div class="modal-bg" id="productModal" onclick="if(event.target === this) closeModal('productModal')">
   <div class="form-modal">
     <div class="form-modal-header">
       <h3 id="formModalTitle">Ürün Ekle</h3>
@@ -585,7 +582,7 @@ tr:hover td{background:#fafdf5}
 
 <!-- ══════════ KATEGORİ MODAL ══════════ -->
 
-<div class="modal-bg" id="catModal">
+<div class="modal-bg" id="catModal" onclick="if(event.target === this) closeModal('catModal')">
   <div class="form-modal" style="max-width:440px">
     <div class="form-modal-header">
       <h3 id="catModalTitle">Yeni Kategori</h3>
@@ -605,7 +602,7 @@ tr:hover td{background:#fafdf5}
 
 <!-- ══════════ ŞİFRE MODAL ══════════ -->
 
-<div class="modal-bg" id="passModal">
+<div class="modal-bg" id="passModal" onclick="if(event.target === this) closeModal('passModal')">
   <div class="form-modal" style="max-width:400px">
     <div class="form-modal-header"><h3>Şifre Değiştir</h3><button class="close-modal-btn" onclick="closeModal('passModal')"><i class="fas fa-xmark"></i></button></div>
     <div class="form-modal-body">
@@ -682,8 +679,8 @@ async function fetchProducts(){
     if(!r.ok) throw new Error('HTTP '+r.status);
     PRODUCTS = await r.json();
   } catch(e){
-    PRODUCTS = [];
-    aToast('⚠️ products.json yüklenemedi');
+    PRODUCTS = [{id:"ornek-urun-1",name:"Örnek Perde",desc:"Açıklama",price:300,oldPrice:400,cat:"perde",unit:"adet",image:"resimler/placeholder.jpg",badge:"%25 İndirim",features:"karartma,ütü",active:true}];
+    aToast('⚠️ Ürün listesi yüklenemedi, örnek veriler gösteriliyor');
   }
 }
 
@@ -757,43 +754,21 @@ function getCatLabel(key){ return (CATEGORIES.find(c=>c.key===key)||{label:key})
 //  DASHBOARD
 // ════════════════════════════════════════════════════════
 function renderDashboard(){
-  const total=PRODUCTS.length, active=PRODUCTS.filter(p=>p.active).length, inactive=total-active;
+  const total=PRODUCTS.length, active=PRODUCTS.filter(p=>p.active).length;
   document.getElementById('statTotal').innerText = total;
   document.getElementById('statActive').innerText = active;
   const reminders=document.getElementById('reminders');
   const msgs=[];
-  if(inactive>0) msgs.push({icon:'fas fa-eye-slash',color:'#c0392b',text:`<strong>${inactive} ürün</strong> pasif durumda ve sitede görünmüyor.`});
+  if(total-active>0) msgs.push({icon:'fas fa-eye-slash',color:'#c0392b',text:`<strong>${total-active} ürün</strong> pasif durumda ve sitede görünmüyor.`});
   if(!msgs.length) msgs.push({icon:'fas fa-check-circle',color:'#27ae60',text:'Her şey yolunda! Site aktif durumda.'});
   reminders.innerHTML=msgs.map(m=>`<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#fafafa;border-radius:8px;border:1px solid var(--border);margin-bottom:8px"><i class="${m.icon}" style="color:${m.color};font-size:1rem;width:20px"></i><span style="font-size:0.85rem">${m.text}</span></div>`).join('');
 }
 
 async function loadDashboardStats(){
-  // Sipariş sayısı ve bekleyenler
-  try{
-    const r = await fetch('/api/orders?action=all', { headers:{'x-admin-key': getPass()} });
-    const data = await r.json();
-    const orders = data.orders||[];
-    document.getElementById('statOrderCount').innerText = orders.length;
-    document.getElementById('statPending').innerText = orders.filter(o=>!o.durum||o.durum==='Beklemede').length;
-    // Son 3 sipariş
-    const recent = orders.slice(0,3);
-    document.getElementById('dashRecentOrders').innerHTML = recent.length
-      ? recent.map(o=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
-          <div><div style="font-weight:500;font-size:0.88rem">${o.musteri_adi}</div><div style="font-size:0.75rem;color:var(--slate)">${new Date(o.created_at).toLocaleDateString('tr-TR')}</div></div>
-          <div style="display:flex;align-items:center;gap:8px"><span class="status-badge ${statusClass(o.durum)}">${o.durum||'Beklemede'}</span><strong style="font-family:var(--ffd);color:var(--gold)">${Number(o.toplam).toLocaleString('tr-TR')} ₺</strong></div>
-        </div>`).join('')
-      : '<div style="text-align:center;padding:20px;color:var(--slate);font-style:italic">Henüz sipariş yok.</div>';
-  } catch(e){
-    document.getElementById('statOrderCount').innerText = '—';
-    document.getElementById('statPending').innerText = '—';
-    document.getElementById('dashRecentOrders').innerHTML = '<div style="color:var(--slate);font-size:0.85rem">Siparişler yüklenemedi.</div>';
-  }
-  // Müşteri sayısı
-  try{
-    const r2 = await fetch('/api/auth?action=all-users', { headers:{'x-admin-key': getPass()} });
-    const data2 = await r2.json();
-    document.getElementById('statCustomers').innerText = (data2.users||[]).length;
-  } catch(e){ document.getElementById('statCustomers').innerText = '—'; }
+  document.getElementById('statOrderCount').innerText = '0';
+  document.getElementById('statPending').innerText = '0';
+  document.getElementById('statCustomers').innerText = '0';
+  document.getElementById('dashRecentOrders').innerHTML = '<div style="text-align:center;padding:20px;color:var(--slate);font-style:italic">Henüz sipariş yok.</div>';
 }
 
 function statusClass(d){
@@ -810,99 +785,25 @@ let currentOrderId = null;
 async function loadAdminOrders(){
   const tbody = document.getElementById('ordersTableBody');
   tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--slate)"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td></tr>';
-  try{
-    const r = await fetch('/api/orders?action=all', { headers:{'Content-Type':'application/json','x-admin-key': getPass()} });
-    const data = await r.json();
-    ALL_ORDERS = data.orders || [];
-    filterOrders();
-  } catch(e){
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--red)">Yüklenemedi: ${e.message}</td></tr>`;
-  }
+  ALL_ORDERS = [];
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--slate);font-style:italic">Henüz sipariş alınmadı</td></tr>';
+  document.getElementById('orderCount').innerText = `0 sipariş / 0 toplam`;
 }
 
 function filterOrders(){
-  const q = (document.getElementById('orderSearch')?.value||'').toLowerCase();
-  const status = document.getElementById('orderStatusFilter')?.value||'';
-  const filtered = ALL_ORDERS.filter(o=>{
-    if(q && !o.musteri_adi?.toLowerCase().includes(q) && !o.telefon?.includes(q)) return false;
-    if(status && o.durum !== status) return false;
-    return true;
-  });
-  renderOrdersTable(filtered);
+  renderOrdersTable(ALL_ORDERS);
 }
 
 function renderOrdersTable(orders){
   const tbody = document.getElementById('ordersTableBody');
-  document.getElementById('orderCount').innerText = `${orders.length} sipariş / ${ALL_ORDERS.length} toplam`;
   if(!orders.length){
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--slate);font-style:italic">Sipariş bulunamadı</td></tr>';
     return;
   }
-  const odemeLabel = {kapida:'Kapıda',havale:'Havale',kredikarti:'Kredi Kartı'};
-  tbody.innerHTML = orders.map(o=>{
-    const items = typeof o.urunler==='string' ? JSON.parse(o.urunler) : (o.urunler||[]);
-    const itemStr = items.slice(0,2).map(i=>(i.name||i.ad||'?')+' ×'+(i.quantity||i.adet||1)).join(', ')+(items.length>2?'...':'');
-    const date = new Date(o.created_at).toLocaleDateString('tr-TR');
-    const durum = o.durum||'Beklemede';
-    return `<tr>
-      <td><strong>#${o.id}</strong></td>
-      <td>
-        <div style="font-weight:600">${o.musteri_adi||'—'}</div>
-        <div style="font-size:0.75rem;color:var(--slate)">${o.telefon||''}</div>
-      </td>
-      <td style="font-size:0.82rem;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${itemStr}</td>
-      <td class="price-cell">${Number(o.toplam||0).toLocaleString('tr-TR')} ₺</td>
-      <td style="font-size:0.8rem">${odemeLabel[o.odeme_yontemi]||o.odeme_yontemi||'—'}</td>
-      <td><span class="status-badge ${statusClass(durum)}">${durum}</span></td>
-      <td style="font-size:0.82rem">${date}</td>
-      <td><div class="action-btns">
-        <button class="icon-btn view" onclick="openOrderModal(${o.id})" title="Detay"><i class="fas fa-eye"></i></button>
-        <button class="icon-btn wa" onclick="window.open('https://wa.me/9${(o.telefon||'').replace(/\D/g,'')}','_blank')" title="WhatsApp"><i class="fab fa-whatsapp"></i></button>
-      </div></td>
-    </tr>`;
-  }).join('');
 }
 
-function openOrderModal(id){
-  const o = ALL_ORDERS.find(x=>x.id===id);
-  if(!o) return;
-  currentOrderId = id;
-  document.getElementById('orderModalTitle').innerText = 'Sipariş #'+id;
-  const items = typeof o.urunler==='string' ? JSON.parse(o.urunler) : (o.urunler||[]);
-  document.getElementById('orderModalBody').innerHTML = `
-    <div class="info-row"><label>Müşteri</label><span>${o.musteri_adi||'—'}</span></div>
-    <div class="info-row"><label>Telefon</label><span>${o.telefon||'—'}</span></div>
-    <div class="info-row"><label>Teslimat Adresi</label><span>${o.adres||'—'}</span></div>
-    <div class="info-row"><label>Ödeme Yöntemi</label><span>${{kapida:'Kapıda Ödeme',havale:'Havale / EFT',kredikarti:'Kredi Kartı'}[o.odeme_yontemi]||o.odeme_yontemi||'—'}</span></div>
-    <div class="info-row"><label>Sipariş Tarihi</label><span>${new Date(o.created_at).toLocaleString('tr-TR')}</span></div>
-    <div class="info-row"><label>Ürünler</label><span>${items.map(i=>`${i.name||i.ad} × ${i.quantity||i.adet||1} — ${Number((i.price||i.fiyat||0)*(i.quantity||i.adet||1)).toLocaleString('tr-TR')} ₺`).join('<br>')}</span></div>
-    ${o.siparis_notu ? `<div class="info-row"><label>Not</label><span>${o.siparis_notu}</span></div>` : ''}
-    <div class="info-row" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2)"><label>Toplam Tutar</label><span style="font-weight:700;font-size:1.1rem;color:var(--gold)">${Number(o.toplam||0).toLocaleString('tr-TR')} ₺</span></div>
-  `;
-  document.getElementById('orderStatusSelect').value = o.durum||'Beklemede';
-  const phone = (o.telefon||'').replace(/\D/g,'');
-  document.getElementById('orderWaBtn').onclick = ()=>window.open(`https://wa.me/9${phone}?text=${encodeURIComponent('Merhaba '+o.musteri_adi+', siparişiniz hakkında...')}`, '_blank');
-  document.getElementById('orderModal').classList.add('open');
-}
-
-async function updateOrderStatus(){
-  const durum = document.getElementById('orderStatusSelect').value;
-  try{
-    const r = await fetch('/api/orders?action=update-status', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-key': getPass()},
-      body: JSON.stringify({id:currentOrderId, durum})
-    });
-    const data = await r.json();
-    if(data.success){
-      const o = ALL_ORDERS.find(x=>x.id===currentOrderId);
-      if(o) o.durum = durum;
-      closeModal('orderModal');
-      filterOrders();
-      aToast('✓ Sipariş durumu: '+durum);
-    } else aToast('❌ '+data.error);
-  } catch(e){ aToast('❌ '+e.message); }
-}
+function openOrderModal(id){}
+async function updateOrderStatus(){}
 
 // ════════════════════════════════════════════════════════
 //  MÜŞTERİLER
@@ -911,72 +812,13 @@ let ALL_CUSTOMERS = [];
 
 async function loadCustomers(){
   const grid = document.getElementById('customerGrid');
-  grid.innerHTML = '<div style="background:white;border-radius:var(--radius);padding:30px;text-align:center;color:var(--slate);grid-column:1/-1"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem;margin-bottom:10px;display:block"></i>Yükleniyor...</div>';
-  try{
-    const r = await fetch('/api/auth?action=all-users', { headers:{'Content-Type':'application/json','x-admin-key': getPass()} });
-    const data = await r.json();
-    ALL_CUSTOMERS = data.users || [];
-    filterCustomers();
-  } catch(e){
-    grid.innerHTML = `<div style="background:white;border-radius:var(--radius);padding:30px;text-align:center;color:var(--red);grid-column:1/-1">Müşteriler yüklenemedi: ${e.message}</div>`;
-  }
+  grid.innerHTML = '<div style="background:white;border-radius:var(--radius);padding:30px;text-align:center;color:var(--slate);grid-column:1/-1">Henüz kayıtlı müşteri yok</div>';
+  document.getElementById('customerCount').innerText = `0 müşteri / 0 toplam`;
 }
 
-function filterCustomers(){
-  const q = (document.getElementById('customerSearch')?.value||'').toLowerCase();
-  const filtered = ALL_CUSTOMERS.filter(u =>
-    !q || u.ad_soyad?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q) || u.telefon?.includes(q)
-  );
-  renderCustomerGrid(filtered);
-}
-
-function renderCustomerGrid(users){
-  const grid = document.getElementById('customerGrid');
-  document.getElementById('customerCount').innerText = `${users.length} müşteri / ${ALL_CUSTOMERS.length} toplam`;
-  if(!users.length){
-    grid.innerHTML = '<div style="background:white;border-radius:var(--radius);padding:40px;text-align:center;color:var(--slate);font-style:italic;grid-column:1/-1"><i class="fas fa-users" style="font-size:2rem;margin-bottom:12px;display:block;opacity:0.3"></i>Müşteri bulunamadı</div>';
-    return;
-  }
-  grid.innerHTML = users.map(u=>{
-    const initial = (u.ad_soyad||u.email||'?').charAt(0).toUpperCase();
-    const orderCount = ALL_ORDERS.filter(o => o.musteri_adi === u.ad_soyad || o.telefon === u.telefon).length;
-    return `<div class="customer-card">
-      <div class="cust-avatar">${initial}</div>
-      <div class="cust-info">
-        <div class="cust-name">${u.ad_soyad||'—'}</div>
-        <div class="cust-meta">${u.email||''}</div>
-        <div class="cust-meta">${u.telefon||''} ${orderCount>0?`· <strong>${orderCount} sipariş</strong>`:''}</div>
-        <div class="cust-meta" style="font-size:0.72rem;margin-top:2px">${new Date(u.created_at||Date.now()).toLocaleDateString('tr-TR')}'den beri</div>
-      </div>
-      <div class="cust-actions">
-        <button class="icon-btn view" onclick="openCustomerModal(${u.id})" title="Detay"><i class="fas fa-eye"></i></button>
-        <button class="icon-btn wa" onclick="window.open('https://wa.me/9${(u.telefon||'').replace(/\D/g,'')}','_blank')" title="WhatsApp"><i class="fab fa-whatsapp"></i></button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function openCustomerModal(id){
-  const u = ALL_CUSTOMERS.find(x=>x.id===id);
-  if(!u) return;
-  document.getElementById('customerModalTitle').innerText = u.ad_soyad||u.email;
-  const orders = ALL_ORDERS.filter(o=>o.musteri_adi===u.ad_soyad||o.telefon===u.telefon);
-  const total = orders.reduce((a,o)=>a+Number(o.toplam||0),0);
-  document.getElementById('customerModalBody').innerHTML = `
-    <div class="info-row"><label>Ad Soyad</label><span>${u.ad_soyad||'—'}</span></div>
-    <div class="info-row"><label>E-posta</label><span>${u.email||'—'}</span></div>
-    <div class="info-row"><label>Telefon</label><span>${u.telefon||'—'}</span></div>
-    <div class="info-row"><label>Kayıt Tarihi</label><span>${new Date(u.created_at||Date.now()).toLocaleDateString('tr-TR')}</span></div>
-    <div class="info-row" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2)">
-      <label>Sipariş Özeti</label>
-      <span>${orders.length} sipariş · Toplam: <strong style="color:var(--gold)">${total.toLocaleString('tr-TR')} ₺</strong></span>
-    </div>
-    ${orders.length ? `<div style="margin-top:12px"><div style="font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--slate);font-weight:600;margin-bottom:8px">Son Siparişler</div>${orders.slice(0,5).map(o=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem"><span>#${o.id} — ${new Date(o.created_at).toLocaleDateString('tr-TR')}</span><div style="display:flex;align-items:center;gap:8px"><span class="status-badge ${statusClass(o.durum)}">${o.durum||'Beklemede'}</span><strong>${Number(o.toplam||0).toLocaleString('tr-TR')} ₺</strong></div></div>`).join('')}</div>` : ''}
-  `;
-  const phone = (u.telefon||'').replace(/\D/g,'');
-  document.getElementById('customerWaBtn').onclick = ()=>window.open(`https://wa.me/9${phone}?text=${encodeURIComponent('Merhaba '+u.ad_soyad+'...')}`, '_blank');
-  document.getElementById('customerModal').classList.add('open');
-}
+function filterCustomers(){}
+function renderCustomerGrid(users){}
+function openCustomerModal(id){}
 
 // ════════════════════════════════════════════════════════
 //  ÜRÜN TABLOSU
@@ -1096,26 +938,7 @@ function handleImageSelect(input){
   const reader=new FileReader();
   reader.onload=e=>{const prev=document.getElementById('imgPreview');prev.src=e.target.result;prev.style.display='block';};
   reader.readAsDataURL(file);
-  uploadImageToGithub(file);
-}
-async function uploadImageToGithub(file){
-  let token=getGithubToken();
-  if(!token){token=prompt('GitHub Personal Access Token girin:');if(!token){aToast('⚠️ Token girilmedi');return;}localStorage.setItem('gh_token',token);}
-  const statusEl=document.getElementById('imgUploadStatus');
-  statusEl.style.display='block';statusEl.innerHTML='<i class="fas fa-spinner fa-spin"></i> GitHub\'a yükleniyor...';
-  statusEl.style.background='#fff8e1';statusEl.style.borderColor='#f0c040';statusEl.style.color='#7a5c00';
-  const base64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});
-  const safeName=file.name.toLowerCase().replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c').replace(/\s+/g,'-').replace(/[^a-z0-9._-]/g,'');
-  const imagePath=`resimler/${safeName}`;
-  const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${imagePath}`;
-  try{
-    let sha=null;
-    try{const ex=await fetch(url,{headers:{Authorization:`token ${token}`}});if(ex.ok)sha=(await ex.json()).sha;}catch(e){}
-    const body={message:`Resim eklendi: ${safeName}`,content:base64};if(sha)body.sha=sha;
-    const res=await fetch(url,{method:'PUT',headers:{Authorization:`token ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(res.ok){document.getElementById('f-image').value=imagePath;statusEl.innerHTML='<i class="fas fa-check-circle" style="color:#27ae60"></i> Yüklendi: '+imagePath;statusEl.style.background='#f0fff4';statusEl.style.borderColor='#27ae60';statusEl.style.color='#1a6b3c';aToast('✅ Resim GitHub\'a yüklendi!');}
-    else{const err=await res.json();statusEl.innerHTML='❌ '+( err.message||'Hata');statusEl.style.background='#fff0f0';statusEl.style.borderColor='#c0392b';statusEl.style.color='#c0392b';}
-  }catch(err){statusEl.innerHTML='❌ '+err.message;statusEl.style.background='#fff0f0';statusEl.style.borderColor='#c0392b';statusEl.style.color='#c0392b';}
+  aToast('⚠️ GitHub ayarlarınızı yapılandırarak resim yükleyebilirsiniz');
 }
 
 // ════════════════════════════════════════════════════════
@@ -1125,8 +948,8 @@ const REPO_OWNER='gocmenperde', REPO_NAME='gocmenperde', FILE_PATH='products.jso
 function getGithubToken(){ return localStorage.getItem('gh_token'); }
 function resetGithubToken(){ localStorage.removeItem('gh_token'); const t=prompt('Yeni GitHub Token girin:'); if(t){localStorage.setItem('gh_token',t);aToast('✓ Token güncellendi');} }
 async function saveProductsJSON(){
-  let token=getGithubToken();
-  if(!token){token=prompt('GitHub Personal Access Token girin:');if(!token){aToast('⚠️ İptal edildi');return;}localStorage.setItem('gh_token',token);}
+  const token=getGithubToken();
+  if(!token){aToast('⚠️ Lütfen ayarlardan GitHub Token\'ınızı girin');return;}
   aToast('⏳ GitHub\'a kaydediliyor...');
   try{
     const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
@@ -1184,11 +1007,6 @@ async function initAdmin(){
   renderCatTable();
   rebuildCatDropdowns();
   loadDashboardStats();
-  // Siparişleri de arka planda yükle ki müşteri modalında gözüksün
-  try{
-    const r=await fetch('/api/orders?action=all',{headers:{'x-admin-key':getPass()}});
-    ALL_ORDERS=(await r.json()).orders||[];
-  }catch(e){}
 }
 </script>
 

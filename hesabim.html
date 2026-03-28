@@ -89,7 +89,11 @@
         <div class="add-form">
             <h3><i class="fas fa-plus"></i> Yeni Adres Ekle</h3>
             <input type="text" id="aBaslik" placeholder="Adres Başlığı (Ev, İş...)">
-            <textarea id="aAdres" rows="3" placeholder="Tam adres..."></textarea>
+            <input type="text" id="aMahalle" placeholder="Mahalle">
+            <input type="text" id="aSokak" placeholder="Sokak / Cadde">
+            <input type="text" id="aKapiNo" placeholder="Kapı Numarası (Daire vb.)">
+            <input type="text" id="aIlce" placeholder="İlçe">
+            <input type="text" id="aIl" placeholder="İl">
             <button class="btn" onclick="addAddress()">Adresi Kaydet</button>
         </div>
     </div>
@@ -119,7 +123,7 @@
                 <label>Mevcut Şifre</label>
                 <input type="password" id="eskiSifre" placeholder="Mevcut şifre">
                 <label>Yeni Şifre</label>
-                <input type="password" id="yeniSifre" placeholder="Yeni şifre (min 6)">
+                <input type="password" id="yeniSifre" placeholder="Yeni şifre (en az 6 karakter, harf + sayı)">
                 <button class="btn" onclick="changePassword()" style="margin-top:10px; width:100%;">Şifreyi Değiştir</button>
             </div>
         </div>
@@ -218,8 +222,24 @@ async function loadAddresses() {
 
 async function addAddress() {
     const baslik = document.getElementById('aBaslik').value.trim();
-    const adres = document.getElementById('aAdres').value.trim();
-    if (!baslik || !adres) return alert('Başlık ve adres zorunludur.');
+    const mahalle = document.getElementById('aMahalle').value.trim();
+    const sokak = document.getElementById('aSokak').value.trim();
+    const kapiNo = document.getElementById('aKapiNo').value.trim();
+    const ilce = document.getElementById('aIlce').value.trim();
+    const il = document.getElementById('aIl').value.trim();
+
+    if (!baslik || !mahalle || !sokak || !kapiNo || !ilce || !il) {
+        return alert('Lütfen adresi mahalle, sokak/cadde, kapı no, ilçe ve il şeklinde eksiksiz doldurun.');
+    }
+
+    const adres = [
+        `Mahalle: ${mahalle}`,
+        `Sokak/Cadde: ${sokak}`,
+        `Kapı No: ${kapiNo}`,
+        `İlçe: ${ilce}`,
+        `İl: ${il}`
+    ].join('\n');
+
     const r = await fetch('/api/auth?action=add-address', {
         method: 'POST', headers: authHeaders(),
         body: JSON.stringify({ baslik, adres })
@@ -227,7 +247,11 @@ async function addAddress() {
     const data = await r.json();
     if (data.success) {
         document.getElementById('aBaslik').value = '';
-        document.getElementById('aAdres').value = '';
+        document.getElementById('aMahalle').value = '';
+        document.getElementById('aSokak').value = '';
+        document.getElementById('aKapiNo').value = '';
+        document.getElementById('aIlce').value = '';
+        document.getElementById('aIl').value = '';
         loadAddresses();
     } else alert('Hata: ' + data.error);
 }
@@ -319,6 +343,11 @@ async function updateProfile() {
 async function changePassword() {
     const eski_sifre = document.getElementById('eskiSifre').value;
     const yeni_sifre = document.getElementById('yeniSifre').value;
+    const validPassword = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(yeni_sifre || '');
+    if (!validPassword) {
+        alert('Yeni şifre en az 6 karakter olmalı ve en az 1 harf ile 1 sayı içermelidir.');
+        return;
+    }
     const r = await fetch('/api/auth?action=change-password', {
         method: 'POST', headers: authHeaders(),
         body: JSON.stringify({ eski_sifre, yeni_sifre })

@@ -41,9 +41,9 @@
 
         <div id="registerForm" class="form-group">
             <input type="text" id="rName" placeholder="Ad Soyad">
-            <input type="email" id="rEmail" placeholder="E-posta">
+            <input type="email" id="rEmail" placeholder="E-posta (@gmail.com / @hotmail.com)">
             <input type="text" id="rPhone" placeholder="Telefon (05xx...)">
-            <input type="password" id="rPass" placeholder="Şifre">
+            <input type="password" id="rPass" placeholder="Şifre (en az 6 karakter, harf + sayı)">
             <button class="btn" onclick="submitForm('register')" id="rBtn">HESAP OLUŞTUR</button>
         </div>
     </div>
@@ -65,6 +65,23 @@
         const data = type === 'login' 
             ? { email: document.getElementById('lEmail').value, sifre: document.getElementById('lPass').value }
             : { ad_soyad: document.getElementById('rName').value, email: document.getElementById('rEmail').value, telefon: document.getElementById('rPhone').value, sifre: document.getElementById('rPass').value };
+
+        if (type === 'register') {
+            const email = (data.email || '').trim().toLowerCase();
+            const sifre = data.sifre || '';
+            const allowedEmail = /@(gmail\.com|hotmail\.com)$/i.test(email);
+            const validPassword = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(sifre);
+
+            if (!allowedEmail) {
+                alert('Kayıt için e-posta adresiniz @gmail.com veya @hotmail.com ile bitmelidir.');
+                return;
+            }
+
+            if (!validPassword) {
+                alert('Şifre en az 6 karakter olmalı ve en az 1 harf ile 1 sayı içermelidir.');
+                return;
+            }
+        }
 
         btn.disabled = true;
         btn.innerText = 'Bekleyiniz...';

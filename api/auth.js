@@ -10,13 +10,18 @@ module.exports = async function handler(req, res) {
   const { action } = req.query;
 
   try {
+    const isAllowedEmailDomain = (email = '') => /@(gmail\.com|hotmail\.com)$/i.test(String(email).trim());
+    const isStrongPassword = (sifre = '') => /^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(String(sifre));
+
     // KAYIT
     if (action === 'register' && req.method === 'POST') {
       const { ad_soyad, email, telefon, sifre } = req.body;
       if (!ad_soyad || !email || !sifre)
         return res.status(400).json({ error: 'Ad soyad, email ve şifre zorunludur.' });
-      if (sifre.length < 6)
-        return res.status(400).json({ error: 'Şifre en az 6 karakter olmalıdır.' });
+      if (!isAllowedEmailDomain(email))
+        return res.status(400).json({ error: 'E-posta yalnızca @gmail.com veya @hotmail.com olabilir.' });
+      if (!isStrongPassword(sifre))
+        return res.status(400).json({ error: 'Şifre en az 6 karakter olmalı ve harf ile sayı içermelidir.' });
 
       const existing = await pool.query('SELECT id FROM musteriler WHERE email = $1', [email.toLowerCase()]);
       if (existing.rows.length > 0)
@@ -85,7 +90,7 @@ module.exports = async function handler(req, res) {
       const eski_hash = crypto.createHash('sha256').update(eski_sifre + 'gocmen_salt_2024').digest('hex');
       const result = await pool.query('SELECT id FROM musteriler WHERE id = $1 AND sifre_hash = $2', [user.id, eski_hash]);
       if (!result.rows.length) return res.status(401).json({ error: 'Mevcut şifre hatalı.' });
-      if (yeni_sifre.length < 6) return res.status(400).json({ error: 'Yeni şifre en az 6 karakter olmalı.' });
+      if (!isStrongPassword(yeni_sifre)) return res.status(400).json({ error: 'Yeni şifre en az 6 karakter olmalı, harf ve sayı içermelidir.' });
       const yeni_hash = crypto.createHash('sha256').update(yeni_sifre + 'gocmen_salt_2024').digest('hex');
       await pool.query('UPDATE musteriler SET sifre_hash = $1 WHERE id = $2', [yeni_hash, user.id]);
       return res.status(200).json({ success: true });
@@ -104,6 +109,15 @@ module.exports = async function handler(req, res) {
       if (!user) return res.status(401).json({ error: 'Oturum geçersiz.' });
       const { baslik, adres } = req.body;
       if (!baslik || !adres) return res.status(400).json({ error: 'Başlık ve adres zorunludur.' });
+
+      const parts = String(adres)
+        .split('\n')
+        .map((x) => x.trim())
+        .filter(Boolean);
+      if (parts.length < 5) {
+        return res.status(400).json({ error: 'Adres; mahalle, sokak/cadde, kapı numarası, ilçe ve il bilgileri ile girilmelidir.' });
+      }
+
       await pool.query('INSERT INTO adresler (musteri_id, baslik, adres) VALUES ($1,$2,$3)', [user.id, baslik, adres]);
       return res.status(201).json({ success: true });
     }

@@ -464,6 +464,7 @@ footer span{color:var(--gold)}
 .cart-sheet{position:fixed;left:0;right:0;bottom:0;z-index:12100;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -30px 80px rgba(0,0,0,0.25);padding:18px 16px calc(18px + env(safe-area-inset-bottom));transform:translateY(112%);transition:transform .35s ease;will-change:transform}
 .cart-sheet.open{transform:translateY(0)}
 body.cart-sheet-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:translateY(120%)}
+body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transform:translateY(120%)}
 .cart-sheet-handle{width:60px;height:5px;border-radius:999px;background:#d7d7d7;margin:0 auto 12px}
 .cart-sheet-title{display:flex;align-items:center;gap:8px;color:#16a34a;font-size:1.05rem;font-weight:700;margin-bottom:12px}
 .cart-sheet-body{display:flex;align-items:center;gap:12px;background:#f8f8f8;border:1px solid #ececec;border-radius:14px;padding:10px 12px}
@@ -1369,6 +1370,7 @@ function openModalFromProduct(id){
   switchTab('desc');
   resetImgZoom();
   document.getElementById('productModal').classList.add('open');
+  document.body.classList.add('product-modal-open');
   document.body.style.overflow = 'hidden';
 }
 
@@ -1391,6 +1393,7 @@ function openGalleryModal(src,title,desc){
    switchTab('desc');
   resetImgZoom();
   document.getElementById('productModal').classList.add('open');
+  document.body.classList.add('product-modal-open');
   document.body.style.overflow = 'hidden';
 }
 
@@ -1399,7 +1402,7 @@ function switchTab(tabId){
   document.querySelectorAll('.modal-tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+tabId).classList.add('active');
 }
-function closeProductModal(){ document.getElementById('productModal').classList.remove('open'); document.body.style.overflow=''; document.body.classList.remove('native-cursor-mode'); resetImgZoom(); }
+function closeProductModal(){ document.getElementById('productModal').classList.remove('open'); document.body.style.overflow=''; document.body.classList.remove('native-cursor-mode'); document.body.classList.remove('product-modal-open'); resetImgZoom(); }
 function closeModalOverlay(e){ if(e.target===document.getElementById('productModal')) closeProductModal(); }
 function zoomImg(e){
   if(window.innerWidth<=700) return;

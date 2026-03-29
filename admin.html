@@ -999,7 +999,7 @@ function doLogin(){
   if(p === getPass()){
     document.getElementById('loginScreen').classList.add('hide');
     document.getElementById('adminApp').classList.add('show');
-    setTimeout(initAdmin, 100);
+    initAdmin();
   } else {
     const err = document.getElementById('loginError');
     err.style.display = 'block';
@@ -2337,6 +2337,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     zone.addEventListener('dragleave',()=>zone.classList.remove('drag'));
     zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag');const files=Array.from(e.dataTransfer.files||[]);if(files.length){const input=document.getElementById('f-imageFile');const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));input.files=dt.files;handleImageSelect(input);}});
   }
+  window.addEventListener('pageshow', (event) => {
+    if (!event.persisted) return;
+    document.body.style.opacity = '0.99';
+    requestAnimationFrame(() => { document.body.style.opacity = ''; });
+  });
 });
 </script>
 

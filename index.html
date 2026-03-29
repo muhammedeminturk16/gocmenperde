@@ -77,6 +77,8 @@ nav{display:flex;align-items:center;gap:8px}
 .collection-dropdown{position:absolute;top:100%;left:0;min-width:220px;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:10px;display:none;z-index:1200}
 .nav-collection:hover .collection-dropdown,.nav-collection:focus-within .collection-dropdown{display:block}
 .collection-dropdown button{width:100%;text-align:left;border:none;background:transparent;color:var(--slate);padding:10px 12px;border-radius:8px;font-size:0.78rem;letter-spacing:1px;cursor:pointer;transition:var(--transition)}
+.collection-subtitle{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--slate);opacity:.75;padding:8px 12px 4px}
+.collection-subitem{padding-left:26px!important;font-size:0.74rem!important;color:#67625d!important}
 .collection-dropdown button:hover{background:rgba(201,168,76,0.12);color:var(--ink)}
 .nav-icon{width:36px;height:36px;border-radius:50%;background:none;border:none;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--slate);cursor:pointer;transition:var(--transition);position:relative}
 .nav-icon:hover{background:rgba(201,168,76,0.1);color:var(--gold)}
@@ -620,6 +622,10 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
         <button class="nav-link" onclick="go('products')">Koleksiyon</button>
         <div class="collection-dropdown">
           <button onclick="openCategoryFromMenu('tul-perde')"><i class="fas fa-window-maximize" style="margin-right:8px;color:var(--gold)"></i>Tül Perdeler</button>
+          <div class="collection-subtitle">Tül Perde Alt Kategorileri</div>
+          <button class="collection-subitem" onclick="openCategoryFromMenu('plise-perde')"><i class="fas fa-grip-lines-vertical" style="margin-right:8px;color:var(--gold)"></i>Plise Perdeler</button>
+          <button class="collection-subitem" onclick="openCategoryFromMenu('stor-perde')"><i class="fas fa-border-all" style="margin-right:8px;color:var(--gold)"></i>Stor Perdeler</button>
+          <button class="collection-subitem" onclick="openCategoryFromMenu('zebra-perde')"><i class="fas fa-grip-lines" style="margin-right:8px;color:var(--gold)"></i>Zebra Perdeler</button>
           <button onclick="openCategoryFromMenu('carsaf')"><i class="fas fa-bed" style="margin-right:8px;color:var(--gold)"></i>Çarşaf Koleksiyonu</button>
           <button onclick="openCategoryFromMenu('koltuk')"><i class="fas fa-couch" style="margin-right:8px;color:var(--gold)"></i>Koltuk Örtüsü</button>
         </div>
@@ -1055,6 +1061,9 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
   <button onclick="go('home');toggleMenu()"><i class="fas fa-home" style="margin-right:10px;color:var(--gold)"></i>ANASAYFA</button>
   <button onclick="go('products');toggleMenu()"><i class="fas fa-th-large" style="margin-right:10px;color:var(--gold)"></i>KOLEKSİYON</button>
   <button onclick="openCategoryFromMenu('tul-perde')"><i class="fas fa-window-maximize" style="margin-right:10px;color:var(--gold)"></i>TÜL PERDELER</button>
+  <button onclick="openCategoryFromMenu('plise-perde')"><i class="fas fa-grip-lines-vertical" style="margin-right:10px;color:var(--gold)"></i>↳ PLISE PERDELER</button>
+  <button onclick="openCategoryFromMenu('stor-perde')"><i class="fas fa-border-all" style="margin-right:10px;color:var(--gold)"></i>↳ STOR PERDELER</button>
+  <button onclick="openCategoryFromMenu('zebra-perde')"><i class="fas fa-grip-lines" style="margin-right:10px;color:var(--gold)"></i>↳ ZEBRA PERDELER</button>
   <button onclick="openCategoryFromMenu('carsaf')"><i class="fas fa-bed" style="margin-right:10px;color:var(--gold)"></i>ÇARŞAFLAR</button>
   <button onclick="openCategoryFromMenu('koltuk')"><i class="fas fa-couch" style="margin-right:10px;color:var(--gold)"></i>KOLTUK ÖRTÜLERİ</button>
   <button onclick="go('about');toggleMenu()"><i class="fas fa-info-circle" style="margin-right:10px;color:var(--gold)"></i>HİKAYEMİZ</button>
@@ -1864,15 +1873,31 @@ if(window.innerWidth>767){
   });
 }
 
-// ── Loader ──
+// ── Loader / Sayfaya Dönüş Performansı ──
+function hideLoader(forceImmediate=false){
+  const l = document.getElementById('loader');
+  if(!l) return;
+  if(forceImmediate){
+    l.classList.add('hide');
+    setTimeout(()=>l.remove(),180);
+    return;
+  }
+  l.classList.add('hide');
+  setTimeout(()=>l.remove(),380);
+}
+
 window.addEventListener('load',()=>{
-  setTimeout(()=>{ const l=document.getElementById('loader'); l.classList.add('hide'); setTimeout(()=>l.remove(),700); },1600);
+  const fromBackForward = sessionStorage.getItem('gp_fast_resume') === '1';
+  if(fromBackForward) hideLoader(true);
+  else setTimeout(()=>hideLoader(false),320);
   loadFavoritesFromStorage();
   loadFavoritesFromServer();
   loadCartFromStorage();
   loadProducts();
   initUserSession();
 });
+window.addEventListener('pagehide',()=>{ sessionStorage.setItem('gp_fast_resume','1'); });
+window.addEventListener('pageshow',(ev)=>{ if(ev.persisted) hideLoader(true); });
 
 // ── Navigasyon ──
 function go(id){

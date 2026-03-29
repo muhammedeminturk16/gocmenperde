@@ -1,155 +1,977 @@
 <!DOCTYPE html>
+
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hesabım - Göçmen Perde</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
-        header { background: #1a1a1a; color: white; padding: 15px 20px; display: flex; align-items: center; gap: 15px; }
-        header a { color: white; text-decoration: none; font-size: 20px; }
-        header h1 { font-size: 18px; letter-spacing: 2px; flex: 1; text-align: center; }
-        .user-bar { background: #b08d57; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .user-bar span { font-weight: bold; }
-        .logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 13px; }
-        .tabs { display: flex; background: white; border-bottom: 2px solid #eee; overflow-x: auto; }
-        .tab { padding: 14px 20px; cursor: pointer; font-weight: bold; color: #666; white-space: nowrap; border-bottom: 3px solid transparent; transition: 0.2s; font-size: 13px; }
-        .tab.active { color: #b08d57; border-bottom-color: #b08d57; }
-        .content { padding: 20px; max-width: 700px; margin: 0 auto; }
-        .section { display: none; }
-        .section.active { display: block; }
-        .card { background: white; border-radius: 10px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .card h3 { color: #1a1a1a; margin-bottom: 10px; font-size: 15px; }
-        .status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status.beklemede { background: #fff3cd; color: #856404; }
-        .status.hazirlaniyor { background: #cff4fc; color: #055160; }
-        .status.kargoda { background: #d1ecf1; color: #0c5460; }
-        .status.teslim { background: #d4edda; color: #155724; }
-        .status.iptal { background: #f8d7da; color: #721c24; }
-        .order-items { margin-top: 10px; font-size: 13px; color: #555; }
-        .order-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        .order-total { font-weight: bold; color: #b08d57; font-size: 16px; }
-        .order-date { font-size: 12px; color: #999; }
-        .address-card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: flex-start; }
-        .address-info h4 { font-size: 14px; color: #1a1a1a; margin-bottom: 5px; }
-        .address-info p { font-size: 13px; color: #666; }
-        .delete-btn { background: none; border: none; color: #dc3545; cursor: pointer; font-size: 16px; padding: 5px; }
-        .add-form { background: white; border-radius: 10px; padding: 20px; margin-top: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .add-form h3 { margin-bottom: 15px; color: #1a1a1a; font-size: 15px; }
-        input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; font-size: 14px; font-family: inherit; }
-        .btn { padding: 10px 20px; background: #b08d57; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .btn-outline { background: white; color: #b08d57; border: 2px solid #b08d57; }
-        .fav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .fav-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-        .fav-card img { width: 100%; height: 130px; object-fit: cover; }
-        .fav-card-body { padding: 10px; }
-        .fav-card-body h4 { font-size: 13px; color: #1a1a1a; margin-bottom: 5px; }
-        .fav-card-body p { font-size: 13px; color: #b08d57; font-weight: bold; }
-        .fav-card-footer { padding: 8px 10px; display: flex; gap: 8px; }
-        .fav-card-footer button { flex: 1; padding: 7px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .btn-remove { background: #f8d7da; color: #721c24; }
-        .btn-view { background: #b08d57; color: white; }
-        .profile-form label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; margin-top: 10px; }
-        .empty { text-align: center; padding: 40px 20px; color: #999; }
-        .empty i { font-size: 40px; margin-bottom: 10px; display: block; }
-        .loading { text-align: center; padding: 30px; color: #999; }
-    </style>
+        :root {
+            --gold: #c9a84c;
+            --gold-light: rgba(201,168,76,0.12);
+            --gold-dark: #8c6d2f;
+            --ink: #0f0e0d;
+            --cream: #f7f4ef;
+            --warm-white: #fdfcf9;
+            --slate: #4a4743;
+            --border: rgba(201,168,76,0.18);
+            --border-hard: rgba(0,0,0,0.09);
+            --shadow: 0 16px 48px rgba(0,0,0,0.08);
+            --shadow-sm: 0 4px 16px rgba(0,0,0,0.06);
+            --radius: 14px;
+            --ff: 'DM Sans', sans-serif;
+            --ffd: 'Cormorant Garamond', serif;
+            --red: #c0392b;
+            --green: #27ae60;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--ff); background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+```
+    /* ── HEADER ── */
+    .gp-header {
+        background: var(--ink);
+        padding: 0 5%;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .gp-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .gp-back {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: rgba(255,255,255,0.7);
+        display: flex; align-items: center; justify-content: center;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: 0.2s;
+    }
+    .gp-back:hover { background: var(--gold); color: var(--ink); }
+    .gp-header-brand {
+        font-family: var(--ffd);
+        font-size: 1.2rem;
+        color: var(--gold);
+        letter-spacing: 2px;
+    }
+    .gp-logout {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.55);
+        padding: 7px 14px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-family: var(--ff);
+        letter-spacing: 1px;
+        transition: 0.2s;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .gp-logout:hover { background: var(--red); color: white; border-color: var(--red); }
+
+    /* ── USER BAR ── */
+    .user-bar {
+        background: linear-gradient(135deg, var(--gold) 0%, #b8932e 100%);
+        padding: 18px 5%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .user-bar-left { display: flex; align-items: center; gap: 14px; }
+    .user-avatar {
+        width: 48px; height: 48px;
+        border-radius: 50%;
+        background: var(--ink);
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--ffd);
+        font-size: 1.3rem;
+        color: var(--gold);
+        font-weight: 700;
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+    .user-name { font-size: 1rem; font-weight: 600; color: var(--ink); }
+    .user-since { font-size: 0.72rem; color: rgba(15,14,13,0.6); margin-top: 2px; letter-spacing: 0.5px; }
+    .user-bar-badge {
+        background: rgba(15,14,13,0.12);
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--ink);
+        letter-spacing: 1px;
+    }
+
+    /* ── TABS ── */
+    .tabs-wrap {
+        background: white;
+        border-bottom: 1px solid var(--border-hard);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .tabs-wrap::-webkit-scrollbar { display: none; }
+    .tabs-inner {
+        display: flex;
+        min-width: max-content;
+        padding: 0 5%;
+    }
+    .gp-tab {
+        padding: 15px 20px;
+        cursor: pointer;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--slate);
+        letter-spacing: 1px;
+        white-space: nowrap;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+    .gp-tab.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 600; }
+    .gp-tab:hover { color: var(--ink); }
+    .gp-tab i { font-size: 0.85rem; }
+
+    /* ── CONTENT ── */
+    .content { padding: 28px 5%; max-width: 760px; margin: 0 auto; }
+    .gp-section { display: none; }
+    .gp-section.active { display: block; }
+
+    /* ── CARDS ── */
+    .gp-card {
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-hard);
+        overflow: hidden;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-sm);
+    }
+    .gp-card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border-hard);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fafaf8;
+    }
+    .gp-card-header h3 {
+        font-family: var(--ffd);
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--ink);
+    }
+    .gp-card-body { padding: 20px; }
+
+    /* ── ORDER CARD ── */
+    .order-card {
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-hard);
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+    }
+    .order-card:hover { box-shadow: var(--shadow); }
+    .order-card-top {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #f0ece3;
+    }
+    .order-meta-left { display: flex; flex-direction: column; gap: 4px; }
+    .order-date-label {
+        font-size: 0.72rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--slate);
+        font-weight: 500;
+    }
+    .order-date-value {
+        font-family: var(--ffd);
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--ink);
+    }
+    .order-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    .order-status.beklemede { background: #fff3cd; color: #856404; }
+    .order-status.hazirlaniyor { background: #cff4fc; color: #055160; }
+    .order-status.kargoda { background: #d1ecf1; color: #0c5460; }
+    .order-status.teslim { background: #d4edda; color: #155724; }
+    .order-status.iptal { background: #f8d7da; color: #721c24; }
+    .order-items-preview {
+        padding: 12px 20px;
+        font-size: 0.83rem;
+        color: var(--slate);
+        line-height: 1.6;
+        border-bottom: 1px solid #f0ece3;
+    }
+    .order-card-footer {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .order-total-label { font-size: 0.7rem; color: var(--slate); letter-spacing: 1px; text-transform: uppercase; }
+    .order-total-amount {
+        font-family: var(--ffd);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gold);
+    }
+    .btn-detail {
+        background: var(--ink);
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 9px 18px;
+        border-radius: 8px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-family: var(--ff);
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+    }
+    .btn-detail:hover { background: var(--gold); color: var(--ink); }
+
+    /* ── ORDER DETAIL MODAL ── */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15,14,13,0.75);
+        z-index: 2000;
+        display: none;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 20px;
+        overflow-y: auto;
+        backdrop-filter: blur(6px);
+    }
+    .modal-overlay.open { display: flex; }
+    .order-modal {
+        background: white;
+        border-radius: 18px;
+        width: 100%;
+        max-width: 580px;
+        margin: auto;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+    .order-modal-header {
+        background: var(--ink);
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .order-modal-header h3 {
+        font-family: var(--ffd);
+        font-size: 1.3rem;
+        color: white;
+    }
+    .order-modal-header h3 span { color: var(--gold); font-style: italic; }
+    .modal-close {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem;
+        transition: 0.2s;
+    }
+    .modal-close:hover { background: var(--red); }
+    .order-modal-body { padding: 24px; }
+
+    /* Product row in modal */
+    .modal-product-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px;
+        background: var(--cream);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        margin-bottom: 10px;
+    }
+    .modal-product-img {
+        width: 60px; height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid var(--border-hard);
+        background: #eee;
+        flex-shrink: 0;
+    }
+    .modal-product-img-placeholder {
+        width: 60px; height: 60px;
+        border-radius: 8px;
+        background: var(--cream);
+        border: 1px solid var(--border-hard);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+    .modal-product-info { flex: 1; min-width: 0; }
+    .modal-product-name { font-size: 0.88rem; font-weight: 600; color: var(--ink); }
+    .modal-product-sub { font-size: 0.76rem; color: var(--slate); margin-top: 3px; }
+    .modal-product-price {
+        font-family: var(--ffd);
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--gold);
+        white-space: nowrap;
+    }
+
+    /* Info rows */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+    @media (max-width: 480px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-box {
+        background: var(--cream);
+        border-radius: 8px;
+        padding: 10px 14px;
+    }
+    .info-box label {
+        font-size: 0.62rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--slate);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 4px;
+    }
+    .info-box span { font-size: 0.85rem; color: var(--ink); font-weight: 500; }
+    .info-box.full { grid-column: span 2; }
+    @media (max-width: 480px) { .info-box.full { grid-column: span 1; } }
+
+    /* ── ORDER TIMELINE ── */
+    .timeline-section {
+        margin-top: 20px;
+    }
+    .timeline-title {
+        font-size: 0.65rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--slate);
+        font-weight: 600;
+        margin-bottom: 14px;
+    }
+    .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+    .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        position: relative;
+    }
+    .timeline-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 34px;
+        bottom: -14px;
+        width: 2px;
+        background: var(--border-hard);
+    }
+    .timeline-item.done::after { background: var(--gold); }
+    .timeline-item.done .timeline-dot {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: white;
+    }
+    .timeline-item.current .timeline-dot {
+        background: var(--ink);
+        border-color: var(--gold);
+        color: white;
+        box-shadow: 0 0 0 4px rgba(201,168,76,0.2);
+    }
+    .timeline-item.future .timeline-dot {
+        background: white;
+        border-color: #d0d0d0;
+        color: #d0d0d0;
+    }
+    .timeline-dot {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: 2px solid var(--border-hard);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+        transition: 0.3s;
+        z-index: 1;
+    }
+    .timeline-content {
+        padding: 4px 0 20px;
+        flex: 1;
+        min-width: 0;
+    }
+    .timeline-date {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--gold);
+        letter-spacing: 1px;
+        margin-bottom: 2px;
+    }
+    .timeline-date.future-date { color: #bbb; }
+    .timeline-label {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--ink);
+    }
+    .timeline-label.future-label { color: #bbb; }
+    .timeline-desc {
+        font-size: 0.75rem;
+        color: var(--slate);
+        margin-top: 2px;
+        line-height: 1.5;
+    }
+    .modal-total-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        background: linear-gradient(135deg, var(--ink) 0%, #2a2724 100%);
+        border-radius: 10px;
+        margin-top: 16px;
+    }
+    .modal-total-label { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+    .modal-total-amount {
+        font-family: var(--ffd);
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--gold);
+    }
+
+    /* ── ADDRESSES ── */
+    .address-card {
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-hard);
+        padding: 16px 18px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        box-shadow: var(--shadow-sm);
+    }
+    .address-icon {
+        width: 38px; height: 38px;
+        border-radius: 10px;
+        background: var(--gold-light);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--gold);
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+    .address-info { flex: 1; min-width: 0; }
+    .address-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+    .address-text { font-size: 0.8rem; color: var(--slate); line-height: 1.6; white-space: pre-line; }
+    .btn-del {
+        background: none;
+        border: 1px solid rgba(192,57,43,0.2);
+        color: var(--red);
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-family: var(--ff);
+        transition: 0.2s;
+        white-space: nowrap;
+    }
+    .btn-del:hover { background: var(--red); color: white; border-color: var(--red); }
+
+    /* ── FORM ── */
+    .gp-form { display: flex; flex-direction: column; gap: 12px; }
+    .form-label {
+        font-size: 0.62rem;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: var(--slate);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 480px) { .form-row-2 { grid-template-columns: 1fr; } }
+    .gp-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid var(--border-hard);
+        border-radius: 9px;
+        font-size: 0.88rem;
+        font-family: var(--ff);
+        background: var(--cream);
+        color: var(--ink);
+        outline: none;
+        transition: 0.2s;
+    }
+    .gp-input:focus { border-color: var(--gold); background: white; box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+    .gp-input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .gp-btn {
+        width: 100%;
+        padding: 13px;
+        background: var(--ink);
+        color: white;
+        border: none;
+        border-radius: 9px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-family: var(--ff);
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .gp-btn:hover { background: var(--gold); color: var(--ink); }
+    .gp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── FAVORITES ── */
+    .fav-empty-box {
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-hard);
+        padding: 48px 20px;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+    }
+    .fav-empty-icon {
+        width: 72px; height: 72px;
+        border-radius: 50%;
+        background: var(--cream);
+        border: 2px solid var(--border);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem;
+        color: #ddd;
+        margin: 0 auto 16px;
+    }
+    .fav-empty-box h3 {
+        font-family: var(--ffd);
+        font-size: 1.4rem;
+        color: var(--slate);
+        margin-bottom: 8px;
+    }
+    .fav-empty-box p { font-size: 0.83rem; color: #aaa; line-height: 1.7; margin-bottom: 20px; }
+    .btn-to-shop {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--ink);
+        color: white;
+        border: none;
+        padding: 11px 22px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        font-family: var(--ff);
+        cursor: pointer;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+    .btn-to-shop:hover { background: var(--gold); color: var(--ink); }
+
+    .fav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 480px) { .fav-grid { grid-template-columns: 1fr; } }
+    .fav-card {
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-hard);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: 0.2s;
+    }
+    .fav-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+    .fav-card img { width: 100%; height: 140px; object-fit: cover; }
+    .fav-card-body { padding: 12px 14px; }
+    .fav-card-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+    .fav-card-price { font-family: var(--ffd); font-size: 1rem; color: var(--gold); font-weight: 700; }
+    .fav-card-footer {
+        padding: 10px 14px;
+        display: flex;
+        gap: 8px;
+        border-top: 1px solid var(--border-hard);
+    }
+    .fav-btn-view {
+        flex: 1;
+        padding: 8px;
+        background: var(--gold);
+        color: var(--ink);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.72rem;
+        font-weight: 600;
+        font-family: var(--ff);
+        letter-spacing: 1px;
+        transition: 0.2s;
+    }
+    .fav-btn-view:hover { background: var(--ink); color: white; }
+    .fav-btn-remove {
+        padding: 8px 12px;
+        background: rgba(192,57,43,0.08);
+        color: var(--red);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: 0.2s;
+    }
+    .fav-btn-remove:hover { background: var(--red); color: white; }
+
+    /* ── SUGGESTIONS ── */
+    .suggestions-section { margin-top: 32px; }
+    .suggestions-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+    .suggestions-header .section-tag {
+        font-size: 0.62rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--gold);
+        font-weight: 600;
+    }
+    .suggestions-header h3 {
+        font-family: var(--ffd);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--ink);
+    }
+    .suggestions-header h3 em { color: var(--gold); font-style: italic; }
+    .suggestions-grid {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: var(--gold) transparent;
+    }
+    .suggestions-grid::-webkit-scrollbar { height: 3px; }
+    .suggestions-grid::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+    .sugg-card {
+        flex-shrink: 0;
+        width: 160px;
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-hard);
+        overflow: hidden;
+        cursor: pointer;
+        transition: 0.2s;
+        box-shadow: var(--shadow-sm);
+    }
+    .sugg-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .sugg-card img { width: 100%; height: 110px; object-fit: cover; }
+    .sugg-card-body { padding: 10px 12px; }
+    .sugg-card-name { font-size: 0.78rem; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sugg-card-price { font-size: 0.78rem; color: var(--gold); font-weight: 700; }
+
+    /* ── PROFILE ── */
+    .profile-card {
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border-hard);
+        margin-bottom: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+    .profile-card-header {
+        background: #fafaf8;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border-hard);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--ink);
+    }
+    .profile-card-header i { color: var(--gold); }
+    .profile-card-body { padding: 20px; }
+
+    /* ── EMPTY / LOADING ── */
+    .empty-state {
+        text-align: center;
+        padding: 48px 20px;
+        color: #bbb;
+    }
+    .empty-state i { font-size: 2.5rem; display: block; margin-bottom: 12px; opacity: 0.3; }
+    .loading-state {
+        text-align: center;
+        padding: 48px 20px;
+        color: var(--slate);
+    }
+    .loading-state i { font-size: 1.5rem; display: block; margin-bottom: 10px; animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ── TOAST ── */
+    .gp-toast {
+        position: fixed;
+        bottom: 24px;
+        right: 20px;
+        left: 20px;
+        max-width: 380px;
+        margin: 0 auto;
+        background: var(--ink);
+        color: white;
+        padding: 14px 18px;
+        border-radius: 10px;
+        font-size: 0.83rem;
+        border-left: 3px solid var(--gold);
+        transform: translateY(120%);
+        opacity: 0;
+        transition: 0.35s;
+        z-index: 9999;
+        pointer-events: none;
+        box-shadow: var(--shadow);
+    }
+    .gp-toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 640px) {
+        .content { padding: 20px 4%; }
+        .gp-header { padding: 0 4%; }
+        .user-bar { padding: 14px 4%; }
+        .tabs-inner { padding: 0 4%; }
+    }
+</style>
+```
+
 </head>
 <body>
 
-<header>
-    <a href="/"><i class="fas fa-arrow-left"></i></a>
-    <h1>HESABIM</h1>
+<!-- HEADER -->
+
+<header class="gp-header">
+    <div class="gp-header-left">
+        <a href="/" class="gp-back"><i class="fas fa-arrow-left"></i></a>
+        <span class="gp-header-brand">Göçmen Perde</span>
+    </div>
+    <button class="gp-logout" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Çıkış
+    </button>
 </header>
 
+<!-- USER BAR -->
+
 <div class="user-bar">
-    <span id="userName">Yükleniyor...</span>
-    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Çıkış</button>
+    <div class="user-bar-left">
+        <div class="user-avatar" id="userAvatarText">?</div>
+        <div>
+            <div class="user-name" id="userNameDisplay">Yükleniyor...</div>
+            <div class="user-since" id="userSince"></div>
+        </div>
+    </div>
+    <div class="user-bar-badge"><i class="fas fa-star" style="margin-right:4px"></i> Üye</div>
 </div>
 
-<div class="tabs">
-    <div class="tab active" onclick="showTab('orders')"><i class="fas fa-box"></i> Siparişlerim</div>
-    <div class="tab" onclick="showTab('addresses')"><i class="fas fa-map-marker-alt"></i> Adreslerim</div>
-    <div class="tab" onclick="showTab('favorites')"><i class="fas fa-heart"></i> Favorilerim</div>
-    <div class="tab" onclick="showTab('profile')"><i class="fas fa-user"></i> Profilim</div>
+<!-- TABS -->
+
+<div class="tabs-wrap">
+    <div class="tabs-inner">
+        <div class="gp-tab active" onclick="showTab('orders', this)"><i class="fas fa-box"></i> Siparişlerim</div>
+        <div class="gp-tab" onclick="showTab('addresses', this)"><i class="fas fa-map-marker-alt"></i> Adreslerim</div>
+        <div class="gp-tab" onclick="showTab('favorites', this)"><i class="fas fa-heart"></i> Favorilerim</div>
+        <div class="gp-tab" onclick="showTab('profile', this)"><i class="fas fa-user"></i> Profilim</div>
+    </div>
 </div>
 
 <div class="content">
 
-    <!-- SİPARİŞLERİM -->
-    <div id="orders" class="section active">
-        <div id="ordersList" class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>
+```
+<!-- SİPARİŞLERİM -->
+<div id="section-orders" class="gp-section active">
+    <div id="ordersList">
+        <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
     </div>
-
-    <!-- ADRESLERİM -->
-    <div id="addresses" class="section">
-        <div id="addressList" class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>
-        <div class="add-form">
-            <h3><i class="fas fa-plus"></i> Yeni Adres Ekle</h3>
-            <input type="text" id="aBaslik" placeholder="Adres Başlığı (Ev, İş...)">
-            <input type="text" id="aMahalle" placeholder="Mahalle">
-            <input type="text" id="aSokak" placeholder="Sokak / Cadde">
-            <input type="text" id="aKapiNo" placeholder="Kapı Numarası (Daire vb.)">
-            <input type="text" id="aIlce" placeholder="İlçe">
-            <input type="text" id="aIl" placeholder="İl">
-            <button class="btn" onclick="addAddress()">Adresi Kaydet</button>
-        </div>
-    </div>
-
-    <!-- FAVORİLERİM -->
-    <div id="favorites" class="section">
-        <div id="favList" class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>
-    </div>
-
-    <!-- PROFİLİM -->
-    <div id="profile" class="section">
-        <div class="card">
-            <h3>Bilgilerimi Güncelle</h3>
-            <div class="profile-form">
-                <label>Ad Soyad</label>
-                <input type="text" id="pName" placeholder="Ad Soyad">
-                <label>E-posta</label>
-                <input type="email" id="pEmail" disabled style="background:#f5f5f5;">
-                <label>Telefon</label>
-                <input type="text" id="pPhone" placeholder="Telefon">
-                <button class="btn" onclick="updateProfile()" style="margin-top:10px; width:100%;">Güncelle</button>
-            </div>
-        </div>
-        <div class="card">
-            <h3>Şifre Değiştir</h3>
-            <div class="profile-form">
-                <label>Mevcut Şifre</label>
-                <input type="password" id="eskiSifre" placeholder="Mevcut şifre">
-                <label>Yeni Şifre</label>
-                <input type="password" id="yeniSifre" placeholder="Yeni şifre (en az 6 karakter, harf + sayı)">
-                <button class="btn" onclick="changePassword()" style="margin-top:10px; width:100%;">Şifreyi Değiştir</button>
-            </div>
-        </div>
-    </div>
-
 </div>
+
+<!-- ADRESLERİM -->
+<div id="section-addresses" class="gp-section">
+    <div id="addressList">
+        <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
+    </div>
+    <div class="gp-card" style="margin-top:16px">
+        <div class="gp-card-header">
+            <h3><i class="fas fa-plus" style="color:var(--gold);margin-right:8px"></i>Yeni Adres Ekle</h3>
+        </div>
+        <div class="gp-card-body">
+            <div class="gp-form">
+                <div>
+                    <label class="form-label">Adres Başlığı</label>
+                    <input type="text" id="aBaslik" class="gp-input" placeholder="Ev, İş, Yazlık...">
+                </div>
+                <div class="form-row-2">
+                    <div>
+                        <label class="form-label">Mahalle</label>
+                        <input type="text" id="aMahalle" class="gp-input" placeholder="Mahalle adı">
+                    </div>
+                    <div>
+                        <label class="form-label">Sokak / Cadde</label>
+                        <input type="text" id="aSokak" class="gp-input" placeholder="Sokak veya cadde">
+                    </div>
+                    <div>
+                        <label class="form-label">Kapı / Daire No</label>
+                        <input type="text" id="aKapiNo" class="gp-input" placeholder="No: 3/A, Daire 5">
+                    </div>
+                    <div>
+                        <label class="form-label">İlçe</label>
+                        <input type="text" id="aIlce" class="gp-input" placeholder="Osmangazi">
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">İl</label>
+                    <input type="text" id="aIl" class="gp-input" placeholder="Bursa">
+                </div>
+                <button class="gp-btn" onclick="addAddress()"><i class="fas fa-save"></i> Adresi Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAVORİLERİM -->
+<div id="section-favorites" class="gp-section">
+    <div id="favContent">
+        <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
+    </div>
+</div>
+
+<!-- PROFİLİM -->
+<div id="section-profile" class="gp-section">
+    <div class="profile-card">
+        <div class="profile-card-header">
+            <i class="fas fa-user-circle"></i> Bilgilerimi Güncelle
+        </div>
+        <div class="profile-card-body">
+            <div class="gp-form">
+                <div>
+                    <label class="form-label">Ad Soyad</label>
+                    <input type="text" id="pName" class="gp-input" placeholder="Ad Soyad">
+                </div>
+                <div>
+                    <label class="form-label">E-posta</label>
+                    <input type="email" id="pEmail" class="gp-input" disabled>
+                </div>
+                <div>
+                    <label class="form-label">Telefon</label>
+                    <input type="text" id="pPhone" class="gp-input" placeholder="05xx xxx xx xx">
+                </div>
+                <button class="gp-btn" onclick="updateProfile()"><i class="fas fa-save"></i> Güncelle</button>
+            </div>
+        </div>
+    </div>
+    <div class="profile-card">
+        <div class="profile-card-header">
+            <i class="fas fa-lock"></i> Şifre Değiştir
+        </div>
+        <div class="profile-card-body">
+            <div class="gp-form">
+                <div>
+                    <label class="form-label">Mevcut Şifre</label>
+                    <input type="password" id="eskiSifre" class="gp-input" placeholder="Mevcut şifre">
+                </div>
+                <div>
+                    <label class="form-label">Yeni Şifre</label>
+                    <input type="password" id="yeniSifre" class="gp-input" placeholder="En az 6 karakter, harf + sayı">
+                </div>
+                <button class="gp-btn" onclick="changePassword()"><i class="fas fa-key"></i> Şifreyi Değiştir</button>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+</div><!-- /content -->
+
+<!-- SİPARİŞ DETAY MODAL -->
+
+<div class="modal-overlay" id="orderDetailModal" onclick="if(event.target===this)closeOrderModal()">
+    <div class="order-modal">
+        <div class="order-modal-header">
+            <h3>Sipariş <span id="modalOrderId">Detayı</span></h3>
+            <button class="modal-close" onclick="closeOrderModal()"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="order-modal-body" id="orderModalContent">
+        </div>
+    </div>
+</div>
+
+<div class="gp-toast" id="gpToast"></div>
 
 <script>
 const token = localStorage.getItem('token') || localStorage.getItem('gp_token');
-const user = JSON.parse(localStorage.getItem('user') || 'null');
+const user = (() => { try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch(e) { return null; } })();
 
 if (!token || !user) {
     window.location.href = '/hesap.html';
 }
 
-document.getElementById('userName').textContent = user?.ad_soyad || user?.email || '';
+// Init user display
+function initUserDisplay() {
+    const name = user?.ad_soyad || user?.email || 'Kullanıcı';
+    document.getElementById('userNameDisplay').textContent = name;
+    const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    document.getElementById('userAvatarText').textContent = initials;
+    if (user?.created_at) {
+        const d = new Date(user.created_at);
+        document.getElementById('userSince').textContent = 'Üyelik: ' + d.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
+    }
+}
+initUserDisplay();
 
 function authHeaders() {
     return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
 }
 
-function showTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    event.target.closest('.tab').classList.add('active');
-    document.getElementById(tab).classList.add('active');
+function showTab(tab, el) {
+    document.querySelectorAll('.gp-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.gp-section').forEach(s => s.classList.remove('active'));
+    if (el) el.classList.add('active');
+    document.getElementById('section-' + tab).classList.add('active');
     if (tab === 'orders') loadOrders();
     if (tab === 'addresses') loadAddresses();
     if (tab === 'favorites') loadFavorites();
@@ -159,64 +981,253 @@ function showTab(tab) {
 function activateTabFromQuery() {
     const tab = new URLSearchParams(window.location.search).get('tab');
     if (!tab) return;
-    const tabBtn = document.querySelector(`.tab[onclick*="${tab}"]`);
-    if (tabBtn) tabBtn.click();
+    const tabEl = document.querySelector(`.gp-tab[onclick*="'${tab}'"]`);
+    if (tabEl) tabEl.click();
 }
 
-// SİPARİŞLER
+function showToast(msg, duration = 3000) {
+    const t = document.getElementById('gpToast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+}
+
+/* ═══════════════════════════════
+   SİPARİŞLER
+═══════════════════════════════ */
+let allOrders = [];
+
+// Kupon kodları
+const COUPON_CODES = ['ILKSIPARIS10', 'GOCMEN15', 'PERDE20', 'YAZ25', 'KISH10'];
+
 async function loadOrders() {
     const el = document.getElementById('ordersList');
-    el.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>';
+    el.innerHTML = '<div class="loading-state"><i class="fas fa-circle-notch"></i> Siparişler yükleniyor...</div>';
     try {
         const r = await fetch('/api/orders?action=my-orders', { headers: authHeaders() });
         const data = await r.json();
-        if (!data.orders?.length) {
-            el.innerHTML = '<div class="empty"><i class="fas fa-box-open"></i>Henüz siparişiniz yok.</div>';
+        allOrders = data.orders || [];
+        if (!allOrders.length) {
+            el.innerHTML = `
+                <div class="fav-empty-box">
+                    <div class="fav-empty-icon"><i class="fas fa-box-open"></i></div>
+                    <h3>Henüz sipariş yok</h3>
+                    <p>Koleksiyonumuzu keşfedip ilk siparişinizi verebilirsiniz.</p>
+                    <a href="/" class="btn-to-shop"><i class="fas fa-th-large"></i> Koleksiyona Git</a>
+                </div>`;
             return;
         }
-        el.innerHTML = data.orders.map(o => {
-            const items = typeof o.urunler === 'string' ? JSON.parse(o.urunler) : o.urunler;
-            const statusClass = o.durum?.toLowerCase().replace(' ', '') || 'beklemede';
-            const date = new Date(o.created_at).toLocaleDateString('tr-TR');
-            return `<div class="card">
-                <div style="display:flex;justify-content:space-between;align-items:center">
-                    <h3>Sipariş #${o.id}</h3>
-                    <span class="status ${statusClass}">${o.durum || 'Beklemede'}</span>
-                </div>
-                <div class="order-items">${items?.map(i => `${i.name || i.ad} × ${i.quantity || i.adet}`).join(', ') || ''}</div>
-                <div class="order-meta">
-                    <span class="order-date">${date}</span>
-                    <span class="order-total">${Number(o.toplam).toLocaleString('tr-TR')} ₺</span>
-                </div>
-            </div>`;
-        }).join('');
+        renderOrders(allOrders);
     } catch(e) {
-        el.innerHTML = '<div class="empty"><i class="fas fa-exclamation-circle"></i>Yüklenemedi.</div>';
+        el.innerHTML = `<div class="empty-state"><i class="fas fa-wifi"></i><p>Siparişler yüklenemedi.</p></div>`;
     }
 }
 
-// ADRESLER
+function getStatusClass(durum) {
+    const map = { 'Beklemede': 'beklemede', 'Hazırlanıyor': 'hazirlaniyor', 'Kargoda': 'kargoda', 'Teslim Edildi': 'teslim', 'İptal': 'iptal' };
+    return map[durum] || 'beklemede';
+}
+function getStatusIcon(durum) {
+    const map = { 'Beklemede': 'fas fa-clock', 'Hazırlanıyor': 'fas fa-box', 'Kargoda': 'fas fa-truck', 'Teslim Edildi': 'fas fa-check-circle', 'İptal': 'fas fa-times-circle' };
+    return map[durum] || 'fas fa-clock';
+}
+
+function renderOrders(orders) {
+    const el = document.getElementById('ordersList');
+    el.innerHTML = orders.map(o => {
+        const items = typeof o.urunler === 'string' ? JSON.parse(o.urunler) : (o.urunler || []);
+        const date = new Date(o.created_at).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
+        const statusClass = getStatusClass(o.durum);
+        const statusIcon = getStatusIcon(o.durum);
+        const previewItems = items.slice(0, 2).map(i => `${i.name || i.ad} ×${i.quantity || i.adet || 1}`).join(', ') + (items.length > 2 ? ` +${items.length - 2} ürün daha` : '');
+        return `
+            <div class="order-card">
+                <div class="order-card-top">
+                    <div class="order-meta-left">
+                        <div class="order-date-label">Sipariş Tarihi</div>
+                        <div class="order-date-value">${date}</div>
+                    </div>
+                    <span class="order-status ${statusClass}">
+                        <i class="${statusIcon}"></i> ${o.durum || 'Beklemede'}
+                    </span>
+                </div>
+                <div class="order-items-preview">${previewItems}</div>
+                <div class="order-card-footer">
+                    <div>
+                        <div class="order-total-label">Ödeme Tutarı</div>
+                        <div class="order-total-amount">${Number(o.toplam).toLocaleString('tr-TR')} TL</div>
+                    </div>
+                    <button class="btn-detail" onclick="openOrderDetail(${o.id})">
+                        <i class="fas fa-eye"></i> Sipariş Detayları
+                    </button>
+                </div>
+            </div>`;
+    }).join('');
+}
+
+function openOrderDetail(orderId) {
+    const o = allOrders.find(x => x.id === orderId);
+    if (!o) return;
+    document.getElementById('modalOrderId').textContent = '';
+
+    const items = typeof o.urunler === 'string' ? JSON.parse(o.urunler) : (o.urunler || []);
+    const orderDate = new Date(o.created_at);
+    const dateStr = orderDate.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    // Ödeme yöntemi
+    const payLabels = { kapida: 'Kapıda Ödeme', havale: 'Havale / EFT', kredikarti: 'Kredi Kartı' };
+    const payMethod = payLabels[o.odeme_yontemi] || o.odeme_yontemi || '—';
+
+    // Timeline: tarihlere göre oluştur
+    const timeline = buildTimeline(o, orderDate);
+
+    // Ürün satırları
+    const productRows = items.map(i => {
+        const qty = i.quantity || i.adet || 1;
+        const price = Number(i.price || i.fiyat || 0);
+        const sub = price * qty;
+        const imgSrc = i.image || '';
+        return `
+            <div class="modal-product-row">
+                ${imgSrc
+                    ? `<img class="modal-product-img" src="${imgSrc}" alt="${i.name || i.ad}" onerror="this.style.display='none'">`
+                    : `<div class="modal-product-img-placeholder">🛍️</div>`
+                }
+                <div class="modal-product-info">
+                    <div class="modal-product-name">${i.name || i.ad || 'Ürün'}</div>
+                    <div class="modal-product-sub">${qty} ${i.unitLabel || 'adet'} × ${price.toLocaleString('tr-TR')} TL${i.width && i.height ? ` • ${i.width}m × ${i.height}m` : ''}</div>
+                </div>
+                <div class="modal-product-price">${sub.toLocaleString('tr-TR')} TL</div>
+            </div>`;
+    }).join('');
+
+    document.getElementById('orderModalContent').innerHTML = `
+        ${productRows}
+        <div class="info-grid">
+            <div class="info-box">
+                <label>Ödeme Şekli</label>
+                <span>${payMethod}</span>
+            </div>
+            <div class="info-box">
+                <label>Sipariş Tarihi</label>
+                <span>${dateStr}</span>
+            </div>
+            <div class="info-box full">
+                <label>Teslimat Adresi</label>
+                <span>${o.adres || '—'}</span>
+            </div>
+            ${o.siparis_notu ? `<div class="info-box full"><label>Sipariş Notu</label><span>${o.siparis_notu}</span></div>` : ''}
+        </div>
+        <div class="timeline-section">
+            <div class="timeline-title"><i class="fas fa-route" style="color:var(--gold);margin-right:6px"></i> Sipariş Süreci</div>
+            <div class="timeline">${timeline}</div>
+        </div>
+        <div class="modal-total-row">
+            <div>
+                <div class="modal-total-label">Toplam Ödeme</div>
+            </div>
+            <div class="modal-total-amount">${Number(o.toplam).toLocaleString('tr-TR')} TL</div>
+        </div>`;
+
+    document.getElementById('orderDetailModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function buildTimeline(order, orderDate) {
+    const durum = order.durum || 'Beklemede';
+    const statusOrder = ['Beklemede', 'Hazırlanıyor', 'Kargoda', 'Teslim Edildi'];
+    const isCancelled = durum === 'İptal';
+
+    if (isCancelled) {
+        const d1 = orderDate.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        return `
+            <div class="timeline-item done">
+                <div class="timeline-dot"><i class="fas fa-check"></i></div>
+                <div class="timeline-content">
+                    <div class="timeline-date">${d1}</div>
+                    <div class="timeline-label">Sipariş Verildi</div>
+                    <div class="timeline-desc">Siparişiniz alındı.</div>
+                </div>
+            </div>
+            <div class="timeline-item current">
+                <div class="timeline-dot" style="background:var(--red);border-color:var(--red)"><i class="fas fa-times"></i></div>
+                <div class="timeline-content">
+                    <div class="timeline-date" style="color:var(--red)">İptal Edildi</div>
+                    <div class="timeline-label">Sipariş İptal</div>
+                    <div class="timeline-desc">Bu sipariş iptal edildi.</div>
+                </div>
+            </div>`;
+    }
+
+    const currentIdx = statusOrder.indexOf(durum);
+
+    const stepDefs = [
+        { icon: 'fas fa-file-alt', label: 'Sipariş Verildi', desc: 'Siparişiniz tarafımıza ulaştı.' },
+        { icon: 'fas fa-box', label: 'Hazırlanıyor', desc: 'Ürününüz özenle hazırlanıyor.' },
+        { icon: 'fas fa-truck', label: 'Kargoya Teslim Edildi', desc: 'Siparişiniz kargo şirketine verildi.' },
+        { icon: 'fas fa-check-circle', label: 'Teslim Edildi', desc: 'Siparişiniz teslim edildi. İyi günler!' }
+    ];
+
+    // Tarih tahmini
+    const dates = stepDefs.map((_, i) => {
+        if (i <= currentIdx) {
+            const d = new Date(orderDate);
+            d.setDate(d.getDate() + i);
+            return d.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        } else {
+            const d = new Date(orderDate);
+            d.setDate(d.getDate() + i + 1);
+            return 'Tahmini: ' + d.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+    });
+
+    return stepDefs.map((step, i) => {
+        let cls = '';
+        if (i < currentIdx) cls = 'done';
+        else if (i === currentIdx) cls = 'current';
+        else cls = 'future';
+        const isFut = cls === 'future';
+        return `
+            <div class="timeline-item ${cls}">
+                <div class="timeline-dot"><i class="${step.icon}"></i></div>
+                <div class="timeline-content">
+                    <div class="timeline-date ${isFut ? 'future-date' : ''}">${dates[i]}</div>
+                    <div class="timeline-label ${isFut ? 'future-label' : ''}">${step.label}</div>
+                    <div class="timeline-desc">${step.desc}</div>
+                </div>
+            </div>`;
+    }).join('');
+}
+
+function closeOrderModal() {
+    document.getElementById('orderDetailModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+/* ═══════════════════════════════
+   ADRESLER
+═══════════════════════════════ */
 async function loadAddresses() {
     const el = document.getElementById('addressList');
-    el.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>';
+    el.innerHTML = '<div class="loading-state"><i class="fas fa-circle-notch"></i></div>';
     try {
         const r = await fetch('/api/auth?action=addresses', { headers: authHeaders() });
         const data = await r.json();
         if (!data.addresses?.length) {
-            el.innerHTML = '<div class="empty"><i class="fas fa-map-marker-alt"></i>Kayıtlı adres yok.</div>';
+            el.innerHTML = '<div class="empty-state"><i class="fas fa-map-marker-alt"></i><p>Kayıtlı adres yok.</p></div>';
             return;
         }
         el.innerHTML = data.addresses.map(a => `
             <div class="address-card">
+                <div class="address-icon"><i class="fas fa-map-marker-alt"></i></div>
                 <div class="address-info">
-                    <h4><i class="fas fa-map-marker-alt" style="color:#b08d57"></i> ${a.baslik}</h4>
-                    <p>${a.adres}</p>
+                    <div class="address-title">${a.baslik}</div>
+                    <div class="address-text">${a.adres}</div>
                 </div>
-                <button class="delete-btn" onclick="deleteAddress(${a.id})"><i class="fas fa-trash"></i></button>
-            </div>
-        `).join('');
+                <button class="btn-del" onclick="deleteAddress(${a.id})"><i class="fas fa-trash"></i></button>
+            </div>`).join('');
     } catch(e) {
-        el.innerHTML = '<div class="empty">Yüklenemedi.</div>';
+        el.innerHTML = '<div class="empty-state"><i class="fas fa-wifi"></i><p>Yüklenemedi.</p></div>';
     }
 }
 
@@ -227,77 +1238,105 @@ async function addAddress() {
     const kapiNo = document.getElementById('aKapiNo').value.trim();
     const ilce = document.getElementById('aIlce').value.trim();
     const il = document.getElementById('aIl').value.trim();
-
     if (!baslik || !mahalle || !sokak || !kapiNo || !ilce || !il) {
-        return alert('Lütfen adresi mahalle, sokak/cadde, kapı no, ilçe ve il şeklinde eksiksiz doldurun.');
+        showToast('⚠️ Lütfen tüm alanları doldurun');
+        return;
     }
-
-    const adres = [
-        `Mahalle: ${mahalle}`,
-        `Sokak/Cadde: ${sokak}`,
-        `Kapı No: ${kapiNo}`,
-        `İlçe: ${ilce}`,
-        `İl: ${il}`
-    ].join('\n');
-
-    const r = await fetch('/api/auth?action=add-address', {
-        method: 'POST', headers: authHeaders(),
-        body: JSON.stringify({ baslik, adres })
-    });
+    const adres = [`Mahalle: ${mahalle}`, `Sokak/Cadde: ${sokak}`, `Kapı No: ${kapiNo}`, `İlçe: ${ilce}`, `İl: ${il}`].join('\n');
+    const r = await fetch('/api/auth?action=add-address', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ baslik, adres }) });
     const data = await r.json();
     if (data.success) {
-        document.getElementById('aBaslik').value = '';
-        document.getElementById('aMahalle').value = '';
-        document.getElementById('aSokak').value = '';
-        document.getElementById('aKapiNo').value = '';
-        document.getElementById('aIlce').value = '';
-        document.getElementById('aIl').value = '';
+        ['aBaslik','aMahalle','aSokak','aKapiNo','aIlce','aIl'].forEach(id => document.getElementById(id).value = '');
+        showToast('✓ Adres eklendi');
         loadAddresses();
-    } else alert('Hata: ' + data.error);
+    } else {
+        showToast('Hata: ' + (data.error || 'Bilinmeyen hata'));
+    }
 }
 
 async function deleteAddress(id) {
     if (!confirm('Bu adresi silmek istediğinize emin misiniz?')) return;
-    const r = await fetch('/api/auth?action=delete-address', {
-        method: 'POST', headers: authHeaders(),
-        body: JSON.stringify({ id })
-    });
+    const r = await fetch('/api/auth?action=delete-address', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ id }) });
     const data = await r.json();
-    if (data.success) loadAddresses();
+    if (data.success) { showToast('✓ Adres silindi'); loadAddresses(); }
 }
 
-// FAVORİLER
+/* ═══════════════════════════════
+   FAVORİLER
+═══════════════════════════════ */
+const SUGGESTION_PRODUCTS = [
+    { id: 'sug1', name: 'Plise Perde Gri', price: 600, image: 'resimler/1774722016200-IMG_1540.png', cat: 'plise-perde' },
+    { id: 'sug2', name: 'Tül Perde Bambu', price: 300, image: 'resimler/bambutul.PNG', cat: 'tul-perde' },
+    { id: 'sug3', name: 'Zebra Perde', price: 1000, image: 'resimler/1774658872713-IMG_1444.jpeg', cat: 'zebra-perde' },
+    { id: 'sug4', name: 'Stor Perde', price: 600, image: 'resimler/img_1364.webp', cat: 'stor-perde' },
+    { id: 'sug5', name: 'VIP Premium Fon', price: 4500, image: 'resimler/brillant_fon.jpeg', cat: 'tul-perde' },
+    { id: 'sug6', name: 'Koltuk Örtü Seti', price: 1500, image: 'resimler/koltuk_ortusu.jpeg', cat: 'koltuk' },
+];
+
 async function loadFavorites() {
-    const el = document.getElementById('favList');
-    el.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</div>';
+    const el = document.getElementById('favContent');
+    el.innerHTML = '<div class="loading-state"><i class="fas fa-circle-notch"></i></div>';
     try {
         const r = await fetch('/api/favorites?action=list', { headers: authHeaders() });
         const data = await r.json();
         if (!data.favorites?.length) {
-            el.innerHTML = '<div class="empty"><i class="fas fa-heart"></i>Henüz favori ürün yok.</div>';
+            el.innerHTML = `
+                <div class="fav-empty-box">
+                    <div class="fav-empty-icon"><i class="fas fa-heart-crack"></i></div>
+                    <h3>Favori ürün eklenmedi</h3>
+                    <p>Beğendiğiniz ürünlerin üzerindeki ♡ ikonuna tıklayarak favorilerinize ekleyebilirsiniz.</p>
+                    <a href="/" class="btn-to-shop"><i class="fas fa-th-large"></i> Koleksiyonu Keşfet</a>
+                </div>
+                ${renderSuggestions()}`;
             return;
         }
-        el.innerHTML = '<div class="fav-grid">' + data.favorites.map(f => `
-            <div class="fav-card">
-                <img src="${f.urun_resim || '/placeholder.jpg'}" alt="${f.urun_adi}" onerror="this.src='/placeholder.jpg'">
-                <div class="fav-card-body">
-                    <h4>${f.urun_adi}</h4>
-                    <p>${f.urun_fiyat}</p>
-                </div>
-                <div class="fav-card-footer">
-                    <button class="btn-remove" onclick="removeFav('${f.urun_id}')"><i class="fas fa-trash"></i> Sil</button>
-                    <button class="btn-view" onclick="window.location.href='/urun.html?id=${f.urun_id}'"><i class="fas fa-eye"></i> Gör</button>
-                </div>
+        el.innerHTML = `
+            <div class="fav-grid">
+                ${data.favorites.map(f => `
+                    <div class="fav-card">
+                        <img src="${f.urun_resim || ''}" alt="${f.urun_adi}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22140%22><rect fill=%22%23f5f5f5%22 width=%22160%22 height=%22140%22/><text x=%2280%22 y=%2278%22 text-anchor=%22middle%22 font-size=%2232%22>🛍️</text></svg>'">
+                        <div class="fav-card-body">
+                            <div class="fav-card-name">${f.urun_adi}</div>
+                            <div class="fav-card-price">${Number(f.urun_fiyat || 0).toLocaleString('tr-TR')} TL</div>
+                        </div>
+                        <div class="fav-card-footer">
+                            <button class="fav-btn-view" onclick="window.location.href='/'"><i class="fas fa-eye"></i> Ürünü Gör</button>
+                            <button class="fav-btn-remove" onclick="removeFav('${f.urun_id}', this)"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>`).join('')}
             </div>
-        `).join('') + '</div>';
+            ${renderSuggestions()}`;
     } catch(e) {
-        el.innerHTML = '<div class="empty">Yüklenemedi.</div>';
+        el.innerHTML = '<div class="empty-state"><i class="fas fa-wifi"></i><p>Yüklenemedi.</p></div>';
     }
 }
 
-async function removeFav(urun_id) {
+function renderSuggestions() {
+    const cards = SUGGESTION_PRODUCTS.map(p => `
+        <div class="sugg-card" onclick="window.location.href='/'">
+            <img src="${p.image}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22110%22><rect fill=%22%23f5f5f5%22 width=%22160%22 height=%22110%22/></svg>'">
+            <div class="sugg-card-body">
+                <div class="sugg-card-name">${p.name}</div>
+                <div class="sugg-card-price">${p.price.toLocaleString('tr-TR')} TL</div>
+            </div>
+        </div>`).join('');
+    return `
+        <div class="suggestions-section">
+            <div class="suggestions-header">
+                <div>
+                    <div class="section-tag">Öneriler</div>
+                    <h3>Beğenebileceğiniz <em>Ürünler</em></h3>
+                </div>
+            </div>
+            <div class="suggestions-grid">${cards}</div>
+        </div>`;
+}
+
+async function removeFav(urun_id, btn) {
+    if (btn) btn.disabled = true;
     const r = await fetch('/api/favorites?action=remove', {
-        method: 'POST', headers: authHeaders(),
+        method: 'POST',
+        headers: authHeaders(),
         body: JSON.stringify({ urun_id })
     });
     const data = await r.json();
@@ -306,58 +1345,62 @@ async function removeFav(urun_id) {
             const current = JSON.parse(localStorage.getItem('gpFav') || '[]');
             const next = current.filter(f => String(f.id) !== String(urun_id));
             localStorage.setItem('gpFav', JSON.stringify(next));
-            localStorage.setItem('gp_user_favorites', JSON.stringify(next));
         } catch(e) {}
+        showToast('Favoriden çıkarıldı');
         loadFavorites();
+    } else {
+        if (btn) btn.disabled = false;
     }
 }
 
-// PROFİL
+/* ═══════════════════════════════
+   PROFİL
+═══════════════════════════════ */
 async function loadProfile() {
-    const r = await fetch('/api/auth?action=profile', { headers: authHeaders() });
-    const data = await r.json();
-    if (data.user) {
-        document.getElementById('pName').value = data.user.ad_soyad || '';
-        document.getElementById('pEmail').value = data.user.email || '';
-        document.getElementById('pPhone').value = data.user.telefon || '';
-    }
+    try {
+        const r = await fetch('/api/auth?action=profile', { headers: authHeaders() });
+        const data = await r.json();
+        if (data.user) {
+            document.getElementById('pName').value = data.user.ad_soyad || '';
+            document.getElementById('pEmail').value = data.user.email || '';
+            document.getElementById('pPhone').value = data.user.telefon || '';
+        }
+    } catch(e) {}
 }
 
 async function updateProfile() {
-    const ad_soyad = document.getElementById('pName').value;
-    const telefon = document.getElementById('pPhone').value;
-    const r = await fetch('/api/auth?action=update', {
-        method: 'PUT', headers: authHeaders(),
-        body: JSON.stringify({ ad_soyad, telefon })
-    });
+    const ad_soyad = document.getElementById('pName').value.trim();
+    const telefon = document.getElementById('pPhone').value.trim();
+    if (!ad_soyad) { showToast('⚠️ Ad soyad zorunlu'); return; }
+    const r = await fetch('/api/auth?action=update', { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ ad_soyad, telefon }) });
     const data = await r.json();
     if (data.success) {
-        const u = JSON.parse(localStorage.getItem('user'));
+        const u = JSON.parse(localStorage.getItem('user') || '{}');
         u.ad_soyad = ad_soyad;
         localStorage.setItem('user', JSON.stringify(u));
-        document.getElementById('userName').textContent = ad_soyad;
-        alert('Bilgiler güncellendi.');
-    } else alert('Hata: ' + data.error);
+        document.getElementById('userNameDisplay').textContent = ad_soyad;
+        showToast('✓ Bilgiler güncellendi');
+    } else {
+        showToast('Hata: ' + (data.error || 'Bilinmeyen hata'));
+    }
 }
 
 async function changePassword() {
     const eski_sifre = document.getElementById('eskiSifre').value;
     const yeni_sifre = document.getElementById('yeniSifre').value;
-    const validPassword = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(yeni_sifre || '');
-    if (!validPassword) {
-        alert('Yeni şifre en az 6 karakter olmalı ve en az 1 harf ile 1 sayı içermelidir.');
+    if (!/^(?=.*[A-Za-z])(?=.*\d).{6,}$/.test(yeni_sifre)) {
+        showToast('⚠️ Şifre en az 6 karakter olmalı, harf ve sayı içermelidir');
         return;
     }
-    const r = await fetch('/api/auth?action=change-password', {
-        method: 'POST', headers: authHeaders(),
-        body: JSON.stringify({ eski_sifre, yeni_sifre })
-    });
+    const r = await fetch('/api/auth?action=change-password', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ eski_sifre, yeni_sifre }) });
     const data = await r.json();
     if (data.success) {
-        alert('Şifre değiştirildi.');
+        showToast('✓ Şifre değiştirildi');
         document.getElementById('eskiSifre').value = '';
         document.getElementById('yeniSifre').value = '';
-    } else alert('Hata: ' + data.error);
+    } else {
+        showToast('Hata: ' + (data.error || 'Mevcut şifre hatalı'));
+    }
 }
 
 function logout() {
@@ -367,10 +1410,11 @@ function logout() {
     window.location.href = '/';
 }
 
-// Sayfa açılınca siparişleri yükle
+/* ── INIT ── */
 loadOrders();
 loadProfile();
 activateTabFromQuery();
 </script>
+
 </body>
 </html>

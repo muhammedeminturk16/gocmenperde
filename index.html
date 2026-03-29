@@ -397,12 +397,14 @@ nav{display:flex;align-items:center;gap:8px}
 @media(max-width:700px){.modal-overlay{padding:10px}.modal-box{grid-template-columns:1fr;max-height:none;overflow:visible;margin:0}}
 .modal-close{position:absolute;top:16px;right:16px;z-index:20;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.95);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--ink);box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:var(--transition)}
 .modal-close:hover{background:var(--gold);color:white;transform:scale(1.1)}
-.modal-img-col{position:relative;overflow:hidden;height:500px;background:var(--cream);cursor:zoom-in}
-@media(max-width:700px){.modal-img-col{height:260px;cursor:default}}
+.modal-img-col{position:relative;display:flex;flex-direction:column;background:var(--cream);border-right:1px solid var(--border)}
+@media(max-width:700px){.modal-img-col{border-right:none}}
+.modal-img-stage{position:relative;overflow:hidden;height:500px;cursor:zoom-in}
+@media(max-width:700px){.modal-img-stage{height:260px;cursor:default}}
 .modal-img-col img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.08s ease-out;transform-origin:center center;will-change:transform}
 .modal-discount-badge{position:absolute;top:16px;left:16px;z-index:10;background:#c0392b;color:white;font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:50px}
 .modal-zoom-hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(15,14,13,0.75);color:white;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:50px;opacity:0;transition:opacity 0.4s;pointer-events:none;white-space:nowrap}
-.modal-img-col:hover .modal-zoom-hint{opacity:1}
+.modal-img-stage:hover .modal-zoom-hint{opacity:1}
 @media(max-width:700px){.modal-zoom-hint{display:none!important}}
 .modal-info-col{padding:36px;display:flex;flex-direction:column;overflow-y:auto;background:white}
 @media(max-width:700px){.modal-info-col{padding:20px}}
@@ -488,12 +490,27 @@ footer span{color:var(--gold)}
 .modal-gallery-btn{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border:none;border-radius:50%;background:rgba(255,255,255,0.92);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;box-shadow:0 8px 22px rgba(0,0,0,0.18);transition:var(--transition)}
 .modal-gallery-btn:hover{background:var(--gold);color:white}
 .modal-gallery-btn.prev{left:14px}.modal-gallery-btn.next{right:14px}
-.modal-thumbs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 0}
+.modal-thumb-panel{padding:12px 14px;background:#fff;border-top:1px solid var(--border)}
+.modal-thumb-panel-title{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--slate);font-weight:600;margin-bottom:8px}
+.modal-thumbs{display:flex;gap:8px;overflow-x:auto;padding:0}
 .modal-thumbs::-webkit-scrollbar{height:4px}
 .modal-thumbs::-webkit-scrollbar-thumb{background:var(--gold);border-radius:999px}
 .modal-thumb{width:58px;height:58px;flex-shrink:0;border-radius:10px;overflow:hidden;border:2px solid transparent;cursor:pointer;background:#f2f2f2}
 .modal-thumb.active{border-color:var(--gold)}
 .modal-thumb img{width:100%;height:100%;object-fit:cover}
+.image-viewer-overlay{position:fixed;inset:0;z-index:13020;background:rgba(6,6,6,0.94);display:none;align-items:center;justify-content:center;flex-direction:column;padding:24px}
+.image-viewer-overlay.open{display:flex}
+.image-viewer-topbar{width:min(1200px,100%);display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;color:#fff}
+.image-viewer-title{font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.78)}
+.image-viewer-actions{display:flex;gap:8px}
+.image-viewer-btn{width:42px;height:42px;border:none;border-radius:999px;background:rgba(255,255,255,0.12);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:var(--transition)}
+.image-viewer-btn:hover{background:var(--gold);color:var(--ink)}
+.image-viewer-stage{width:min(1200px,100%);height:min(72vh,820px);border-radius:16px;background:radial-gradient(circle at center,rgba(201,168,76,0.08),rgba(20,20,20,0.95));overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative}
+.image-viewer-img{max-width:100%;max-height:100%;object-fit:contain;transform:scale(1);transition:transform 0.18s ease;cursor:zoom-in;will-change:transform}
+.image-viewer-hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(15,14,13,0.72);border:1px solid rgba(255,255,255,0.12);color:#fff;padding:6px 12px;border-radius:999px;font-size:0.65rem;letter-spacing:1px}
+.image-viewer-thumbs-wrap{width:min(1200px,100%);margin-top:12px;padding:10px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:14px;backdrop-filter:blur(6px)}
+.image-viewer-thumbs-wrap .modal-thumbs{padding:0}
+@media(max-width:700px){.image-viewer-overlay{padding:12px}.image-viewer-stage{height:min(66vh,520px)}.image-viewer-hint{font-size:0.6rem;padding:5px 10px}}
 .cart-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.22);z-index:12050;display:none;pointer-events:auto}
 .cart-sheet-overlay.open{display:block}
 .cart-sheet{position:fixed;left:0;right:0;bottom:0;z-index:12100;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -30px 80px rgba(0,0,0,0.25);padding:18px 16px calc(18px + env(safe-area-inset-bottom));transform:translateY(112%);transition:transform .35s ease;will-change:transform}
@@ -1011,14 +1028,20 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 <div class="modal-overlay" id="productModal" onclick="closeModalOverlay(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="closeProductModal()"><i class="fas fa-xmark"></i></button>
-    <div class="modal-img-col" id="modalImgCol" onmousemove="zoomImg(event)" onmouseleave="resetImgZoom()">
-      <img id="mImg" src="" alt="">
-      <div class="modal-discount-badge hidden" id="mDiscountBadge"></div>
-      <div class="modal-gallery-controls">
-        <button class="modal-gallery-btn prev" id="modalPrevBtn" type="button" onclick="event.stopPropagation();showModalImage(-1)"><i class="fas fa-chevron-left"></i></button>
-        <button class="modal-gallery-btn next" id="modalNextBtn" type="button" onclick="event.stopPropagation();showModalImage(1)"><i class="fas fa-chevron-right"></i></button>
+    <div class="modal-img-col">
+      <div class="modal-img-stage" id="modalImgCol" onmousemove="zoomImg(event)" onmouseleave="resetImgZoom()" onclick="openImageViewer()">
+        <img id="mImg" src="" alt="">
+        <div class="modal-discount-badge hidden" id="mDiscountBadge"></div>
+        <div class="modal-gallery-controls">
+          <button class="modal-gallery-btn prev" id="modalPrevBtn" type="button" onclick="event.stopPropagation();showModalImage(-1)"><i class="fas fa-chevron-left"></i></button>
+          <button class="modal-gallery-btn next" id="modalNextBtn" type="button" onclick="event.stopPropagation();showModalImage(1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="modal-zoom-hint"><i class="fas fa-expand" style="margin-right:6px"></i>Fotoğrafa tıklayıp detaylı inceleyin</div>
       </div>
-      <div class="modal-zoom-hint"><i class="fas fa-search-plus" style="margin-right:6px"></i>Yakınlaştırmak için üzerine gelin</div>
+      <div class="modal-thumb-panel">
+        <div class="modal-thumb-panel-title">Tüm Fotoğraflar</div>
+        <div class="modal-thumbs" id="mThumbs"></div>
+      </div>
     </div>
     <div class="modal-info-col">
       <div class="modal-tag" id="mTag"></div>
@@ -1049,9 +1072,25 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
           <input type="text" id="reviewTextInput" placeholder="Bu ürün için kısa yorum yazın...">
         </div>
       </div>
-      <div class="modal-thumbs" id="mThumbs"></div>
       <div class="modal-add-wrap" id="mAddWrap"></div>
     </div>
+  </div>
+</div>
+<div class="image-viewer-overlay" id="imageViewer" onclick="closeImageViewerFromOverlay(event)">
+  <div class="image-viewer-topbar">
+    <div class="image-viewer-title" id="imageViewerTitle">Fotoğraf Görüntüleyici</div>
+    <div class="image-viewer-actions">
+      <button class="image-viewer-btn" type="button" onclick="event.stopPropagation();changeViewerScale(-0.2)" title="Uzaklaştır"><i class="fas fa-magnifying-glass-minus"></i></button>
+      <button class="image-viewer-btn" type="button" onclick="event.stopPropagation();changeViewerScale(0.2)" title="Yakınlaştır"><i class="fas fa-magnifying-glass-plus"></i></button>
+      <button class="image-viewer-btn" type="button" onclick="event.stopPropagation();closeImageViewer()" title="Kapat"><i class="fas fa-xmark"></i></button>
+    </div>
+  </div>
+  <div class="image-viewer-stage" onclick="event.stopPropagation()">
+    <img id="imageViewerImg" class="image-viewer-img" src="" alt="Büyük ürün fotoğrafı" onwheel="viewerWheelZoom(event)">
+    <div class="image-viewer-hint">Fare tekerleği / +/- ile zoom · ← → ile fotoğraf değiştir</div>
+  </div>
+  <div class="image-viewer-thumbs-wrap" onclick="event.stopPropagation()">
+    <div class="modal-thumbs" id="viewerThumbs"></div>
   </div>
 </div>
 
@@ -1710,16 +1749,30 @@ function applyFilters(){
 // ── Modal ──
 let currentModalImages = [];
 let currentModalImageIndex = 0;
+let viewerScale = 1;
+let imageViewerOpen = false;
 
 function renderModalThumbs(){
   const thumbs = document.getElementById('mThumbs');
-  if(!thumbs) return;
-  if(currentModalImages.length <= 1){ thumbs.innerHTML=''; return; }
-  thumbs.innerHTML = currentModalImages.map((img,idx)=>`
+  const viewerThumbs = document.getElementById('viewerThumbs');
+  const thumbPanel = document.querySelector('.modal-thumb-panel');
+  const viewerWrap = document.querySelector('.image-viewer-thumbs-wrap');
+  if(!thumbs || !viewerThumbs) return;
+  if(currentModalImages.length <= 1){
+    thumbs.innerHTML=''; viewerThumbs.innerHTML='';
+    if(thumbPanel) thumbPanel.style.display = 'none';
+    if(viewerWrap) viewerWrap.style.display = 'none';
+    return;
+  }
+  if(thumbPanel) thumbPanel.style.display = 'block';
+  if(viewerWrap) viewerWrap.style.display = 'block';
+  const html = currentModalImages.map((img,idx)=>`
     <button class="modal-thumb ${idx===currentModalImageIndex?'active':''}" type="button" onclick="selectModalImage(${idx})">
       <img src="${img}" alt="Ürün görseli ${idx+1}">
     </button>
   `).join('');
+  thumbs.innerHTML = html;
+  viewerThumbs.innerHTML = html;
 }
 function updateModalGalleryNav(){
   const visible = currentModalImages.length > 1;
@@ -1734,6 +1787,7 @@ function setModalImage(idx){
   const img = document.getElementById('mImg');
   img.src = currentModalImages[currentModalImageIndex];
   img.alt = `Ürün görseli ${currentModalImageIndex+1}`;
+  updateViewerImage();
   resetImgZoom();
   renderModalThumbs();
 }
@@ -1854,7 +1908,40 @@ function switchTab(tabId){
   document.querySelectorAll('.modal-tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+tabId).classList.add('active');
 }
-function closeProductModal(){ document.getElementById('productModal').classList.remove('open'); document.body.style.overflow=''; document.body.classList.remove('native-cursor-mode'); document.body.classList.remove('product-modal-open'); currentModalProductId = null; resetImgZoom(); }
+function openImageViewer(){
+  if(!currentModalImages.length) return;
+  imageViewerOpen = true;
+  document.getElementById('imageViewer').classList.add('open');
+  document.getElementById('imageViewerTitle').innerText = `Fotoğraf ${currentModalImageIndex+1} / ${currentModalImages.length}`;
+  updateViewerImage();
+}
+function closeImageViewer(){
+  imageViewerOpen = false;
+  document.getElementById('imageViewer').classList.remove('open');
+}
+function closeImageViewerFromOverlay(e){ if(e.target===document.getElementById('imageViewer')) closeImageViewer(); }
+function resetViewerScale(){ viewerScale = 1; applyViewerScale(); }
+function applyViewerScale(){
+  const vImg = document.getElementById('imageViewerImg');
+  if(vImg) vImg.style.transform = `scale(${viewerScale})`;
+}
+function changeViewerScale(step){
+  viewerScale = Math.min(3.5, Math.max(1, viewerScale + step));
+  applyViewerScale();
+}
+function viewerWheelZoom(e){
+  e.preventDefault();
+  changeViewerScale(e.deltaY < 0 ? 0.16 : -0.16);
+}
+function updateViewerImage(){
+  const viewerImg = document.getElementById('imageViewerImg');
+  if(!viewerImg || !currentModalImages.length) return;
+  viewerImg.src = currentModalImages[currentModalImageIndex];
+  viewerImg.alt = `Büyük ürün görseli ${currentModalImageIndex+1}`;
+  document.getElementById('imageViewerTitle').innerText = `Fotoğraf ${currentModalImageIndex+1} / ${currentModalImages.length}`;
+  resetViewerScale();
+}
+function closeProductModal(){ document.getElementById('productModal').classList.remove('open'); closeImageViewer(); document.body.style.overflow=''; document.body.classList.remove('native-cursor-mode'); document.body.classList.remove('product-modal-open'); currentModalProductId = null; resetImgZoom(); }
 function closeModalOverlay(e){ if(e.target===document.getElementById('productModal')) closeProductModal(); }
 function zoomImg(e){
   if(window.innerWidth<=700) return;
@@ -1863,6 +1950,19 @@ function zoomImg(e){
   img.style.transform='scale(2.4)';
 }
 function resetImgZoom(){ const img=document.getElementById('mImg'); img.style.transform='scale(1)'; img.style.transformOrigin='center center'; }
+document.addEventListener('keydown', (e)=>{
+  const modalOpen = document.getElementById('productModal')?.classList.contains('open');
+  if(!modalOpen) return;
+  if(e.key === 'Escape'){
+    if(imageViewerOpen) closeImageViewer();
+    else closeProductModal();
+    return;
+  }
+  if(e.key === 'ArrowRight') showModalImage(1);
+  if(e.key === 'ArrowLeft') showModalImage(-1);
+  if(imageViewerOpen && (e.key === '+' || e.key === '=')) changeViewerScale(0.2);
+  if(imageViewerOpen && e.key === '-') changeViewerScale(-0.2);
+});
 
 // ── Menü & Popuplar ──
 function toggleMenu(){

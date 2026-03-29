@@ -281,6 +281,8 @@
         font-size: 0.76rem;
         color: var(--slate);
     }
+    .order-item-link{cursor:pointer;border-radius:8px;padding:4px;transition:0.2s;}
+    .order-item-link:hover{background:var(--gold-light);}
     .order-card-footer {
         padding: 12px 20px;
         display: flex;
@@ -396,6 +398,8 @@
     .modal-product-info { flex: 1; min-width: 0; }
     .modal-product-name { font-size: 0.88rem; font-weight: 600; color: var(--ink); }
     .modal-product-sub { font-size: 0.76rem; color: var(--slate); margin-top: 3px; }
+    .modal-product-extra { margin-top: 6px; font-size: 0.72rem; color: var(--slate); line-height: 1.5; }
+    .modal-product-extra b { color: var(--ink); }
     .modal-product-price {
         font-family: var(--ffd);
         font-weight: 700;
@@ -818,6 +822,16 @@
         box-shadow: var(--shadow);
     }
     .gp-toast.show { transform: translateY(0); opacity: 1; }
+    .order-suggestions{margin-top:20px;padding-top:4px;}
+    .order-suggestions h4{font-size:0.76rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:10px;}
+    .order-sugg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+    @media(max-width:520px){.order-sugg-grid{grid-template-columns:1fr;}}
+    .order-sugg-card{display:flex;gap:10px;background:#fff;border:1px solid var(--border-hard);border-radius:10px;padding:10px;cursor:pointer;transition:.2s;}
+    .order-sugg-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+    .order-sugg-card img{width:50px;height:50px;border-radius:8px;object-fit:cover;}
+    .order-sugg-name{font-size:.8rem;font-weight:600;color:var(--ink);}
+    .order-sugg-price{font-size:.75rem;color:var(--gold-dark);font-weight:700;margin-top:2px;}
+
 
     @media (max-width: 640px) {
         .content { padding: 20px 4%; }
@@ -1040,14 +1054,83 @@ function showToast(msg, duration = 3000) {
    SİPARİŞLER
 ═══════════════════════════════ */
 let allOrders = [];
+let productCatalog = [];
+const ORDER_SUGGESTIONS = [
+    { id: "sug1", name: "Plise Perde Gri", price: 600, image: "resimler/1774722016200-IMG_1540.png" },
+    { id: "sug2", name: "Tül Perde Bambu", price: 300, image: "resimler/bambutul.PNG" },
+    { id: "sug3", name: "Zebra Perde", price: 1000, image: "resimler/1774658872713-IMG_1444.jpeg" },
+    { id: "sug4", name: "Stor Perde", price: 600, image: "resimler/img_1364.webp" }
+];
 
 // Kupon kodları
 const COUPON_CODES = ['ILKSIPARIS10', 'GOCMEN15', 'PERDE20', 'YAZ25', 'KISH10'];
+
+function safeJsonParse(value, fallback = []) {
+    if (Array.isArray(value)) return value;
+    if (!value || typeof value !== 'string') return fallback;
+    try { return JSON.parse(value); } catch (e) { return fallback; }
+}
+
+function normalizeImagePath(src) {
+    if (!src) return '';
+    const raw = String(src).trim();
+    if (!raw) return '';
+    if (/^https?:\/\//i.test(raw) || raw.startsWith('data:') || raw.startsWith('/')) return raw;
+    return '/' + raw.replace(/^\.\//, '');
+}
+
+function getProductIdFromItem(item = {}) {
+    return String(item.id || item.productId || item.urun_id || '').trim();
+}
+
+function getProductByItem(item = {}) {
+    const pid = getProductIdFromItem(item);
+    if (!pid) return null;
+    return productCatalog.find(p => String(p.id) === pid) || null;
+}
+
+function getProductImage(item = {}) {
+    const p = getProductByItem(item);
+    return normalizeImagePath(item.image || item.urun_resim || p?.image || p?.images?.[0] || '');
+}
+
+function goToProductDetail(item = {}) {
+    const p = getProductByItem(item);
+    if (p?.id) {
+        window.location.href = `/?product=${encodeURIComponent(p.id)}`;
+        return;
+    }
+    showToast('Bu ürüne ait detay bulunamadı.');
+}
+
+async function loadProductCatalog() {
+    if (productCatalog.length) return productCatalog;
+    try {
+        const r = await fetch('/products.json?v=' + Date.now(), { cache: 'no-store' });
+        productCatalog = await r.json();
+    } catch (e) {
+        productCatalog = [];
+    }
+    return productCatalog;
+}
+
+function renderOrderSuggestions() {
+    const cards = ORDER_SUGGESTIONS.map(p => `
+        <div class="order-sugg-card" onclick="window.location.href='/?product=${encodeURIComponent(p.id)}'">
+            <img src="${normalizeImagePath(p.image)}" alt="${p.name}" onerror="this.style.display='none'">
+            <div>
+                <div class="order-sugg-name">${p.name}</div>
+                <div class="order-sugg-price">${Number(p.price).toLocaleString('tr-TR')} TL</div>
+            </div>
+        </div>`).join('');
+    return `<div class="order-suggestions"><h4>İlginizi Çekebilir</h4><div class="order-sugg-grid">${cards}</div></div>`;
+}
 
 async function loadOrders() {
     const el = document.getElementById('ordersList');
     el.innerHTML = '<div class="loading-state"><i class="fas fa-circle-notch"></i> Siparişler yükleniyor...</div>';
     try {
+        await loadProductCatalog();
         const r = await fetch('/api/orders?action=my-orders', { headers: authHeaders() });
         const data = await r.json();
         allOrders = data.orders || [];
@@ -1079,7 +1162,7 @@ function getStatusIcon(durum) {
 function renderOrders(orders) {
     const el = document.getElementById('ordersList');
     el.innerHTML = orders.map(o => {
-        const items = typeof o.urunler === 'string' ? JSON.parse(o.urunler) : (o.urunler || []);
+        const items = safeJsonParse(o.urunler, o.urunler || []);
         const date = new Date(o.created_at).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
         const statusClass = getStatusClass(o.durum);
         const statusIcon = getStatusIcon(o.durum);
@@ -1087,11 +1170,11 @@ function renderOrders(orders) {
             const itemName = i.name || i.ad || 'Ürün';
             const itemQty = i.quantity || i.adet || 1;
             const itemPrice = Number(i.price || i.fiyat || 0);
-            const itemImage = i.image || i.urun_resim || '';
+            const itemImage = getProductImage(i);
             return `
-                <div class="order-preview-item">
+                <div class="order-preview-item order-item-link" onclick='goToProductDetail(${JSON.stringify(i)})'>
                     ${itemImage
-                        ? `<img class="order-preview-img" src="${itemImage}" alt="${itemName}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+                        ? `<img class="order-preview-img" src="${itemImage}" alt="${itemName}" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">`
                         : ''}
                     <div class="order-preview-placeholder" style="display:${itemImage ? 'none' : 'flex'}">🛍️</div>
                     <div class="order-preview-meta">
@@ -1126,7 +1209,7 @@ function renderOrders(orders) {
                     </button>
                 </div>
             </div>`;
-    }).join('');
+    }).join('') + renderOrderSuggestions();
 }
 
 function openOrderDetail(orderId) {
@@ -1134,7 +1217,7 @@ function openOrderDetail(orderId) {
     if (!o) return;
     document.getElementById('modalOrderId').textContent = '';
 
-    const items = typeof o.urunler === 'string' ? JSON.parse(o.urunler) : (o.urunler || []);
+    const items = safeJsonParse(o.urunler, o.urunler || []);
     const orderDate = new Date(o.created_at);
     const dateStr = orderDate.toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
 
@@ -1151,16 +1234,23 @@ function openOrderDetail(orderId) {
         const qty = i.quantity || i.adet || 1;
         const price = Number(i.price || i.fiyat || 0);
         const sub = price * qty;
-        const imgSrc = i.image || '';
+        const productInfo = getProductByItem(i);
+        const imgSrc = getProductImage(i);
+        const details = [
+            productInfo?.desc ? `<div class="modal-product-extra"><b>Açıklama:</b> ${productInfo.desc}</div>` : '',
+            productInfo?.care ? `<div class="modal-product-extra"><b>Bakım:</b> ${Object.values(productInfo.care).slice(0,2).join(' · ')}</div>` : '',
+            productInfo?.specs ? `<div class="modal-product-extra"><b>Teknik Özellik:</b> ${Object.entries(productInfo.specs).slice(0,2).map(([k,v])=>`${k}: ${v}`).join(' · ')}</div>` : ''
+        ].filter(Boolean).join('');
         return `
-            <div class="modal-product-row">
+            <div class="modal-product-row order-item-link" onclick='goToProductDetail(${JSON.stringify(i)})'>
                 ${imgSrc
-                    ? `<img class="modal-product-img" src="${imgSrc}" alt="${i.name || i.ad}" onerror="this.style.display='none'">`
-                    : `<div class="modal-product-img-placeholder">🛍️</div>`
-                }
+                    ? `<img class="modal-product-img" src="${imgSrc}" alt="${i.name || i.ad}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+                    : ''}
+                <div class="modal-product-img-placeholder" style="display:${imgSrc ? 'none' : 'flex'}">🛍️</div>
                 <div class="modal-product-info">
                     <div class="modal-product-name">${i.name || i.ad || 'Ürün'}</div>
                     <div class="modal-product-sub">${qty} ${i.unitLabel || 'adet'} × ${price.toLocaleString('tr-TR')} TL${i.width && i.height ? ` • ${i.width}m × ${i.height}m` : ''}</div>
+                    ${details}
                 </div>
                 <div class="modal-product-price">${sub.toLocaleString('tr-TR')} TL</div>
             </div>`;

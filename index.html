@@ -777,7 +777,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
             <h3>İlk Siparişte Anında %10 İndirim Fırsatı</h3>
             <p>Sepet adımında kupon alanına kodunuzu yazın, ilk siparişinizde kampanya otomatik olarak fiyatınıza uygulansın.</p>
           </div>
-          <div class="coupon-chip"><span>Kupon Kodu</span><b>ILKSIPARIS10</b></div>
+          <button type="button" class="coupon-chip" onclick="useFirstOrderCouponFromBanner()" aria-label="ILKSIPARIS10 kuponunu sepette uygula"><span>Kupon Kodu</span><b>ILKSIPARIS10</b></button>
         </div>
       </div>
       <div class="promo-banner-row">
@@ -1149,10 +1149,29 @@ async function loadProducts(){
     updateDiscountSpotlight(PRODUCTS);
     renderRecentlyViewed();
     initObserver();
+    handleInitialProductDeepLink();
   } catch(e){
     document.getElementById('productsGrid').innerHTML = '<div class="products-loading">Ürünler yüklenemedi. Sayfayı yenileyin.</div>';
   }
 }
+
+function handleInitialProductDeepLink(){
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('product');
+  if(!productId) return;
+  const target = PRODUCTS.find(p=>String(p.id) === String(productId));
+  if(!target) return;
+  go('products');
+  setTimeout(()=>openModalFromProduct(target.id), 120);
+}
+
+function useFirstOrderCouponFromBanner(){
+  sessionStorage.setItem('gp_pending_coupon','ILKSIPARIS10');
+  go('cart');
+  setTimeout(()=>applyPendingCouponFromStorage(), 120);
+  showToast('Kupon sepete taşındı. Uygulama kontrol ediliyor...');
+}
+
 
 function createSeededRandom(seedStr){
   let seed = 0;
@@ -1391,11 +1410,16 @@ function isMeterProduct(product){
   const u = normalizeUnit(product?.unit);
   return !!(product?.isMeter || u === 'mt' || u === 'metre' || u === 'm');
 }
+function isFonPerdeProduct(product){
+  const name = String(product?.name || '').toLowerCase();
+  const cat = String(product?.cat || '').toLowerCase();
+  return name.includes('fon') || cat.includes('fon');
+}
 function needsDimensions(product){
-  return isMeterProduct(product) || isSquareMeterProduct(product);
+  return isMeterProduct(product) || isSquareMeterProduct(product) || isFonPerdeProduct(product);
 }
 function isPleatedMeterProduct(product){
-  return isMeterProduct(product) && !isSquareMeterProduct(product);
+  return (isMeterProduct(product) || isFonPerdeProduct(product)) && !isSquareMeterProduct(product);
 }
 function getPileMultiplier(pileType){
   if(pileType === 'seyrek') return 2;
@@ -1775,7 +1799,7 @@ function openModalFromProduct(id){
     ${requireHeight ? `<input type="text" inputmode="decimal" class="modal-qty-input dimension-input" id="${hid}" placeholder="Boy (m)">` : ''}
     ${pleatedMeterProduct ? `<select class="modal-qty-input pile-select" id="modal-pile-${p.id}"><option value="seyrek">Seyrek Pile (1m→2m)</option><option value="orta" selected>Orta Pile (1m→2.5m)</option><option value="sik">Sık Pile (1m→3m)</option></select>` : ''}
     ${squareProduct ? `<span id="${pid}" class="modal-inline-help">En ve boy girildiğinde m² ve fiyat otomatik hesaplanır</span>` : ''}
-    ${pleatedMeterProduct ? `<span id="${pid}" class="modal-inline-help">En/boy ve pile seçimine göre (1:2 / 1:2.5 / 1:3) metre ve fiyat otomatik hesaplanır</span>` : ''}
+    ${pleatedMeterProduct ? `<span id="${pid}" class="modal-inline-help">Fon perdede en bir panel için minimum 1 metredir. Çift kanat için toplam en en az 2 metre olmalıdır.</span><span class="modal-inline-help">En/boy ve pile seçimine göre (1:2 / 1:2.5 / 1:3) metre ve fiyat otomatik hesaplanır</span>` : ''}
     <button class="modal-add-btn" onclick="addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','modal-pile-${p.id}')">
       <i class="fas fa-bag-shopping" style="margin-right:8px"></i>Sepete Ekle
     </button>
@@ -2030,6 +2054,8 @@ async function syncFavoriteWithServer(action, product){
 
 // ── Sepet ──
 let basket = [], total = 0;
+let appliedCouponCode = "";
+let couponDiscountAmount = 0;
 let cartSheetTimer = null;
 let guestCheckoutSelected = false;
 
@@ -2173,6 +2199,7 @@ function updateCartCount(){
 }
 
 function updateItemQty(idx,change){
+  appliedCouponCode = ''; couponDiscountAmount = 0;
   basket[idx].qty += change;
   if(basket[idx].qty < 1){ removeItem(idx); return; }
   basket[idx].sub = basket[idx].price * basket[idx].qty;
@@ -2180,13 +2207,14 @@ function updateItemQty(idx,change){
   saveCartToStorage(); renderCart(); renderMiniCart();
 }
 function removeItem(idx){
+  appliedCouponCode = ''; couponDiscountAmount = 0;
   basket.splice(idx,1); total = basket.reduce((a,b)=>a+b.sub,0);
   updateCartCount();
   saveCartToStorage(); renderCart(); renderMiniCart();
 }
 function clearCart(){
   if(!confirm('Sepet temizlensin mi?')) return;
-  basket=[]; total=0; updateCartCount();
+  basket=[]; total=0; appliedCouponCode=''; couponDiscountAmount=0; updateCartCount();
   saveCartToStorage(); renderCart();
 }
 function renderMiniCart(){
@@ -2231,10 +2259,11 @@ function renderCart(){
     <input type="text" id="couponInput" class="form-input" placeholder="Kupon kodu girin">
     <button id="couponBtn" onclick="applyCoupon()">Uygula</button>
   </div>`;
-  document.getElementById('totalAmount').innerHTML = total.toLocaleString('tr-TR')+' <span>TL</span>';
+  refreshTotalAmount();
   footer.style.display='flex'; form.style.display='block';
   // Pre-fill form if user is logged in
   prefillOrderForm();
+  applyPendingCouponFromStorage();
 }
 
 function prefillOrderForm(){
@@ -2305,17 +2334,39 @@ function syncAddressFromParts(){
 
 function syncPartsFromAddress(addressText=''){
   const raw = String(addressText || '').trim();
-  const parts = raw.split('—').map(s=>s.trim()).filter(Boolean);
-  const first = (parts[0] || '').split(',').map(s=>s.trim()).filter(Boolean);
-  const second = (parts[1] || '').split('/').map(s=>s.trim()).filter(Boolean);
-  const neighborhoodEl = document.getElementById('f-neighborhood');
-  const streetEl = document.getElementById('f-street');
+  const normalized = raw
+    .replace(/\n+/g, ' — ')
+    .replace(/\s*\|\s*/g, ' — ')
+    .replace(/\s+\/\s+/g, ' / ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const lines = normalized.split('—').map(s=>s.trim()).filter(Boolean);
+  const firstLine = lines.find(l=>/mahalle|cadde|sokak|apartman|bina|no/i.test(l)) || lines[0] || '';
+  const cityLine = lines.find(l=>l.includes('/')) || lines[1] || '';
+
+  let neighborhood = '';
+  let street = '';
+  if(firstLine){
+    const mh = firstLine.match(/mahalle\s*:?\s*([^,\-—]+)/i);
+    const sk = firstLine.match(/(sokak|cadde)\s*\/?\s*cadde\s*:?\s*(.+)$/i) || firstLine.match(/(sokak|cadde)\s*:?\s*(.+)$/i);
+    if(mh) neighborhood = mh[1].trim();
+    if(sk) street = sk[2].trim();
+    if(!neighborhood || !street){
+      const segments = firstLine.split(',').map(x=>x.trim()).filter(Boolean);
+      if(!neighborhood) neighborhood = segments[0] || '';
+      if(!street) street = segments.slice(1).join(', ');
+    }
+  }
+
+  const districtCity = cityLine.split('/').map(s=>s.trim()).filter(Boolean);
   const districtEl = document.getElementById('f-district');
   const cityEl = document.getElementById('f-city');
-  if(neighborhoodEl) neighborhoodEl.value = first[0] || '';
-  if(streetEl) streetEl.value = first.slice(1).join(', ');
-  if(districtEl) districtEl.value = second[0] || '';
-  if(cityEl) cityEl.value = second[1] || '';
+  const neighborhoodEl = document.getElementById('f-neighborhood');
+  const streetEl = document.getElementById('f-street');
+  if(neighborhoodEl) neighborhoodEl.value = neighborhood;
+  if(streetEl) streetEl.value = street;
+  if(districtEl) districtEl.value = districtCity[0] || '';
+  if(cityEl) cityEl.value = districtCity[1] || '';
 }
 
 async function loadSavedAddressesForCart(){
@@ -2350,8 +2401,10 @@ function applySavedAddress(idx){
   if(idx === '') return;
   const picked = savedAddresses[Number(idx)];
   if(!picked) return;
-  document.getElementById('f-addr').value = picked.adres || '';
-  syncPartsFromAddress(picked.adres || '');
+  const text = String(picked.adres || '').trim();
+  document.getElementById('f-addr').value = text;
+  syncPartsFromAddress(text);
+  syncAddressFromParts();
 }
 
 function saveCartToStorage(){ try{ localStorage.setItem('gpCart',JSON.stringify(basket)); }catch(e){} }
@@ -2362,10 +2415,48 @@ function loadCartFromStorage(){
   } catch(e){}
 }
 
-function applyCoupon(){
-  const c = document.getElementById('couponInput').value.trim().toUpperCase();
-  if(c==='ILKSIPARIS10'){ total=Math.round(total*0.9); document.getElementById('totalAmount').innerHTML=total.toLocaleString('tr-TR')+' <span>TL</span>'; showToast('🎉 %10 indirim uygulandı!'); }
-  else showToast('❌ Geçersiz kupon kodu');
+async function hasCompletedOrderForCoupon(){
+  const token = getAuthToken();
+  if(!token) return false;
+  try{
+    const r = await fetch('/api/orders?action=my-orders', { headers:{ 'Authorization':'Bearer '+token } });
+    const data = await r.json();
+    return Array.isArray(data.orders) && data.orders.length > 0;
+  } catch(e){
+    return false;
+  }
+}
+
+function refreshTotalAmount(){
+  const amount = Math.max(0, roundTo2(total - couponDiscountAmount));
+  const totalEl = document.getElementById('totalAmount');
+  if(totalEl) totalEl.innerHTML = amount.toLocaleString('tr-TR')+' <span>TL</span>';
+}
+
+async function applyCoupon(codeFromBanner=''){
+  const input = document.getElementById('couponInput');
+  const c = (codeFromBanner || input?.value || '').trim().toUpperCase();
+  if(!c){ showToast('Kupon kodu giriniz'); return; }
+  if(c !== 'ILKSIPARIS10'){ showToast('❌ Geçersiz kupon kodu'); return; }
+  const hasOrder = await hasCompletedOrderForCoupon();
+  if(hasOrder){
+    showToast('❌ İlk sipariş kuponu sadece ilk siparişte geçerlidir');
+    return;
+  }
+  appliedCouponCode = c;
+  couponDiscountAmount = roundTo2(total * 0.10);
+  if(input) input.value = c;
+  refreshTotalAmount();
+  showToast('🎉 İlk siparişe özel %10 indirim uygulandı!');
+}
+
+function applyPendingCouponFromStorage(){
+  const pending = sessionStorage.getItem('gp_pending_coupon');
+  if(!pending) return;
+  sessionStorage.removeItem('gp_pending_coupon');
+  const input = document.getElementById('couponInput');
+  if(input) input.value = pending;
+  applyCoupon(pending);
 }
 function copyIBAN(){ navigator.clipboard.writeText('TR05 0020 5000 0951 3424 0000 01').then(()=>showToast('✓ IBAN kopyalandı')).catch(()=>showToast('IBAN: TR05 0020 5000 0951 3424 0000 01')); }
 
@@ -2457,7 +2548,8 @@ async function submitOrder(){
   const orig = btn.innerHTML;
   btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...'; btn.disabled=true;
 
-  const savedBasket=[...basket], savedTotal=total;
+  const finalTotal = Math.max(0, roundTo2(total - couponDiscountAmount));
+  const savedBasket=[...basket], savedTotal=finalTotal;
 
  // LocalStorage'a kaydet (admin paneli buradan okur)
   saveOrderToLocalStorage(name,phone,method,addr,note,savedBasket,savedTotal);
@@ -2473,7 +2565,7 @@ async function submitOrder(){
   await sendOrderEmailNotification({name,phone,email,addr,note,method,items:savedBasket,total:savedTotal});
 
   btn.innerHTML=orig; btn.disabled=false;
-  basket=[]; total=0; updateCartCount(); saveCartToStorage();
+  basket=[]; total=0; appliedCouponCode=''; couponDiscountAmount=0; updateCartCount(); saveCartToStorage();
   document.getElementById('successModal').classList.add('open');
   setTimeout(()=>sendWhatsApp(name,phone,method,addr,note,savedBasket,savedTotal),1200);
 }

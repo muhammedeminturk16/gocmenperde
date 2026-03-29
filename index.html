@@ -637,15 +637,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
       <button class="nav-link" onclick="go('products')">Koleksiyon</button>
       <div class="nav-collection">
         <button class="nav-link" onclick="go('products')">Koleksiyon</button>
-        <div class="collection-dropdown">
-          <button onclick="openCategoryFromMenu('tul-perde')"><i class="fas fa-window-maximize" style="margin-right:8px;color:var(--gold)"></i>Tül Perdeler</button>
-          <div class="collection-subtitle">Tül Perde Alt Kategorileri</div>
-          <button class="collection-subitem" onclick="openCategoryFromMenu('plise-perde')"><i class="fas fa-grip-lines-vertical" style="margin-right:8px;color:var(--gold)"></i>Plise Perdeler</button>
-          <button class="collection-subitem" onclick="openCategoryFromMenu('stor-perde')"><i class="fas fa-border-all" style="margin-right:8px;color:var(--gold)"></i>Stor Perdeler</button>
-          <button class="collection-subitem" onclick="openCategoryFromMenu('zebra-perde')"><i class="fas fa-grip-lines" style="margin-right:8px;color:var(--gold)"></i>Zebra Perdeler</button>
-          <button onclick="openCategoryFromMenu('carsaf')"><i class="fas fa-bed" style="margin-right:8px;color:var(--gold)"></i>Çarşaf Koleksiyonu</button>
-          <button onclick="openCategoryFromMenu('koltuk')"><i class="fas fa-couch" style="margin-right:8px;color:var(--gold)"></i>Koltuk Örtüsü</button>
-        </div>
+        <div class="collection-dropdown" id="desktopCategoryMenu"></div>
       </div>
       <button class="nav-link" onclick="go('about')">Hakkımızda</button>
       <button class="nav-link" onclick="go('contact')">İletişim</button>
@@ -1099,12 +1091,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
   <div class="menu-logo">GÖÇMEN PERDE</div>
   <button onclick="go('home');toggleMenu()"><i class="fas fa-home" style="margin-right:10px;color:var(--gold)"></i>ANASAYFA</button>
   <button onclick="go('products');toggleMenu()"><i class="fas fa-th-large" style="margin-right:10px;color:var(--gold)"></i>KOLEKSİYON</button>
-  <button onclick="openCategoryFromMenu('tul-perde')"><i class="fas fa-window-maximize" style="margin-right:10px;color:var(--gold)"></i>TÜL PERDELER</button>
-  <button onclick="openCategoryFromMenu('plise-perde')"><i class="fas fa-grip-lines-vertical" style="margin-right:10px;color:var(--gold)"></i>PLİSE PERDELER</button>
-  <button onclick="openCategoryFromMenu('stor-perde')"><i class="fas fa-border-all" style="margin-right:10px;color:var(--gold)"></i>STOR PERDELER</button>
-  <button onclick="openCategoryFromMenu('zebra-perde')"><i class="fas fa-grip-lines" style="margin-right:10px;color:var(--gold)"></i>ZEBRA PERDELER</button>
-  <button onclick="openCategoryFromMenu('carsaf')"><i class="fas fa-bed" style="margin-right:10px;color:var(--gold)"></i>ÇARŞAFLAR</button>
-  <button onclick="openCategoryFromMenu('koltuk')"><i class="fas fa-couch" style="margin-right:10px;color:var(--gold)"></i>KOLTUK ÖRTÜLERİ</button>
+  <div id="mobileCategoryMenu"></div>
   <button onclick="go('about');toggleMenu()"><i class="fas fa-info-circle" style="margin-right:10px;color:var(--gold)"></i>HİKAYEMİZ</button>
   <button onclick="go('contact');toggleMenu()"><i class="fas fa-envelope" style="margin-right:10px;color:var(--gold)"></i>İLETİŞİM</button>
   <button onclick="togglePopup('miniCart');toggleMenu()">
@@ -1180,7 +1167,7 @@ const REVIEW_TEXTS = [
 
 async function loadProducts(){
   try{
-    const res = await fetch('products.json?v=' + Date.now(), { cache:'no-store' });
+    const res = await fetch('products.json', { cache:'force-cache' });
     PRODUCTS = (await res.json()).map(normalizeProductCatalog);
     hydrateProductSocialData();
     syncCategoriesFromAdmin();
@@ -1370,21 +1357,14 @@ function renderModalReviews(productId){
 function syncCategoriesFromAdmin(){
   try{
     const saved = localStorage.getItem('gp_categories');
-    if(saved){ CATEGORIES = JSON.parse(saved); }
+    if(saved){
+      const parsed = JSON.parse(saved);
+      if(Array.isArray(parsed)) CATEGORIES = parsed.filter(c=>c && c.key && c.label);
+    }
   } catch(e){}
-  const required = [
-    {key:'carsaf',label:'Çarşaflar'},
-    {key:'tul-perde',label:'Tül Perdeler'},
-    {key:'plise-perde',label:'Plise Perdeler'},
-    {key:'stor-perde',label:'Stor Perdeler'},
-    {key:'zebra-perde',label:'Zebra Perdeler'},
-    {key:'koltuk',label:'Koltuk Örtüleri'}
-  ];
-  required.forEach(cat=>{
-    if(!CATEGORIES.some(c=>c.key===cat.key)) CATEGORIES.push(cat);
-  });
   // Filtre panelini güncelle
   rebuildCategoryFilters();
+  rebuildCategoryMenus();
 }
 
 function rebuildCategoryFilters(){
@@ -1392,6 +1372,35 @@ function rebuildCategoryFilters(){
   if(!container) return;
   container.innerHTML = `<div class="filter-option"><input type="checkbox" id="cat-all" checked onchange="applyFilters()"><label for="cat-all">Tümü</label></div>` +
     CATEGORIES.map(c => `<div class="filter-option"><input type="checkbox" id="cat-${c.key}" onchange="applyFilters()"><label for="cat-${c.key}">${c.label}</label></div>`).join('');
+}
+function getCategoryIconClass(catKey){
+  const iconMap = {
+    'tul-perde':'fas fa-window-maximize',
+    'plise-perde':'fas fa-grip-lines-vertical',
+    'stor-perde':'fas fa-border-all',
+    'zebra-perde':'fas fa-grip-lines',
+    'carsaf':'fas fa-bed',
+    'koltuk':'fas fa-couch'
+  };
+  return iconMap[catKey] || 'fas fa-folder-open';
+}
+function rebuildCategoryMenus(){
+  const desktopMenu = document.getElementById('desktopCategoryMenu');
+  if(desktopMenu){
+    desktopMenu.innerHTML = CATEGORIES.map(c=>`
+      <button onclick="openCategoryFromMenu('${c.key}')">
+        <i class="${getCategoryIconClass(c.key)}" style="margin-right:8px;color:var(--gold)"></i>${c.label}
+      </button>
+    `).join('');
+  }
+  const mobileMenu = document.getElementById('mobileCategoryMenu');
+  if(mobileMenu){
+    mobileMenu.innerHTML = CATEGORIES.map(c=>`
+      <button onclick="openCategoryFromMenu('${c.key}')">
+        <i class="${getCategoryIconClass(c.key)}" style="margin-right:10px;color:var(--gold)"></i>${c.label.toLocaleUpperCase('tr-TR')}
+      </button>
+    `).join('');
+  }
 }
 function openCategoryFromMenu(catKey){
   go('products');
@@ -1573,7 +1582,7 @@ function buildCard(p, index=0){
       <i class="${isFav?'fas':'far'} fa-heart"></i>
     </button>
     <div class="product-img-wrap">
-      <img src="${primaryImage}" alt="${p.name}" loading="lazy">
+      <img src="${primaryImage}" alt="${p.name}" loading="lazy" decoding="async" fetchpriority="low">
       ${showCampaignSlot ? '<span class="product-campaign-tint"></span><span class="product-campaign-pill"><i class="fas fa-bullhorn"></i>Kampanya Alanı</span>' : ''}
       ${productImages.length>1?`<span class="product-gallery-meta"><i class="fas fa-images"></i> ${productImages.length} fotoğraf</span>`:''}
       ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
@@ -1632,7 +1641,7 @@ function renderRecentlyViewed(){
     sec.style.display='block';
     grid.innerHTML = items.map(p => `
       <div class="rv-card" onclick="openModalFromProduct('${p.id}')">
-        <img src="${getPrimaryImage(p)}" alt="${p.name}" loading="lazy">
+        <img src="${getPrimaryImage(p)}" alt="${p.name}" loading="lazy" decoding="async" fetchpriority="low">
         <div class="rv-card-info">
           <div class="rv-card-name">${p.name}</div>
           <div class="rv-card-price">${p.price.toLocaleString('tr-TR')} TL</div>
@@ -1649,7 +1658,7 @@ function liveSearch(q){
   if(!hits.length){ res.innerHTML='<p style="color:var(--slate);font-size:0.85rem;padding:8px 0">Sonuç bulunamadı.</p>'; return; }
   res.innerHTML = hits.map(p =>
     `<div onclick="closeAllPopups();openModalFromProduct('${p.id}')" style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer">
-      <img src="${getPrimaryImage(p)}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0">
+      <img src="${getPrimaryImage(p)}" loading="lazy" decoding="async" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0">
       <div style="min-width:0"><div style="font-weight:500;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div><div style="color:var(--gold);font-family:var(--ff-display);font-weight:700">${p.price.toLocaleString('tr-TR')} TL</div></div>
     </div>`
   ).join('');

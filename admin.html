@@ -1791,24 +1791,13 @@ function loadCategories(){
     {key:'zebra-perde',label:'Zebra Perdeler',icon:'fas fa-grip-lines',desc:'Zebra perde koleksiyonu (m² fiyatlı)'},
     {key:'koltuk',label:'Koltuk Örtüleri',icon:'fas fa-couch',desc:'Koltuk ve kanepe örtüleri'}
   ];
-  CATEGORIES = CATEGORIES.filter(c=>c?.key!=='perde');
-  [
-    {key:'carsaf',label:'Çarşaflar',icon:'fas fa-bed',desc:'Uyku çarşafları'},
-    {key:'tul-perde',label:'Tül Perdeler',icon:'fas fa-wind',desc:'Pileli tül perde modelleri'},
-    {key:'plise-perde',label:'Plise Perdeler',icon:'fas fa-border-all',desc:'Plise perde çeşitleri (m² fiyatlı)'},
-    {key:'stor-perde',label:'Stor Perdeler',icon:'fas fa-up-down',desc:'Stor perde koleksiyonu (m² fiyatlı)'},
-    {key:'zebra-perde',label:'Zebra Perdeler',icon:'fas fa-grip-lines',desc:'Zebra perde koleksiyonu (m² fiyatlı)'},
-    {key:'koltuk',label:'Koltuk Örtüleri',icon:'fas fa-couch',desc:'Koltuk ve kanepe örtüleri'}
-  ].forEach(def=>{
-    if(!CATEGORIES.some(c=>c.key===def.key)) CATEGORIES.push(def);
-  });
+  CATEGORIES = CATEGORIES.filter(c=>c?.key && c?.label && c.key!=='perde');
 }
 function saveCategories(){localStorage.setItem(CAT_KEY,JSON.stringify(CATEGORIES));}
 
 function renderCatTable(){
   document.getElementById('catTableBody').innerHTML=CATEGORIES.map((c,i)=>{
     const count=PRODUCTS.filter(p=>p.cat===c.key).length;
-    const isDefault=['carsaf','tul-perde','plise-perde','stor-perde','zebra-perde','koltuk'].includes(c.key);
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:var(--gold-light);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.85rem"><i class="${c.icon||'fas fa-folder'}"></i></div><div><strong style="font-size:0.88rem">${c.label}</strong>${c.desc?`<div style="font-size:0.74rem;color:var(--slate-light)">${c.desc}</div>`:''}</div></div></td>
       <td><code style="background:#f0f2f5;padding:3px 8px;border-radius:5px;font-size:0.8rem">${c.key}</code></td>
@@ -1816,9 +1805,7 @@ function renderCatTable(){
       <td><span class="badge badge-active">Aktif</span></td>
       <td><div class="action-btns">
         <button class="icon-btn edit" onclick="editCat(${i})" title="Düzenle"><i class="fas fa-pen"></i></button>
-        ${isDefault
-          ?`<button class="icon-btn locked" title="Varsayılan kategori silinemez"><i class="fas fa-lock"></i></button>`
-          :`<button class="icon-btn del" onclick="deleteCat(${i})" title="Sil"><i class="fas fa-trash"></i></button>`}
+        <button class="icon-btn del" onclick="deleteCat(${i})" title="Sil"><i class="fas fa-trash"></i></button>
       </div></td>
     </tr>`;
   }).join('');

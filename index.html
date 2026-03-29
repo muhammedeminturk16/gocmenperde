@@ -252,6 +252,10 @@ nav{display:flex;align-items:center;gap:8px}
 .cart-row{border-bottom:1px solid var(--border)}
 .cart-row td{padding:20px 0;font-size:0.9rem;vertical-align:middle}
 @media(max-width:480px){.cart-row td{padding:12px 0;font-size:0.82rem}}
+.cart-product-cell{display:flex;align-items:center;gap:12px}
+.cart-item-image-wrap{width:78px;height:78px;flex-shrink:0;border-radius:12px;border:1px solid var(--border);background:#f5f5f5;overflow:hidden}
+.cart-item-image-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.cart-item-image-wrap img[src=""]{display:none}
 .cart-item-name{font-weight:500}
 .cart-item-sub{font-size:0.75rem;color:var(--slate)}
 .cart-item-price{font-family:var(--ff-display);font-size:1.2rem;font-weight:700;color:var(--gold)}
@@ -292,6 +296,14 @@ nav{display:flex;align-items:center;gap:8px}
 .payment-sent-btn:hover{background:var(--gold-dark);color:white;transform:translateY(-2px)}
 .clear-btn{background:none;border:1px solid rgba(192,57,43,0.2);cursor:pointer;color:#c0392b;padding:12px 24px;border-radius:8px;font-size:0.7rem;font-weight:500;letter-spacing:2px;text-transform:uppercase;transition:var(--transition);font-family:var(--ff-body)}
 .clear-btn:hover{background:#c0392b;color:white}
+.cart-action-panel{display:none}
+@media(max-width:640px){
+  .cart-action-panel{position:fixed;left:10px;right:10px;bottom:calc(var(--mobile-nav-offset, 0px) + env(safe-area-inset-bottom) + 10px);z-index:12120;background:#fff;border:1px solid #e9e9e9;border-radius:14px;box-shadow:0 16px 42px rgba(0,0,0,0.16);display:flex;overflow:hidden}
+  .cart-action-total{min-width:128px;padding:10px 12px;background:#fff7ec;border-right:1px solid #f0e3d1}
+  .cart-action-total b{display:block;font-size:1.45rem;line-height:1.05;color:var(--ink);font-family:var(--ff-display)}
+  .cart-action-total span{display:block;font-size:0.75rem;color:#16a34a;font-weight:700;margin-top:2px}
+  .cart-action-btn{flex:1;border:none;background:#f07f18;color:#fff;font-size:1.42rem;font-weight:700;cursor:pointer;padding:10px 14px}
+}
 .card-preview{width:100%;max-width:400px;height:220px;border-radius:16px;background:linear-gradient(135deg,var(--ink),#2d2a26);margin:20px auto;padding:28px;position:relative;color:white;box-shadow:var(--shadow)}
 .card-chip{width:46px;height:34px;background:linear-gradient(135deg,#ffd700,#c9a84c);border-radius:6px;margin-bottom:16px}
 .card-logos{position:absolute;top:28px;right:28px;display:flex;gap:10px;align-items:center}
@@ -926,6 +938,13 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
         <button id="paymentSentBtn" class="payment-sent-btn hidden" onclick="submitOrder()"><i class="fas fa-check"></i> Ödemeyi Yaptım</button>
         <button class="wa-btn" id="submitOrderBtn" onclick="submitOrder()"><i class="fab fa-whatsapp" style="font-size:1.3rem"></i> Siparişi WhatsApp ile Onayla</button>
       </div>
+    </div>
+    <div class="cart-action-panel" id="cartActionPanel" style="display:none">
+      <div class="cart-action-total">
+        <b id="cartActionAmount">0 TL</b>
+        <span id="cartActionShipping">Kargo Bedava</span>
+      </div>
+      <button class="cart-action-btn" id="cartActionBtn" type="button">Sepeti Onayla</button>
     </div>
   </div>
   <footer style="background:var(--warm-white);border-top:1px solid var(--border);color:var(--slate)">
@@ -2166,6 +2185,7 @@ function go(id){
   document.querySelectorAll('.mbn-item').forEach(b=>b.classList.remove('active-nav'));
   const mbnEl = document.getElementById('mbn-'+id);
   if(mbnEl) mbnEl.classList.add('active-nav');
+  updateCartActionPanel();
 }
 document.querySelectorAll('.section').forEach(s=>{ if(!s.classList.contains('active')) s.style.display='none'; });
 
@@ -2386,6 +2406,7 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
     price: Number(product.price) || 0,
     qty,
     id: product.id || '',
+    image: getPrimaryImage(product),
     unitLabel: product.unit || 'adet',
     isMeter: meterProduct,
     width: requireSize ? roundTo2(width) : null,
@@ -2397,7 +2418,7 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
 }
 
 function addToCart(itemPayload){
-  const { name, price, qty, id, unitLabel, isMeter, width, height, area, pileType, requiresDimensions } = itemPayload;
+  const { name, price, qty, id, image, unitLabel, isMeter, width, height, area, pileType, requiresDimensions } = itemPayload;
   const dimensionsKey = requiresDimensions ? `${width}x${height}` : '';
   const pileKey = pileType ? `|${pileType}` : '';
   const itemKey = `${dimensionsKey}${pileKey}`;
@@ -2406,9 +2427,10 @@ function addToCart(itemPayload){
   if(ex){
     ex.qty = roundTo2(ex.qty + qty);
     ex.sub = roundTo2(ex.price * ex.qty);
+    if(!ex.image && image) ex.image = image;
     cartItem = ex;
   } else {
-    cartItem = {name, price, qty, sub:roundTo2(price*qty), isMeter, id, unitLabel:unitLabel||'adet', width, height, area, pileType, requiresDimensions, dimensionsKey:itemKey};
+    cartItem = {name, price, qty, sub:roundTo2(price*qty), isMeter, id, image:image||'', unitLabel:unitLabel||'adet', width, height, area, pileType, requiresDimensions, dimensionsKey:itemKey};
     basket.push(cartItem);
   }
   total = basket.reduce((a,b)=>a+b.sub,0);
@@ -2464,17 +2486,24 @@ function renderCart(){
   const content=document.getElementById('cartContent'),footer=document.getElementById('cartFooter'),form=document.getElementById('orderForm');
   if(!basket.length){
     content.innerHTML='<div class="cart-empty"><i class="fas fa-bag-shopping"></i>Sepetiniz şu an boş.</div>';
-    footer.style.display='none'; form.style.display='none'; return;
+    footer.style.display='none'; form.style.display='none'; updateCartActionPanel(); return;
   }
   const rows = basket.map((item,i)=>`
     <tr class="cart-row">
       <td>
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-sub">${formatQty(item.qty)} ${item.unitLabel||'adet'} × ${item.price.toLocaleString('tr-TR')} TL${item.width&&item.height?` • En/Boy: ${formatDimension(item.width)}m × ${formatDimension(item.height)}m (Oran: 1:${formatDimension(item.height/item.width)})`:''}${item.pileType?` • Pile: ${item.pileType==='sik'?'Sık':item.pileType==='seyrek'?'Seyrek':'Orta'}`:''}</div>
-        <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-          <button class="qty-update-btn" onclick="updateItemQty(${i},-1)">−</button>
-          <span style="font-weight:600;min-width:20px;text-align:center">${formatQty(item.qty)}</span>
-          <button class="qty-update-btn" onclick="updateItemQty(${i},1)">+</button>
+        <div class="cart-product-cell">
+          <div class="cart-item-image-wrap">
+            <img src="${item.image||''}" alt="${item.name||'Ürün görseli'}">
+          </div>
+          <div>
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-sub">${formatQty(item.qty)} ${item.unitLabel||'adet'} × ${item.price.toLocaleString('tr-TR')} TL${item.width&&item.height?` • En/Boy: ${formatDimension(item.width)}m × ${formatDimension(item.height)}m (Oran: 1:${formatDimension(item.height/item.width)})`:''}${item.pileType?` • Pile: ${item.pileType==='sik'?'Sık':item.pileType==='seyrek'?'Seyrek':'Orta'}`:''}</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+              <button class="qty-update-btn" onclick="updateItemQty(${i},-1)">−</button>
+              <span style="font-weight:600;min-width:20px;text-align:center">${formatQty(item.qty)}</span>
+              <button class="qty-update-btn" onclick="updateItemQty(${i},1)">+</button>
+            </div>
+          </div>
         </div>
       </td>
       <td style="text-align:right"><span class="cart-item-price">${item.sub.toLocaleString('tr-TR')} TL</span></td>
@@ -2490,9 +2519,37 @@ function renderCart(){
   </div>`;
   refreshTotalAmount();
   footer.style.display='flex'; form.style.display='block';
+  updateCartActionPanel();
   // Pre-fill form if user is logged in
   prefillOrderForm();
   applyPendingCouponFromStorage();
+}
+
+function focusOrderFormFromPanel(){
+  const form = document.getElementById('orderForm');
+  if(form) form.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function updateCartActionPanel(){
+  const panel = document.getElementById('cartActionPanel');
+  const btn = document.getElementById('cartActionBtn');
+  const amount = document.getElementById('cartActionAmount');
+  const shipping = document.getElementById('cartActionShipping');
+  const cartSection = document.getElementById('cart');
+  if(!panel || !btn || !amount || !shipping || !cartSection) return;
+  const inCart = cartSection.classList.contains('active');
+  if(window.innerWidth > 640 || !inCart || !basket.length){
+    panel.style.display = 'none';
+    return;
+  }
+  const grandTotal = basket.reduce((a,b)=>a+b.sub,0) - couponDiscountAmount;
+  amount.textContent = `${Math.max(0, grandTotal).toLocaleString('tr-TR')} TL`;
+  shipping.textContent = 'Kargo Bedava';
+  panel.style.display = 'flex';
+  const form = document.getElementById('orderForm');
+  const shouldFinish = form ? form.getBoundingClientRect().top <= window.innerHeight * 0.55 : false;
+  btn.textContent = shouldFinish ? 'Onayla ve Bitir' : 'Sepeti Onayla';
+  btn.onclick = shouldFinish ? submitOrder : focusOrderFormFromPanel;
 }
 
 function prefillOrderForm(){
@@ -2660,6 +2717,7 @@ function refreshTotalAmount(){
   const amount = Math.max(0, roundTo2(total - couponDiscountAmount));
   const totalEl = document.getElementById('totalAmount');
   if(totalEl) totalEl.innerHTML = amount.toLocaleString('tr-TR')+' <span>TL</span>';
+  updateCartActionPanel();
 }
 
 async function applyCoupon(codeFromBanner=''){
@@ -2892,6 +2950,7 @@ function showToast(msg){
 // ── Scroll ──
 window.addEventListener('scroll',()=>{
   document.getElementById('mainHeader').style.boxShadow=window.scrollY>20?'0 4px 30px rgba(0,0,0,0.08)':'none';
+  updateCartActionPanel();
 });
 
 // ── Observer ──
@@ -2909,14 +2968,17 @@ function setMobileNavPadding(){
   const nav = document.querySelector('.mobile-bottom-nav');
   if(nav && window.innerWidth<=640 && getComputedStyle(nav).display!=='none'){
     const pad = nav.offsetHeight + 18;
+    document.documentElement.style.setProperty('--mobile-nav-offset', `${nav.offsetHeight}px`);
     document.querySelectorAll('.section').forEach(s=>{
       s.style.paddingBottom = pad + 'px';
     });
     document.body.style.paddingBottom = (pad + 6) + 'px';
   } else {
+    document.documentElement.style.setProperty('--mobile-nav-offset', '0px');
     document.body.style.paddingBottom = '';
     document.querySelectorAll('.section').forEach(s=>{ s.style.paddingBottom=''; });
   }
+  updateCartActionPanel();
 }
 window.addEventListener('resize', setMobileNavPadding);
 document.addEventListener('DOMContentLoaded', setMobileNavPadding);

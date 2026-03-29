@@ -464,11 +464,12 @@ nav{display:flex;align-items:center;gap:8px}
 }
 .modal-add-btn{flex:1;background:var(--ink);color:white;border:none;cursor:pointer;padding:12px 20px;border-radius:10px;font-size:0.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:var(--transition);font-family:var(--ff-body)}
 .modal-add-btn:hover{background:var(--gold);color:var(--ink)}
-.modal-search-panel{position:absolute;top:0;right:0;bottom:0;width:min(92vw,420px);background:#fff;z-index:50;transform:translateX(110%);transition:transform .25s ease;display:flex;flex-direction:column;border-left:1px solid var(--border)}
-.modal-search-panel.open{transform:translateX(0)}
-.modal-search-head{display:flex;align-items:center;gap:8px;padding:12px;border-bottom:1px solid var(--border)}
-.modal-search-input{flex:1;height:40px;border-radius:10px;border:1px solid var(--border);padding:0 10px;font-family:var(--ff-body)}
-.modal-search-list{padding:8px 12px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.mh-search{flex:1;display:flex;align-items:center;gap:8px;height:40px;background:#f1f1f1;border:1px solid #e4e4e4;border-radius:999px;padding:0 12px}
+.mh-search i{font-size:0.9rem;color:var(--gold)}
+.modal-search-input{flex:1;height:100%;border:none;background:transparent;padding:0;font-family:var(--ff-body);font-size:0.84rem;color:var(--ink);outline:none}
+.modal-search-input::placeholder{color:#8f8f8f}
+.modal-search-inline-results{position:absolute;top:calc(env(safe-area-inset-top) + 60px);left:10px;right:10px;max-height:min(45dvh,360px);overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:14px;padding:8px 12px 12px;box-shadow:0 20px 42px rgba(0,0,0,0.18);z-index:45;display:none}
+.modal-search-inline-results.open{display:flex;flex-direction:column;gap:8px}
 .modal-search-item{display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:8px;cursor:pointer}
 .modal-search-item img{width:52px;height:52px;border-radius:8px;object-fit:cover}
 .modal-search-item-name{font-size:0.85rem;font-weight:600}
@@ -1043,15 +1044,20 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
     <button class="modal-close" onclick="closeProductModal()"><i class="fas fa-xmark"></i></button>
     <div class="modal-mobile-header">
       <div class="mh-left">
-        <button class="mh-btn" type="button" onclick="closeProductModal()" title="Kapat"><i class="fas fa-xmark"></i></button>
         <button class="mh-btn" type="button" onclick="go('products');closeProductModal()" title="Geri"><i class="fas fa-chevron-left"></i></button>
       </div>
+      <label class="mh-search" for="modalSearchInput">
+        <i class="fas fa-search"></i>
+        <input type="text" id="modalSearchInput" class="modal-search-input" placeholder="Ürün, kategori veya açıklama ara..." oninput="searchProductsFromModal(this.value)" onfocus="searchProductsFromModal(this.value)">
+      </label>
       <div class="mh-right">
-        <button class="mh-btn" type="button" onclick="openModalSearchPanel()" title="Ara"><i class="fas fa-search"></i></button>
         <button class="mh-btn" type="button" onclick="window.location.href='/hesabim.html'" title="Hesabım"><i class="fas fa-user"></i></button>
         <button class="mh-btn" type="button" onclick="togglePopup('favoriteBar')" title="Favorilerim"><i class="far fa-heart"></i></button>
         <button class="mh-btn" type="button" onclick="go('cart');closeProductModal()" title="Sepetim"><i class="fas fa-bag-shopping"></i></button>
       </div>
+    </div>
+    <div class="modal-search-inline-results" id="modalSearchResults">
+      <p style="font-size:0.8rem;color:var(--slate)">Arama yaparak ürün adı, açıklama ve kategoriye göre sonuçları görebilirsiniz.</p>
     </div>
     <div class="modal-img-col">
       <div class="modal-img-stage" id="modalImgCol" onmousemove="zoomImg(event)" onmouseleave="resetImgZoom()" onclick="openImageViewer()">
@@ -1098,15 +1104,6 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
         </div>
       </div>
       <div class="modal-add-wrap" id="mAddWrap"></div>
-    </div>
-    <div class="modal-search-panel" id="modalSearchPanel">
-      <div class="modal-search-head">
-        <input type="text" id="modalSearchInput" class="modal-search-input" placeholder="Ürün ara..." oninput="searchProductsFromModal(this.value)">
-        <button class="mh-btn" type="button" onclick="closeModalSearchPanel()" title="Kapat"><i class="fas fa-xmark"></i></button>
-      </div>
-      <div class="modal-search-list" id="modalSearchResults">
-        <p style="font-size:0.8rem;color:var(--slate)">Arama yaparak ürün adı, açıklama ve kategoriye göre sonuçları görebilirsiniz.</p>
-      </div>
     </div>
   </div>
 </div>
@@ -1708,8 +1705,10 @@ function liveSearch(q){
 function searchProductsFromModal(q){
   const res = document.getElementById('modalSearchResults');
   if(!res) return;
+  const input = document.getElementById('modalSearchInput');
   const query = String(q || '').trim().toLocaleLowerCase('tr');
   if(!query){
+    res.classList.remove('open');
     res.innerHTML = '<p style="font-size:0.8rem;color:var(--slate)">Arama yaparak ürün adı, açıklama ve kategoriye göre sonuçları görebilirsiniz.</p>';
     return;
   }
@@ -1718,6 +1717,7 @@ function searchProductsFromModal(q){
     const haystack = `${p.name || ''} ${(p.desc || '')} ${(p.cat || '')} ${(p.features || '')}`.toLocaleLowerCase('tr');
     return haystack.includes(query);
   }).slice(0, 12);
+  res.classList.add('open');
   if(!hits.length){
     res.innerHTML = '<p style="font-size:0.82rem;color:var(--slate)">Aramaya uygun ürün bulunamadı.</p>';
     return;
@@ -1731,23 +1731,21 @@ function searchProductsFromModal(q){
       </div>
     </div>
   `).join('');
-}
-function openModalSearchPanel(){
-  const panel = document.getElementById('modalSearchPanel');
-  if(!panel) return;
-  panel.classList.add('open');
-  const input = document.getElementById('modalSearchInput');
-  if(input){
-    input.value = '';
-    searchProductsFromModal('');
-    setTimeout(()=>input.focus(), 60);
+  if(input && document.activeElement !== input){
+    input.focus();
   }
 }
-function closeModalSearchPanel(){
-  document.getElementById('modalSearchPanel')?.classList.remove('open');
+function clearModalSearch(){
+  const input = document.getElementById('modalSearchInput');
+  const res = document.getElementById('modalSearchResults');
+  if(input) input.value = '';
+  if(res){
+    res.classList.remove('open');
+    res.innerHTML = '<p style="font-size:0.8rem;color:var(--slate)">Arama yaparak ürün adı, açıklama ve kategoriye göre sonuçları görebilirsiniz.</p>';
+  }
 }
 function openModalSearchResult(productId){
-  closeModalSearchPanel();
+  clearModalSearch();
   openModalFromProduct(productId);
   trackRecentlyViewed(productId);
 }
@@ -1969,7 +1967,7 @@ function openModalFromProduct(id){
 
   switchTab('desc');
   resetImgZoom();
-  closeModalSearchPanel();
+  clearModalSearch();
   document.getElementById('productModal').classList.add('open');
   document.body.classList.add('product-modal-open');
   document.body.style.overflow = 'hidden';
@@ -1996,7 +1994,7 @@ function openGalleryModal(src,title,desc){
   document.getElementById('mReviews').innerHTML = '<div class="modal-review-item"><div class="modal-review-text">Ürün yorumu sadece ürün detay ekranında görünür.</div></div>';
    switchTab('desc');
   resetImgZoom();
-  closeModalSearchPanel();
+  clearModalSearch();
   document.getElementById('productModal').classList.add('open');
   document.body.classList.add('product-modal-open');
   document.body.style.overflow = 'hidden';
@@ -2042,7 +2040,7 @@ function updateViewerImage(){
 }
 function closeProductModal(){
   document.getElementById('productModal').classList.remove('open');
-  closeModalSearchPanel();
+  clearModalSearch();
   closeImageViewer();
   document.body.style.overflow='';
   document.body.classList.remove('native-cursor-mode');
@@ -2063,7 +2061,7 @@ document.addEventListener('keydown', (e)=>{
   if(!modalOpen) return;
   if(e.key === 'Escape'){
     if(imageViewerOpen) closeImageViewer();
-    else if(document.getElementById('modalSearchPanel')?.classList.contains('open')) closeModalSearchPanel();
+    else if(document.getElementById('modalSearchResults')?.classList.contains('open')) clearModalSearch();
     else closeProductModal();
     return;
   }

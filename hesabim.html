@@ -30,7 +30,6 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: var(--ff); background: var(--cream); color: var(--ink); min-height: 100vh; }
 
-```
     /* ── HEADER ── */
     .gp-header {
         background: var(--ink);
@@ -233,6 +232,54 @@
         color: var(--slate);
         line-height: 1.6;
         border-bottom: 1px solid #f0ece3;
+    }
+    .order-items-preview-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .order-preview-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .order-preview-img {
+        width: 46px;
+        height: 46px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid var(--border-hard);
+        background: #f2f2f2;
+        flex-shrink: 0;
+    }
+    .order-preview-placeholder {
+        width: 46px;
+        height: 46px;
+        border-radius: 8px;
+        border: 1px solid var(--border-hard);
+        background: var(--cream);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .order-preview-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .order-preview-name {
+        font-size: 0.84rem;
+        color: var(--ink);
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .order-preview-sub {
+        font-size: 0.76rem;
+        color: var(--slate);
     }
     .order-card-footer {
         padding: 12px 20px;
@@ -779,7 +826,6 @@
         .tabs-inner { padding: 0 4%; }
     }
 </style>
-```
 
 </head>
 <body>
@@ -822,7 +868,6 @@
 
 <div class="content">
 
-```
 <!-- SİPARİŞLERİM -->
 <div id="section-orders" class="gp-section active">
     <div id="ordersList">
@@ -923,7 +968,6 @@
         </div>
     </div>
 </div>
-```
 
 </div><!-- /content -->
 
@@ -1039,7 +1083,25 @@ function renderOrders(orders) {
         const date = new Date(o.created_at).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
         const statusClass = getStatusClass(o.durum);
         const statusIcon = getStatusIcon(o.durum);
-        const previewItems = items.slice(0, 2).map(i => `${i.name || i.ad} ×${i.quantity || i.adet || 1}`).join(', ') + (items.length > 2 ? ` +${items.length - 2} ürün daha` : '');
+        const previewRows = items.slice(0, 2).map(i => {
+            const itemName = i.name || i.ad || 'Ürün';
+            const itemQty = i.quantity || i.adet || 1;
+            const itemPrice = Number(i.price || i.fiyat || 0);
+            const itemImage = i.image || i.urun_resim || '';
+            return `
+                <div class="order-preview-item">
+                    ${itemImage
+                        ? `<img class="order-preview-img" src="${itemImage}" alt="${itemName}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+                        : ''}
+                    <div class="order-preview-placeholder" style="display:${itemImage ? 'none' : 'flex'}">🛍️</div>
+                    <div class="order-preview-meta">
+                        <div class="order-preview-name">${itemName}</div>
+                        <div class="order-preview-sub">${itemQty} adet${itemPrice ? ` • ${itemPrice.toLocaleString('tr-TR')} TL` : ''}</div>
+                    </div>
+                </div>`;
+        }).join('');
+        const extraItems = items.length > 2 ? `<div class="order-preview-sub" style="margin-top:2px">+${items.length - 2} ürün daha</div>` : '';
+
         return `
             <div class="order-card">
                 <div class="order-card-top">
@@ -1051,7 +1113,9 @@ function renderOrders(orders) {
                         <i class="${statusIcon}"></i> ${o.durum || 'Beklemede'}
                     </span>
                 </div>
-                <div class="order-items-preview">${previewItems}</div>
+                <div class="order-items-preview">
+                    <div class="order-items-preview-list">${previewRows}${extraItems}</div>
+                </div>
                 <div class="order-card-footer">
                     <div>
                         <div class="order-total-label">Ödeme Tutarı</div>

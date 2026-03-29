@@ -587,7 +587,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
   </div>
   <div class="cart-sheet-actions">
     <button class="cart-sheet-btn secondary" onclick="closeCartSheet()">Alışverişe Devam</button>
-    <button class="cart-sheet-btn primary" onclick="closeCartSheet();go('cart')">Sepeti Gör</button>
+    <button class="cart-sheet-btn primary" onclick="goToCartFromSheet()">Sepeti Gör</button>
   </div>
 </div>
 
@@ -2062,6 +2062,12 @@ function openCartSheet(item){
   });
   cartSheetTimer = setTimeout(closeCartSheet, 6000);
 }
+function goToCartFromSheet(){
+  closeCartSheet();
+  closeProductModal();
+  go('cart');
+}
+
 function closeCartSheet(){
   const sheet = document.getElementById('cartSheet');
   const overlay = document.getElementById('cartSheetOverlay');

@@ -1,5 +1,39 @@
 [
   {
+    "id": "orme-tul-perde-cam-kirigi-desen-1774817208064",
+    "name": "Örme Tül Perde Cam Kırığı Desen",
+    "desc": "Bursa Osmangazi'de 30 yılı aşkın tecrübeyle üretilen, şık tasarımıyla evinize zarafet katacak dayanıklı ve estetik tül perde.",
+    "image": "resimler/1774817119283-IMG_1649.png",
+    "images": [
+      "resimler/1774817119283-IMG_1649.png",
+      "resimler/1774817122112-IMG_1648.png"
+    ],
+    "price": 300,
+    "oldPrice": 400,
+    "cat": "ormetulperdeler",
+    "unit": "adet",
+    "isMeter": false,
+    "isSquareMeter": false,
+    "features": "",
+    "badge": "%25 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": null,
+    "active": true,
+    "specs": {
+      "• Malzeme": "%100 Polyester ipliklerden dokunmuştur. Bu sayede buruşmaz, leke tutmaz ve uzun ömürlüdür.",
+      "• Tasarım": "Modern ve şık deseniyle her türlü dekorasyona uyum sağlar.",
+      "• Ölçüler": "Standart ölçülerde veya isteğe göre özel ölçülerde üretilebilir.",
+      "• Işık Geçirgenliği": "Odanın aydınlık kalmasını sağlarken, güneş ışığını süzerek rahat bir ortam oluşturur."
+    },
+    "care": {
+      "• Yıkama": "Maksimum 30 derecede, hassas programda veya elde yıkanması önerilir. Ağartıcı kullanılmamalıdır.",
+      "• Sıkma": "Hafif sıkma yapılması veya sıkılmadan asılması tavsiye edilir.",
+      "• Ütüleme": "Gerekirse düşük sıcaklıkta tersten ütülenebilir.",
+      "• Kurulama": "Güneş ışığına maruz bırakmadan, gölgede kurutulması daha uygundur."
+    }
+  },
+  {
     "id": "plise-perde-gok-mavisi---opak-1774732878586",
     "name": "Plise Perde Gök Mavisi - Opak",
     "desc": "Plise perdeler, özellikle dar alanlarda ve hareketli cam sistemlerinde maksimum verim sağlamak üzere tasarlanmıştır.",

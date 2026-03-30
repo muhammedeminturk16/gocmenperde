@@ -1,5 +1,39 @@
 [
   {
+    "id": "zebra-perde-gumus-bej-kahve-gecisli-1774887198350",
+    "name": "Zebra Perde Gümüş Bej Kahve Geçişli",
+    "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
+    "image": "resimler/1774887150521-0-5318b43f-fb5b-487c-9b0f-27a1e85b16b7-IMG_1744.jpeg",
+    "images": [
+      "resimler/1774887150521-0-5318b43f-fb5b-487c-9b0f-27a1e85b16b7-IMG_1744.jpeg",
+      "resimler/1774887174394-1-746452c3-5b00-4b3f-90e5-9ce2c8b8f70f-IMG_1745.png"
+    ],
+    "price": 650,
+    "oldPrice": 850,
+    "cat": "zebra-perde",
+    "unit": "m2",
+    "isMeter": false,
+    "isSquareMeter": true,
+    "features": "Chico V-03",
+    "badge": "%24 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": null,
+    "active": true,
+    "specs": {
+      "• Malzeme": "%100 yüksek kalite polyester kumaş ve dayanıklı alüminyum kasa sistemi.",
+      "• Mekanizma": "Kolay kullanım sağlayan plastik veya metal zincirli manuel/motorlu kontrol seçeneği."
+    },
+    "care": {
+      "• Düzenli Toz Alma": "Perdenizin rengini koruması için haftada bir kez yumuşak bir toz fırçası veya elektrikli süpürgenin düşük emiş gücüyle tozunu alın.",
+      "• Yerinde Temizlik": "Hafif lekeler için perdenizi yerinden çıkarmadan, nemli ve yumuşak bir bez yardımıyla silin.",
+      "• Kimyasal Kullanımı": "Temizlik sırasında ağır kimyasallar veya çamaşır suyu yerine, ılık su ve az miktarda beyaz sabun/yumuşak deterjan tercih edin.",
+      "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
+      "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
+      "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
+    }
+  },
+  {
     "id": "zebra-perde-krem---kahve-1774886500388",
     "name": "Zebra Perde Krem - Kahve",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",

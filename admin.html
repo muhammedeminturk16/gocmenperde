@@ -1825,7 +1825,17 @@ function addBulkItemCard(initialData={}){
     <div class="bulk-item-grid">
       <div class="fg"><label>Ürün Adı *</label><input type="text" class="bulk-name" placeholder="Örn: Plise Perde Krem" value="${(initialData.name||'').replace(/"/g,'&quot;')}"></div>
       <div class="fg"><label>Fiyat *</label><input type="number" class="bulk-price" placeholder="Örn: 1450" value="${initialData.price||''}"></div>
-      <div class="fg"><label>Resim Yolu *</label><input type="text" class="bulk-image" placeholder="resimler/ornek.jpg" value="${(initialData.image||'').replace(/"/g,'&quot;')}"></div>
+      <div class="fg">
+        <label>Resim Yolu *</label>
+        <input type="text" class="bulk-image" placeholder="resimler/ornek.jpg" value="${(initialData.image||'').replace(/"/g,'&quot;')}">
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <label class="btn btn-outline btn-sm" style="cursor:pointer">
+            <i class="fas fa-image"></i> Resim Seç
+            <input type="file" accept="image/*" style="display:none" onchange="handleBulkImageSelect(this)">
+          </label>
+          <span class="bulk-image-file-name" style="font-size:0.72rem;color:var(--slate-light)">Dosya seçilmedi</span>
+        </div>
+      </div>
     </div>
   `;
   wrap.appendChild(card);
@@ -2521,6 +2531,66 @@ async function handleImageSelect(input){
     status.className='img-status done';status.innerHTML=`<i class="fas fa-check-circle"></i> ${uploaded.length} resim yüklendi`;
     aToast('✅ Resimler yüklendi','success');
   } catch(err){status.className='img-status error';status.innerHTML='<i class="fas fa-times-circle"></i> '+err.message;aToast('❌ '+err.message,'error');}
+}
+async function handleBulkImageSelect(input){
+  const file=input?.files?.[0];
+  if(!file) return;
+  const card=input.closest('.bulk-item-card');
+  const imageInput=card?.querySelector('.bulk-image');
+  const fileNameEl=card?.querySelector('.bulk-image-file-name');
+  if(fileNameEl) fileNameEl.textContent=file.name;
+  if(!imageInput) return;
+  const token=getGithubToken();
+  if(!token){
+    const preview = await new Promise(resolve=>{
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    });
+    imageInput.value = preview || '';
+    input.value='';
+    aToast('⚠️ GitHub Token yok — seçilen görsel önizleme olarak eklendi','error');
+    return;
+  }
+  try{
+    if(fileNameEl) fileNameEl.textContent='Yükleniyor...';
+    const sanitize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[ğ]/g,'g').replace(/[ü]/g,'u').replace(/[ş]/g,'s').replace(/[ı]/g,'i').replace(/[ö]/g,'o').replace(/[ç]/g,'c').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9._-]/g,'');
+    const uniqueSuffix=()=>{
+      if(window.crypto?.randomUUID) return window.crypto.randomUUID();
+      return `${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
+    };
+    const content = await new Promise(resolve=>{
+      const reader=new FileReader();
+      reader.onload=e=>resolve(e.target.result.split(',')[1]);
+      reader.readAsDataURL(file);
+    });
+    const fileName=`resimler/${Date.now()}-bulk-${uniqueSuffix()}-${sanitize(file.name)}`;
+    const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
+    let sha;
+    const currentFileRes=await fetch(url,{headers:githubHeaders(token)});
+    if(currentFileRes.ok){
+      const currentFileData=await currentFileRes.json();
+      sha=currentFileData.sha;
+    } else if(currentFileRes.status!==404){
+      const err=await currentFileRes.json().catch(()=>({message:'GitHub dosya kontrolü başarısız'}));
+      throw new Error(err.message||'GitHub dosya kontrolü başarısız');
+    }
+    const payload={message:'Admin: Toplu ürün resmi yüklendi',content};
+    if(sha) payload.sha=sha;
+    const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
+    if(!res.ok){
+      const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
+      throw new Error(err.message||'GitHub yükleme hatası');
+    }
+    imageInput.value=fileName;
+    if(fileNameEl) fileNameEl.textContent=`✓ ${file.name}`;
+    aToast('✅ Toplu ürün resmi yüklendi','success');
+  }catch(err){
+    if(fileNameEl) fileNameEl.textContent='Yükleme başarısız';
+    aToast('❌ '+err.message,'error');
+  }finally{
+    input.value='';
+  }
 }
 function getImageFileInput(){ return document.getElementById('f-imageFile'); }
 function renderSelectedImages(){

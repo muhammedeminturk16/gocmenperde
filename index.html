@@ -1940,6 +1940,8 @@ let currentModalImageIndex = 0;
 let viewerScale = 1;
 let imageViewerOpen = false;
 let modalLockedScrollY = 0;
+let modalThumbsCacheKey = '';
+let productsObserver = null;
 
 function lockPageScrollForModal(){
   modalLockedScrollY = window.scrollY || window.pageYOffset || 0;
@@ -1970,19 +1972,31 @@ function renderModalThumbs(){
   if(!thumbs || !viewerThumbs) return;
   if(currentModalImages.length <= 1){
     thumbs.innerHTML=''; viewerThumbs.innerHTML='';
+    modalThumbsCacheKey = '';
     if(thumbPanel) thumbPanel.style.display = 'none';
     if(viewerWrap) viewerWrap.style.display = 'none';
     return;
   }
   if(thumbPanel) thumbPanel.style.display = 'block';
   if(viewerWrap) viewerWrap.style.display = 'block';
-  const html = currentModalImages.map((img,idx)=>`
-    <button class="modal-thumb ${idx===currentModalImageIndex?'active':''}" type="button" onclick="selectModalImage(${idx})">
-      <img src="${img}" alt="Ürün görseli ${idx+1}">
-    </button>
-  `).join('');
-  thumbs.innerHTML = html;
-  viewerThumbs.innerHTML = html;
+  const cacheKey = currentModalImages.join('|');
+  if(cacheKey !== modalThumbsCacheKey){
+    const html = currentModalImages.map((img,idx)=>`
+      <button class="modal-thumb ${idx===currentModalImageIndex?'active':''}" type="button" data-idx="${idx}" onclick="selectModalImage(${idx})">
+        <img src="${img}" alt="Ürün görseli ${idx+1}" loading="lazy" decoding="async">
+      </button>
+    `).join('');
+    thumbs.innerHTML = html;
+    viewerThumbs.innerHTML = html;
+    modalThumbsCacheKey = cacheKey;
+  }
+  syncActiveModalThumbs();
+}
+function syncActiveModalThumbs(){
+  document.querySelectorAll('#mThumbs .modal-thumb, #viewerThumbs .modal-thumb').forEach((btn)=>{
+    const idx = Number(btn.dataset.idx || -1);
+    btn.classList.toggle('active', idx === currentModalImageIndex);
+  });
 }
 function updateModalGalleryNav(){
   const visible = currentModalImages.length > 1;
@@ -2162,6 +2176,7 @@ function closeProductModal(){
   document.body.classList.remove('native-cursor-mode');
   document.body.classList.remove('product-modal-open');
   currentModalProductId = null;
+  modalThumbsCacheKey = '';
   resetImgZoom();
   clearProductDeepLink();
 }
@@ -3175,18 +3190,26 @@ function showToast(msg){
 }
 
 // ── Scroll ──
+let scrollRafId = 0;
 window.addEventListener('scroll',()=>{
-  document.getElementById('mainHeader').style.boxShadow=window.scrollY>20?'0 4px 30px rgba(0,0,0,0.08)':'none';
-  updateCartActionPanel();
-});
+  if(scrollRafId) return;
+  scrollRafId = requestAnimationFrame(()=>{
+    const header = document.getElementById('mainHeader');
+    if(header) header.style.boxShadow = window.scrollY>20 ? '0 4px 30px rgba(0,0,0,0.08)' : 'none';
+    scrollRafId = 0;
+  });
+},{passive:true});
 
 // ── Observer ──
 function initObserver(){
-  const obs=new IntersectionObserver(entries=>{
+  if(productsObserver){
+    productsObserver.disconnect();
+  }
+  productsObserver = new IntersectionObserver(entries=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
   },{threshold:0.06});
   document.querySelectorAll('.product-card,.gallery-item,.review-card,.feature-item,.value-card').forEach(el=>{
-    el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='opacity 0.6s ease, transform 0.6s ease'; obs.observe(el);
+    el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='opacity 0.6s ease, transform 0.6s ease'; productsObserver.observe(el);
   });
 }
 

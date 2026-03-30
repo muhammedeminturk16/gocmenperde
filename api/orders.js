@@ -13,6 +13,7 @@ const ORDER_STATUS_ALIASES = {
 const DEFAULT_ADMIN_EMAIL = 'muhammedeminturk.16@gmail.com';
 
 let cachedEmailColumn = null;
+let cachedCustomerEmailColumns = null;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -269,16 +270,37 @@ async function resolveOrderCustomerEmail(order) {
   if (!customerId) return '';
 
   try {
-    const result = await pool.query(
-      'SELECT email, eposta FROM musteriler WHERE id = $1 LIMIT 1',
-      [customerId]
-    );
+    const customerEmailColumns = await getCustomerEmailColumns();
+    if (!customerEmailColumns.length) return '';
+    const selectCols = customerEmailColumns.join(', ');
+    const result = await pool.query(`SELECT ${selectCols} FROM musteriler WHERE id = $1 LIMIT 1`, [customerId]);
     if (!result.rows.length) return '';
     const row = result.rows[0] || {};
-    return normalizeEmail(row.email || row.eposta || '');
+    for (const col of customerEmailColumns) {
+      const email = normalizeEmail(row[col] || '');
+      if (email) return email;
+    }
+    return '';
   } catch (err) {
     console.warn('Müşteri e-posta sorgusu başarısız:', err.message);
     return '';
+  }
+}
+
+async function getCustomerEmailColumns() {
+  if (cachedCustomerEmailColumns !== null) return cachedCustomerEmailColumns;
+  const candidates = ['email', 'eposta', 'musteri_email'];
+  try {
+    const result = await pool.query(
+      "SELECT column_name FROM information_schema.columns WHERE table_name='musteriler'"
+    );
+    const available = new Set(result.rows.map((r) => String(r.column_name || '').toLowerCase()));
+    cachedCustomerEmailColumns = candidates.filter((c) => available.has(c));
+    return cachedCustomerEmailColumns;
+  } catch (err) {
+    console.warn('Musteriler tablosu kolonları okunamadı:', err.message);
+    cachedCustomerEmailColumns = [];
+    return cachedCustomerEmailColumns;
   }
 }
 

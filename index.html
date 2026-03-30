@@ -1280,7 +1280,10 @@ async function fetchGithubContentsJSON(filePath){
   const payload = await response.json();
   const content = String(payload?.content || '').replace(/\n/g,'');
   if(!content) throw new Error(`GitHub API ${filePath} içeriği boş`);
-  return JSON.parse(atob(content));
+  const binary = atob(content);
+  const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+  const decoded = new TextDecoder('utf-8').decode(bytes);
+  return JSON.parse(decoded);
 }
 
 function renderProductState(list, {withObserver=true} = {}){

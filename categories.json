@@ -46,5 +46,11 @@
     "label": "Güneşlik",
     "desc": "",
     "icon": "fas fa-border-all"
+  },
+  {
+    "key": "fonperdeler",
+    "label": "Fon Perdeler",
+    "desc": "",
+    "icon": "fas fa-window-maximize"
   }
 ]

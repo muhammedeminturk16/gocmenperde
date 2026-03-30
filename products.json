@@ -699,7 +699,7 @@
     ],
     "price": 300,
     "oldPrice": 400,
-    "cat": "tul-perde",
+    "cat": "ormetulperde",
     "unit": "mt",
     "isMeter": true,
     "isSquareMeter": false,
@@ -708,6 +708,7 @@
     "discountType": "manual",
     "discountValue": null,
     "stock": null,
+    "serialNumber": null,
     "active": true,
     "specs": {
       "• Malzeme": "%100 Polyester ipliklerden dokunmuştur. Bu sayede buruşmaz, leke tutmaz ve uzun ömürlüdür.",

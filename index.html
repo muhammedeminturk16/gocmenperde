@@ -3009,16 +3009,23 @@ function syncPartsFromAddress(addressText=''){
   if(!neighborhoodEl || !streetEl || !districtEl || !cityEl) return;
 
   const labeledParts = {};
+  const normalizeLabel = (text='') => String(text)
+    .trim()
+    .toLocaleLowerCase('tr-TR')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ı/g, 'i');
+
   raw.split(/\n+/).map(line=>line.trim()).filter(Boolean).forEach(line=>{
     const m = line.match(/^([^:]+)\s*:\s*(.+)$/);
     if(!m) return;
-    const label = m[1].toLowerCase().trim();
+    const label = normalizeLabel(m[1]);
     const value = m[2].trim();
     if(!value) return;
     if(label.includes('mahalle')) labeledParts.neighborhood = value;
     else if(label.includes('sokak') || label.includes('cadde')) labeledParts.street = value;
-    else if(label.includes('kapı') && label.includes('no')) labeledParts.doorNo = value;
-    else if(label.includes('ilçe')) labeledParts.district = value;
+    else if((label.includes('kapi') || label.includes('kapı')) && label.includes('no')) labeledParts.doorNo = value;
+    else if(label.includes('ilce') || label.includes('ilçe')) labeledParts.district = value;
     else if(label === 'il') labeledParts.city = value;
   });
 

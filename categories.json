@@ -1,0 +1,8 @@
+[
+  {"key":"carsaf","label":"Çarşaflar","icon":"fas fa-bed","desc":"Uyku çarşafları"},
+  {"key":"tul-perde","label":"Tül Perdeler","icon":"fas fa-wind","desc":"Pileli tül perde modelleri"},
+  {"key":"plise-perde","label":"Plise Perdeler","icon":"fas fa-border-all","desc":"Plise perde çeşitleri (m² fiyatlı)"},
+  {"key":"stor-perde","label":"Stor Perdeler","icon":"fas fa-up-down","desc":"Stor perde koleksiyonu (m² fiyatlı)"},
+  {"key":"zebra-perde","label":"Zebra Perdeler","icon":"fas fa-grip-lines","desc":"Zebra perde koleksiyonu (m² fiyatlı)"},
+  {"key":"koltuk","label":"Koltuk Örtüleri","icon":"fas fa-couch","desc":"Koltuk ve kanepe örtüleri"}
+]

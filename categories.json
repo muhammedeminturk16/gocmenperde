@@ -3,42 +3,36 @@
     "key": "carsaf",
     "label": "Çarşaflar",
     "icon": "fas fa-bed",
-    "image": "resimler/carsaf.jpg",
     "desc": "Uyku çarşafları"
   },
   {
     "key": "tul-perde",
     "label": "Tül Perdeler",
     "icon": "fas fa-wind",
-    "image": "resimler/tulperde.WEBP",
     "desc": "Pileli tül perde modelleri"
   },
   {
     "key": "plise-perde",
     "label": "Plise Perdeler",
     "icon": "fas fa-border-all",
-    "image": "resimler/foto7.jpg",
     "desc": "Plise perde çeşitleri (m² fiyatlı)"
   },
   {
     "key": "stor-perde",
     "label": "Stor Perdeler",
     "icon": "fas fa-up-down",
-    "image": "resimler/foto8.jpg",
     "desc": "Stor perde koleksiyonu (m² fiyatlı)"
   },
   {
     "key": "zebra-perde",
     "label": "Zebra Perdeler",
     "icon": "fas fa-grip-lines",
-    "image": "resimler/foto9.jpg",
     "desc": "Zebra perde koleksiyonu (m² fiyatlı)"
   },
   {
     "key": "koltuk",
     "label": "Koltuk Örtüleri",
     "icon": "fas fa-couch",
-    "image": "resimler/koltuk_ortusu.jpeg",
     "desc": "Koltuk ve kanepe örtüleri"
   },
   {
@@ -46,20 +40,18 @@
     "label": "Örme Tül Perde",
     "desc": "",
     "icon": "fas fa-border-all",
-    "image": "resimler/bambutul.PNG"
+    "image": "resimler/1774898972205-cat-ea138205-6daa-4042-80a4-db011294d13e-IMG_1648.png"
   },
   {
     "key": "guneslik",
     "label": "Güneşlik",
     "desc": "",
-    "icon": "fas fa-border-all",
-    "image": "resimler/guneslik.PNG"
+    "icon": "fas fa-border-all"
   },
   {
     "key": "fonperdeler",
     "label": "Fon Perdeler",
     "desc": "",
-    "icon": "fas fa-window-maximize",
-    "image": "resimler/brillant_fon.jpeg"
+    "icon": "fas fa-window-maximize"
   }
 ]

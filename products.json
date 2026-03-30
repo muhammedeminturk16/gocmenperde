@@ -540,13 +540,20 @@
     "name": "Güneşlik Beyaz",
     "desc": "Zarif beyaz tonu ve sade kare dokusuyla güneşliği yeniden tanımlayan bu perde, mekânınıza hem şıklık hem de huzurlu bir aydınlık kazandırır.",
     "image": "resimler/1774557594391.png",
+    "images": [
+      "resimler/1774557594391.png"
+    ],
     "price": 200,
     "oldPrice": 400,
-    "cat": "carsaf",
-    "unit": "adet",
-    "isMeter": false,
+    "cat": "guneslik",
+    "unit": "mt",
+    "isMeter": true,
+    "isSquareMeter": false,
     "features": "Ütüistemez",
     "badge": "%50 İNDİRİM",
+    "discountType": "manual",
+    "discountValue": null,
+    "stock": null,
     "active": true,
     "specs": {
       "En": "150-300 cm",

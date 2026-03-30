@@ -1241,9 +1241,10 @@ const REVIEW_TEXTS = [
   'Beklediğimden kaliteli ve kullanışlı bir ürün oldu.'
 ];
 const PRODUCTS_CACHE_KEY = 'gp_products_cache_v2';
-const PRODUCTS_CACHE_TTL_MS = 1000 * 60 * 15;
+const PRODUCTS_CACHE_TTL_MS = 1000 * 30;
 const GITHUB_RAW_PRODUCTS_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/products.json';
 const GITHUB_RAW_CATEGORIES_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/categories.json';
+const GITHUB_CONTENTS_BASE_URL = 'https://api.github.com/repos/gocmenperde/gocmenperde/contents';
 let productsLoadedOnce = false;
 let productRequestInFlight = null;
 let categoryRequestInFlight = null;
@@ -1268,6 +1269,18 @@ function writeProductsToCache(products){
       products: Array.isArray(products) ? products : []
     }));
   } catch(e){}
+}
+
+async function fetchGithubContentsJSON(filePath){
+  const response = await fetch(`${GITHUB_CONTENTS_BASE_URL}/${filePath}?ref=main&t=${Date.now()}`, {
+    cache:'no-store',
+    headers:{ Accept:'application/vnd.github+json' }
+  });
+  if(!response.ok) throw new Error(`GitHub API ${filePath} alınamadı`);
+  const payload = await response.json();
+  const content = String(payload?.content || '').replace(/\n/g,'');
+  if(!content) throw new Error(`GitHub API ${filePath} içeriği boş`);
+  return JSON.parse(atob(content));
 }
 
 function renderProductState(list, {withObserver=true} = {}){
@@ -1296,8 +1309,13 @@ async function loadProducts({forceRefresh=false} = {}){
     try{
       let fresh = null;
       try{
-        const remoteRes = await fetch(`${GITHUB_RAW_PRODUCTS_URL}?v=${Date.now()}`, { cache:'no-store' });
-        if(remoteRes.ok) fresh = await remoteRes.json();
+        fresh = await fetchGithubContentsJSON('products.json');
+      }catch(_){}
+      try{
+        if(!Array.isArray(fresh) || !fresh.length){
+          const remoteRes = await fetch(`${GITHUB_RAW_PRODUCTS_URL}?v=${Date.now()}`, { cache:'no-store' });
+          if(remoteRes.ok) fresh = await remoteRes.json();
+        }
       }catch(_){}
       if(!Array.isArray(fresh) || !fresh.length){
         const localRes = await fetch(`/products.json?v=${Date.now()}`, { cache:'no-store' });
@@ -1505,6 +1523,9 @@ function syncCategoriesFromAdmin(){
   if(!categoryRequestInFlight){
     categoryRequestInFlight = (async ()=>{
       try{
+        return await fetchGithubContentsJSON('categories.json');
+      } catch(_){}
+      try{
         const remoteRes = await fetch(`${GITHUB_RAW_CATEGORIES_URL}?v=${Date.now()}`, { cache:'no-store' });
         if(remoteRes.ok) return await remoteRes.json();
       } catch(_){}
@@ -1536,6 +1557,8 @@ function rebuildCategoryFilters(){
     CATEGORIES.map(c => `<div class="filter-option"><input type="checkbox" id="cat-${c.key}" onchange="applyFilters()"><label for="cat-${c.key}">${c.label}</label></div>`).join('');
 }
 function getCategoryIconClass(catKey){
+  const category = CATEGORIES.find(c=>c.key===catKey);
+  if(category?.icon) return category.icon;
   const iconMap = {
     'tul-perde':'fas fa-window-maximize',
     'plise-perde':'fas fa-grip-lines-vertical',
@@ -1592,12 +1615,14 @@ function normalizeUnit(unit){
   return String(unit || '').trim().toLowerCase();
 }
 function detectCurtainCategory(product){
+  const existingCat = String(product?.cat || '').trim();
+  if(existingCat && existingCat !== 'perde') return existingCat;
   const text = `${product?.name || ''} ${product?.desc || ''} ${product?.features || ''}`.toLocaleLowerCase('tr');
   if(text.includes('plise')) return 'plise-perde';
   if(text.includes('zebra')) return 'zebra-perde';
   if(text.includes('stor')) return 'stor-perde';
   if(text.includes('tül') || text.includes('tul')) return 'tul-perde';
-  if(String(product?.cat || '').toLowerCase()==='perde') return 'tul-perde';
+  if(existingCat.toLowerCase()==='perde') return 'tul-perde';
   return product?.cat;
 }
 function normalizeProductCatalog(product){

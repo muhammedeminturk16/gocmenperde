@@ -2190,23 +2190,46 @@ window.addEventListener('pagehide',()=>{ sessionStorage.setItem('gp_fast_resume'
 window.addEventListener('pageshow',(ev)=>{ if(ev.persisted) hideLoader(true); });
 
 // ── Navigasyon ──
-function go(id){
-  closeAllPopups();
+function applySectionState(id, {scroll=true} = {}){
+  const targetId = document.getElementById(id) ? id : 'home';
   document.querySelectorAll('.section').forEach(s=>{ s.classList.remove('active'); s.style.display='none'; });
-  const t=document.getElementById(id);
-  t.style.display='block'; t.classList.add('active'); t.classList.remove('fade-in'); void t.offsetWidth; t.classList.add('fade-in');
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='cart') renderCart();
-  if(id==='checkout') renderCheckout();
-  if(id==='products' && PRODUCTS.length===0) loadProducts();
-  if(id==='products') renderRecentlyViewed();
-  // Update mobile bottom nav active state
+  const t=document.getElementById(targetId);
+  if(!t) return;
+  t.style.display='block';
+  t.classList.add('active');
+  t.classList.remove('fade-in');
+  void t.offsetWidth;
+  t.classList.add('fade-in');
+  if(scroll) window.scrollTo({top:0,behavior:'smooth'});
+  if(targetId==='cart') renderCart();
+  if(targetId==='checkout') renderCheckout();
+  if(targetId==='products' && PRODUCTS.length===0) loadProducts();
+  if(targetId==='products') renderRecentlyViewed();
   document.querySelectorAll('.mbn-item').forEach(b=>b.classList.remove('active-nav'));
-  const mbnEl = document.getElementById('mbn-'+id);
+  const mbnEl = document.getElementById('mbn-'+targetId);
   if(mbnEl) mbnEl.classList.add('active-nav');
   updateCartActionPanel();
 }
+
+function getSectionFromLocation(){
+  const rawHash = String(window.location.hash || '').replace(/^#/, '').trim();
+  if(rawHash && document.getElementById(rawHash)) return rawHash;
+  return 'home';
+}
+
+function go(id){
+  closeAllPopups();
+  const nextId = document.getElementById(id) ? id : 'home';
+  if(window.location.hash !== `#${nextId}`) window.location.hash = nextId;
+  applySectionState(nextId, {scroll:true});
+}
+
+window.addEventListener('hashchange',()=>{
+  applySectionState(getSectionFromLocation(), {scroll:false});
+});
+
 document.querySelectorAll('.section').forEach(s=>{ if(!s.classList.contains('active')) s.style.display='none'; });
+applySectionState(getSectionFromLocation(), {scroll:false});
 
 // ── Favoriler ──
 let favorites = [];

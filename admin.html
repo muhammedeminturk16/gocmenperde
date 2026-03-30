@@ -691,25 +691,52 @@ tbody tr:hover td{background:#fdfcf8}
       <label>Ürünler *</label>
       <div class="bulk-items-wrap" id="bulkItemsWrap"></div>
       <div style="display:flex;justify-content:flex-start">
-        <button class="btn btn-outline btn-sm" type="button" onclick="addBulkItemCard()"><i class="fas fa-plus"></i> 2. Toplu Ürün Ekle</button>
+        <button class="btn btn-outline btn-sm" id="bulkAddItemBtn" type="button" onclick="addBulkItemCard()"><i class="fas fa-plus"></i> 2. Toplu Ürün Ekle</button>
       </div>
       <p class="bulk-note">Her ürün için ad, fiyat ve resim alanlarını ayrı panelde doldurun. Açıklama ve diğer alanlar aşağıdaki ortak varsayılanlardan otomatik uygulanır.</p>
     </div>
     <div class="bulk-grid">
       <div class="fg"><label>Kategori</label><select id="bulkCat"></select></div>
       <div class="fg"><label>Birim</label><select id="bulkUnit"><option value="adet">Adet</option><option value="mt">Metre (mt)</option><option value="m2">Metrekare (m²)</option></select></div>
-      <div class="fg"><label>Ortak Açıklama</label><input type="text" id="bulkDesc" placeholder="Tüm ürünler için aynı açıklama"></div>
+      <div class="fg">
+        <label>Ortak Açıklama</label>
+        <div class="json-helper">
+          <button type="button" class="json-helper-btn" onclick="applyBulkDescriptionTemplate('standart')"><i class="fas fa-plus"></i> Standart</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkDescriptionTemplate('teknik')"><i class="fas fa-plus"></i> Teknik Vurgu</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkDescriptionTemplate('bakim')"><i class="fas fa-plus"></i> Bakım Vurgu</button>
+          <button type="button" class="json-helper-btn" onclick="fillBulkDescriptionFromStructuredFields()"><i class="fas fa-wand-magic-sparkles"></i> Teknik + Bakım'dan Üret</button>
+        </div>
+        <input type="text" id="bulkDesc" placeholder="Tüm ürünler için aynı açıklama">
+      </div>
       <div class="fg"><label>Eski Fiyat (ops.)</label><input type="number" id="bulkOldPrice" placeholder="örn: 1800"></div>
       <div class="fg"><label>İndirim Etiketi</label><input type="text" id="bulkBadge" placeholder="örn: %20 İNDİRİM"></div>
+      <div class="fg"><label>İndirim Tipi</label><select id="bulkDiscountType"><option value="manual">Manuel Etiket</option><option value="percent">Yüzde (%) ile</option><option value="amount">TL farkı ile</option></select></div>
+      <div class="fg"><label>İndirim Değeri (ops.)</label><input type="number" id="bulkDiscountValue" placeholder="örn: 20 veya 300" min="0" step="0.01"></div>
       <div class="fg"><label>Özellikler (virgül)</label><input type="text" id="bulkFeatures" placeholder="karartma, premium"></div>
       <div class="fg"><label>Stok</label><input type="number" id="bulkStock" placeholder="boş=sınırsız"></div>
-      <div class="fg"><label>Seri Ön Eki</label><input type="text" id="bulkSerialPrefix" placeholder="örn: GP-PLISE"></div>
       <div class="fg"><label>Durum</label><select id="bulkActive"><option value="true">Aktif</option><option value="false">Pasif</option></select></div>
     </div>
     <div class="form-row" style="margin-top:8px">
-      <div class="fg"><label>Teknik Özellikler (ortak)</label><textarea id="bulkSpecs" style="min-height:90px;font-family:monospace;font-size:0.8rem" placeholder="Kumaş: Polyester
+      <div class="fg"><label>Teknik Özellikler (ortak)</label>
+        <div class="json-helper">
+          <button type="button" class="json-helper-btn" onclick="applyBulkSpecsTemplate('plise-perde')"><i class="fas fa-plus"></i> Plise Perde</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkSpecsTemplate('stor-perde')"><i class="fas fa-plus"></i> Stor Perde</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkSpecsTemplate('zebra-perde')"><i class="fas fa-plus"></i> Zebra Perde</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkSpecsTemplate('carsaf')"><i class="fas fa-plus"></i> Çarşaf</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkSpecsTemplate('koltuk')"><i class="fas fa-plus"></i> Koltuk</button>
+        </div>
+        <textarea id="bulkSpecs" style="min-height:90px;font-family:monospace;font-size:0.8rem" placeholder="Kumaş: Polyester
 Işık: Yarı Geçirgen"></textarea></div>
-      <div class="fg"><label>Bakım Talimatları (ortak)</label><textarea id="bulkCare" style="min-height:90px;font-family:monospace;font-size:0.8rem" placeholder="Yıkama: 30°C
+      <div class="fg"><label>Bakım Talimatları (ortak)</label>
+        <div class="json-helper">
+          <button type="button" class="json-helper-btn" onclick="applyBulkCareTemplate('standart')"><i class="fas fa-plus"></i> Standart</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkCareTemplate('plise-perde')"><i class="fas fa-plus"></i> Plise Perde</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkCareTemplate('stor-perde')"><i class="fas fa-plus"></i> Stor Perde</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkCareTemplate('zebra-perde')"><i class="fas fa-plus"></i> Zebra Perde</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkCareTemplate('carsaf')"><i class="fas fa-plus"></i> Çarşaf</button>
+          <button type="button" class="json-helper-btn" onclick="applyBulkCareTemplate('koltuk')"><i class="fas fa-plus"></i> Koltuk</button>
+        </div>
+        <textarea id="bulkCare" style="min-height:90px;font-family:monospace;font-size:0.8rem" placeholder="Yıkama: 30°C
 Ütü: Düşük"></textarea></div>
     </div>
     <div style="display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap">
@@ -1826,12 +1853,27 @@ function addBulkItemCard(initialData={}){
       <div class="fg"><label>Ürün Adı *</label><input type="text" class="bulk-name" placeholder="Örn: Plise Perde Krem" value="${(initialData.name||'').replace(/"/g,'&quot;')}"></div>
       <div class="fg"><label>Fiyat *</label><input type="number" class="bulk-price" placeholder="Örn: 1450" value="${initialData.price||''}"></div>
       <div class="fg">
-        <label>Resim Yolu *</label>
+        <label>Ana Resim *</label>
         <input type="text" class="bulk-image" placeholder="resimler/ornek.jpg" value="${(initialData.image||'').replace(/"/g,'&quot;')}">
+      </div>
+      <div class="fg">
+        <label>Ürün Resimleri (çoklu)</label>
+        <textarea class="bulk-images" placeholder="Her satıra bir görsel yolu">${(initialData.images||[]).join('\n').replace(/"/g,'&quot;')}</textarea>
+      </div>
+      <div class="fg">
+        <label>Öne Çıkan Resim</label>
+        <select class="bulk-primary-image" onchange="syncBulkPrimaryImage(this)"><option value="">Manuel ana resim</option></select>
+      </div>
+      <div class="fg">
+        <label>Seri Numarası (ops.)</label>
+        <input type="text" class="bulk-serial" placeholder="Örn: GP-2026-001" value="${(initialData.serialNumber||'').replace(/"/g,'&quot;')}">
+      </div>
+      <div class="fg">
+        <label>Görsel Yükleme</label>
         <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
           <label class="btn btn-outline btn-sm" style="cursor:pointer">
             <i class="fas fa-image"></i> Resim Seç
-            <input type="file" accept="image/*" style="display:none" onchange="handleBulkImageSelect(this)">
+            <input type="file" accept="image/*" multiple style="display:none" onchange="handleBulkImageSelect(this)">
           </label>
           <span class="bulk-image-file-name" style="font-size:0.72rem;color:var(--slate-light)">Dosya seçilmedi</span>
         </div>
@@ -1839,6 +1881,8 @@ function addBulkItemCard(initialData={}){
     </div>
   `;
   wrap.appendChild(card);
+  bindBulkCardEvents(card);
+  refreshBulkCardImageOptions(card);
   updateBulkCardOrder();
 }
 function removeBulkItemCard(btn){
@@ -1857,11 +1901,17 @@ function updateBulkCardOrder(){
     const delBtn=card.querySelector('.btn-danger');
     if(delBtn) delBtn.style.display=(cards.length===1&&i===0)?'none':'inline-flex';
   });
+  const addBtn=document.getElementById('bulkAddItemBtn');
+  if(addBtn){
+    const nextIndex=cards.length+1;
+    addBtn.innerHTML=`<i class="fas fa-plus"></i> ${nextIndex}. Toplu Ürün Ekle`;
+  }
 }
 function clearBulkForm(){
-  ['bulkDesc','bulkOldPrice','bulkBadge','bulkFeatures','bulkStock','bulkSerialPrefix','bulkSpecs','bulkCare'].forEach(id=>{const el=document.getElementById(id);if(el) el.value='';});
+  ['bulkDesc','bulkOldPrice','bulkBadge','bulkFeatures','bulkStock','bulkSpecs','bulkCare','bulkDiscountValue'].forEach(id=>{const el=document.getElementById(id);if(el) el.value='';});
   const unit=document.getElementById('bulkUnit'); if(unit) unit.value='adet';
   const active=document.getElementById('bulkActive'); if(active) active.value='true';
+  const discountType=document.getElementById('bulkDiscountType'); if(discountType) discountType.value='manual';
   if(document.getElementById('bulkCat') && CATEGORIES.length){document.getElementById('bulkCat').value=CATEGORIES[0].key;}
   const wrap=document.getElementById('bulkItemsWrap');
   if(wrap) wrap.innerHTML='';
@@ -1871,9 +1921,54 @@ function fillBulkSample(){
   clearBulkForm();
   const wrap=document.getElementById('bulkItemsWrap');
   if(wrap) wrap.innerHTML='';
-  addBulkItemCard({name:'Plise Perde Krem 160x200',price:1450,image:'resimler/plise-krem-1.jpg'});
-  addBulkItemCard({name:'Plise Perde Gri 160x200',price:1490,image:'resimler/plise-gri-1.jpg'});
+  addBulkItemCard({name:'Plise Perde Krem 160x200',price:1450,image:'resimler/plise-krem-1.jpg',images:['resimler/plise-krem-1.jpg','resimler/plise-krem-2.jpg'],serialNumber:'GP-PLISE-001'});
+  addBulkItemCard({name:'Plise Perde Gri 160x200',price:1490,image:'resimler/plise-gri-1.jpg',images:['resimler/plise-gri-1.jpg','resimler/plise-gri-2.jpg'],serialNumber:'GP-PLISE-002'});
   document.getElementById('bulkDesc').value='Modern görünüm sağlayan şık perde modeli.';
+}
+function bindBulkCardEvents(card){
+  const imageInput=card.querySelector('.bulk-image');
+  const imagesArea=card.querySelector('.bulk-images');
+  imageInput?.addEventListener('input',()=>refreshBulkCardImageOptions(card));
+  imagesArea?.addEventListener('input',()=>refreshBulkCardImageOptions(card));
+}
+function getBulkCardImages(card){
+  const raw=card?.querySelector('.bulk-images')?.value||'';
+  const lines=raw.split('\n').map(x=>x.trim()).filter(Boolean);
+  const primary=card?.querySelector('.bulk-image')?.value.trim()||'';
+  const images=primary?[primary,...lines.filter(x=>x!==primary)]:lines;
+  return [...new Set(images)];
+}
+function refreshBulkCardImageOptions(card){
+  const select=card?.querySelector('.bulk-primary-image');
+  const imageInput=card?.querySelector('.bulk-image');
+  if(!select||!imageInput) return;
+  const images=getBulkCardImages(card);
+  const current=imageInput.value.trim();
+  select.innerHTML='<option value="">Manuel ana resim</option>'+images.map(img=>`<option value="${img.replace(/"/g,'&quot;')}">${img}</option>`).join('');
+  if(current && images.includes(current)) select.value=current;
+}
+function syncBulkPrimaryImage(sel){
+  const card=sel?.closest('.bulk-item-card');
+  const input=card?.querySelector('.bulk-image');
+  if(!input||!sel?.value) return;
+  input.value=sel.value;
+  refreshBulkCardImageOptions(card);
+}
+function buildBulkBadge(price,oldPrice,type,value,manualBadge){
+  const manual=(manualBadge||'').trim();
+  if(type==='manual') return manual;
+  if(!(oldPrice>price && price>0)) return manual;
+  const diff=oldPrice-price;
+  const pct=(diff/oldPrice)*100;
+  if(type==='percent'){
+    const pctVal=Number.isFinite(value) && value>0 ? value : pct;
+    return `%${Math.round(pctVal)} İNDİRİM`;
+  }
+  if(type==='amount'){
+    const amountVal=Number.isFinite(value) && value>0 ? value : diff;
+    return `${Math.round(amountVal).toLocaleString('tr-TR')} TL İNDİRİM`;
+  }
+  return manual;
 }
 function parseBulkStructured(raw){
   const val=(raw||'').trim();
@@ -1892,9 +1987,10 @@ function saveBulkProducts(){
   const sharedDesc=document.getElementById('bulkDesc').value.trim()||'Ürün açıklaması yakında güncellenecektir.';
   const sharedOldPrice=document.getElementById('bulkOldPrice').value;
   const sharedBadge=document.getElementById('bulkBadge').value.trim();
+  const sharedDiscountType=document.getElementById('bulkDiscountType').value||'manual';
+  const sharedDiscountValue=parseFloat(document.getElementById('bulkDiscountValue').value);
   const sharedFeatures=document.getElementById('bulkFeatures').value.replace(/\s*,\s*/g,',').trim();
   const sharedStock=document.getElementById('bulkStock').value;
-  const serialPrefix=document.getElementById('bulkSerialPrefix').value.trim();
   const sharedActive=document.getElementById('bulkActive').value==='true';
 
   const incoming=[];
@@ -1902,16 +1998,19 @@ function saveBulkProducts(){
     const name=cards[i].querySelector('.bulk-name')?.value.trim()||'';
     const priceRaw=cards[i].querySelector('.bulk-price')?.value||'';
     const imageRaw=cards[i].querySelector('.bulk-image')?.value.trim()||'';
+    const serialNumber=cards[i].querySelector('.bulk-serial')?.value.trim()||null;
     const price=parseFloat(String(priceRaw).replace(',','.'));
     if(!name || !(price>0) || !imageRaw){aToast(`⚠️ ${i+1}. ürün panelinde ad/fiyat/resim zorunlu`, 'error');return;}
-    const images=imageRaw.split(',').map(x=>x.trim()).filter(Boolean);
+    const images=getBulkCardImages(cards[i]);
+    const oldPriceVal=sharedOldPrice?parseFloat(sharedOldPrice):null;
+    const badge=buildBulkBadge(price,oldPriceVal,sharedDiscountType,sharedDiscountValue,sharedBadge);
     incoming.push({
       id:createProductId(name),name,desc:sharedDesc,image:images[0]||'',images,
-      price,oldPrice:sharedOldPrice?parseFloat(sharedOldPrice):null,
+      price,oldPrice:oldPriceVal,
       cat:sharedCat,unit:sharedUnit,isMeter:sharedUnit==='mt',isSquareMeter:sharedUnit==='m2',
-      features:sharedFeatures,badge:sharedBadge,discountType:'manual',discountValue:null,
+      features:sharedFeatures,badge,discountType:sharedDiscountType,discountValue:Number.isFinite(sharedDiscountValue)?sharedDiscountValue:null,
       stock:sharedStock!==''?parseInt(sharedStock):null,
-      serialNumber:serialPrefix?`${serialPrefix}-${String(i+1).padStart(3,'0')}`:null,
+      serialNumber,
       active:sharedActive,specs:sharedSpecs,care:sharedCare
     });
   }
@@ -2351,6 +2450,10 @@ function parseStructuredField(id){
 function addDescriptionTemplate(key='standart'){
   document.getElementById('f-desc').value=DESCRIPTION_TEMPLATES[key]||DESCRIPTION_TEMPLATES.standart;
 }
+function applyBulkDescriptionTemplate(key='standart'){
+  const el=document.getElementById('bulkDesc');
+  if(el) el.value=DESCRIPTION_TEMPLATES[key]||DESCRIPTION_TEMPLATES.standart;
+}
 function objectValuesAsText(obj){
   return Object.entries(obj||{}).map(([k,v])=>`${k}: ${v}`).join(', ');
 }
@@ -2369,8 +2472,32 @@ function fillDescriptionFromStructuredFields(){
   }
   document.getElementById('f-desc').value=pieces.join('\n\n');
 }
+function fillBulkDescriptionFromStructuredFields(){
+  const specsObj=parseBulkStructured(document.getElementById('bulkSpecs')?.value||'');
+  const careObj=parseBulkStructured(document.getElementById('bulkCare')?.value||'');
+  const pieces=[];
+  if(Object.keys(specsObj).length){
+    pieces.push(`Teknik özellikler: ${objectValuesAsText(specsObj)}.`);
+  }
+  if(Object.keys(careObj).length){
+    pieces.push(`Bakım önerileri: ${objectValuesAsText(careObj)}.`);
+  }
+  if(!pieces.length){
+    pieces.push(DESCRIPTION_TEMPLATES.standart);
+  }
+  const el=document.getElementById('bulkDesc');
+  if(el) el.value=pieces.join('\n\n');
+}
 function addSpecsTemplate(cat){document.getElementById('f-specs').value=objectToLinePairs(SPECS[cat]||SPECS['plise-perde']);validateStructuredField('f-specs','specs-valid');}
 function addCareTemplate(cat='standart'){document.getElementById('f-care').value=objectToLinePairs(CARE[cat]||CARE.standart);validateStructuredField('f-care','care-valid');}
+function applyBulkSpecsTemplate(cat){
+  const el=document.getElementById('bulkSpecs');
+  if(el) el.value=objectToLinePairs(SPECS[cat]||SPECS['plise-perde']);
+}
+function applyBulkCareTemplate(cat='standart'){
+  const el=document.getElementById('bulkCare');
+  if(el) el.value=objectToLinePairs(CARE[cat]||CARE.standart);
+}
 function getCustomTemplates(){return JSON.parse(localStorage.getItem(CUSTOM_TEMPLATE_KEY)||'[]');}
 function saveCustomTemplates(list){localStorage.setItem(CUSTOM_TEMPLATE_KEY,JSON.stringify(list));}
 function applyCustomTemplate(idx){
@@ -2533,21 +2660,30 @@ async function handleImageSelect(input){
   } catch(err){status.className='img-status error';status.innerHTML='<i class="fas fa-times-circle"></i> '+err.message;aToast('❌ '+err.message,'error');}
 }
 async function handleBulkImageSelect(input){
-  const file=input?.files?.[0];
-  if(!file) return;
+  const files=Array.from(input?.files||[]);
+  if(!files.length) return;
   const card=input.closest('.bulk-item-card');
   const imageInput=card?.querySelector('.bulk-image');
+  const imagesArea=card?.querySelector('.bulk-images');
   const fileNameEl=card?.querySelector('.bulk-image-file-name');
-  if(fileNameEl) fileNameEl.textContent=file.name;
-  if(!imageInput) return;
+  if(fileNameEl) fileNameEl.textContent=`${files.length} dosya seçildi`;
+  if(!imageInput||!imagesArea) return;
   const token=getGithubToken();
   if(!token){
-    const preview = await new Promise(resolve=>{
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
-      reader.readAsDataURL(file);
-    });
-    imageInput.value = preview || '';
+    const previews=[];
+    for(const file of files){
+      const preview = await new Promise(resolve=>{
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.readAsDataURL(file);
+      });
+      if(preview) previews.push(preview);
+    }
+    if(previews.length){
+      imageInput.value = previews[0];
+      imagesArea.value = previews.join('\n');
+      refreshBulkCardImageOptions(card);
+    }
     input.value='';
     aToast('⚠️ GitHub Token yok — seçilen görsel önizleme olarak eklendi','error');
     return;
@@ -2559,32 +2695,40 @@ async function handleBulkImageSelect(input){
       if(window.crypto?.randomUUID) return window.crypto.randomUUID();
       return `${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
     };
-    const content = await new Promise(resolve=>{
-      const reader=new FileReader();
-      reader.onload=e=>resolve(e.target.result.split(',')[1]);
-      reader.readAsDataURL(file);
-    });
-    const fileName=`resimler/${Date.now()}-bulk-${uniqueSuffix()}-${sanitize(file.name)}`;
-    const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
-    let sha;
-    const currentFileRes=await fetch(url,{headers:githubHeaders(token)});
-    if(currentFileRes.ok){
-      const currentFileData=await currentFileRes.json();
-      sha=currentFileData.sha;
-    } else if(currentFileRes.status!==404){
-      const err=await currentFileRes.json().catch(()=>({message:'GitHub dosya kontrolü başarısız'}));
-      throw new Error(err.message||'GitHub dosya kontrolü başarısız');
+    const uploaded=[];
+    for(const file of files){
+      const content = await new Promise(resolve=>{
+        const reader=new FileReader();
+        reader.onload=e=>resolve(e.target.result.split(',')[1]);
+        reader.readAsDataURL(file);
+      });
+      const fileName=`resimler/${Date.now()}-bulk-${uniqueSuffix()}-${sanitize(file.name)}`;
+      const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
+      let sha;
+      const currentFileRes=await fetch(url,{headers:githubHeaders(token)});
+      if(currentFileRes.ok){
+        const currentFileData=await currentFileRes.json();
+        sha=currentFileData.sha;
+      } else if(currentFileRes.status!==404){
+        const err=await currentFileRes.json().catch(()=>({message:'GitHub dosya kontrolü başarısız'}));
+        throw new Error(err.message||'GitHub dosya kontrolü başarısız');
+      }
+      const payload={message:'Admin: Toplu ürün resmi yüklendi',content};
+      if(sha) payload.sha=sha;
+      const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
+      if(!res.ok){
+        const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
+        throw new Error(err.message||'GitHub yükleme hatası');
+      }
+      uploaded.push(fileName);
     }
-    const payload={message:'Admin: Toplu ürün resmi yüklendi',content};
-    if(sha) payload.sha=sha;
-    const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
-    if(!res.ok){
-      const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
-      throw new Error(err.message||'GitHub yükleme hatası');
+    if(uploaded.length){
+      imageInput.value=uploaded[0];
+      imagesArea.value=uploaded.join('\n');
+      refreshBulkCardImageOptions(card);
     }
-    imageInput.value=fileName;
-    if(fileNameEl) fileNameEl.textContent=`✓ ${file.name}`;
-    aToast('✅ Toplu ürün resmi yüklendi','success');
+    if(fileNameEl) fileNameEl.textContent=`✓ ${uploaded.length} resim yüklendi`;
+    aToast('✅ Toplu ürün resimleri yüklendi','success');
   }catch(err){
     if(fileNameEl) fileNameEl.textContent='Yükleme başarısız';
     aToast('❌ '+err.message,'error');

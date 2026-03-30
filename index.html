@@ -91,8 +91,8 @@ img,video,canvas,svg{max-width:100%}
 .mini-cart.open,.search-bar.open,.favorite-bar.open{display:block}
 #mobileMenu{position:fixed;top:0;left:-100%;width:280px;height:100%;max-height:100dvh;background:var(--ink);z-index:2000;padding:50px 30px;transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94);display:flex;flex-direction:column;gap:10px;box-shadow:10px 0 40px rgba(0,0,0,0.5);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 #mobileMenu .menu-logo{font-family:var(--ff-display);font-size:1.6rem;color:var(--gold);letter-spacing:3px;margin-bottom:30px;padding-bottom:20px;border-bottom:1px solid rgba(201,168,76,0.2)}
-#mobileMenu button{background:none;border:none;color:rgba(255,255,255,0.7);text-align:left;font-size:0.9rem;letter-spacing:3px;text-transform:uppercase;padding:14px 0;cursor:pointer;transition:color 0.3s;border-bottom:1px solid rgba(255,255,255,0.06);font-family:var(--ff-body);font-weight:400}
-#mobileMenu button:hover{color:var(--gold)}
+#mobileMenu button{background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.82);text-align:left;font-size:0.82rem;letter-spacing:1.6px;text-transform:uppercase;padding:12px 12px;border-radius:12px;cursor:pointer;transition:all 0.3s;border-bottom:none;font-family:var(--ff-body);font-weight:500;display:flex;align-items:center;gap:10px}
+#mobileMenu button:hover{color:#fff;border-color:rgba(201,168,76,0.48);background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.08));transform:translateX(2px)}
 #mobileMenu .menu-close-btn{margin-top:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(201,168,76,0.35);border-radius:12px;padding:12px 0;letter-spacing:2px;background:rgba(201,168,76,0.06);color:rgba(255,255,255,0.8)}
 #mobileMenu .menu-close-btn:hover{color:var(--gold);background:rgba(201,168,76,0.12)}
 #menuOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.28);z-index:990;display:none}
@@ -108,15 +108,17 @@ header{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 5%;background:
 .logo-sub{font-size:0.6rem;letter-spacing:6px;color:var(--gold);text-transform:uppercase;margin-top:2px;font-weight:500}
 nav{display:flex;align-items:center;gap:8px}
 .nav-collection{position:relative}
-.nav-link{background:none;border:none;cursor:pointer;font-family:var(--ff-body);font-size:0.75rem;font-weight:500;color:var(--slate);letter-spacing:2px;text-transform:uppercase;padding:10px 16px;border-radius:6px;position:relative;transition:color 0.3s}
+.nav-link{background:none;border:none;cursor:pointer;font-family:var(--ff-body);font-size:0.72rem;font-weight:500;color:var(--slate);letter-spacing:1.4px;text-transform:uppercase;padding:9px 14px;border-radius:999px;position:relative;transition:all 0.3s}
 .nav-link::after{content:'';position:absolute;bottom:6px;left:16px;right:16px;height:1px;background:var(--gold);transform:scaleX(0);transition:transform 0.3s}
-.nav-link:hover{color:var(--gold)}.nav-link:hover::after{transform:scaleX(1)}
-.collection-dropdown{position:absolute;top:100%;left:0;min-width:220px;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:10px;display:none;z-index:1200}
+.nav-link:hover{color:var(--gold);background:rgba(201,168,76,0.08)}.nav-link:hover::after{transform:scaleX(1)}
+.collection-dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:260px;background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);border:1px solid rgba(201,168,76,0.28);border-radius:16px;box-shadow:0 16px 44px rgba(15,14,13,0.14);padding:10px;display:none;z-index:1200}
 .nav-collection:hover .collection-dropdown,.nav-collection:focus-within .collection-dropdown{display:block}
-.collection-dropdown button{width:100%;text-align:left;border:none;background:transparent;color:var(--slate);padding:10px 12px;border-radius:8px;font-size:0.78rem;letter-spacing:1px;cursor:pointer;transition:var(--transition)}
+.collection-dropdown button{width:100%;text-align:left;border:none;background:transparent;color:var(--slate);padding:9px 10px;border-radius:10px;font-size:0.76rem;letter-spacing:0.8px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:10px}
 .collection-subtitle{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--slate);opacity:.75;padding:8px 12px 4px}
 .collection-subitem{padding-left:26px!important;font-size:0.74rem!important;color:#67625d!important}
 .collection-dropdown button:hover{background:rgba(201,168,76,0.12);color:var(--ink)}
+.menu-category-thumb{width:26px;height:26px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid rgba(201,168,76,0.28);box-shadow:0 4px 10px rgba(0,0,0,0.12)}
+.menu-category-icon{width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(201,168,76,0.14);color:var(--gold);font-size:0.8rem;flex-shrink:0}
 .nav-icon{width:36px;height:36px;border-radius:50%;background:none;border:none;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--slate);cursor:pointer;transition:var(--transition);position:relative}
 .nav-icon:hover{background:rgba(201,168,76,0.1);color:var(--gold)}
 .badge{position:absolute;top:0;right:0;background:var(--gold);color:var(--ink);font-size:0.65rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
@@ -621,7 +623,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 .first-order-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.02)}
 .first-order-banner::before{content:'';position:absolute;inset:0;background:linear-gradient(110deg,rgba(15,14,13,0.88) 12%,rgba(15,14,13,0.48) 55%,rgba(15,14,13,0.12) 100%)}
 .first-order-banner-content{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;width:100%;padding:20px;align-items:flex-end}
-.first-order-banner-text{max-width:500px}
+.first-order-banner-text{max-width:500px;padding:14px 16px;border-radius:14px;background:rgba(0,0,0,0.52);backdrop-filter:blur(3px)}
 .first-order-banner-eyebrow{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.72);margin-bottom:8px;display:block}
 .first-order-banner-text h3{font-family:var(--ff-display);font-size:clamp(1.25rem,2.4vw,1.9rem);line-height:1.15;color:white;margin-bottom:8px}
 .first-order-banner-text p{font-size:0.82rem;color:rgba(247,244,239,0.84);max-width:430px;line-height:1.6}
@@ -629,6 +631,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 .discount-spotlight img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.03)}
 .discount-spotlight::before{content:'';position:absolute;inset:0;background:linear-gradient(102deg,rgba(15,14,13,0.88) 12%,rgba(15,14,13,0.42) 62%,rgba(15,14,13,0.06) 100%)}
 .discount-spotlight-content{position:relative;z-index:2;width:100%;padding:20px;display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.discount-spotlight-content>div:first-child{padding:12px 14px;border-radius:14px;background:rgba(0,0,0,0.52);backdrop-filter:blur(4px)}
 .discount-spotlight-title{font-family:var(--ff-display);font-size:clamp(1.2rem,2.2vw,1.8rem);color:#fff;line-height:1.2}
 .discount-spotlight-meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 8px}
 .discount-spotlight-chip{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.28);color:#fff;font-size:0.72rem;font-weight:600;backdrop-filter:blur(4px)}
@@ -1257,12 +1260,12 @@ let PRODUCT_SOCIAL = {};
 let currentModalProductId = null;
 // Kategoriler (admin'den senkronize edilir)
 let CATEGORIES = [
-  {key:'carsaf',label:'Çarşaflar'},
-  {key:'tul-perde',label:'Tül Perdeler'},
-  {key:'plise-perde',label:'Plise Perdeler'},
-  {key:'stor-perde',label:'Stor Perdeler'},
-  {key:'zebra-perde',label:'Zebra Perdeler'},
-  {key:'koltuk',label:'Koltuk Örtüleri'}
+  {key:'carsaf',label:'Çarşaflar',image:'resimler/carsaf.jpg'},
+  {key:'tul-perde',label:'Tül Perdeler',image:'resimler/tulperde.WEBP'},
+  {key:'plise-perde',label:'Plise Perdeler',image:'resimler/foto7.jpg'},
+  {key:'stor-perde',label:'Stor Perdeler',image:'resimler/foto8.jpg'},
+  {key:'zebra-perde',label:'Zebra Perdeler',image:'resimler/foto9.jpg'},
+  {key:'koltuk',label:'Koltuk Örtüleri',image:'resimler/koltuk_ortusu.jpeg'}
 ];
 
 const AREA_PRICE_CATEGORIES = ['stor-perde','zebra-perde','plise-perde'];
@@ -1610,12 +1613,33 @@ function getCategoryIconClass(catKey){
   };
   return iconMap[catKey] || 'fas fa-folder-open';
 }
+function getCategoryImage(catKey){
+  const category = CATEGORIES.find(c=>c.key===catKey);
+  if(category?.image) return category.image;
+  const imageMap = {
+    'tul-perde':'resimler/tulperde.WEBP',
+    'plise-perde':'resimler/foto7.jpg',
+    'stor-perde':'resimler/foto8.jpg',
+    'zebra-perde':'resimler/foto9.jpg',
+    'carsaf':'resimler/carsaf.jpg',
+    'koltuk':'resimler/koltuk_ortusu.jpeg',
+    'fonperdeler':'resimler/brillant_fon.jpeg'
+  };
+  return imageMap[catKey] || '';
+}
+function renderCategoryMenuVisual(category){
+  const image = getCategoryImage(category.key);
+  if(image){
+    return `<img src="${image}" alt="${category.label}" class="menu-category-thumb" loading="lazy">`;
+  }
+  return `<span class="menu-category-icon"><i class="${getCategoryIconClass(category.key)}"></i></span>`;
+}
 function rebuildCategoryMenus(){
   const desktopMenu = document.getElementById('desktopCategoryMenu');
   if(desktopMenu){
     desktopMenu.innerHTML = CATEGORIES.map(c=>`
       <button onclick="openCategoryFromMenu('${c.key}')">
-        <i class="${getCategoryIconClass(c.key)}" style="margin-right:8px;color:var(--gold)"></i>${c.label}
+        ${renderCategoryMenuVisual(c)}<span>${c.label}</span>
       </button>
     `).join('');
   }
@@ -1623,7 +1647,7 @@ function rebuildCategoryMenus(){
   if(mobileMenu){
     mobileMenu.innerHTML = CATEGORIES.map(c=>`
       <button onclick="openCategoryFromMenu('${c.key}')">
-        <i class="${getCategoryIconClass(c.key)}" style="margin-right:10px;color:var(--gold)"></i>${c.label.toLocaleUpperCase('tr-TR')}
+        ${renderCategoryMenuVisual(c)}<span>${c.label.toLocaleUpperCase('tr-TR')}</span>
       </button>
     `).join('');
   }

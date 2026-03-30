@@ -44,7 +44,7 @@ module.exports = async function handler(req, res) {
         note,
       });
 
-      await sendOrderCreatedEmails({
+      const emailResult = await sendOrderCreatedEmails({
         orderId: insertResult.rows[0].id,
         customer: { name, phone, email: cleanEmail, address },
         note,
@@ -53,7 +53,11 @@ module.exports = async function handler(req, res) {
         total,
       });
 
-      return res.status(201).json({ success: true, order_id: insertResult.rows[0].id });
+      return res.status(201).json({
+        success: true,
+        order_id: insertResult.rows[0].id,
+        email: emailResult,
+      });
     }
 
     if (action === 'my-orders' && req.method === 'GET') {
@@ -184,11 +188,20 @@ async function sendOrderCreatedEmails({ orderId, customer, note, payment, items,
     html: adminHtml,
   }));
 
-  const results = await Promise.allSettled(jobs);
-  const failed = results.filter((result) => result.status === 'rejected');
+  const results = await Promise.all(jobs);
+  const sent = results.filter((result) => result.ok).length;
+  const skipped = results.filter((result) => result.skipped).map((result) => result.reason);
+  const failed = results.filter((result) => !result.ok && !result.skipped);
+
   if (failed.length) {
     console.warn(`Sipariş #${orderId} için ${failed.length} e-posta görevi başarısız oldu.`);
   }
+
+  return {
+    sent,
+    failed: failed.length,
+    skipped,
+  };
 }
 
 async function sendOrderStatusEmail({ order, previousStatus, newStatus }) {
@@ -319,7 +332,16 @@ function escapeHtml(value) {
 async function sendTransactionalEmail({ to, subject, html }) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = resolveFromAddress();
-  if (!apiKey || !to || !from) return;
+  if (!apiKey) {
+    console.warn('RESEND_API_KEY tanımlı değil. E-posta gönderimi atlandı.');
+    return { ok: false, skipped: true, reason: 'missing_api_key' };
+  }
+  if (!to) {
+    return { ok: false, skipped: true, reason: 'missing_recipient' };
+  }
+  if (!from) {
+    return { ok: false, skipped: true, reason: 'invalid_from_address' };
+  }
 
   try {
     if (from.includes('onboarding@resend.dev')) {
@@ -345,9 +367,12 @@ async function sendTransactionalEmail({ to, subject, html }) {
     if (!response.ok) {
       const body = await response.text();
       console.warn('Mail gönderilemedi:', response.status, body);
+      return { ok: false, skipped: false, status: response.status };
     }
+    return { ok: true, skipped: false };
   } catch (err) {
     console.warn('Mail servisi hatası:', err.message);
+    return { ok: false, skipped: false, error: err.message };
   }
 }
 

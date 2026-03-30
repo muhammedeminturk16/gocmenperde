@@ -2875,15 +2875,21 @@ async function submitOrder(){
  // LocalStorage'a kaydet (admin paneli buradan okur)
   saveOrderToLocalStorage(name,phone,email,method,addr,note,savedBasket,savedTotal);
 
+  let orderApiResult = null;
   try{
-    await fetch('/api/orders?action=create',{
+    const response = await fetch('/api/orders?action=create',{
       method:'POST',
       headers:{'Content-Type':'application/json',...(getAuthToken()?{'Authorization':'Bearer '+getAuthToken()}:{})},
       body:JSON.stringify({name,phone,email,address:addr,note,payment:method,items:savedBasket,total:savedTotal})
     });
+    if(response.ok){
+      orderApiResult = await response.json();
+    } else {
+      console.warn('Sipariş API başarısız:', response.status);
+    }
   } catch(e){ console.warn('API hatası, devam ediyor'); }
 
-  await sendOrderEmailNotification({name,phone,email,addr,note,method,items:savedBasket,total:savedTotal});
+  await sendOrderEmailNotification({name,phone,email,addr,note,method,items:savedBasket,total:savedTotal,apiResult:orderApiResult});
 
   btn.innerHTML=orig; btn.disabled=false;
   basket=[]; total=0; appliedCouponCode=''; couponDiscountAmount=0; updateCartCount(); saveCartToStorage();
@@ -2934,9 +2940,14 @@ function validateCheckoutForm(){
   return true;
 }
 
-async function sendOrderEmailNotification({name,phone,email,addr,note,method,items,total}){
+async function sendOrderEmailNotification({name,phone,email,addr,note,method,items,total,apiResult}){
   void name; void phone; void email; void addr; void note; void method; void items; void total;
   // Mail gönderimleri sunucu tarafında /api/orders endpoint'i üzerinden yönetiliyor.
+  const failed = Number(apiResult?.email?.failed || 0);
+  const skipped = Array.isArray(apiResult?.email?.skipped) ? apiResult.email.skipped : [];
+  if(failed > 0 || skipped.length){
+    showToast('Sipariş alındı fakat e-posta gönderiminde sorun var.');
+  }
 }
 
 // ── Kullanıcı Oturumu ──

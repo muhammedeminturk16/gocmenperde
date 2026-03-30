@@ -1,5 +1,140 @@
 [
   {
+    "id": "zebra-perde-mor-pembe-gecisli-1774893507393-282",
+    "name": "Zebra Perde Mor Pembe Geçişli",
+    "desc": "Teknik özellikler: Kumaş: Çift katmanlı zebra, Işık Ayarı: Şerit geçişli, Mekanizma: Zincirli, Stil: Modern.Bakım önerileri: Temizlik: Kuru/nemli bez, Ütü: Uygulanmaz, Bakım: Mekanizmayı zorlamayın.",
+    "image": "resimler/1774892603744-bulk-fe54a030-1b07-4a07-abc4-e7d9bb4954fb-IMG_1812.png",
+    "images": [
+      "resimler/1774892603744-bulk-fe54a030-1b07-4a07-abc4-e7d9bb4954fb-IMG_1812.png",
+      "resimler/1774892611768-bulk-5b140ba8-9f8a-415c-843b-80b6a136ab92-IMG_1766.jpeg"
+    ],
+    "price": 650,
+    "oldPrice": 850,
+    "cat": "zebra-perde",
+    "unit": "m2",
+    "isMeter": false,
+    "isSquareMeter": true,
+    "features": "",
+    "badge": "%24 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": null,
+    "serialNumber": "Adidas V-03",
+    "active": true,
+    "specs": {
+      "Kumaş": "Çift katmanlı zebra",
+      "Işık Ayarı": "Şerit geçişli",
+      "Mekanizma": "Zincirli",
+      "Stil": "Modern"
+    },
+    "care": {
+      "Temizlik": "Kuru/nemli bez",
+      "Ütü": "Uygulanmaz",
+      "Bakım": "Mekanizmayı zorlamayın"
+    }
+  },
+  {
+    "id": "zebra-perde-bej-kahverengi-gecisli-1774893507393-23",
+    "name": "Zebra Perde Bej Kahverengi Geçişli",
+    "desc": "Teknik özellikler: Kumaş: Çift katmanlı zebra, Işık Ayarı: Şerit geçişli, Mekanizma: Zincirli, Stil: Modern.Bakım önerileri: Temizlik: Kuru/nemli bez, Ütü: Uygulanmaz, Bakım: Mekanizmayı zorlamayın.",
+    "image": "resimler/1774892861690-bulk-9797effd-a76c-4e38-83fb-b31249884d63-IMG_1813.jpeg",
+    "images": [
+      "resimler/1774892861690-bulk-9797effd-a76c-4e38-83fb-b31249884d63-IMG_1813.jpeg",
+      "resimler/1774892863739-bulk-866d52f4-b7bc-406d-a296-f4f468cf3fc2-IMG_1765.jpeg"
+    ],
+    "price": 650,
+    "oldPrice": 850,
+    "cat": "zebra-perde",
+    "unit": "m2",
+    "isMeter": false,
+    "isSquareMeter": true,
+    "features": "",
+    "badge": "%24 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": null,
+    "serialNumber": "Adidas V-02",
+    "active": true,
+    "specs": {
+      "Kumaş": "Çift katmanlı zebra",
+      "Işık Ayarı": "Şerit geçişli",
+      "Mekanizma": "Zincirli",
+      "Stil": "Modern"
+    },
+    "care": {
+      "Temizlik": "Kuru/nemli bez",
+      "Ütü": "Uygulanmaz",
+      "Bakım": "Mekanizmayı zorlamayın"
+    }
+  },
+  {
+    "id": "zebra-perde-beyaz-yesil-gecisli-1774893507393-177",
+    "name": "Zebra Perde Beyaz Yeşil Geçişli",
+    "desc": "Teknik özellikler: Kumaş: Çift katmanlı zebra, Işık Ayarı: Şerit geçişli, Mekanizma: Zincirli, Stil: Modern.Bakım önerileri: Temizlik: Kuru/nemli bez, Ütü: Uygulanmaz, Bakım: Mekanizmayı zorlamayın.",
+    "image": "resimler/1774893062536-bulk-e32aa1e6-00c1-4576-8415-72bb3b097310-IMG_1814.png",
+    "images": [
+      "resimler/1774893062536-bulk-e32aa1e6-00c1-4576-8415-72bb3b097310-IMG_1814.png",
+      "resimler/1774893067886-bulk-68a82b30-e726-4815-bb89-d7a84fe9226d-IMG_1768.jpeg"
+    ],
+    "price": 650,
+    "oldPrice": 850,
+    "cat": "zebra-perde",
+    "unit": "m2",
+    "isMeter": false,
+    "isSquareMeter": true,
+    "features": "",
+    "badge": "%24 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": null,
+    "serialNumber": null,
+    "active": true,
+    "specs": {
+      "Kumaş": "Çift katmanlı zebra",
+      "Işık Ayarı": "Şerit geçişli",
+      "Mekanizma": "Zincirli",
+      "Stil": "Modern"
+    },
+    "care": {
+      "Temizlik": "Kuru/nemli bez",
+      "Ütü": "Uygulanmaz",
+      "Bakım": "Mekanizmayı zorlamayın"
+    }
+  },
+  {
+    "id": "zebra-perde-mavi-mor-gecisli-1774893507393-97",
+    "name": "Zebra Perde Mavi Mor Geçişli",
+    "desc": "Teknik özellikler: Kumaş: Çift katmanlı zebra, Işık Ayarı: Şerit geçişli, Mekanizma: Zincirli, Stil: Modern.Bakım önerileri: Temizlik: Kuru/nemli bez, Ütü: Uygulanmaz, Bakım: Mekanizmayı zorlamayın.",
+    "image": "resimler/1774893402808-bulk-1bcc6de9-de56-4ae2-a8f2-6ebbf7515041-IMG_1769.jpeg",
+    "images": [
+      "resimler/1774893402808-bulk-1bcc6de9-de56-4ae2-a8f2-6ebbf7515041-IMG_1769.jpeg"
+    ],
+    "price": 650,
+    "oldPrice": 850,
+    "cat": "zebra-perde",
+    "unit": "m2",
+    "isMeter": false,
+    "isSquareMeter": true,
+    "features": "",
+    "badge": "%24 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": null,
+    "serialNumber": null,
+    "active": true,
+    "specs": {
+      "Kumaş": "Çift katmanlı zebra",
+      "Işık Ayarı": "Şerit geçişli",
+      "Mekanizma": "Zincirli",
+      "Stil": "Modern"
+    },
+    "care": {
+      "Temizlik": "Kuru/nemli bez",
+      "Ütü": "Uygulanmaz",
+      "Bakım": "Mekanizmayı zorlamayın"
+    }
+  },
+  {
     "id": "zebra-perde-beyaz-bej-gecisli-1774892324844-482",
     "name": "Zebra Perde Beyaz Bej Geçişli",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",

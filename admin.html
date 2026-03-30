@@ -181,6 +181,12 @@ select.filter-sel:focus{border-color:var(--gold)}
 .bulk-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
 .bulk-item-title{font-size:0.82rem;font-weight:600;color:var(--ink)}
 .bulk-item-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.bulk-image-preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:8px}
+.bulk-image-preview-item{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#f5f5f5;aspect-ratio:1/1;cursor:pointer}
+.bulk-image-preview-item img{width:100%;height:100%;object-fit:cover;display:block}
+.bulk-image-preview-item span{position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.65);color:#fff;font-size:0.62rem;padding:2px 5px;border-radius:999px}
+.bulk-image-preview-item.main{outline:2px solid var(--gold)}
+.bulk-image-preview-empty{font-size:0.73rem;color:var(--slate-light);padding:10px;border:1px dashed var(--border-2);border-radius:8px;background:#fff}
 
 /* ──────────── TABLE ──────────── */
 .table-wrap{background:white;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;overflow-x:auto;box-shadow:var(--shadow-sm)}
@@ -716,6 +722,7 @@ tbody tr:hover td{background:#fdfcf8}
       <div class="fg"><label>Stok</label><input type="number" id="bulkStock" placeholder="boş=sınırsız"></div>
       <div class="fg"><label>Durum</label><select id="bulkActive"><option value="true">Aktif</option><option value="false">Pasif</option></select></div>
     </div>
+    <div class="discount-helper" id="bulkDiscountHelper" style="margin:8px 0 0">İndirim tipini seçtiğinizde etiket otomatik oluşturulur. Hesap için eski fiyat + ürün fiyatı kullanılır.</div>
     <div class="form-row" style="margin-top:8px">
       <div class="fg"><label>Teknik Özellikler (ortak)</label>
         <div class="json-helper">
@@ -1861,6 +1868,10 @@ function addBulkItemCard(initialData={}){
         <textarea class="bulk-images" placeholder="Her satıra bir görsel yolu">${(initialData.images||[]).join('\n').replace(/"/g,'&quot;')}</textarea>
       </div>
       <div class="fg">
+        <label>Resim Önizleme / Ana Resim Seç</label>
+        <div class="bulk-image-preview-grid"></div>
+      </div>
+      <div class="fg">
         <label>Öne Çıkan Resim</label>
         <select class="bulk-primary-image" onchange="syncBulkPrimaryImage(this)"><option value="">Manuel ana resim</option></select>
       </div>
@@ -1884,6 +1895,7 @@ function addBulkItemCard(initialData={}){
   bindBulkCardEvents(card);
   refreshBulkCardImageOptions(card);
   updateBulkCardOrder();
+  updateBulkDiscountPreview();
 }
 function removeBulkItemCard(btn){
   const card=btn?.closest('.bulk-item-card');
@@ -1916,6 +1928,7 @@ function clearBulkForm(){
   const wrap=document.getElementById('bulkItemsWrap');
   if(wrap) wrap.innerHTML='';
   addBulkItemCard();
+  updateBulkDiscountPreview();
 }
 function fillBulkSample(){
   clearBulkForm();
@@ -1928,8 +1941,10 @@ function fillBulkSample(){
 function bindBulkCardEvents(card){
   const imageInput=card.querySelector('.bulk-image');
   const imagesArea=card.querySelector('.bulk-images');
+  const priceInput=card.querySelector('.bulk-price');
   imageInput?.addEventListener('input',()=>refreshBulkCardImageOptions(card));
   imagesArea?.addEventListener('input',()=>refreshBulkCardImageOptions(card));
+  priceInput?.addEventListener('input',()=>updateBulkDiscountPreview());
 }
 function getBulkCardImages(card){
   const raw=card?.querySelector('.bulk-images')?.value||'';
@@ -1946,6 +1961,7 @@ function refreshBulkCardImageOptions(card){
   const current=imageInput.value.trim();
   select.innerHTML='<option value="">Manuel ana resim</option>'+images.map(img=>`<option value="${img.replace(/"/g,'&quot;')}">${img}</option>`).join('');
   if(current && images.includes(current)) select.value=current;
+  renderBulkCardImagePreview(card);
 }
 function syncBulkPrimaryImage(sel){
   const card=sel?.closest('.bulk-item-card');
@@ -1953,6 +1969,55 @@ function syncBulkPrimaryImage(sel){
   if(!input||!sel?.value) return;
   input.value=sel.value;
   refreshBulkCardImageOptions(card);
+}
+function setBulkCardMainImage(btn){
+  const card=btn?.closest('.bulk-item-card');
+  const input=card?.querySelector('.bulk-image');
+  const src=btn?.dataset?.src;
+  if(!card||!input||!src) return;
+  input.value=src;
+  refreshBulkCardImageOptions(card);
+}
+function renderBulkCardImagePreview(card){
+  const grid=card?.querySelector('.bulk-image-preview-grid');
+  const imageInput=card?.querySelector('.bulk-image');
+  if(!grid||!imageInput) return;
+  const images=getBulkCardImages(card);
+  const current=imageInput.value.trim();
+  if(!images.length){
+    grid.innerHTML='<div class="bulk-image-preview-empty">Önizleme için resim ekleyin.</div>';
+    return;
+  }
+  grid.innerHTML=images.map((src,idx)=>`<button type="button" class="bulk-image-preview-item ${current===src?'main':''}" data-src="${src.replace(/"/g,'&quot;')}" onclick="setBulkCardMainImage(this)" title="Ana resim yap">
+    <img src="${src}" alt="Ürün görseli ${idx+1}" onerror="this.closest('.bulk-image-preview-item')?.remove()">
+    <span>${idx+1}</span>
+  </button>`).join('');
+}
+function updateBulkDiscountPreview(){
+  const helper=document.getElementById('bulkDiscountHelper');
+  const type=document.getElementById('bulkDiscountType')?.value||'manual';
+  const badgeEl=document.getElementById('bulkBadge');
+  const oldPrice=parseFloat(document.getElementById('bulkOldPrice')?.value);
+  const val=parseFloat(document.getElementById('bulkDiscountValue')?.value);
+  const firstCardPrice=parseFloat(document.querySelector('#bulkItemsWrap .bulk-item-card .bulk-price')?.value);
+  if(!helper||!badgeEl) return;
+  if(type==='manual'){
+    helper.textContent='Manuel etiket seçili. İndirim etiketi alanını istediğiniz gibi yazabilirsiniz.';
+    return;
+  }
+  if(!(oldPrice>0) || !(firstCardPrice>0)){
+    helper.textContent='Otomatik hesap için Eski Fiyat ve en az bir ürün fiyatı girin.';
+    return;
+  }
+  const previewBadge=buildBulkBadge(firstCardPrice,oldPrice,type,val,badgeEl.value);
+  if(!previewBadge){
+    helper.textContent='Eski fiyat, ürün fiyatından büyük olmalı.';
+    return;
+  }
+  badgeEl.value=previewBadge;
+  const diff=oldPrice-firstCardPrice;
+  const pct=(diff/oldPrice)*100;
+  helper.textContent=`Önizleme (1. ürün): Eski ${oldPrice.toLocaleString('tr-TR')} TL → Yeni ${firstCardPrice.toLocaleString('tr-TR')} TL • Fark ${diff.toLocaleString('tr-TR')} TL (%${Math.round(pct)})`;
 }
 function buildBulkBadge(price,oldPrice,type,value,manualBadge){
   const manual=(manualBadge||'').trim();
@@ -2902,6 +2967,12 @@ async function initAdmin(){
   const favs=getFavs();
   const el=document.getElementById('statFavs');
   if(el) el.innerText=favs.length;
+  ['bulkOldPrice','bulkDiscountValue','bulkBadge'].forEach(id=>{
+    const input=document.getElementById(id);
+    input?.addEventListener('input',updateBulkDiscountPreview);
+  });
+  document.getElementById('bulkDiscountType')?.addEventListener('change',updateBulkDiscountPreview);
+  updateBulkDiscountPreview();
 }
 
 document.addEventListener('DOMContentLoaded',()=>{

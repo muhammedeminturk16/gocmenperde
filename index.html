@@ -1244,6 +1244,7 @@ const PRODUCTS_CACHE_KEY = 'gp_products_cache_v2';
 const PRODUCTS_CACHE_TTL_MS = 1000 * 60 * 15;
 let productsLoadedOnce = false;
 let productRequestInFlight = null;
+let categoryRequestInFlight = null;
 
 function readProductsFromCache(){
   try{
@@ -1291,7 +1292,7 @@ async function loadProducts({forceRefresh=false} = {}){
 
   productRequestInFlight = (async ()=>{
     try{
-      const res = await fetch('/products.json', { cache:'no-cache' });
+      const res = await fetch(`/products.json?v=${Date.now()}`, { cache:'no-store' });
       if(!res.ok) throw new Error('Ürünler alınamadı');
       const fresh = await res.json();
       writeProductsToCache(fresh);
@@ -1491,6 +1492,25 @@ function syncCategoriesFromAdmin(){
       if(Array.isArray(parsed)) CATEGORIES = parsed.filter(c=>c && c.key && c.label);
     }
   } catch(e){}
+
+  if(!categoryRequestInFlight){
+    categoryRequestInFlight = fetch(`/categories.json?v=${Date.now()}`, { cache:'no-store' })
+      .then(res => {
+        if(!res.ok) throw new Error('Kategoriler alınamadı');
+        return res.json();
+      })
+      .then(remoteCategories => {
+        if(Array.isArray(remoteCategories) && remoteCategories.length){
+          CATEGORIES = remoteCategories.filter(c=>c && c.key && c.label);
+          rebuildCategoryFilters();
+          rebuildCategoryMenus();
+        }
+      })
+      .catch(()=>{})
+      .finally(()=>{
+        categoryRequestInFlight = null;
+      });
+  }
   // Filtre panelini güncelle
   rebuildCategoryFilters();
   rebuildCategoryMenus();

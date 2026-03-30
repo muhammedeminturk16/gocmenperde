@@ -1042,6 +1042,19 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
         <div id="catIconGrid" class="icon-picker-grid"></div>
         <input type="hidden" id="c-icon" value="">
       </div>
+      <div class="fg">
+        <label>Kategori Görseli (opsiyonel)</label>
+        <div class="upload-zone" style="padding:14px">
+          <input type="file" id="c-image-file" accept="image/*" onchange="handleCategoryImageSelect(this)">
+          <i class="fas fa-image" style="font-size:1.2rem;margin-bottom:6px"></i>
+          <p><span class="highlight">Bilgisayardan görsel seçin</span> (menu için küçük fotoğraf)</p>
+        </div>
+        <input type="text" id="c-image" placeholder="örn: resimler/plise-menu.jpg" style="margin-top:8px" oninput="previewCategoryImage()">
+        <div id="c-image-preview" style="display:none;margin-top:8px;align-items:center;gap:8px">
+          <img id="c-image-preview-img" src="" alt="Kategori görsel önizleme" style="width:36px;height:36px;border-radius:10px;object-fit:cover;border:1px solid var(--border)">
+          <span style="font-size:0.75rem;color:var(--slate-light)">Menüde bu görsel kullanılacak.</span>
+        </div>
+      </div>
     </div>
     <div class="form-modal-footer">
       <button class="btn btn-outline" onclick="closeModal('catModal')">İptal</button>
@@ -2198,12 +2211,12 @@ let campaignSwState=true;
 async function loadCategories(){
   const saved=localStorage.getItem(CAT_KEY);
   const defaults=[
-    {key:'carsaf',label:'Çarşaflar',icon:'fas fa-bed',desc:'Uyku çarşafları'},
-    {key:'tul-perde',label:'Tül Perdeler',icon:'fas fa-wind',desc:'Pileli tül perde modelleri'},
-    {key:'plise-perde',label:'Plise Perdeler',icon:'fas fa-border-all',desc:'Plise perde çeşitleri (m² fiyatlı)'},
-    {key:'stor-perde',label:'Stor Perdeler',icon:'fas fa-up-down',desc:'Stor perde koleksiyonu (m² fiyatlı)'},
-    {key:'zebra-perde',label:'Zebra Perdeler',icon:'fas fa-grip-lines',desc:'Zebra perde koleksiyonu (m² fiyatlı)'},
-    {key:'koltuk',label:'Koltuk Örtüleri',icon:'fas fa-couch',desc:'Koltuk ve kanepe örtüleri'}
+    {key:'carsaf',label:'Çarşaflar',icon:'fas fa-bed',image:'resimler/carsaf.jpg',desc:'Uyku çarşafları'},
+    {key:'tul-perde',label:'Tül Perdeler',icon:'fas fa-wind',image:'resimler/tulperde.WEBP',desc:'Pileli tül perde modelleri'},
+    {key:'plise-perde',label:'Plise Perdeler',icon:'fas fa-border-all',image:'resimler/foto7.jpg',desc:'Plise perde çeşitleri (m² fiyatlı)'},
+    {key:'stor-perde',label:'Stor Perdeler',icon:'fas fa-up-down',image:'resimler/foto8.jpg',desc:'Stor perde koleksiyonu (m² fiyatlı)'},
+    {key:'zebra-perde',label:'Zebra Perdeler',icon:'fas fa-grip-lines',image:'resimler/foto9.jpg',desc:'Zebra perde koleksiyonu (m² fiyatlı)'},
+    {key:'koltuk',label:'Koltuk Örtüleri',icon:'fas fa-couch',image:'resimler/koltuk_ortusu.jpeg',desc:'Koltuk ve kanepe örtüleri'}
   ];
   CATEGORIES=saved?JSON.parse(saved):defaults;
   if(!saved){
@@ -2248,12 +2261,75 @@ function onCatIconSelect(iconClass){
   const sel=document.getElementById('c-icon-select');
   if(sel && sel.value!==normalized) sel.value=normalized;
 }
+function previewCategoryImage(){
+  const input=document.getElementById('c-image');
+  const wrap=document.getElementById('c-image-preview');
+  const img=document.getElementById('c-image-preview-img');
+  if(!input || !wrap || !img) return;
+  const val=input.value.trim();
+  if(!val){
+    wrap.style.display='none';
+    img.src='';
+    return;
+  }
+  img.src=val;
+  wrap.style.display='flex';
+}
+async function handleCategoryImageSelect(input){
+  const file=input?.files?.[0];
+  if(!file) return;
+  const token=getGithubToken();
+  const imagePathInput=document.getElementById('c-image');
+  if(!imagePathInput) return;
+  if(!token){
+    const preview = await new Promise(resolve=>{
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    });
+    imagePathInput.value = preview || '';
+    previewCategoryImage();
+    aToast('⚠️ GitHub Token yok — görsel yalnızca önizleme olarak eklendi','error');
+    input.value='';
+    return;
+  }
+  try{
+    const sanitize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[ğ]/g,'g').replace(/[ü]/g,'u').replace(/[ş]/g,'s').replace(/[ı]/g,'i').replace(/[ö]/g,'o').replace(/[ç]/g,'c').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9._-]/g,'');
+    const uniqueSuffix=()=>{
+      if(window.crypto?.randomUUID) return window.crypto.randomUUID();
+      return `${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
+    };
+    const content = await new Promise(resolve=>{
+      const reader=new FileReader();
+      reader.onload=e=>resolve(e.target.result.split(',')[1]);
+      reader.readAsDataURL(file);
+    });
+    const fileName=`resimler/${Date.now()}-cat-${uniqueSuffix()}-${sanitize(file.name)}`;
+    const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
+    const payload={message:'Admin: Kategori görseli yüklendi',content};
+    const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
+    if(!res.ok){
+      const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
+      throw new Error(err.message||'GitHub yükleme hatası');
+    }
+    imagePathInput.value=fileName;
+    previewCategoryImage();
+    aToast('✅ Kategori görseli yüklendi','success');
+  }catch(err){
+    aToast('❌ '+err.message,'error');
+  }finally{
+    input.value='';
+  }
+}
 
 function renderCatTable(){
   document.getElementById('catTableBody').innerHTML=CATEGORIES.map((c,i)=>{
     const count=PRODUCTS.filter(p=>p.cat===c.key).length;
+    const visual = c.image
+      ? `<img src="${c.image}" alt="${c.label}" style="width:32px;height:32px;border-radius:8px;object-fit:cover;border:1px solid var(--border)">`
+      : `<div style="width:32px;height:32px;border-radius:8px;background:var(--gold-light);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.85rem"><i class="${c.icon||'fas fa-folder'}"></i></div>`;
     return `<tr>
-      <td><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:var(--gold-light);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.85rem"><i class="${c.icon||'fas fa-folder'}"></i></div><div><strong style="font-size:0.88rem">${c.label}</strong>${c.desc?`<div style="font-size:0.74rem;color:var(--slate-light)">${c.desc}</div>`:''}</div></div></td>
+      <td><div style="display:flex;align-items:center;gap:10px">${visual}<div><strong style="font-size:0.88rem">${c.label}</strong>${c.desc?`<div style="font-size:0.74rem;color:var(--slate-light)">${c.desc}</div>`:''}</div></div></td>
       <td><code style="background:#f0f2f5;padding:3px 8px;border-radius:5px;font-size:0.8rem">${c.key}</code></td>
       <td><strong>${count}</strong> <span style="color:var(--slate-light);font-size:0.8rem">ürün</span></td>
       <td><span class="badge badge-active">Aktif</span></td>
@@ -2268,8 +2344,11 @@ function renderCatTable(){
 function openAddCatModal(){
   document.getElementById('catModalTitle').innerText='Yeni Kategori';
   document.getElementById('editCatKey').value='';
-  ['c-label','c-key','c-desc','c-icon'].forEach(id=>document.getElementById(id).value='');
+  ['c-label','c-key','c-desc','c-icon','c-image'].forEach(id=>document.getElementById(id).value='');
+  const fileInput=document.getElementById('c-image-file');
+  if(fileInput) fileInput.value='';
   renderCatIconPicker('fas fa-folder-open');
+  previewCategoryImage();
   document.getElementById('catModal').classList.add('open');
 }
 function editCat(i){
@@ -2280,7 +2359,11 @@ function editCat(i){
   document.getElementById('c-key').value=c.key;
   document.getElementById('c-desc').value=c.desc||'';
   document.getElementById('c-icon').value=c.icon||'fas fa-folder-open';
+  document.getElementById('c-image').value=c.image||'';
+  const fileInput=document.getElementById('c-image-file');
+  if(fileInput) fileInput.value='';
   renderCatIconPicker(c.icon||'fas fa-folder-open');
+  previewCategoryImage();
   document.getElementById('catModal').classList.add('open');
 }
 function slugifyCatKey(){
@@ -2291,17 +2374,17 @@ function slugifyCatKey(){
 }
 function saveCat(){
   const label=document.getElementById('c-label').value.trim(),key=document.getElementById('c-key').value.trim().toLowerCase();
-  const origKey=document.getElementById('editCatKey').value,desc=document.getElementById('c-desc').value.trim(),icon=(document.getElementById('c-icon').value||'fas fa-folder-open').trim();
+  const origKey=document.getElementById('editCatKey').value,desc=document.getElementById('c-desc').value.trim(),icon=(document.getElementById('c-icon').value||'fas fa-folder-open').trim(),image=document.getElementById('c-image').value.trim();
   if(!label||!key){aToast('⚠️ Ad ve anahtar zorunlu','error');return;}
   if(!/^[a-z0-9-]+$/.test(key)){aToast('⚠️ Anahtar: küçük harf, rakam, tire','error');return;}
   if(origKey){
     const idx=CATEGORIES.findIndex(c=>c.key===origKey);
     if(key!==origKey) PRODUCTS.forEach(p=>{if(p.cat===origKey)p.cat=key;});
-    CATEGORIES[idx]={key,label,desc,icon};
+    CATEGORIES[idx]={key,label,desc,icon,image};
     aToast('✓ Güncellendi: '+label,'success');
   } else {
     if(CATEGORIES.find(c=>c.key===key)){aToast('⚠️ Bu anahtar zaten var','error');return;}
-    CATEGORIES.push({key,label,desc,icon});
+    CATEGORIES.push({key,label,desc,icon,image});
     aToast('✓ Eklendi: '+label,'success');
   }
   saveCategories();closeModal('catModal');renderCatTable();rebuildCatDropdowns();

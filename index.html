@@ -187,7 +187,7 @@ nav{display:flex;align-items:center;gap:8px}
 .products-loading{text-align:center;padding:60px;font-family:var(--ff-display);font-size:1.2rem;color:var(--slate);font-style:italic}
 
 /* ── Product Card ── */
-.product-card{background:white;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);transition:var(--transition);cursor:pointer;position:relative}
+.product-card{background:white;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);transition:var(--transition);cursor:pointer;position:relative;display:flex;flex-direction:column;height:100%}
 .fav-btn{position:absolute;top:14px;right:14px;width:36px;height:36px;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--slate);transition:var(--transition);z-index:10}
 .fav-btn.active{color:#c0392b;background:rgba(255,255,255,0.95)}.fav-btn:hover{transform:scale(1.1)}
 .product-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:var(--gold-light)}
@@ -199,7 +199,7 @@ nav{display:flex;align-items:center;gap:8px}
 .product-zoom{position:absolute;bottom:14px;right:14px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:0.95rem;opacity:0;transition:var(--transition);box-shadow:0 4px 16px rgba(0,0,0,0.15)}
 .product-card:hover .product-zoom{opacity:1}
 .product-zoom:hover{background:var(--gold);color:white;transform:scale(1.1)}
-.product-info{padding:18px}
+.product-info{padding:18px;display:flex;flex-direction:column;flex:1}
 @media(max-width:600px){.product-info{padding:12px}}
 .product-name{font-family:var(--ff-display);font-size:1.2rem;font-weight:600;color:var(--ink);margin-bottom:6px}
 @media(max-width:600px){.product-name{font-size:1rem}}
@@ -208,7 +208,7 @@ nav{display:flex;align-items:center;gap:8px}
 .product-rating{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--slate);margin-bottom:10px}
 .product-rating .stars{color:var(--gold);letter-spacing:1px;font-size:0.74rem}
 .product-rating b{color:var(--ink);font-size:0.78rem}
-.product-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.product-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:auto}
 .product-price{display:flex;flex-direction:column;gap:2px}
 .old-price{text-decoration:line-through;color:#a0a0a0;font-size:0.82rem}
 .current-price{color:#c0392b;font-weight:700;font-size:1.1rem;font-family:var(--ff-display)}
@@ -1701,7 +1701,7 @@ function buildCard(p, index=0){
     ${pleatedMeterProduct ? `<select class="qty-input pile-select" id="pile-${p.id}"><option value="seyrek">Seyrek Pile (1m→2m)</option><option value="orta" selected>Orta Pile (1m→2.5m)</option><option value="sik">Sık Pile (1m→3m)</option></select>` : ''}
     ${squareProduct ? `<span id="${pid}" class="qty-help-text">En ve boy girildiğinde m² ve fiyat otomatik hesaplanır</span>` : ''}
     ${pleatedMeterProduct ? `<span id="${pid}" class="qty-help-text">En/boy ve pile seçimine göre (1:2 / 1:2.5 / 1:3) metre ve fiyat otomatik hesaplanır</span>` : ''}
-    <button class="add-btn" onclick="event.stopPropagation();addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','pile-${p.id}')">+ Ekle</button>
+    <button class="add-btn" onclick="event.stopPropagation();addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','pile-${p.id}')">Sepete Ekle</button>
   </div>`;
 
   const showCampaignSlot = index % 4 === 1;
@@ -2421,8 +2421,20 @@ function getSectionFromLocation(){
 function go(id){
   closeAllPopups();
   const nextId = document.getElementById(id) ? id : 'home';
+  if(nextId === 'products') resetCategorySelectionToAll();
   if(window.location.hash !== `#${nextId}`) window.location.hash = nextId;
   applySectionState(nextId, {scroll:true});
+}
+
+function resetCategorySelectionToAll(){
+  const all = document.getElementById('cat-all');
+  if(!all) return;
+  all.checked = true;
+  CATEGORIES.forEach(c=>{
+    const el = document.getElementById('cat-'+c.key);
+    if(el) el.checked = false;
+  });
+  applyFilters();
 }
 
 window.addEventListener('hashchange',()=>{
@@ -2899,15 +2911,19 @@ function syncPartsFromAddress(addressText=''){
     .trim();
   const lines = normalized.split('—').map(s=>s.trim()).filter(Boolean);
   const firstLine = lines.find(l=>/mahalle|cadde|sokak|apartman|bina|no/i.test(l)) || lines[0] || '';
-  const cityLine = lines.find(l=>l.includes('/')) || lines[1] || '';
+  const cityLine = lines.find(l=>l.includes('/') && !/(sokak|cadde|apartman|bina)/i.test(l)) || lines.find((l,idx)=>idx>0 && l.includes('/')) || '';
 
   let neighborhood = '';
   let street = '';
   if(firstLine){
-    const mh = firstLine.match(/mahalle\s*:?\s*([^,\-—]+)/i);
-    const sk = firstLine.match(/(sokak|cadde)\s*\/?\s*cadde\s*:?\s*(.+)$/i) || firstLine.match(/(sokak|cadde)\s*:?\s*(.+)$/i);
+    const mh = firstLine.match(/([a-zçğıöşü0-9\s.'-]+\smahalle(?:si)?)/i);
+    const streetAfterLabel = firstLine.match(/(?:sokak\s*\/\s*cadde|cadde\s*\/\s*sokak|sokak|cadde)\s*:?\s*(.+)$/i);
     if(mh) neighborhood = mh[1].trim();
-    if(sk) street = sk[2].trim();
+    if(streetAfterLabel) street = streetAfterLabel[1].trim();
+    if(!street){
+      const withoutNeighborhood = firstLine.replace(/([a-zçğıöşü0-9\s.'-]+\smahalle(?:si)?)/i, '').replace(/^[-,:\s]+/, '').trim();
+      if(withoutNeighborhood && !/^(ilçe|şehir|il)\b/i.test(withoutNeighborhood)) street = withoutNeighborhood;
+    }
     if(!neighborhood || !street){
       const segments = firstLine.split(',').map(x=>x.trim()).filter(Boolean);
       if(!neighborhood) neighborhood = segments[0] || '';

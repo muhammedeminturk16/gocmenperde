@@ -329,8 +329,10 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
+const FALLBACK_RESEND_API_KEY = 're_c4EEGk7p_KvYLe2RR19gjuBkyd354v1Td';
+
 async function sendTransactionalEmail({ to, subject, html }) {
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = String(process.env.RESEND_API_KEY || FALLBACK_RESEND_API_KEY || '').trim();
   const from = resolveFromAddress();
   if (!apiKey) {
     console.warn('RESEND_API_KEY tanımlı değil. E-posta gönderimi atlandı.');
@@ -378,7 +380,8 @@ async function sendTransactionalEmail({ to, subject, html }) {
 
 function resolveFromAddress() {
   const configuredFrom = String(process.env.ORDER_FROM_EMAIL || process.env.RESEND_FROM_EMAIL || '').trim();
-  const from = configuredFrom || 'Göçmen Perde <onboarding@resend.dev>';
+  const fallbackFrom = 'Göçmen Perde <noreply@gocmenperde.com.tr>';
+  const from = configuredFrom || fallbackFrom;
   const emailMatch = from.match(/<?([^<>\s]+@[^<>\s]+)>?$/);
   const email = emailMatch ? emailMatch[1].toLowerCase() : '';
 

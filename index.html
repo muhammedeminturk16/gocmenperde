@@ -1942,6 +1942,10 @@ let imageViewerOpen = false;
 let modalLockedScrollY = 0;
 let modalThumbsCacheKey = '';
 let productsObserver = null;
+let modalSwipeStartX = 0;
+let modalSwipeStartY = 0;
+let modalSwipeTouchActive = false;
+let modalSwipePreventOpenUntil = 0;
 
 function lockPageScrollForModal(){
   modalLockedScrollY = window.scrollY || window.pageYOffset || 0;
@@ -2017,6 +2021,52 @@ function setModalImage(idx){
 }
 function showModalImage(step){ setModalImage(currentModalImageIndex + step); }
 function selectModalImage(idx){ setModalImage(idx); }
+
+function attachModalSwipeHandlers(){
+  const stage = document.getElementById('modalImgCol');
+  const viewerStage = document.querySelector('.image-viewer-stage');
+  if(!stage || stage.dataset.swipeBound === '1') return;
+
+  const onTouchStart = (e)=>{
+    const touch = e.touches && e.touches[0];
+    if(!touch || currentModalImages.length <= 1) return;
+    modalSwipeStartX = touch.clientX;
+    modalSwipeStartY = touch.clientY;
+    modalSwipeTouchActive = true;
+  };
+
+  const onTouchMove = (e)=>{
+    if(!modalSwipeTouchActive || currentModalImages.length <= 1) return;
+    const touch = e.touches && e.touches[0];
+    if(!touch) return;
+    const dx = touch.clientX - modalSwipeStartX;
+    const dy = touch.clientY - modalSwipeStartY;
+    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 12){
+      e.preventDefault();
+    }
+  };
+
+  const onTouchEnd = (e)=>{
+    if(!modalSwipeTouchActive || currentModalImages.length <= 1) return;
+    const touch = e.changedTouches && e.changedTouches[0];
+    modalSwipeTouchActive = false;
+    if(!touch) return;
+    const dx = touch.clientX - modalSwipeStartX;
+    const dy = touch.clientY - modalSwipeStartY;
+    if(Math.abs(dx) < 48 || Math.abs(dy) > 110) return;
+    showModalImage(dx < 0 ? 1 : -1);
+    modalSwipePreventOpenUntil = Date.now() + 420;
+  };
+
+  [stage, viewerStage].forEach((el)=>{
+    if(!el) return;
+    el.addEventListener('touchstart', onTouchStart, { passive:true });
+    el.addEventListener('touchmove', onTouchMove, { passive:false });
+    el.addEventListener('touchend', onTouchEnd, { passive:true });
+  });
+
+  stage.dataset.swipeBound = '1';
+}
 
 function openModalFromProduct(id){
   if(window.innerWidth>767) document.body.classList.add('native-cursor-mode');
@@ -2136,6 +2186,7 @@ function switchTab(tabId){
   document.getElementById('tab-'+tabId).classList.add('active');
 }
 function openImageViewer(){
+  if(Date.now() < modalSwipePreventOpenUntil) return;
   if(!currentModalImages.length) return;
   imageViewerOpen = true;
   document.getElementById('imageViewer').classList.add('open');
@@ -2233,6 +2284,8 @@ document.addEventListener('keydown', (e)=>{
   el.addEventListener('focus', ensureReviewFormVisibleOnMobile);
   el.addEventListener('click', ensureReviewFormVisibleOnMobile);
 });
+
+attachModalSwipeHandlers();
 
 // ── Menü & Popuplar ──
 function isMobileMenuOpen(){

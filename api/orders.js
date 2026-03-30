@@ -161,7 +161,7 @@ async function getOrderEmailColumn() {
 async function sendOrderCreatedEmails({ orderId, customer, note, payment, items, total }) {
   const customerHtml = buildOrderEmailHtml({
     title: 'Siparişiniz Alındı',
-    subtitle: `Sipariş #${orderId} başarıyla oluşturuldu.`,
+    subtitle: 'Sipariş özetiniz hazır. Detayları aşağıda görebilirsiniz.',
     accent: '#c9a84c',
     customer,
     payment,
@@ -185,7 +185,7 @@ async function sendOrderCreatedEmails({ orderId, customer, note, payment, items,
   if (customer.email) {
     jobs.push(sendTransactionalEmail({
       to: customer.email,
-      subject: `Göçmen Perde | Sipariş Onayı #${orderId}`,
+      subject: 'Göçmen Perde | Sipariş Özetiniz',
       html: customerHtml,
     }));
   }
@@ -223,7 +223,7 @@ async function sendOrderStatusEmail({ order, previousStatus, newStatus }) {
   const items = parseOrderItems(order.urunler);
   const html = buildOrderEmailHtml({
     title: 'Sipariş Durumu Güncellendi',
-    subtitle: `Sipariş #${order.id} durumu "${newStatus}" olarak güncellendi.`,
+    subtitle: `Sipariş durumunuz "${newStatus}" olarak güncellendi.`,
     accent: '#2471a3',
     customer: {
       name: order.musteri_adi,
@@ -240,7 +240,7 @@ async function sendOrderStatusEmail({ order, previousStatus, newStatus }) {
 
   await sendTransactionalEmail({
     to: customerEmail,
-    subject: `Göçmen Perde | Sipariş #${order.id} Durumu: ${newStatus}`,
+    subject: `Göçmen Perde | Sipariş Durum Güncellemesi: ${newStatus}`,
     html,
   });
 }
@@ -398,12 +398,12 @@ function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items
 
         ${extra}
 
-        <div style="margin:18px 0 10px;padding:16px;border:1px solid #ece6db;border-radius:14px;background:#fcfbf8">
-          <h2 style="margin:0 0 12px;font-size:18px;color:#0f0e0d">Sipariş Mesaj Paneli</h2>
+        <div style="margin:20px 0 10px;padding:18px;border:1px solid #eadfca;border-radius:16px;background:linear-gradient(180deg,#fffdf8 0%,#fcf8ef 100%)">
+          <h2 style="margin:0 0 12px;font-size:19px;color:#0f0e0d;letter-spacing:.2px">Sipariş Özetiniz</h2>
           ${itemCards || '<p style="margin:0;color:#6a6560;font-size:14px">Ürün bilgisi bulunamadı.</p>'}
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:8px;border-top:1px dashed #e6dcc8;margin-top:8px;flex-wrap:wrap">
-            <p style="margin:0;font-size:13px;color:#6a6560">Siparişi ve ürünleri incelemek için kartlara tıklayabilirsiniz.</p>
-            <p style="margin:0;font-size:19px;font-weight:800;color:#0f0e0d">Toplam: ${formatCurrency(total)}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px dashed #e6dcc8;margin-top:10px;flex-wrap:wrap">
+            <p style="margin:0;font-size:13px;color:#6a6560">Ürün kartlarına dokunarak detay sayfasına geçebilirsiniz.</p>
+            <p style="margin:0;font-size:20px;font-weight:800;color:#0f0e0d">Toplam: ${formatCurrency(total)}</p>
           </div>
         </div>
       </div>

@@ -3555,6 +3555,28 @@ function setMobileNavPadding(){
 }
 window.addEventListener('resize', setMobileNavPadding);
 document.addEventListener('DOMContentLoaded', setMobileNavPadding);
+
+// ── Görsel Performansı ──
+function optimizeImageLoading(scope = document){
+  scope.querySelectorAll('img').forEach((img, idx)=>{
+    if(!img.hasAttribute('decoding')) img.decoding = 'async';
+    if(!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', idx < 2 ? 'high' : 'low');
+    if(!img.hasAttribute('loading') && !img.closest('.hero')) img.loading = 'lazy';
+  });
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  optimizeImageLoading();
+  const mo = new MutationObserver((mutations)=>{
+    mutations.forEach((m)=>{
+      m.addedNodes.forEach((node)=>{
+        if(node.nodeType !== 1) return;
+        if(node.tagName === 'IMG') optimizeImageLoading(node.parentElement || document);
+        else if(typeof node.querySelectorAll === 'function') optimizeImageLoading(node);
+      });
+    });
+  });
+  mo.observe(document.body, {childList:true, subtree:true});
+});
 </script>
 </body>
 </html>

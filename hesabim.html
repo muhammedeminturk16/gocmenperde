@@ -226,11 +226,11 @@
 
     /* ── ORDER CARD ── */
     .order-card {
-        background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(240,247,255,0.64));
+        background: linear-gradient(145deg, rgba(255,255,255,0.94), rgba(249,246,255,0.9));
         border-radius: 18px;
         border: 1px solid rgba(255,255,255,0.88);
         margin-bottom: 16px;
-        box-shadow: 0 16px 40px rgba(70, 96, 130, 0.14);
+        box-shadow: 0 18px 42px rgba(74, 46, 120, 0.12);
         overflow: hidden;
         transition: box-shadow 0.2s, transform 0.2s;
         backdrop-filter: blur(18px);
@@ -245,10 +245,10 @@
         border-radius: 50%;
         right: -90px;
         top: -130px;
-        background: radial-gradient(circle at center, rgba(162, 197, 255, 0.3), rgba(162, 197, 255, 0));
+        background: radial-gradient(circle at center, rgba(200, 173, 255, 0.26), rgba(200, 173, 255, 0));
         pointer-events: none;
     }
-    .order-card:hover { box-shadow: 0 20px 44px rgba(84, 114, 152, 0.18); transform: translateY(-3px); }
+    .order-card:hover { box-shadow: 0 24px 48px rgba(80, 50, 128, 0.16); transform: translateY(-3px); }
     .order-card-top {
         padding: 16px 20px;
         display: flex;
@@ -364,10 +364,10 @@
         font-family: var(--ffd);
         font-size: 1.5rem;
         font-weight: 700;
-        color: #3a71a5;
+        color: #7242b7;
     }
     .btn-detail {
-        background: linear-gradient(135deg, #6fa9e8 0%, #7ec9cf 100%);
+        background: linear-gradient(135deg, #6f4bc8 0%, #d16ea6 100%);
         color: #fff;
         border: none;
         cursor: pointer;
@@ -383,16 +383,16 @@
         align-items: center;
         gap: 7px;
     }
-    .btn-detail:hover { background: linear-gradient(135deg, #5f9de2 0%, #73c2c8 100%); color: #fff; }
+    .btn-detail:hover { background: linear-gradient(135deg, #5f3ab8 0%, #c75d97 100%); color: #fff; }
     .orders-shell {
         background:
-            radial-gradient(circle at 8% 10%, rgba(192, 226, 255, 0.65), transparent 40%),
-            radial-gradient(circle at 88% 20%, rgba(204, 255, 247, 0.45), transparent 42%),
-            linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(238,246,255,0.58) 100%);
+            radial-gradient(circle at 8% 10%, rgba(226, 212, 255, 0.72), transparent 42%),
+            radial-gradient(circle at 88% 20%, rgba(255, 208, 231, 0.5), transparent 44%),
+            linear-gradient(180deg, rgba(255,255,255,0.86) 0%, rgba(250,245,255,0.72) 100%);
         border: 1px solid rgba(255,255,255,0.84);
         border-radius: 24px;
         padding: 18px;
-        box-shadow: 0 24px 60px rgba(100, 138, 181, 0.22);
+        box-shadow: 0 24px 60px rgba(99, 63, 160, 0.18);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
     }
@@ -402,17 +402,17 @@
         border-radius: 20px;
         border: 1px solid rgba(255,255,255,0.76);
         background:
-            radial-gradient(circle at 12% 18%, rgba(255,255,255,0.55), transparent 48%),
-            linear-gradient(125deg, rgba(236,247,255,0.94), rgba(221,236,255,0.9) 42%, rgba(214,248,244,0.92) 100%);
+            radial-gradient(circle at 12% 18%, rgba(255,255,255,0.64), transparent 50%),
+            linear-gradient(125deg, rgba(245,236,255,0.96), rgba(233,222,255,0.92) 42%, rgba(255,232,244,0.92) 100%);
         padding: 18px;
         margin-bottom: 14px;
-        color: #1b334a;
+        color: #2e1f4d;
     }
     .orders-hero::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 85% 10%, rgba(133, 190, 255, 0.35), transparent 50%);
+        background: radial-gradient(circle at 85% 10%, rgba(167, 130, 255, 0.3), transparent 52%);
         pointer-events: none;
     }
     .orders-hero-title {
@@ -424,7 +424,7 @@
     }
     .orders-hero-sub {
         font-size: 0.82rem;
-        color: rgba(33, 67, 96, 0.82);
+        color: rgba(67, 39, 110, 0.84);
         position: relative;
         z-index: 1;
     }
@@ -451,7 +451,7 @@
         margin-top: 2px;
         font-size: 0.68rem;
         letter-spacing: 1px;
-        color: rgba(44, 78, 109, 0.72);
+        color: rgba(77, 48, 120, 0.72);
         text-transform: uppercase;
     }
     .orders-controls {
@@ -468,12 +468,12 @@
         align-items: center;
         gap: 8px;
         background: rgba(255,255,255,0.9);
-        border: 1px solid rgba(123, 178, 233, 0.36);
+        border: 1px solid rgba(143, 111, 214, 0.36);
         border-radius: 999px;
         padding: 10px 14px;
-        box-shadow: 0 8px 18px rgba(126, 165, 211, 0.16);
+        box-shadow: 0 8px 18px rgba(112, 80, 170, 0.16);
     }
-    .orders-search i { color: #5d97cf; }
+    .orders-search i { color: #7f5cc7; }
     .orders-search input {
         border: none;
         outline: none;
@@ -491,9 +491,9 @@
         padding-bottom: 2px;
     }
     .order-pill {
-        border: 1px solid rgba(123, 178, 233, 0.46);
+        border: 1px solid rgba(135, 103, 203, 0.46);
         background: rgba(255,255,255,0.72);
-        color: #335574;
+        color: #5a3f87;
         border-radius: 999px;
         padding: 7px 12px;
         font-size: 0.72rem;
@@ -502,7 +502,7 @@
         white-space: nowrap;
     }
     .order-pill.active {
-        background: linear-gradient(135deg, #72afe6, #79cfd1);
+        background: linear-gradient(135deg, #7d56d2, #d16ea6);
         border-color: transparent;
         color: #fff;
     }
@@ -959,26 +959,50 @@
     .sugg-card-price { font-size: 0.78rem; color: var(--gold); font-weight: 700; }
 
     /* ── PROFILE ── */
-    .profile-card {
-        background: white;
-        border-radius: var(--radius);
-        border: 1px solid var(--border-hard);
+    .profile-shell {
+        background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(247,243,255,0.75) 100%);
+        border: 1px solid rgba(255,255,255,0.82);
+        border-radius: 24px;
+        padding: 18px;
+        box-shadow: 0 24px 62px rgba(87, 56, 148, 0.14);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+    .profile-overview {
+        background: linear-gradient(130deg, rgba(38,24,66,0.95), rgba(108,69,176,0.92));
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 16px;
+        color: #fff;
         margin-bottom: 16px;
+    }
+    .profile-overview-title { font-family: var(--ffd); font-size: 1.4rem; margin-bottom: 3px; }
+    .profile-overview-sub { font-size: 0.78rem; color: rgba(255,255,255,0.75); }
+    .profile-overview-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+    .profile-metric { background: rgba(255,255,255,0.14); border-radius: 12px; padding: 10px; border: 1px solid rgba(255,255,255,0.2); }
+    .profile-metric strong { display: block; font-size: 1rem; }
+    .profile-metric span { font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+    .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .profile-card {
+        background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(248,244,255,0.9));
+        border-radius: 16px;
+        border: 1px solid rgba(140,110,200,0.22);
+        margin-bottom: 0;
         overflow: hidden;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 12px 26px rgba(88, 58, 148, 0.1);
     }
     .profile-card-header {
-        background: #fafaf8;
+        background: linear-gradient(120deg, rgba(244,238,255,0.95), rgba(255,242,249,0.92));
         padding: 14px 20px;
-        border-bottom: 1px solid var(--border-hard);
+        border-bottom: 1px solid rgba(140,110,200,0.2);
         display: flex;
         align-items: center;
         gap: 10px;
         font-size: 0.88rem;
-        font-weight: 600;
-        color: var(--ink);
+        font-weight: 700;
+        color: #3f2a65;
     }
-    .profile-card-header i { color: var(--gold); }
+    .profile-card-header i { color: #7c53d3; }
     .profile-card-body { padding: 20px; }
 
     /* ── EMPTY / LOADING ── */
@@ -1036,6 +1060,8 @@
         .tabs-inner { padding: 0 4%; }
         .orders-stats { grid-template-columns: 1fr; }
         .orders-shell { padding: 14px; border-radius: 20px; }
+        .profile-overview-grid { grid-template-columns: 1fr; }
+        .profile-grid { grid-template-columns: 1fr; }
     }
 </style>
 
@@ -1184,44 +1210,57 @@
 
 <!-- PROFİLİM -->
 <div id="section-profile" class="gp-section">
-    <div class="profile-card">
-        <div class="profile-card-header">
-            <i class="fas fa-user-circle"></i> Bilgilerimi Güncelle
-        </div>
-        <div class="profile-card-body">
-            <div class="gp-form">
-                <div>
-                    <label class="form-label">Ad Soyad</label>
-                    <input type="text" id="pName" class="gp-input" placeholder="Ad Soyad">
-                </div>
-                <div>
-                    <label class="form-label">E-posta</label>
-                    <input type="email" id="pEmail" class="gp-input" disabled>
-                </div>
-                <div>
-                    <label class="form-label">Telefon</label>
-                    <input type="text" id="pPhone" class="gp-input" placeholder="05xx xxx xx xx">
-                </div>
-                <button class="gp-btn" onclick="updateProfile()"><i class="fas fa-save"></i> Güncelle</button>
+    <div class="profile-shell">
+        <div class="profile-overview">
+            <div class="profile-overview-title">Hesap Merkezi</div>
+            <div class="profile-overview-sub">Kişisel bilgileriniz, güvenlik ayarlarınız ve üyelik özetiniz tek noktada.</div>
+            <div class="profile-overview-grid">
+                <div class="profile-metric"><strong id="profileMetricOrders">0</strong><span>Sipariş</span></div>
+                <div class="profile-metric"><strong id="profileMetricFavs">0</strong><span>Favori</span></div>
+                <div class="profile-metric"><strong id="profileMetricAddresses">0</strong><span>Adres</span></div>
             </div>
         </div>
-    </div>
-    <div class="profile-card">
-        <div class="profile-card-header">
-            <i class="fas fa-lock"></i> Şifre Değiştir
-        </div>
-        <div class="profile-card-body">
-            <div class="gp-form">
-                <div>
-                    <label class="form-label">Mevcut Şifre</label>
-                    <input type="password" id="eskiSifre" class="gp-input" placeholder="Mevcut şifre">
-                </div>
-                <div>
-                    <label class="form-label">Yeni Şifre</label>
-                    <input type="password" id="yeniSifre" class="gp-input" placeholder="En az 6 karakter, harf + sayı">
-                </div>
-                <button class="gp-btn" onclick="changePassword()"><i class="fas fa-key"></i> Şifreyi Değiştir</button>
+        <div class="profile-grid">
+        <div class="profile-card">
+            <div class="profile-card-header">
+                <i class="fas fa-user-circle"></i> Bilgilerimi Güncelle
             </div>
+            <div class="profile-card-body">
+                <div class="gp-form">
+                    <div>
+                        <label class="form-label">Ad Soyad</label>
+                        <input type="text" id="pName" class="gp-input" placeholder="Ad Soyad">
+                    </div>
+                    <div>
+                        <label class="form-label">E-posta</label>
+                        <input type="email" id="pEmail" class="gp-input" disabled>
+                    </div>
+                    <div>
+                        <label class="form-label">Telefon</label>
+                        <input type="text" id="pPhone" class="gp-input" placeholder="05xx xxx xx xx">
+                    </div>
+                    <button class="gp-btn" onclick="updateProfile()"><i class="fas fa-save"></i> Güncelle</button>
+                </div>
+            </div>
+        </div>
+        <div class="profile-card">
+            <div class="profile-card-header">
+                <i class="fas fa-lock"></i> Şifre Değiştir
+            </div>
+            <div class="profile-card-body">
+                <div class="gp-form">
+                    <div>
+                        <label class="form-label">Mevcut Şifre</label>
+                        <input type="password" id="eskiSifre" class="gp-input" placeholder="Mevcut şifre">
+                    </div>
+                    <div>
+                        <label class="form-label">Yeni Şifre</label>
+                        <input type="password" id="yeniSifre" class="gp-input" placeholder="En az 6 karakter, harf + sayı">
+                    </div>
+                    <button class="gp-btn" onclick="changePassword()"><i class="fas fa-key"></i> Şifreyi Değiştir</button>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 </div>
@@ -1263,6 +1302,35 @@ function initUserDisplay() {
     }
 }
 initUserDisplay();
+
+function tuneImagePerformance(scope = document) {
+    scope.querySelectorAll('img').forEach((img) => {
+        if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
+        if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
+        if (!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'low');
+    });
+}
+tuneImagePerformance();
+
+const imageObserver = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+        m.addedNodes.forEach((n) => {
+            if (n.nodeType !== 1) return;
+            if (n.tagName === 'IMG') tuneImagePerformance(n.parentElement || document);
+            else if (typeof n.querySelectorAll === 'function') tuneImagePerformance(n);
+        });
+    }
+});
+imageObserver.observe(document.body, { childList: true, subtree: true });
+
+function updateProfileMetrics(meta = {}) {
+    const metricOrders = document.getElementById('profileMetricOrders');
+    const metricFavs = document.getElementById('profileMetricFavs');
+    const metricAddresses = document.getElementById('profileMetricAddresses');
+    if (metricOrders && Number.isFinite(meta.orders)) metricOrders.textContent = String(meta.orders);
+    if (metricFavs && Number.isFinite(meta.favorites)) metricFavs.textContent = String(meta.favorites);
+    if (metricAddresses && Number.isFinite(meta.addresses)) metricAddresses.textContent = String(meta.addresses);
+}
 
 function authHeaders() {
     return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
@@ -1372,7 +1440,7 @@ async function loadProductCatalog() {
 function renderOrderSuggestions() {
     const cards = ORDER_SUGGESTIONS.map(p => `
         <div class="order-sugg-card" onclick="window.location.href='/?product=${encodeURIComponent(p.id)}'">
-            <img src="${normalizeImagePath(p.image)}" alt="${p.name}" onerror="this.style.display='none'">
+            <img src="${normalizeImagePath(p.image)}" alt="${p.name}" loading="lazy" decoding="async" fetchpriority="low" onerror="this.style.display='none'">
             <div>
                 <div class="order-sugg-name">${p.name}</div>
                 <div class="order-sugg-price">${Number(p.price).toLocaleString('tr-TR')} TL</div>
@@ -1389,6 +1457,7 @@ async function loadOrders() {
         const r = await fetch('/api/orders?action=my-orders', { headers: authHeaders() });
         const data = await r.json();
         allOrders = data.orders || [];
+        updateProfileMetrics({ orders: allOrders.length });
         updateOrderStats(allOrders);
         if (!allOrders.length) {
             el.innerHTML = `
@@ -1471,7 +1540,7 @@ function renderOrders(orders, totalCount = orders.length) {
             return `
                 <div class="order-preview-item order-item-link" onclick='goToProductDetail(${JSON.stringify(i)})'>
                     ${itemImage
-                        ? `<img class="order-preview-img" src="${itemImage}" alt="${itemName}" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">`
+                        ? `<img class="order-preview-img" src="${itemImage}" alt="${itemName}" loading="lazy" decoding="async" fetchpriority="low" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">`
                         : ''}
                     <div class="order-preview-placeholder" style="display:${itemImage ? 'none' : 'flex'}">🛍️</div>
                     <div class="order-preview-meta">
@@ -1546,7 +1615,7 @@ function openOrderDetail(orderId) {
         return `
             <div class="modal-product-row order-item-link" onclick='goToProductDetail(${JSON.stringify(i)})'>
                 ${imgSrc
-                    ? `<img class="modal-product-img" src="${imgSrc}" alt="${i.name || i.ad}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+                    ? `<img class="modal-product-img" src="${imgSrc}" alt="${i.name || i.ad}" loading="lazy" decoding="async" fetchpriority="low" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
                     : ''}
                 <div class="modal-product-img-placeholder" style="display:${imgSrc ? 'none' : 'flex'}">🛍️</div>
                 <div class="modal-product-info">
@@ -1688,9 +1757,11 @@ async function loadAddresses() {
         const r = await fetch('/api/auth?action=addresses', { headers: authHeaders() });
         const data = await r.json();
         if (!data.addresses?.length) {
+            updateProfileMetrics({ addresses: 0 });
             el.innerHTML = '<div class="empty-state"><i class="fas fa-map-marker-alt"></i><p>Kayıtlı adres yok.</p></div>';
             return;
         }
+        updateProfileMetrics({ addresses: data.addresses.length });
         el.innerHTML = data.addresses.map(a => `
             <div class="address-card">
                 <div class="address-icon"><i class="fas fa-map-marker-alt"></i></div>
@@ -1754,6 +1825,7 @@ async function loadFavorites() {
         const r = await fetch('/api/favorites?action=list', { headers: authHeaders() });
         const data = await r.json();
         if (!data.favorites?.length) {
+            updateProfileMetrics({ favorites: 0 });
             el.innerHTML = `
                 <div class="fav-empty-box">
                     <div class="fav-empty-icon"><i class="fas fa-heart-crack"></i></div>
@@ -1768,7 +1840,7 @@ async function loadFavorites() {
             <div class="fav-grid">
                 ${data.favorites.map(f => `
                     <div class="fav-card">
-                        <img src="${f.urun_resim || ''}" alt="${f.urun_adi}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22140%22><rect fill=%22%23f5f5f5%22 width=%22160%22 height=%22140%22/><text x=%2280%22 y=%2278%22 text-anchor=%22middle%22 font-size=%2232%22>🛍️</text></svg>'">
+                        <img src="${f.urun_resim || ''}" alt="${f.urun_adi}" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22140%22><rect fill=%22%23f5f5f5%22 width=%22160%22 height=%22140%22/><text x=%2280%22 y=%2278%22 text-anchor=%22middle%22 font-size=%2232%22>🛍️</text></svg>'">
                         <div class="fav-card-body">
                             <div class="fav-card-name">${f.urun_adi}</div>
                             <div class="fav-card-price">${Number(f.urun_fiyat || 0).toLocaleString('tr-TR')} TL</div>
@@ -1780,6 +1852,7 @@ async function loadFavorites() {
                     </div>`).join('')}
             </div>
             ${renderSuggestions()}`;
+        updateProfileMetrics({ favorites: data.favorites.length });
     } catch(e) {
         el.innerHTML = '<div class="empty-state"><i class="fas fa-wifi"></i><p>Yüklenemedi.</p></div>';
     }
@@ -1788,7 +1861,7 @@ async function loadFavorites() {
 function renderSuggestions() {
     const cards = SUGGESTION_PRODUCTS.map(p => `
         <div class="sugg-card" onclick="window.location.href='/'">
-            <img src="${p.image}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22110%22><rect fill=%22%23f5f5f5%22 width=%22160%22 height=%22110%22/></svg>'">
+            <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" fetchpriority="low" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22110%22><rect fill=%22%23f5f5f5%22 width=%22160%22 height=%22110%22/></svg>'">
             <div class="sugg-card-body">
                 <div class="sugg-card-name">${p.name}</div>
                 <div class="sugg-card-price">${p.price.toLocaleString('tr-TR')} TL</div>

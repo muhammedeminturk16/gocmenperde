@@ -2375,7 +2375,7 @@ function saveProduct(){
   const singleImage = document.getElementById('f-image').value.trim();
   if(singleImage && !images.includes(singleImage)) images.unshift(singleImage);
   images = images.filter(Boolean);
-  if(images.some(isInlineImageData)){aToast('⚠️ Görseller Base64 önizleme formatında. Önce GitHub'a yükleyin.','error');return;}
+  if(images.some(isInlineImageData)){aToast("⚠️ Görseller Base64 önizleme formatında. Önce GitHub'a yükleyin.",'error');return;}
   const obj={
     id:'',name,desc:document.getElementById('f-desc').value.trim(),
     image:images[0]||'',

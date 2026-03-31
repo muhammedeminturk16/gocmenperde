@@ -746,6 +746,21 @@ Işık: Yarı Geçirgen"></textarea></div>
         <textarea id="bulkCare" style="min-height:90px;font-family:monospace;font-size:0.8rem" placeholder="Yıkama: 30°C
 Ütü: Düşük"></textarea></div>
     </div>
+    <div class="template-builder" style="margin-top:10px">
+      <div class="inline">
+        <input type="text" id="bulkTemplateName" placeholder="Hazır buton adı (örn: Bahar Koleksiyonu)">
+        <select id="bulkTemplateTarget">
+          <option value="specs">Teknik Özellikler</option>
+          <option value="care">Bakım Talimatları</option>
+          <option value="desc">Açıklama</option>
+        </select>
+      </div>
+      <textarea id="bulkTemplateContent" placeholder="Toplu alanda kullanılacak şablon içeriği..."></textarea>
+      <div class="template-actions">
+        <button class="btn btn-outline btn-sm" type="button" onclick="saveCustomTemplate('bulk')"><i class="fas fa-plus"></i> Hazır Buton Oluştur</button>
+      </div>
+      <div id="bulkCustomTemplateButtons" class="template-buttons"></div>
+    </div>
     <div style="display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap">
       <button class="btn btn-success" type="button" onclick="saveBulkProducts()"><i class="fas fa-save"></i> Toplu Kaydet</button>
     </div>
@@ -2083,7 +2098,7 @@ function saveBulkProducts(){
     const oldPriceVal=sharedOldPrice?parseFloat(sharedOldPrice):null;
     const badge=buildBulkBadge(price,oldPriceVal,sharedDiscountType,sharedDiscountValue,sharedBadge);
     incoming.push({
-      id:createProductId(name),name,desc:sharedDesc,image:images[0]||'',images,
+      id:createProductId(name),name,desc:sharedDesc,image:imageRaw,images,
       price,oldPrice:oldPriceVal,
       cat:sharedCat,unit:sharedUnit,isMeter:sharedUnit==='mt',isSquareMeter:sharedUnit==='m2',
       features:sharedFeatures,badge,discountType:sharedDiscountType,discountValue:Number.isFinite(sharedDiscountValue)?sharedDiscountValue:null,
@@ -2648,13 +2663,32 @@ function applyBulkCareTemplate(cat='standart'){
 }
 function getCustomTemplates(){return JSON.parse(localStorage.getItem(CUSTOM_TEMPLATE_KEY)||'[]');}
 function saveCustomTemplates(list){localStorage.setItem(CUSTOM_TEMPLATE_KEY,JSON.stringify(list));}
-function applyCustomTemplate(idx){
+function resolveTemplateElements(scope='single'){
+  const isBulk=scope==='bulk';
+  return {
+    nameId:isBulk?'bulkTemplateName':'specTemplateName',
+    targetId:isBulk?'bulkTemplateTarget':'specTemplateTarget',
+    contentId:isBulk?'bulkTemplateContent':'specTemplateContent',
+    buttonsId:isBulk?'bulkCustomTemplateButtons':'customTemplateButtons',
+    fieldIds:{
+      specs:isBulk?'bulkSpecs':'f-specs',
+      care:isBulk?'bulkCare':'f-care',
+      desc:isBulk?'bulkDesc':'f-desc'
+    },
+    validIds:{specs:'specs-valid',care:'care-valid'}
+  };
+}
+function applyCustomTemplate(idx,scope='single'){
   const tpl=getCustomTemplates()[idx];
   if(!tpl) return;
-  const fid=tpl.target==='care'?'f-care':(tpl.target==='desc'?'f-desc':'f-specs');
-  const vid=tpl.target==='care'?'care-valid':'specs-valid';
-  document.getElementById(fid).value=tpl.content||'';
-  if(fid!=='f-desc') validateStructuredField(fid,vid);
+  const refs=resolveTemplateElements(scope);
+  const fid=refs.fieldIds[tpl.target]||refs.fieldIds.specs;
+  const el=document.getElementById(fid);
+  if(!el) return;
+  el.value=tpl.content||'';
+  if(scope==='single' && fid!=='f-desc'){
+    validateStructuredField(fid, tpl.target==='care'?refs.validIds.care:refs.validIds.specs);
+  }
 }
 function deleteCustomTemplate(idx){
   const list=getCustomTemplates();
@@ -2664,22 +2698,28 @@ function deleteCustomTemplate(idx){
   list.splice(idx,1);
   saveCustomTemplates(list);
   renderCustomTemplateButtons();
+  renderCustomTemplateButtons('bulk');
 }
-function saveCustomTemplate(){
-  const name=document.getElementById('specTemplateName').value.trim();
-  const content=document.getElementById('specTemplateContent').value.trim();
-  const target=document.getElementById('specTemplateTarget').value;
+function saveCustomTemplate(scope='single'){
+  const refs=resolveTemplateElements(scope);
+  const name=document.getElementById(refs.nameId)?.value.trim()||'';
+  const content=document.getElementById(refs.contentId)?.value.trim()||'';
+  const target=document.getElementById(refs.targetId)?.value||'specs';
   if(!name||!content){aToast('⚠️ Şablon adı ve içerik zorunlu','error');return;}
   const list=getCustomTemplates();
   list.push({name,content,target});
   saveCustomTemplates(list);
-  document.getElementById('specTemplateName').value='';
-  document.getElementById('specTemplateContent').value='';
+  const nameEl=document.getElementById(refs.nameId);
+  const contentEl=document.getElementById(refs.contentId);
+  if(nameEl) nameEl.value='';
+  if(contentEl) contentEl.value='';
   renderCustomTemplateButtons();
+  renderCustomTemplateButtons('bulk');
   aToast('✓ Hazır buton eklendi','success');
 }
-function renderCustomTemplateButtons(){
-  const box=document.getElementById('customTemplateButtons');
+function renderCustomTemplateButtons(scope='single'){
+  const refs=resolveTemplateElements(scope);
+  const box=document.getElementById(refs.buttonsId);
   if(!box) return;
   const list=getCustomTemplates();
   if(!list.length){
@@ -2687,7 +2727,7 @@ function renderCustomTemplateButtons(){
     return;
   }
   box.innerHTML=list.map((tpl,idx)=>`<span class="json-helper-btn" style="display:inline-flex;align-items:center;gap:6px">
-    <button type="button" onclick="applyCustomTemplate(${idx})" style="border:none;background:none;cursor:pointer;color:inherit">${tpl.name} (${tpl.target==='care'?'Bakım':(tpl.target==='desc'?'Açıklama':'Teknik')})</button>
+    <button type="button" onclick="applyCustomTemplate(${idx},'${scope}')" style="border:none;background:none;cursor:pointer;color:inherit">${tpl.name} (${tpl.target==='care'?'Bakım':(tpl.target==='desc'?'Açıklama':'Teknik')})</button>
     <button type="button" onclick="deleteCustomTemplate(${idx})" style="border:none;background:none;cursor:pointer;color:var(--red)"><i class="fas fa-xmark"></i></button>
   </span>`).join('');
 }
@@ -3045,6 +3085,7 @@ async function initAdmin(){
   renderCatTable();
   renderCampaigns();
   renderCustomTemplateButtons();
+  renderCustomTemplateButtons('bulk');
   renderNotifs();
   updateTokenStatus();
   const favs=getFavs();

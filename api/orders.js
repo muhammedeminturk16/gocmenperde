@@ -353,17 +353,17 @@ function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items
       const qtyLabel = qty > 1 ? `${qty} adet` : '1 adet';
 
       return `
-        <a href="${escapeHtml(productUrl)}" style="display:block;text-decoration:none;color:inherit;margin:0 0 12px;border:1px solid #ece6db;border-radius:14px;overflow:hidden;background:#fff;">
+        <a href="${escapeHtml(productUrl)}" style="display:block;text-decoration:none;color:inherit;margin:0 0 12px;border:1px solid #dbe9f6;border-radius:16px;overflow:hidden;background:linear-gradient(145deg,#ffffff,#f3f9ff);">
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
             <tr>
               <td width="92" style="padding:12px;vertical-align:top;">
-                <img src="${escapeHtml(imageUrl)}" alt="${productName}" width="92" height="92" style="display:block;width:92px;height:92px;object-fit:cover;border-radius:10px;border:1px solid #f0ece3;background:#faf8f3" />
+                <img src="${escapeHtml(imageUrl)}" alt="${productName}" width="92" height="92" style="display:block;width:92px;height:92px;object-fit:cover;border-radius:12px;border:1px solid #dce8f3;background:#f4f8fc" />
               </td>
               <td style="padding:12px 12px 12px 0;vertical-align:top;">
-                <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#161513">${productName}</p>
-                <p style="margin:0 0 4px;font-size:12px;color:#6a6560">${escapeHtml(qtyLabel)} · ${formatCurrency(price)} / birim</p>
-                <p style="margin:0;font-size:14px;font-weight:700;color:#0f0e0d">Ara Toplam: ${formatCurrency(subtotal)}</p>
-                <p style="margin:8px 0 0;font-size:12px;color:${accent};font-weight:700">Ürünü görüntülemek için tıklayın →</p>
+                <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#1b2a3b">${productName}</p>
+                <p style="margin:0 0 4px;font-size:12px;color:#5b6d82">${escapeHtml(qtyLabel)} · ${formatCurrency(price)} / birim</p>
+                <p style="margin:0;font-size:14px;font-weight:700;color:#16314d">Ara Toplam: ${formatCurrency(subtotal)}</p>
+                <p style="margin:8px 0 0;font-size:12px;color:#4e86ba;font-weight:700">Ürünü görüntülemek için tıklayın →</p>
               </td>
             </tr>
           </table>
@@ -374,36 +374,36 @@ function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items
   const noteText = String(note || '').trim() || '-';
 
   return `
-  <div style="margin:0;padding:24px;background:#f7f4ef;font-family:'Segoe UI',Arial,sans-serif;color:#1e1c1a">
-    <div style="max-width:760px;margin:0 auto;background:#fff;border:1px solid #ece6db;border-radius:18px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.05)">
-      <div style="padding:26px 24px;background:linear-gradient(135deg,${accent},#0f0e0d);color:#fff">
+  <div style="margin:0;padding:24px;background:linear-gradient(170deg,#eef6ff,#f5fbff);font-family:'Segoe UI',Arial,sans-serif;color:#1e1c1a">
+    <div style="max-width:760px;margin:0 auto;background:rgba(255,255,255,0.9);border:1px solid #d7e7f8;border-radius:22px;overflow:hidden;box-shadow:0 14px 34px rgba(68,110,158,0.14)">
+      <div style="padding:26px 24px;background:linear-gradient(135deg,#6da9df,#75cdd0);color:#fff">
         <h1 style="margin:0 0 8px;font-size:26px;letter-spacing:.2px">${escapeHtml(title)}</h1>
         <p style="margin:0;font-size:14px;opacity:.95">${escapeHtml(subtitle)}</p>
       </div>
       <div style="padding:24px 24px 18px;">
-        <div style="margin:0 0 16px;padding:16px;border-radius:14px;background:#fffaf0;border:1px solid #f0e1b9">
-          <p style="margin:0 0 10px;font-size:14px;color:#4a4743">Merhaba ${escapeHtml(customer?.name || 'Değerli müşterimiz')}, sipariş detaylarınızı aşağıda görebilirsiniz.</p>
-          <a href="${escapeHtml(customerOrdersUrl)}" style="display:inline-block;padding:10px 16px;border-radius:999px;background:${accent};color:#fff;font-size:12px;font-weight:700;letter-spacing:.3px;text-decoration:none">Müşteri paneline git</a>
+        <div style="margin:0 0 16px;padding:16px;border-radius:16px;background:linear-gradient(145deg,#ffffff,#f0f8ff);border:1px solid #d8e8f6">
+          <p style="margin:0 0 10px;font-size:14px;color:#45607d">Merhaba ${escapeHtml(customer?.name || 'Değerli müşterimiz')}, sipariş detaylarınızı aşağıda görebilirsiniz.</p>
+          <a href="${escapeHtml(customerOrdersUrl)}" style="display:inline-block;padding:10px 16px;border-radius:999px;background:linear-gradient(135deg,#6ea9df,#73c7ce);color:#fff;font-size:12px;font-weight:700;letter-spacing:.3px;text-decoration:none">Müşteri paneline git</a>
         </div>
 
-        <h2 style="margin:0 0 10px;font-size:18px;color:#0f0e0d">Müşteri Bilgileri</h2>
+        <h2 style="margin:0 0 10px;font-size:18px;color:#213d5b">Müşteri Bilgileri</h2>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:0 8px;margin-bottom:14px">
-          <tr><td style="width:130px;color:#6a6560;font-size:13px">Ad Soyad</td><td style="font-size:14px;font-weight:600">${escapeHtml(customer?.name || '-')}</td></tr>
-          <tr><td style="color:#6a6560;font-size:13px">Telefon</td><td style="font-size:14px">${escapeHtml(customer?.phone || '-')}</td></tr>
-          <tr><td style="color:#6a6560;font-size:13px">E-posta</td><td style="font-size:14px">${escapeHtml(customer?.email || '-')}</td></tr>
-          <tr><td style="color:#6a6560;font-size:13px">Ödeme</td><td style="font-size:14px">${escapeHtml(paymentLabel(payment))}</td></tr>
-          <tr><td style="color:#6a6560;font-size:13px;vertical-align:top">Adres</td><td style="font-size:14px;line-height:1.6">${escapeHtml(customer?.address || '-')}</td></tr>
-          <tr><td style="color:#6a6560;font-size:13px;vertical-align:top">Sipariş Notu</td><td style="font-size:14px;line-height:1.6">${escapeHtml(noteText)}</td></tr>
+          <tr><td style="width:130px;color:#5f7489;font-size:13px">Ad Soyad</td><td style="font-size:14px;font-weight:600;color:#1f344d">${escapeHtml(customer?.name || '-')}</td></tr>
+          <tr><td style="color:#5f7489;font-size:13px">Telefon</td><td style="font-size:14px;color:#2a405a">${escapeHtml(customer?.phone || '-')}</td></tr>
+          <tr><td style="color:#5f7489;font-size:13px">E-posta</td><td style="font-size:14px;color:#2a405a">${escapeHtml(customer?.email || '-')}</td></tr>
+          <tr><td style="color:#5f7489;font-size:13px">Ödeme</td><td style="font-size:14px;color:#2a405a">${escapeHtml(paymentLabel(payment))}</td></tr>
+          <tr><td style="color:#5f7489;font-size:13px;vertical-align:top">Adres</td><td style="font-size:14px;line-height:1.6;color:#2a405a">${escapeHtml(customer?.address || '-')}</td></tr>
+          <tr><td style="color:#5f7489;font-size:13px;vertical-align:top">Sipariş Notu</td><td style="font-size:14px;line-height:1.6;color:#2a405a">${escapeHtml(noteText)}</td></tr>
         </table>
 
         ${extra}
 
-        <div style="margin:20px 0 10px;padding:18px;border:1px solid #eadfca;border-radius:16px;background:linear-gradient(180deg,#fffdf8 0%,#fcf8ef 100%)">
-          <h2 style="margin:0 0 12px;font-size:19px;color:#0f0e0d;letter-spacing:.2px">Sipariş Özetiniz</h2>
-          ${itemCards || '<p style="margin:0;color:#6a6560;font-size:14px">Ürün bilgisi bulunamadı.</p>'}
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px dashed #e6dcc8;margin-top:10px;flex-wrap:wrap">
-            <p style="margin:0;font-size:13px;color:#6a6560">Ürün kartlarına dokunarak detay sayfasına geçebilirsiniz.</p>
-            <p style="margin:0;font-size:20px;font-weight:800;color:#0f0e0d">Toplam: ${formatCurrency(total)}</p>
+        <div style="margin:20px 0 10px;padding:18px;border:1px solid #d8e7f5;border-radius:18px;background:linear-gradient(180deg,#ffffff 0%,#f2f8ff 100%)">
+          <h2 style="margin:0 0 12px;font-size:19px;color:#213d5b;letter-spacing:.2px">Sipariş Özetiniz</h2>
+          ${itemCards || '<p style="margin:0;color:#5f7489;font-size:14px">Ürün bilgisi bulunamadı.</p>'}
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px dashed #c8dcec;margin-top:10px;flex-wrap:wrap">
+            <p style="margin:0;font-size:13px;color:#5f7489">Ürün kartlarına dokunarak detay sayfasına geçebilirsiniz.</p>
+            <p style="margin:0;font-size:20px;font-weight:800;color:#1e4366">Toplam: ${formatCurrency(total)}</p>
           </div>
         </div>
       </div>

@@ -226,15 +226,15 @@
 
     /* ── ORDER CARD ── */
     .order-card {
-        background: linear-gradient(145deg, rgba(255,255,255,0.88), rgba(255,255,255,0.72));
+        background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(240,247,255,0.64));
         border-radius: 18px;
-        border: 1px solid rgba(255,255,255,0.8);
+        border: 1px solid rgba(255,255,255,0.88);
         margin-bottom: 16px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        box-shadow: 0 16px 40px rgba(70, 96, 130, 0.14);
         overflow: hidden;
         transition: box-shadow 0.2s, transform 0.2s;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
         position: relative;
     }
     .order-card::before {
@@ -245,10 +245,10 @@
         border-radius: 50%;
         right: -90px;
         top: -130px;
-        background: radial-gradient(circle at center, rgba(201,168,76,0.24), rgba(201,168,76,0));
+        background: radial-gradient(circle at center, rgba(162, 197, 255, 0.3), rgba(162, 197, 255, 0));
         pointer-events: none;
     }
-    .order-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+    .order-card:hover { box-shadow: 0 20px 44px rgba(84, 114, 152, 0.18); transform: translateY(-3px); }
     .order-card-top {
         padding: 16px 20px;
         display: flex;
@@ -289,11 +289,11 @@
         letter-spacing: 0.5px;
         text-transform: uppercase;
     }
-    .order-status.beklemede { background: #fff3cd; color: #856404; }
-    .order-status.hazirlaniyor { background: #cff4fc; color: #055160; }
-    .order-status.kargoda { background: #d1ecf1; color: #0c5460; }
-    .order-status.teslim { background: #d4edda; color: #155724; }
-    .order-status.iptal { background: #f8d7da; color: #721c24; }
+    .order-status.beklemede { background: rgba(255, 235, 199, 0.72); color: #8b6630; }
+    .order-status.hazirlaniyor { background: rgba(211, 244, 255, 0.74); color: #275f84; }
+    .order-status.kargoda { background: rgba(218, 233, 255, 0.78); color: #325e95; }
+    .order-status.teslim { background: rgba(217, 248, 227, 0.78); color: #2d7b4a; }
+    .order-status.iptal { background: rgba(255, 222, 228, 0.78); color: #9f3b4e; }
     .order-items-preview {
         padding: 12px 20px;
         font-size: 0.83rem;
@@ -364,11 +364,11 @@
         font-family: var(--ffd);
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--gold);
+        color: #3a71a5;
     }
     .btn-detail {
-        background: var(--ink);
-        color: white;
+        background: linear-gradient(135deg, #6fa9e8 0%, #7ec9cf 100%);
+        color: #fff;
         border: none;
         cursor: pointer;
         padding: 9px 18px;
@@ -383,33 +383,36 @@
         align-items: center;
         gap: 7px;
     }
-    .btn-detail:hover { background: var(--gold); color: var(--ink); }
+    .btn-detail:hover { background: linear-gradient(135deg, #5f9de2 0%, #73c2c8 100%); color: #fff; }
     .orders-shell {
         background:
-            radial-gradient(circle at 15% 8%, rgba(201,168,76,0.22), transparent 35%),
-            linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.28) 100%);
-        border: 1px solid rgba(255,255,255,0.72);
+            radial-gradient(circle at 8% 10%, rgba(192, 226, 255, 0.65), transparent 40%),
+            radial-gradient(circle at 88% 20%, rgba(204, 255, 247, 0.45), transparent 42%),
+            linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(238,246,255,0.58) 100%);
+        border: 1px solid rgba(255,255,255,0.84);
         border-radius: 24px;
         padding: 18px;
-        box-shadow: 0 30px 70px rgba(0,0,0,0.08);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 24px 60px rgba(100, 138, 181, 0.22);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
     }
     .orders-hero {
         position: relative;
         overflow: hidden;
         border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.45);
-        background: linear-gradient(120deg, #171410 0%, #2b251b 45%, #4a3b1f 100%);
+        border: 1px solid rgba(255,255,255,0.76);
+        background:
+            radial-gradient(circle at 12% 18%, rgba(255,255,255,0.55), transparent 48%),
+            linear-gradient(125deg, rgba(236,247,255,0.94), rgba(221,236,255,0.9) 42%, rgba(214,248,244,0.92) 100%);
         padding: 18px;
         margin-bottom: 14px;
-        color: #fff;
+        color: #1b334a;
     }
     .orders-hero::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 85% 10%, rgba(201,168,76,0.28), transparent 50%);
+        background: radial-gradient(circle at 85% 10%, rgba(133, 190, 255, 0.35), transparent 50%);
         pointer-events: none;
     }
     .orders-hero-title {
@@ -421,7 +424,7 @@
     }
     .orders-hero-sub {
         font-size: 0.82rem;
-        color: rgba(255,255,255,0.74);
+        color: rgba(33, 67, 96, 0.82);
         position: relative;
         z-index: 1;
     }
@@ -434,10 +437,10 @@
         z-index: 1;
     }
     .orders-stat {
-        border: 1px solid rgba(255,255,255,0.18);
+        border: 1px solid rgba(255,255,255,0.7);
         border-radius: 14px;
         padding: 10px;
-        background: rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.42);
     }
     .orders-stat-value {
         font-family: var(--ffd);
@@ -448,7 +451,7 @@
         margin-top: 2px;
         font-size: 0.68rem;
         letter-spacing: 1px;
-        color: rgba(255,255,255,0.72);
+        color: rgba(44, 78, 109, 0.72);
         text-transform: uppercase;
     }
     .orders-controls {
@@ -465,12 +468,12 @@
         align-items: center;
         gap: 8px;
         background: rgba(255,255,255,0.9);
-        border: 1px solid rgba(201,168,76,0.25);
+        border: 1px solid rgba(123, 178, 233, 0.36);
         border-radius: 999px;
         padding: 10px 14px;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 8px 18px rgba(126, 165, 211, 0.16);
     }
-    .orders-search i { color: var(--gold-dark); }
+    .orders-search i { color: #5d97cf; }
     .orders-search input {
         border: none;
         outline: none;
@@ -488,9 +491,9 @@
         padding-bottom: 2px;
     }
     .order-pill {
-        border: 1px solid rgba(201,168,76,0.35);
-        background: rgba(255,255,255,0.85);
-        color: var(--ink);
+        border: 1px solid rgba(123, 178, 233, 0.46);
+        background: rgba(255,255,255,0.72);
+        color: #335574;
         border-radius: 999px;
         padding: 7px 12px;
         font-size: 0.72rem;
@@ -499,8 +502,8 @@
         white-space: nowrap;
     }
     .order-pill.active {
-        background: var(--ink);
-        border-color: var(--ink);
+        background: linear-gradient(135deg, #72afe6, #79cfd1);
+        border-color: transparent;
         color: #fff;
     }
 

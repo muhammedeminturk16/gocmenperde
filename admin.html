@@ -548,6 +548,7 @@ tbody tr:hover td{background:#fdfcf8}
         <div class="nav-item" onclick="showPage('categories');renderCatTable()"><i class="fas fa-folder-open"></i> Kategoriler</div>
         <div class="nav-item" onclick="showPage('campaigns')"><i class="fas fa-tag"></i> Kampanyalar</div>
         <div class="nav-item" onclick="showPage('showcase');renderShowcaseAdminPage()"><i class="fas fa-images"></i> Montaj & Yorum Alanı</div>
+        <div class="nav-item" onclick="showPage('fromyou');renderFromYouAdminPage()"><i class="fas fa-camera-retro"></i> Sizden Gelenler</div>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-section-label">Sistem</div>
@@ -898,7 +899,16 @@ Işık: Yarı Geçirgen"></textarea></div>
     <div class="dash-panel-header"><h3><i class="fas fa-camera-retro"></i> Yeni Montaj Görseli Ekle</h3></div>
     <div class="dash-panel-body">
       <div class="form-row">
-        <div class="fg"><label>Resim URL / Yol *</label><input type="text" id="showcaseImageSrc" placeholder="örn: resimler/foto12.jpg"></div>
+        <div class="fg">
+          <label>Resim Seç *</label>
+          <label class="upload-zone" style="padding:14px;border-radius:10px">
+            <i class="fas fa-image" style="font-size:1.2rem;margin-bottom:6px"></i>
+            <p><span class="highlight">Bilgisayardan görsel seçin</span> (otomatik yüklenir)</p>
+            <input type="file" id="showcaseImageFile" accept="image/*" onchange="handleShowcaseImageSelect(this)">
+          </label>
+          <input type="text" id="showcaseImageSrc" placeholder="resimler/... (otomatik dolacak)" readonly style="margin-top:8px;background:#f7f7f7">
+          <p id="showcaseImageFileName" style="font-size:0.72rem;margin-top:4px;color:var(--slate-light)">JPG, PNG, WEBP</p>
+        </div>
         <div class="fg"><label>Kart Etiketi</label><input type="text" id="showcaseImageLabel" placeholder="örn: Salon Tül"></div>
       </div>
       <div class="form-row">
@@ -939,6 +949,45 @@ Işık: Yarı Geçirgen"></textarea></div>
     <table>
       <thead><tr><th>#</th><th>Puan</th><th>Yorum</th><th>Yazar</th><th>İşlem</th></tr></thead>
       <tbody id="showcaseReviewTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ SİZDEN GELENLER ══ -->
+<div class="page" id="page-fromyou">
+  <div class="breadcrumb"><i class="fas fa-home"></i> <span>Sizden Gelenler</span></div>
+  <div class="page-header">
+    <div><h1>Sizden <em>Gelenler</em></h1><p>Müşteri ev fotoğraflarını ve otomatik yorumları yönetin</p></div>
+    <button class="btn btn-outline btn-sm" onclick="renderFromYouAdminPage()"><i class="fas fa-rotate"></i> Yenile</button>
+  </div>
+  <div class="dash-panel" style="margin-bottom:16px">
+    <div class="dash-panel-header"><h3><i class="fas fa-house-user"></i> Yeni Müşteri Evi Fotoğrafı Ekle</h3></div>
+    <div class="dash-panel-body">
+      <div class="form-row">
+        <div class="fg">
+          <label>Ev Fotoğrafı Seç *</label>
+          <label class="upload-zone" style="padding:14px;border-radius:10px">
+            <i class="fas fa-camera" style="font-size:1.2rem;margin-bottom:6px"></i>
+            <p><span class="highlight">Bilgisayardan fotoğraf seçin</span> (otomatik yüklenir)</p>
+            <input type="file" id="fromYouImageFile" accept="image/*" onchange="handleFromYouImageSelect(this)">
+          </label>
+          <input type="text" id="fromYouImageSrc" placeholder="resimler/... (otomatik dolacak)" readonly style="margin-top:8px;background:#f7f7f7">
+          <p id="fromYouImageFileName" style="font-size:0.72rem;margin-top:4px;color:var(--slate-light)">JPG, PNG, WEBP</p>
+        </div>
+        <div class="fg"><label>Başlık *</label><input type="text" id="fromYouTitle" placeholder="örn: Nilüfer'de Modern Salon Dönüşümü"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Konum / Oda</label><input type="text" id="fromYouLocation" placeholder="örn: Bursa · Nilüfer"></div>
+        <div class="fg"><label>Not</label><input type="text" id="fromYouNote" placeholder="örn: Zebra + fon perde uygulaması"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="addFromYouEntry()"><i class="fas fa-plus"></i> Fotoğrafı Yayınla</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Fotoğraf</th><th>Başlık</th><th>Otomatik Yorum</th><th>İşlem</th></tr></thead>
+      <tbody id="fromYouTableBody"></tbody>
     </table>
   </div>
 </div>
@@ -1298,9 +1347,10 @@ function logout(){
 //  NAVIGATION
 // ════════════════════════════════════
 let currentPage = 'dashboard';
-const pageTitles = {dashboard:'Dashboard',orders:'Siparişler',customers:'Müşteriler',favorites:'Favoriler',products:'Ürün Yönetimi',categories:'Kategoriler',campaigns:'Kampanyalar',showcase:'Montaj & Yorum Alanı',notifications:'Bildirimler',settings:'Ayarlar'};
+const pageTitles = {dashboard:'Dashboard',orders:'Siparişler',customers:'Müşteriler',favorites:'Favoriler',products:'Ürün Yönetimi',categories:'Kategoriler',campaigns:'Kampanyalar',showcase:'Montaj & Yorum Alanı',fromyou:'Sizden Gelenler',notifications:'Bildirimler',settings:'Ayarlar'};
 const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
+const FROM_YOU_SHOWCASE_KEY = 'gp_from_you_showcase_v1';
 const SHOWCASE_DEFAULT_IMAGES = [
   {src:'resimler/foto1.jpg',title:'Salon Tül Uygulaması',desc:'Özel ölçü tül perde montajı ile ferah salon görünümü.',label:'Salon Tül'},
   {src:'resimler/foto2.jpg',title:'Zebra Perde Montajı',desc:'Gün ışığını kontrollü kullanan zebra perde çözümü.',label:'Zebra Sistem'},
@@ -1318,6 +1368,7 @@ const SHOWCASE_DEFAULT_REVIEWS = [
 ];
 let showcaseImages = [];
 let showcaseReviews = [];
+let fromYouItems = [];
 
 function getShowcaseState(key, fallback){
   try{
@@ -1421,6 +1472,62 @@ function seedAutoShowcaseReviews(){
   renderShowcaseReviewRows();
   aToast('✓ Otomatik örnek yorumlar eklendi','success');
 }
+function buildAutoFromYouComment(title, note){
+  const packs = [
+    'Evimizin havası tamamen değişti, gelen herkes perdeyi soruyor.',
+    'Kumaş kalitesi ve montaj titizliği beklentimizin üstünde çıktı.',
+    'Ölçü ve model önerisi o kadar doğruydu ki sonuç tam hayalimiz gibi oldu.',
+    'Renk uyumu mükemmel oldu, salonumuz çok daha ferah görünüyor.'
+  ];
+  const pick = packs[Math.floor(Math.random()*packs.length)];
+  const prefix = title ? `"${title}" uygulamasında ` : '';
+  return `${prefix}${pick}${note ? ` (${note})` : ''}`;
+}
+function renderFromYouRows(){
+  const body = document.getElementById('fromYouTableBody');
+  if(!body) return;
+  if(!fromYouItems.length){
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--slate-light)">Henüz müşteri evi fotoğrafı yok</td></tr>';
+    return;
+  }
+  body.innerHTML = fromYouItems.map((item, idx)=>`
+    <tr>
+      <td>${idx+1}</td>
+      <td><img class="product-thumb" src="${item.src}" alt="${item.title || 'Müşteri evi fotoğrafı'}"></td>
+      <td><b>${item.title || '-'}</b><small style="display:block;color:var(--slate-light);margin-top:3px">${item.location || '-'}</small></td>
+      <td>${item.comment || '-'}</td>
+      <td><button class="icon-btn del" onclick="removeFromYouItem(${idx})" title="Sil"><i class="fas fa-trash"></i></button></td>
+    </tr>
+  `).join('');
+}
+function renderFromYouAdminPage(){
+  fromYouItems = getShowcaseState(FROM_YOU_SHOWCASE_KEY, []);
+  renderFromYouRows();
+}
+function addFromYouEntry(){
+  const src = document.getElementById('fromYouImageSrc')?.value.trim();
+  const title = document.getElementById('fromYouTitle')?.value.trim();
+  const location = document.getElementById('fromYouLocation')?.value.trim();
+  const note = document.getElementById('fromYouNote')?.value.trim();
+  if(!src || !title){ aToast('Fotoğraf ve başlık zorunludur'); return; }
+  const comment = buildAutoFromYouComment(title, note);
+  fromYouItems.unshift({src,title,location,note,comment,author:'Doğrulanmış Müşteri'});
+  fromYouItems = fromYouItems.slice(0,20);
+  localStorage.setItem(FROM_YOU_SHOWCASE_KEY, JSON.stringify(fromYouItems));
+  renderFromYouRows();
+  ['fromYouImageSrc','fromYouTitle','fromYouLocation','fromYouNote'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const fileEl = document.getElementById('fromYouImageFile');
+  if(fileEl) fileEl.value='';
+  const nameEl = document.getElementById('fromYouImageFileName');
+  if(nameEl) nameEl.textContent='JPG, PNG, WEBP';
+  aToast('✓ Sizden gelenler kartı eklendi (yorum otomatik oluşturuldu)','success');
+}
+function removeFromYouItem(index){
+  fromYouItems.splice(index,1);
+  localStorage.setItem(FROM_YOU_SHOWCASE_KEY, JSON.stringify(fromYouItems));
+  renderFromYouRows();
+  aToast('Kayıt kaldırıldı');
+}
 
 function toggleSidebar(){
   const sb=document.getElementById('sidebar'), ov=document.getElementById('sidebarOverlay');
@@ -1442,6 +1549,7 @@ function showPage(id){
   if(id==='favorites') renderFavorites();
   if(id==='campaigns') renderCampaigns();
   if(id==='showcase') renderShowcaseAdminPage();
+  if(id==='fromyou') renderFromYouAdminPage();
   if(id==='notifications') renderNotifs();
 }
 function handleStatCardKey(event, target, filter){
@@ -3239,6 +3347,56 @@ async function handleBulkImageSelect(input){
     aToast('✅ Toplu ürün resimleri yüklendi','success');
   }catch(err){
     if(fileNameEl) fileNameEl.textContent='Yükleme başarısız';
+    aToast('❌ '+err.message,'error');
+  }finally{
+    input.value='';
+  }
+}
+async function handleShowcaseImageSelect(input){
+  const file = Array.from(input?.files||[])[0];
+  const fileNameEl = document.getElementById('showcaseImageFileName');
+  if(fileNameEl) fileNameEl.textContent = file ? file.name : 'JPG, PNG, WEBP';
+  if(!file) return;
+  const pathEl = document.getElementById('showcaseImageSrc');
+  const token = getGithubToken();
+  if(!token){
+    if(pathEl) pathEl.value = URL.createObjectURL(file);
+    aToast('⚠️ GitHub Token yok — sadece önizleme yolu atandı','error');
+    return;
+  }
+  try{
+    if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
+    const uploaded = await uploadImageToGithub(token, file, {prefix:'showcase'});
+    if(pathEl) pathEl.value = uploaded;
+    if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded}`;
+    aToast('✅ Montaj görseli yüklendi','success');
+  }catch(err){
+    if(fileNameEl) fileNameEl.textContent = 'Yükleme başarısız';
+    aToast('❌ '+err.message,'error');
+  }finally{
+    input.value='';
+  }
+}
+async function handleFromYouImageSelect(input){
+  const file = Array.from(input?.files||[])[0];
+  const fileNameEl = document.getElementById('fromYouImageFileName');
+  if(fileNameEl) fileNameEl.textContent = file ? file.name : 'JPG, PNG, WEBP';
+  if(!file) return;
+  const pathEl = document.getElementById('fromYouImageSrc');
+  const token = getGithubToken();
+  if(!token){
+    if(pathEl) pathEl.value = URL.createObjectURL(file);
+    aToast('⚠️ GitHub Token yok — sadece önizleme yolu atandı','error');
+    return;
+  }
+  try{
+    if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
+    const uploaded = await uploadImageToGithub(token, file, {prefix:'from-you'});
+    if(pathEl) pathEl.value = uploaded;
+    if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded}`;
+    aToast('✅ Müşteri evi fotoğrafı yüklendi','success');
+  }catch(err){
+    if(fileNameEl) fileNameEl.textContent = 'Yükleme başarısız';
     aToast('❌ '+err.message,'error');
   }finally{
     input.value='';

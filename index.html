@@ -209,6 +209,21 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .review-stars{color:var(--gold);font-size:0.8rem;margin-bottom:16px;letter-spacing:2px}
 .review-text{font-family:var(--ff-display);font-size:1.05rem;font-weight:400;color:var(--ink);line-height:1.8;font-style:italic;margin-bottom:20px}
 .review-author{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--slate);font-weight:500}
+.from-you-preview{padding:70px 0 20px}
+#from-you{background:radial-gradient(circle at top right,rgba(201,168,76,0.2),transparent 45%),linear-gradient(165deg,#110f0d 0%,#1f1a14 55%,#2b241b 100%);padding:95px 5%}
+.from-you-hero{width:min(1240px,100%);margin:0 auto}
+#from-you .section-tag{color:#f2d27a}
+#from-you .section-title{color:#fff}
+#from-you .section-desc{color:rgba(255,255,255,0.78)}
+.from-you-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.from-you-card{position:relative;overflow:hidden;border-radius:18px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.06);backdrop-filter:blur(4px);min-height:320px;box-shadow:0 20px 40px rgba(0,0,0,0.22);transition:transform .35s ease, box-shadow .35s ease}
+.from-you-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 28px 50px rgba(0,0,0,0.32)}
+.from-you-card img{width:100%;height:100%;object-fit:cover;display:block}
+.from-you-card-overlay{position:absolute;inset:auto 0 0 0;padding:18px;background:linear-gradient(to top,rgba(0,0,0,0.85),rgba(0,0,0,0.1));color:#fff}
+.from-you-card-overlay h4{font-family:var(--ff-display);font-size:1.25rem;margin-bottom:8px}
+.from-you-card-overlay p{font-size:0.8rem;line-height:1.6;color:rgba(255,255,255,0.9)}
+.from-you-card-badge{display:inline-flex;padding:5px 10px;border-radius:999px;font-size:0.62rem;letter-spacing:1.3px;text-transform:uppercase;background:rgba(242,210,122,0.25);border:1px solid rgba(242,210,122,0.45);margin-bottom:8px}
+.from-you-grid-hero .from-you-card{min-height:360px}
 
 /* ── Products ── */
 #products{background:var(--warm-white);padding-top:75px}
@@ -756,6 +771,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
         <div class="collection-dropdown" id="desktopCategoryMenu"></div>
       </div>
       <button class="nav-link" onclick="go('about')">Hakkımızda</button>
+      <button class="nav-link" onclick="go('from-you')">Sizden Gelenler</button>
       <button class="nav-link" onclick="go('contact')">İletişim</button>
       <button class="nav-icon" onclick="togglePopup('searchBar')"><i class="fas fa-search"></i></button>
       <button class="nav-icon" onclick="togglePopup('favoriteBar')" title="Favorilerim">
@@ -809,6 +825,13 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
       <div><div class="section-tag">Google Yorumları</div><h2 class="section-title">Müşterilerimiz <em>Anlatıyor</em></h2></div>
     </div>
     <div class="reviews-grid" id="customerReviewsGrid"></div>
+  </div>
+  <div class="from-you-preview">
+    <div class="section-header" style="max-width:100%;margin:0 auto 28px">
+      <div><div class="section-tag">Sizden Gelenler</div><h2 class="section-title">Müşteri Evlerinden <em>Işıltılı Sonuçlar</em></h2></div>
+      <p class="section-desc">Gerçek müşteri evleri, gerçek uygulamalar. Bu içerik admin panelinden canlı güncellenir.</p>
+    </div>
+    <div class="from-you-grid" id="fromYouPreviewGrid"></div>
   </div>
   <footer>
     <p>© 2026 <span>Göçmen Perde</span> — Tüm Hakları Saklıdır · Osmangazi, Bursa</p>
@@ -918,6 +941,17 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
     <p>© 2026 <span>Göçmen Perde</span></p>
     <div class="footer-links"><a href="/gizlilik-politikasi.html" style="color:rgba(201,168,76,0.7)">Gizlilik Politikası</a><span style="opacity:0.3">·</span><a href="/mesafeli-satis.html" style="color:rgba(201,168,76,0.7)">Mesafeli Satış</a><span style="opacity:0.3">·</span><a href="/iade-politikasi.html" style="color:rgba(201,168,76,0.7)">İade &amp; İptal</a></div>
   </footer>
+</section>
+
+<!-- SİZDEN GELENLER -->
+<section id="from-you" class="section">
+  <div class="from-you-hero">
+    <div class="section-header" style="max-width:1200px;margin:0 auto 22px">
+      <div><div class="section-tag">Gerçek Müşteri Evleri</div><h2 class="section-title">Sizden <em>Gelenler</em></h2></div>
+      <p class="section-desc">Göçmen Perde uygulamaları sonrası paylaşılan müşteri fotoğrafları ve otomatik memnuniyet notları.</p>
+    </div>
+    <div class="from-you-grid from-you-grid-hero" id="fromYouPageGrid"></div>
+  </div>
 </section>
 
 <!-- SEPET -->
@@ -1222,6 +1256,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
   <button onclick="go('products');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-border-all"></i></span>ÜRÜNLER</button>
   <div id="mobileCategoryMenu"></div>
   <button onclick="go('about');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-book-open"></i></span>HİKAYEMİZ</button>
+  <button onclick="go('from-you');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-camera-retro"></i></span>SİZDEN GELENLER</button>
   <button onclick="go('contact');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-phone"></i></span>İLETİŞİM</button>
   <button onclick="togglePopup('miniCart');closeMobileMenuWrapper()">
     <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-bag-shopping"></i></span>SEPETİM
@@ -1275,6 +1310,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 const WA_NUMBER = '905012110958';
 const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
+const FROM_YOU_SHOWCASE_KEY = 'gp_from_you_showcase_v1';
 const DEFAULT_INSTALLATION_SHOWCASE = [
   {src:'resimler/foto1.jpg',title:'Salon Tül Uygulaması',desc:'Özel ölçü tül perde montajı ile ferah salon görünümü.',label:'Salon Tül'},
   {src:'resimler/foto2.jpg',title:'Zebra Perde Montajı',desc:'Gün ışığını kontrollü kullanan zebra perde çözümü.',label:'Zebra Sistem'},
@@ -1289,6 +1325,11 @@ const DEFAULT_CUSTOMER_SHOWCASE_REVIEWS = [
   {rating:5,text:'Montaj ekibi çok temiz çalıştı, salonumuz bambaşka oldu.',author:'Google Haritalar · Doğrulanmış Müşteri'},
   {rating:5,text:'Ölçü alımından montaja kadar her adım çok profesyoneldi.',author:'Google Haritalar · Doğrulanmış Müşteri'},
   {rating:5,text:'Hem önerdikleri model hem işçilik gerçekten mükemmeldi.',author:'Google Haritalar · Doğrulanmış Müşteri'}
+];
+const DEFAULT_FROM_YOU_SHOWCASE = [
+  {src:'resimler/foto6.jpg',title:'Bursa Salon Uygulaması',location:'Osmangazi',comment:'Evimizin havası tamamen değişti, perde seçimi tam istediğimiz gibi oldu.'},
+  {src:'resimler/foto8.jpg',title:'Nilüfer Zebra + Fon',location:'Nilüfer',comment:'Model önerisi çok başarılıydı, salon şimdi çok daha modern görünüyor.'},
+  {src:'resimler/foto11.jpg',title:'Yatak Odası Dönüşümü',location:'Yıldırım',comment:'Işık dengesi harika oldu, işçilik gerçekten çok özenliydi.'}
 ];
 
 function parseShowcaseJSON(key, fallback){
@@ -1331,6 +1372,26 @@ function renderCustomerShowcaseReviews(){
 function renderHomeShowcaseSections(){
   renderInstallationShowcase();
   renderCustomerShowcaseReviews();
+  renderFromYouShowcase('fromYouPreviewGrid', 3);
+}
+function renderFromYouShowcase(targetId='fromYouPageGrid', limit=12){
+  const grid = document.getElementById(targetId);
+  if(!grid) return;
+  const list = parseShowcaseJSON(FROM_YOU_SHOWCASE_KEY, DEFAULT_FROM_YOU_SHOWCASE).slice(0, limit);
+  if(!list.length){
+    grid.innerHTML = '<div class="review-card">Henüz müşteri paylaşımı yok.</div>';
+    return;
+  }
+  grid.innerHTML = list.map((item, idx)=>`
+    <article class="from-you-card">
+      <img src="${item.src}" alt="${item.title || ('Müşteri evi ' + (idx+1))}" loading="lazy">
+      <div class="from-you-card-overlay">
+        <span class="from-you-card-badge">${item.location || 'Doğrulanmış Müşteri'}</span>
+        <h4>${item.title || 'Müşteri evi uygulaması'}</h4>
+        <p>“${item.comment || 'Sonuç beklentimizin de üzerinde oldu.'}”</p>
+      </div>
+    </article>
+  `).join('');
 }
 
 // ── Ürün verisi ──
@@ -2647,6 +2708,7 @@ window.addEventListener('load',()=>{
   if(fromBackForward) hideLoader(true);
   else setTimeout(()=>hideLoader(false),320);
   renderHomeShowcaseSections();
+  renderFromYouShowcase('fromYouPageGrid', 12);
   loadFavoritesFromStorage();
   loadFavoritesFromServer();
   loadCartFromStorage();
@@ -2667,8 +2729,9 @@ document.addEventListener('visibilitychange',()=>{
   }
 });
 window.addEventListener('storage',(event)=>{
-  if(event.key===INSTALLATION_SHOWCASE_KEY || event.key===CUSTOMER_SHOWCASE_REVIEWS_KEY){
+  if(event.key===INSTALLATION_SHOWCASE_KEY || event.key===CUSTOMER_SHOWCASE_REVIEWS_KEY || event.key===FROM_YOU_SHOWCASE_KEY){
     renderHomeShowcaseSections();
+    renderFromYouShowcase('fromYouPageGrid', 12);
     initObserver();
   }
 });
@@ -3592,7 +3655,7 @@ function initObserver(){
   productsObserver = new IntersectionObserver(entries=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
   },{threshold:0.06});
-  document.querySelectorAll('.product-card,.gallery-item,.review-card,.feature-item,.value-card').forEach(el=>{
+  document.querySelectorAll('.product-card,.gallery-item,.review-card,.feature-item,.value-card,.from-you-card').forEach(el=>{
     el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='opacity 0.6s ease, transform 0.6s ease'; productsObserver.observe(el);
   });
 }

@@ -3429,10 +3429,10 @@ function initUserSession(){
         const regBtn = document.getElementById('registerBtnMobile');
         if(regBtn) regBtn.style.display='none';
         const accLinks = document.getElementById('mobileAccountLinks');
-        if(accLinks) accLinks.style.display='block';
+        if(accLinks) accLinks.style.display='flex';
         if(loginText) loginText.innerText = ilkIsim;
         registerButtons.forEach(btn => btn.style.display='none');
-        if(accountLinks) accountLinks.style.display='block';
+        if(accountLinks) accountLinks.style.display='flex';
       }
     }
   } catch(e){}

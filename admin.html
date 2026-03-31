@@ -974,6 +974,7 @@ Işık: Yarı Geçirgen"></textarea></div>
           <input type="text" id="fromYouImageSrc" placeholder="resimler/... (otomatik dolacak)" readonly style="margin-top:8px;background:#f7f7f7">
           <textarea id="fromYouImages" placeholder="Ek fotoğraflar (her satıra bir görsel yolu):&#10;resimler/ornek-1.jpg&#10;resimler/ornek-2.jpg" oninput="syncFromYouPrimaryImage()" style="margin-top:8px;min-height:78px;font-family:monospace;font-size:0.8rem"></textarea>
           <p id="fromYouImageFileName" style="font-size:0.72rem;margin-top:4px;color:var(--slate-light)">JPG, PNG, WEBP — çoklu yükleme destekli</p>
+          <div id="fromYouImagePreviewList" style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px"></div>
         </div>
         <div class="fg"><label>Başlık *</label><input type="text" id="fromYouTitle" placeholder="örn: Nilüfer'de Modern Salon Dönüşümü"></div>
       </div>
@@ -1506,6 +1507,32 @@ function syncFromYouPrimaryImage(){
   const listEl = document.getElementById('fromYouImages');
   if(mainEl) mainEl.value = images[0] || '';
   if(listEl) listEl.value = images.join('\n');
+  renderFromYouImagePreview(images);
+}
+function renderFromYouImagePreview(images=getFromYouImagesFromField()){
+  const wrap = document.getElementById('fromYouImagePreviewList');
+  if(!wrap) return;
+  if(!images.length){
+    wrap.innerHTML = '<div style="grid-column:1/-1;font-size:0.76rem;color:var(--slate-light)">Henüz fotoğraf eklenmedi</div>';
+    return;
+  }
+  wrap.innerHTML = images.map((src,idx)=>`
+    <div style="position:relative;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff">
+      <img src="${src}" alt="Müşteri fotoğrafı ${idx+1}" style="width:100%;height:86px;object-fit:cover;display:block">
+      <button type="button" onclick="removeFromYouImageAt(${idx})" title="Fotoğrafı kaldır" style="position:absolute;top:6px;right:6px;width:22px;height:22px;border:none;border-radius:999px;background:rgba(0,0,0,0.7);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-xmark"></i></button>
+      <div style="position:absolute;left:6px;bottom:6px;font-size:0.62rem;background:rgba(0,0,0,0.65);color:#fff;padding:2px 6px;border-radius:999px">${idx===0 ? 'Kapak' : 'Foto '+(idx+1)}</div>
+    </div>
+  `).join('');
+}
+function removeFromYouImageAt(index){
+  const images = getFromYouImagesFromField();
+  if(index<0 || index>=images.length) return;
+  images.splice(index,1);
+  const mainEl = document.getElementById('fromYouImageSrc');
+  const listEl = document.getElementById('fromYouImages');
+  if(mainEl) mainEl.value = images[0] || '';
+  if(listEl) listEl.value = images.join('\n');
+  renderFromYouImagePreview(images);
 }
 function setFromYouSubmitState(){
   const btn = document.getElementById('fromYouSubmitBtn');
@@ -1522,6 +1549,7 @@ function resetFromYouForm(){
   if(nameEl) nameEl.textContent='JPG, PNG, WEBP — çoklu yükleme destekli';
   editingFromYouIndex = -1;
   setFromYouSubmitState();
+  renderFromYouImagePreview([]);
 }
 function renderFromYouRows(){
   const body = document.getElementById('fromYouTableBody');
@@ -1554,6 +1582,7 @@ function editFromYouItem(index){
   const images = getFromYouItemImages(item);
   document.getElementById('fromYouImageSrc').value = images[0] || '';
   document.getElementById('fromYouImages').value = images.join('\n');
+  renderFromYouImagePreview(images);
   document.getElementById('fromYouTitle').value = item.title || '';
   document.getElementById('fromYouLocation').value = item.location || '';
   document.getElementById('fromYouNote').value = item.note || '';
@@ -3454,6 +3483,7 @@ async function handleFromYouImageSelect(input){
     const previews = files.map(file=>URL.createObjectURL(file));
     if(pathEl) pathEl.value = previews[0] || '';
     if(listEl) listEl.value = previews.join('\n');
+    renderFromYouImagePreview(previews);
     aToast('⚠️ GitHub Token yok — sadece önizleme yolu atandı','error');
     return;
   }
@@ -3465,6 +3495,7 @@ async function handleFromYouImageSelect(input){
     }
     if(pathEl) pathEl.value = uploaded[0] || '';
     if(listEl) listEl.value = uploaded.join('\n');
+    renderFromYouImagePreview(uploaded);
     if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded.length} resim yüklendi`;
     aToast('✅ Müşteri evi fotoğrafları yüklendi','success');
   }catch(err){
@@ -3651,6 +3682,7 @@ async function initAdmin(){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+  renderFromYouImagePreview([]);
   const zone=document.getElementById('uploadZone');
   if(zone){
     zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag');});

@@ -968,11 +968,12 @@ Işık: Yarı Geçirgen"></textarea></div>
           <label>Ev Fotoğrafı Seç *</label>
           <label class="upload-zone" style="padding:14px;border-radius:10px">
             <i class="fas fa-camera" style="font-size:1.2rem;margin-bottom:6px"></i>
-            <p><span class="highlight">Bilgisayardan fotoğraf seçin</span> (otomatik yüklenir)</p>
-            <input type="file" id="fromYouImageFile" accept="image/*" onchange="handleFromYouImageSelect(this)">
+            <p><span class="highlight">Bilgisayardan fotoğraf seçin</span> (çoklu seçim + otomatik yükleme)</p>
+            <input type="file" id="fromYouImageFile" accept="image/*" multiple onchange="handleFromYouImageSelect(this)">
           </label>
           <input type="text" id="fromYouImageSrc" placeholder="resimler/... (otomatik dolacak)" readonly style="margin-top:8px;background:#f7f7f7">
-          <p id="fromYouImageFileName" style="font-size:0.72rem;margin-top:4px;color:var(--slate-light)">JPG, PNG, WEBP</p>
+          <textarea id="fromYouImages" placeholder="Ek fotoğraflar (her satıra bir görsel yolu):&#10;resimler/ornek-1.jpg&#10;resimler/ornek-2.jpg" oninput="syncFromYouPrimaryImage()" style="margin-top:8px;min-height:78px;font-family:monospace;font-size:0.8rem"></textarea>
+          <p id="fromYouImageFileName" style="font-size:0.72rem;margin-top:4px;color:var(--slate-light)">JPG, PNG, WEBP — çoklu yükleme destekli</p>
         </div>
         <div class="fg"><label>Başlık *</label><input type="text" id="fromYouTitle" placeholder="örn: Nilüfer'de Modern Salon Dönüşümü"></div>
       </div>
@@ -980,7 +981,10 @@ Işık: Yarı Geçirgen"></textarea></div>
         <div class="fg"><label>Konum / Oda</label><input type="text" id="fromYouLocation" placeholder="örn: Bursa · Nilüfer"></div>
         <div class="fg"><label>Not</label><input type="text" id="fromYouNote" placeholder="örn: Zebra + fon perde uygulaması"></div>
       </div>
-      <button class="btn btn-primary btn-sm" onclick="addFromYouEntry()"><i class="fas fa-plus"></i> Fotoğrafı Yayınla</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" id="fromYouSubmitBtn" onclick="addFromYouEntry()"><i class="fas fa-plus"></i> Fotoğrafı Yayınla</button>
+        <button class="btn btn-outline btn-sm" onclick="resetFromYouForm()"><i class="fas fa-rotate-left"></i> Formu Temizle</button>
+      </div>
     </div>
   </div>
 
@@ -1369,6 +1373,7 @@ const SHOWCASE_DEFAULT_REVIEWS = [
 let showcaseImages = [];
 let showcaseReviews = [];
 let fromYouItems = [];
+let editingFromYouIndex = -1;
 
 function getShowcaseState(key, fallback){
   try{
@@ -1483,6 +1488,41 @@ function buildAutoFromYouComment(title, note){
   const prefix = title ? `"${title}" uygulamasında ` : '';
   return `${prefix}${pick}${note ? ` (${note})` : ''}`;
 }
+function getFromYouItemImages(item){
+  if(!item) return [];
+  const list = Array.isArray(item.images) ? item.images : [];
+  const merged = [item.src, ...list].filter(Boolean).map(x=>String(x).trim()).filter(Boolean);
+  return [...new Set(merged)];
+}
+function getFromYouImagesFromField(){
+  const main = (document.getElementById('fromYouImageSrc')?.value || '').trim();
+  const lines = (document.getElementById('fromYouImages')?.value || '').split('\n').map(x=>x.trim()).filter(Boolean);
+  const merged = [main, ...lines].filter(Boolean);
+  return [...new Set(merged)];
+}
+function syncFromYouPrimaryImage(){
+  const images = getFromYouImagesFromField();
+  const mainEl = document.getElementById('fromYouImageSrc');
+  const listEl = document.getElementById('fromYouImages');
+  if(mainEl) mainEl.value = images[0] || '';
+  if(listEl) listEl.value = images.join('\n');
+}
+function setFromYouSubmitState(){
+  const btn = document.getElementById('fromYouSubmitBtn');
+  if(!btn) return;
+  btn.innerHTML = editingFromYouIndex >= 0
+    ? '<i class="fas fa-floppy-disk"></i> Güncellemeyi Kaydet'
+    : '<i class="fas fa-plus"></i> Fotoğrafı Yayınla';
+}
+function resetFromYouForm(){
+  ['fromYouImageSrc','fromYouImages','fromYouTitle','fromYouLocation','fromYouNote'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const fileEl = document.getElementById('fromYouImageFile');
+  if(fileEl) fileEl.value='';
+  const nameEl = document.getElementById('fromYouImageFileName');
+  if(nameEl) nameEl.textContent='JPG, PNG, WEBP — çoklu yükleme destekli';
+  editingFromYouIndex = -1;
+  setFromYouSubmitState();
+}
 function renderFromYouRows(){
   const body = document.getElementById('fromYouTableBody');
   if(!body) return;
@@ -1493,39 +1533,62 @@ function renderFromYouRows(){
   body.innerHTML = fromYouItems.map((item, idx)=>`
     <tr>
       <td>${idx+1}</td>
-      <td><img class="product-thumb" src="${item.src}" alt="${item.title || 'Müşteri evi fotoğrafı'}"></td>
-      <td><b>${item.title || '-'}</b><small style="display:block;color:var(--slate-light);margin-top:3px">${item.location || '-'}</small></td>
+      <td><img class="product-thumb" src="${getFromYouItemImages(item)[0] || ''}" alt="${item.title || 'Müşteri evi fotoğrafı'}"></td>
+      <td><b>${item.title || '-'}</b><small style="display:block;color:var(--slate-light);margin-top:3px">${item.location || '-'}</small><small style="display:block;color:var(--slate-light);margin-top:3px">📷 ${getFromYouItemImages(item).length} fotoğraf</small></td>
       <td>${item.comment || '-'}</td>
-      <td><button class="icon-btn del" onclick="removeFromYouItem(${idx})" title="Sil"><i class="fas fa-trash"></i></button></td>
+      <td style="display:flex;gap:6px">
+        <button class="icon-btn edit" onclick="editFromYouItem(${idx})" title="Düzenle"><i class="fas fa-pen"></i></button>
+        <button class="icon-btn del" onclick="removeFromYouItem(${idx})" title="Sil"><i class="fas fa-trash"></i></button>
+      </td>
     </tr>
   `).join('');
 }
 function renderFromYouAdminPage(){
   fromYouItems = getShowcaseState(FROM_YOU_SHOWCASE_KEY, []);
   renderFromYouRows();
+  setFromYouSubmitState();
+}
+function editFromYouItem(index){
+  const item = fromYouItems[index];
+  if(!item) return;
+  const images = getFromYouItemImages(item);
+  document.getElementById('fromYouImageSrc').value = images[0] || '';
+  document.getElementById('fromYouImages').value = images.join('\n');
+  document.getElementById('fromYouTitle').value = item.title || '';
+  document.getElementById('fromYouLocation').value = item.location || '';
+  document.getElementById('fromYouNote').value = item.note || '';
+  editingFromYouIndex = index;
+  setFromYouSubmitState();
+  aToast('Düzenleme modu açıldı','success');
 }
 function addFromYouEntry(){
-  const src = document.getElementById('fromYouImageSrc')?.value.trim();
+  const images = getFromYouImagesFromField();
+  const src = images[0] || '';
   const title = document.getElementById('fromYouTitle')?.value.trim();
   const location = document.getElementById('fromYouLocation')?.value.trim();
   const note = document.getElementById('fromYouNote')?.value.trim();
   if(!src || !title){ aToast('Fotoğraf ve başlık zorunludur'); return; }
   const comment = buildAutoFromYouComment(title, note);
-  fromYouItems.unshift({src,title,location,note,comment,author:'Doğrulanmış Müşteri'});
-  fromYouItems = fromYouItems.slice(0,20);
+  const payload = {src,title,location,note,comment,images,author:'Doğrulanmış Müşteri'};
+  if(editingFromYouIndex >= 0 && fromYouItems[editingFromYouIndex]){
+    const prev = fromYouItems[editingFromYouIndex];
+    fromYouItems[editingFromYouIndex] = {...prev,...payload};
+  }else{
+    fromYouItems.unshift(payload);
+    fromYouItems = fromYouItems.slice(0,20);
+  }
   localStorage.setItem(FROM_YOU_SHOWCASE_KEY, JSON.stringify(fromYouItems));
   renderFromYouRows();
-  ['fromYouImageSrc','fromYouTitle','fromYouLocation','fromYouNote'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
-  const fileEl = document.getElementById('fromYouImageFile');
-  if(fileEl) fileEl.value='';
-  const nameEl = document.getElementById('fromYouImageFileName');
-  if(nameEl) nameEl.textContent='JPG, PNG, WEBP';
-  aToast('✓ Sizden gelenler kartı eklendi (yorum otomatik oluşturuldu)','success');
+  const isEdit = editingFromYouIndex >= 0;
+  resetFromYouForm();
+  aToast(isEdit ? '✓ Sizden gelenler kartı güncellendi' : '✓ Sizden gelenler kartı eklendi (yorum otomatik oluşturuldu)','success');
 }
 function removeFromYouItem(index){
   fromYouItems.splice(index,1);
   localStorage.setItem(FROM_YOU_SHOWCASE_KEY, JSON.stringify(fromYouItems));
   renderFromYouRows();
+  if(editingFromYouIndex === index) resetFromYouForm();
+  else if(editingFromYouIndex > index){ editingFromYouIndex -= 1; setFromYouSubmitState(); }
   aToast('Kayıt kaldırıldı');
 }
 
@@ -3378,23 +3441,30 @@ async function handleShowcaseImageSelect(input){
   }
 }
 async function handleFromYouImageSelect(input){
-  const file = Array.from(input?.files||[])[0];
+  const files = Array.from(input?.files||[]);
   const fileNameEl = document.getElementById('fromYouImageFileName');
-  if(fileNameEl) fileNameEl.textContent = file ? file.name : 'JPG, PNG, WEBP';
-  if(!file) return;
+  if(fileNameEl) fileNameEl.textContent = files.length ? (files.length===1 ? files[0].name : `${files.length} dosya seçildi`) : 'JPG, PNG, WEBP — çoklu yükleme destekli';
+  if(!files.length) return;
   const pathEl = document.getElementById('fromYouImageSrc');
+  const listEl = document.getElementById('fromYouImages');
   const token = getGithubToken();
   if(!token){
-    if(pathEl) pathEl.value = URL.createObjectURL(file);
+    const previews = files.map(file=>URL.createObjectURL(file));
+    if(pathEl) pathEl.value = previews[0] || '';
+    if(listEl) listEl.value = previews.join('\n');
     aToast('⚠️ GitHub Token yok — sadece önizleme yolu atandı','error');
     return;
   }
   try{
     if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
-    const uploaded = await uploadImageToGithub(token, file, {prefix:'from-you'});
-    if(pathEl) pathEl.value = uploaded;
-    if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded}`;
-    aToast('✅ Müşteri evi fotoğrafı yüklendi','success');
+    const uploaded = [];
+    for(const file of files){
+      uploaded.push(await uploadImageToGithub(token, file, {prefix:'from-you'}));
+    }
+    if(pathEl) pathEl.value = uploaded[0] || '';
+    if(listEl) listEl.value = uploaded.join('\n');
+    if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded.length} resim yüklendi`;
+    aToast('✅ Müşteri evi fotoğrafları yüklendi','success');
   }catch(err){
     if(fileNameEl) fileNameEl.textContent = 'Yükleme başarısız';
     aToast('❌ '+err.message,'error');

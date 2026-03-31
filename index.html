@@ -1327,10 +1327,11 @@ const DEFAULT_CUSTOMER_SHOWCASE_REVIEWS = [
   {rating:5,text:'Hem önerdikleri model hem işçilik gerçekten mükemmeldi.',author:'Google Haritalar · Doğrulanmış Müşteri'}
 ];
 const DEFAULT_FROM_YOU_SHOWCASE = [
-  {src:'resimler/foto6.jpg',title:'Bursa Salon Uygulaması',location:'Osmangazi',comment:'Evimizin havası tamamen değişti, perde seçimi tam istediğimiz gibi oldu.'},
-  {src:'resimler/foto8.jpg',title:'Nilüfer Zebra + Fon',location:'Nilüfer',comment:'Model önerisi çok başarılıydı, salon şimdi çok daha modern görünüyor.'},
-  {src:'resimler/foto11.jpg',title:'Yatak Odası Dönüşümü',location:'Yıldırım',comment:'Işık dengesi harika oldu, işçilik gerçekten çok özenliydi.'}
+  {src:'resimler/foto6.jpg',images:['resimler/foto6.jpg','resimler/foto7.jpg'],title:'Bursa Salon Uygulaması',location:'Osmangazi',comment:'Evimizin havası tamamen değişti, perde seçimi tam istediğimiz gibi oldu.'},
+  {src:'resimler/foto8.jpg',images:['resimler/foto8.jpg','resimler/foto9.jpg'],title:'Nilüfer Zebra + Fon',location:'Nilüfer',comment:'Model önerisi çok başarılıydı, salon şimdi çok daha modern görünüyor.'},
+  {src:'resimler/foto11.jpg',images:['resimler/foto11.jpg','resimler/foto10.jpg'],title:'Yatak Odası Dönüşümü',location:'Yıldırım',comment:'Işık dengesi harika oldu, işçilik gerçekten çok özenliydi.'}
 ];
+const FROM_YOU_RENDERED_MAP = {};
 
 function parseShowcaseJSON(key, fallback){
   try{
@@ -1345,6 +1346,12 @@ function starsFromRating(rating){
 }
 function escapeInline(str){
   return String(str || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+function getFromYouImages(item){
+  if(!item) return [];
+  const list = Array.isArray(item.images) ? item.images : [];
+  const merged = [item.src, ...list].filter(Boolean).map(x=>String(x).trim()).filter(Boolean);
+  return [...new Set(merged)];
 }
 function renderInstallationShowcase(){
   const grid = document.getElementById('installationGalleryGrid');
@@ -1378,20 +1385,32 @@ function renderFromYouShowcase(targetId='fromYouPageGrid', limit=12){
   const grid = document.getElementById(targetId);
   if(!grid) return;
   const list = parseShowcaseJSON(FROM_YOU_SHOWCASE_KEY, DEFAULT_FROM_YOU_SHOWCASE).slice(0, limit);
+  FROM_YOU_RENDERED_MAP[targetId] = list;
   if(!list.length){
     grid.innerHTML = '<div class="review-card">Henüz müşteri paylaşımı yok.</div>';
     return;
   }
   grid.innerHTML = list.map((item, idx)=>`
-    <article class="from-you-card">
-      <img src="${item.src}" alt="${item.title || ('Müşteri evi ' + (idx+1))}" loading="lazy">
+    <article class="from-you-card" role="button" tabindex="0" onclick="openFromYouGallery('${escapeInline(targetId)}',${idx})" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();openFromYouGallery('${escapeInline(targetId)}',${idx})}">
+      <img src="${getFromYouImages(item)[0] || ''}" alt="${item.title || ('Müşteri evi ' + (idx+1))}" loading="lazy">
       <div class="from-you-card-overlay">
         <span class="from-you-card-badge">${item.location || 'Doğrulanmış Müşteri'}</span>
         <h4>${item.title || 'Müşteri evi uygulaması'}</h4>
-        <p>“${item.comment || 'Sonuç beklentimizin de üzerinde oldu.'}”</p>
+        <p>“${item.comment || 'Sonuç beklentimizin de üzerinde oldu.'}”</p>${getFromYouImages(item).length>1 ? `<p style="margin-top:6px;font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;opacity:0.85"><i class="fas fa-images"></i> ${getFromYouImages(item).length} fotoğraf</p>` : ''}
       </div>
     </article>
   `).join('');
+}
+function openFromYouGallery(targetId, index){
+  const list = FROM_YOU_RENDERED_MAP[targetId] || [];
+  const item = list[index];
+  if(!item) return;
+  currentModalProductId = null;
+  currentModalImages = getFromYouImages(item);
+  currentModalImageIndex = 0;
+  modalBrokenImageMap = new Set();
+  preloadModalBatch(currentModalImages, 5);
+  openImageViewer();
 }
 
 // ── Ürün verisi ──
@@ -2598,15 +2617,15 @@ function ensureReviewFormVisibleOnMobile(){
 
 document.addEventListener('keydown', (e)=>{
   const modalOpen = document.getElementById('productModal')?.classList.contains('open');
-  if(!modalOpen) return;
+  if(!modalOpen && !imageViewerOpen) return;
   if(e.key === 'Escape'){
     if(imageViewerOpen) closeImageViewer();
-    else if(document.getElementById('modalSearchResults')?.classList.contains('open')) clearModalSearch();
-    else closeProductModal();
+    else if(modalOpen && document.getElementById('modalSearchResults')?.classList.contains('open')) clearModalSearch();
+    else if(modalOpen) closeProductModal();
     return;
   }
-  if(e.key === 'ArrowRight') showModalImage(1);
-  if(e.key === 'ArrowLeft') showModalImage(-1);
+  if((modalOpen || imageViewerOpen) && e.key === 'ArrowRight') showModalImage(1);
+  if((modalOpen || imageViewerOpen) && e.key === 'ArrowLeft') showModalImage(-1);
   if(imageViewerOpen && (e.key === '+' || e.key === '=')) changeViewerScale(0.2);
   if(imageViewerOpen && e.key === '-') changeViewerScale(-0.2);
 });

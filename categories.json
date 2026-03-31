@@ -23,8 +23,9 @@
   {
     "key": "stor-perde",
     "label": "Stor Perdeler",
+    "desc": "Stor perde koleksiyonu (m² fiyatlı)",
     "icon": "fas fa-up-down",
-    "desc": "Stor perde koleksiyonu (m² fiyatlı)"
+    "image": "resimler/1774941831646-cat-8b5824d5-1427-46c1-9119-4e4758e1028f-IMG_1829.webp"
   },
   {
     "key": "zebra-perde",

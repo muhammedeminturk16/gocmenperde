@@ -30,8 +30,9 @@
   {
     "key": "zebra-perde",
     "label": "Zebra Perdeler",
+    "desc": "Zebra perde koleksiyonu (m² fiyatlı)",
     "icon": "fas fa-grip-lines",
-    "desc": "Zebra perde koleksiyonu (m² fiyatlı)"
+    "image": "resimler/1774941844858-cat-74509096-ac8b-4511-9738-07ec5c3e8c6b-IMG_1830.png"
   },
   {
     "key": "koltuk",

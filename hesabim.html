@@ -32,7 +32,7 @@
 
     /* ── HEADER ── */
     .gp-header {
-        background: var(--ink);
+        background: rgba(15,14,13,0.78);
         padding: 0 5%;
         height: 64px;
         display: flex;
@@ -42,6 +42,8 @@
         top: 0;
         z-index: 100;
         box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
     .gp-header-left {
         display: flex;
@@ -65,6 +67,12 @@
         font-size: 1.2rem;
         color: var(--gold);
         letter-spacing: 2px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 999px;
+        padding: 5px 12px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
     }
     .gp-logout {
         background: rgba(255,255,255,0.06);
@@ -83,7 +91,9 @@
 
     /* ── USER BAR ── */
     .user-bar {
-        background: linear-gradient(135deg, var(--gold) 0%, #b8932e 100%);
+        background:
+            radial-gradient(circle at 10% 30%, rgba(255,255,255,0.25), transparent 40%),
+            linear-gradient(135deg, #bf963a 0%, #9f7a29 100%);
         padding: 18px 5%;
         display: flex;
         align-items: center;
@@ -102,8 +112,16 @@
         font-weight: 700;
         border: 2px solid rgba(255,255,255,0.3);
     }
-    .user-name { font-size: 1rem; font-weight: 600; color: var(--ink); }
-    .user-since { font-size: 0.72rem; color: rgba(15,14,13,0.6); margin-top: 2px; letter-spacing: 0.5px; }
+    .user-name-wrap {
+        background: rgba(255,255,255,0.22);
+        border: 1px solid rgba(255,255,255,0.35);
+        border-radius: 12px;
+        padding: 8px 11px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    .user-name { font-size: 1rem; font-weight: 600; color: #1a1307; }
+    .user-since { font-size: 0.72rem; color: rgba(15,14,13,0.7); margin-top: 2px; letter-spacing: 0.5px; }
     .user-bar-badge {
         background: rgba(15,14,13,0.12);
         padding: 5px 14px;
@@ -224,17 +242,11 @@
         font-weight: 600;
         color: var(--ink);
     }
-    .order-id {
-        margin-top: 4px;
-        font-size: 0.72rem;
-        color: rgba(74,71,67,0.9);
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(255,255,255,0.7);
-        border: 1px solid rgba(201,168,76,0.22);
-        border-radius: 999px;
-        padding: 4px 10px;
+    .order-meta-note {
+        margin-top: 6px;
+        font-size: 0.7rem;
+        color: rgba(74,71,67,0.78);
+        letter-spacing: 0.4px;
     }
     .order-status {
         display: inline-flex;
@@ -343,13 +355,15 @@
     }
     .btn-detail:hover { background: var(--gold); color: var(--ink); }
     .orders-shell {
-        background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.22) 100%);
-        border: 1px solid rgba(255,255,255,0.65);
+        background:
+            radial-gradient(circle at 15% 8%, rgba(201,168,76,0.22), transparent 35%),
+            linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.28) 100%);
+        border: 1px solid rgba(255,255,255,0.72);
         border-radius: 24px;
         padding: 18px;
         box-shadow: 0 30px 70px rgba(0,0,0,0.08);
-        backdrop-filter: blur(7px);
-        -webkit-backdrop-filter: blur(7px);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
     .orders-hero {
         position: relative;
@@ -1006,7 +1020,7 @@
 <div class="user-bar">
     <div class="user-bar-left">
         <div class="user-avatar" id="userAvatarText">?</div>
-        <div>
+        <div class="user-name-wrap">
             <div class="user-name" id="userNameDisplay">Yükleniyor...</div>
             <div class="user-since" id="userSince"></div>
         </div>
@@ -1423,7 +1437,7 @@ function renderOrders(orders, totalCount = orders.length) {
                     <div class="order-meta-left">
                         <div class="order-date-label">Sipariş Tarihi</div>
                         <div class="order-date-value">${date}</div>
-                        <div class="order-id"><i class="fas fa-hashtag"></i> ${o.id || '—'}</div>
+                        <div class="order-meta-note">Ürün ve teslimat detaylarını aşağıdan inceleyebilirsiniz.</div>
                     </div>
                     <span class="order-status ${statusClass}">
                         <i class="${statusIcon}"></i> ${o.durum || 'Beklemede'}

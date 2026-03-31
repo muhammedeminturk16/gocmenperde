@@ -6,19 +6,58 @@
     <title>Giriş & Kayıt - Göçmen Perde</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .auth-card { background: white; width: 90%; max-width: 400px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        .tabs { display: flex; background: #eee; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(201,168,76,0.32), transparent 35%),
+                radial-gradient(circle at 85% 80%, rgba(34,30,24,0.45), transparent 42%),
+                linear-gradient(135deg, #17130e 0%, #2a2116 45%, #5c4722 100%);
+            padding: 22px;
+        }
+        .auth-card {
+            background: rgba(255,255,255,0.9);
+            width: 100%;
+            max-width: 430px;
+            border-radius: 18px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.28);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.35);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .tabs { display: flex; background: rgba(238,238,238,0.7); }
         .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; transition: 0.3s; color: #666; }
         .tab.active { background: white; color: #b08d57; border-bottom: 3px solid #b08d57; }
         .form-area { padding: 30px; }
         .form-group { display: none; }
         .form-group.active { display: block; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; background: #b08d57; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; background: rgba(255,255,255,0.85); }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #b08d57 0%, #8f6f3a 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(143,111,58,0.28);
+        }
         .btn:disabled { background: #ccc; }
-        .logo-area { text-align: center; padding: 20px; background: #1a1a1a; color: white; }
-        .logo-area { text-align: center; padding: 20px; background: #fff; color: #1a1a1a; border-bottom: 1px solid #eee; }
+        .logo-area {
+            text-align: center;
+            padding: 22px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.82) 0%, rgba(243,233,214,0.9) 100%);
+            color: #1a1a1a;
+            border-bottom: 1px solid #eee;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>

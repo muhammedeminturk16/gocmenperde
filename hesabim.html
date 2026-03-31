@@ -134,11 +134,13 @@
 
     /* ── TABS ── */
     .tabs-wrap {
-        background: white;
-        border-bottom: 1px solid var(--border-hard);
+        background: linear-gradient(180deg, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.58) 100%);
+        border-bottom: 1px solid rgba(255,255,255,0.7);
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
     }
     .tabs-wrap::-webkit-scrollbar { display: none; }
     .tabs-inner {
@@ -166,25 +168,53 @@
 
     /* ── CONTENT ── */
     .content { padding: 28px 5%; max-width: 760px; margin: 0 auto; }
+    .section-shell {
+        background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.45) 100%);
+        border: 1px solid rgba(255,255,255,0.8);
+        border-radius: 24px;
+        padding: 18px;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.08);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    .section-heading {
+        margin-bottom: 14px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: linear-gradient(120deg, rgba(23,20,16,0.95), rgba(55,45,27,0.9));
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .section-heading h2 {
+        font-family: var(--ffd);
+        font-size: 1.35rem;
+        margin-bottom: 2px;
+    }
+    .section-heading p {
+        font-size: 0.78rem;
+        color: rgba(255,255,255,0.72);
+    }
     .gp-section { display: none; }
     .gp-section.active { display: block; }
 
     /* ── CARDS ── */
     .gp-card {
-        background: white;
-        border-radius: var(--radius);
-        border: 1px solid var(--border-hard);
+        background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72));
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.82);
         overflow: hidden;
         margin-bottom: 16px;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 18px 36px rgba(0,0,0,0.07);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
     .gp-card-header {
         padding: 16px 20px;
-        border-bottom: 1px solid var(--border-hard);
+        border-bottom: 1px solid rgba(255,255,255,0.65);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: #fafaf8;
+        background: rgba(255,255,255,0.42);
     }
     .gp-card-header h3 {
         font-family: var(--ffd);
@@ -689,16 +719,18 @@
 
     /* ── ADDRESSES ── */
     .address-card {
-        background: white;
-        border-radius: var(--radius);
-        border: 1px solid var(--border-hard);
+        background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72));
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.85);
         padding: 16px 18px;
         margin-bottom: 12px;
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
         gap: 12px;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.07);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
     }
     .address-icon {
         width: 38px; height: 38px;
@@ -777,12 +809,14 @@
 
     /* ── FAVORITES ── */
     .fav-empty-box {
-        background: white;
-        border-radius: var(--radius);
-        border: 1px solid var(--border-hard);
+        background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.74));
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.82);
         padding: 48px 20px;
         text-align: center;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 16px 34px rgba(0,0,0,0.07);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
     .fav-empty-icon {
         width: 72px; height: 72px;
@@ -824,12 +858,14 @@
     .fav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     @media (max-width: 480px) { .fav-grid { grid-template-columns: 1fr; } }
     .fav-card {
-        background: white;
-        border-radius: var(--radius);
-        border: 1px solid var(--border-hard);
+        background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.82);
         overflow: hidden;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.07);
         transition: 0.2s;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
     .fav-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
     .fav-card img { width: 100%; height: 140px; object-fit: cover; }
@@ -1083,42 +1119,48 @@
 
 <!-- ADRESLERİM -->
 <div id="section-addresses" class="gp-section">
-    <div id="addressList">
-        <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
-    </div>
-    <div class="gp-card" style="margin-top:16px">
-        <div class="gp-card-header">
-            <h3><i class="fas fa-plus" style="color:var(--gold);margin-right:8px"></i>Yeni Adres Ekle</h3>
+    <div class="section-shell">
+        <div class="section-heading">
+            <h2>Adreslerim</h2>
+            <p>Teslimat noktalarınızı düzenli ve hızlı bir şekilde yönetin.</p>
         </div>
-        <div class="gp-card-body">
-            <div class="gp-form">
-                <div>
-                    <label class="form-label">Adres Başlığı</label>
-                    <input type="text" id="aBaslik" class="gp-input" placeholder="Ev, İş, Yazlık...">
+        <div id="addressList">
+            <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
+        </div>
+        <div class="gp-card" style="margin-top:16px">
+            <div class="gp-card-header">
+                <h3><i class="fas fa-plus" style="color:var(--gold);margin-right:8px"></i>Yeni Adres Ekle</h3>
+            </div>
+            <div class="gp-card-body">
+                <div class="gp-form">
+                    <div>
+                        <label class="form-label">Adres Başlığı</label>
+                        <input type="text" id="aBaslik" class="gp-input" placeholder="Ev, İş, Yazlık...">
+                    </div>
+                    <div class="form-row-2">
+                        <div>
+                            <label class="form-label">Mahalle</label>
+                            <input type="text" id="aMahalle" class="gp-input" placeholder="Mahalle adı">
+                        </div>
+                        <div>
+                            <label class="form-label">Sokak / Cadde</label>
+                            <input type="text" id="aSokak" class="gp-input" placeholder="Sokak veya cadde">
+                        </div>
+                        <div>
+                            <label class="form-label">Kapı / Daire No</label>
+                            <input type="text" id="aKapiNo" class="gp-input" placeholder="No: 3/A, Daire 5">
+                        </div>
+                        <div>
+                            <label class="form-label">İlçe</label>
+                            <input type="text" id="aIlce" class="gp-input" placeholder="Osmangazi">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">İl</label>
+                        <input type="text" id="aIl" class="gp-input" placeholder="Bursa">
+                    </div>
+                    <button class="gp-btn" onclick="addAddress()"><i class="fas fa-save"></i> Adresi Kaydet</button>
                 </div>
-                <div class="form-row-2">
-                    <div>
-                        <label class="form-label">Mahalle</label>
-                        <input type="text" id="aMahalle" class="gp-input" placeholder="Mahalle adı">
-                    </div>
-                    <div>
-                        <label class="form-label">Sokak / Cadde</label>
-                        <input type="text" id="aSokak" class="gp-input" placeholder="Sokak veya cadde">
-                    </div>
-                    <div>
-                        <label class="form-label">Kapı / Daire No</label>
-                        <input type="text" id="aKapiNo" class="gp-input" placeholder="No: 3/A, Daire 5">
-                    </div>
-                    <div>
-                        <label class="form-label">İlçe</label>
-                        <input type="text" id="aIlce" class="gp-input" placeholder="Osmangazi">
-                    </div>
-                </div>
-                <div>
-                    <label class="form-label">İl</label>
-                    <input type="text" id="aIl" class="gp-input" placeholder="Bursa">
-                </div>
-                <button class="gp-btn" onclick="addAddress()"><i class="fas fa-save"></i> Adresi Kaydet</button>
             </div>
         </div>
     </div>
@@ -1126,8 +1168,14 @@
 
 <!-- FAVORİLERİM -->
 <div id="section-favorites" class="gp-section">
-    <div id="favContent">
-        <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
+    <div class="section-shell">
+        <div class="section-heading">
+            <h2>Favorilerim</h2>
+            <p>Beğendiğiniz ürünleri tek alanda toplayın, hızlıca görüntüleyin.</p>
+        </div>
+        <div id="favContent">
+            <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
+        </div>
     </div>
 </div>
 

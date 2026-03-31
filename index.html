@@ -799,29 +799,16 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
   </div>
   <div class="gallery-section">
     <div class="section-header">
-      <div><div class="section-tag">Dükkanımızdan</div><h2 class="section-title">Kareler &amp; <em>Atmosfer</em></h2></div>
-      <p class="section-desc">Osmangazi kalbinde, yıllardır binlerce evin vazgeçilmez adresi.</p>
+      <div><div class="section-tag">Montaj Projelerimiz</div><h2 class="section-title">Uygulama &amp; <em>İlham Alanı</em></h2></div>
+      <p class="section-desc">Müşterilerimize montajını yaptığımız seçkin uygulamalardan ilham alın. Bu alan admin panelinden canlı olarak güncellenir.</p>
     </div>
-    <div class="gallery-grid">
-      <div class="gallery-item" onclick="openGalleryModal('resimler/foto1.jpg','Mağazamız','Osmangazi\'de bulunan showroomumuzda yüzlerce model sizi bekliyor.')"><img src="resimler/foto1.jpg" alt="Mağaza" loading="lazy"><div class="gallery-overlay"><span class="gallery-label">Showroom</span></div></div>
-      <div class="gallery-item" onclick="openGalleryModal('resimler/foto2.jpg','Teşhir','Geniş teşhir alanımızda tüm modelleri görebilirsiniz.')"><img src="resimler/foto2.jpg" alt="Teşhir" loading="lazy"><div class="gallery-overlay"><span class="gallery-label">Teşhir Alanı</span></div></div>
-      <div class="gallery-item" onclick="openGalleryModal('resimler/foto9.jpg','Kumaşlar','İthal ve yerli kumaş seçenekleri.')"><img src="resimler/foto9.jpg" alt="Kumaşlar" loading="lazy"><div class="gallery-overlay"><span class="gallery-label">Kumaş Arşivi</span></div></div>
-      <div class="gallery-item" onclick="openGalleryModal('resimler/foto10.jpg','İç Mekan','Rahat ve ferah alışveriş ortamı.')"><img src="resimler/foto10.jpg" alt="İç mekan" loading="lazy"><div class="gallery-overlay"><span class="gallery-label">İç Mekan</span></div></div>
-      <div class="gallery-item" onclick="openGalleryModal('resimler/foto11.jpg','Örnekler','Binlerce renk ve doku örneği.')"><img src="resimler/foto11.jpg" alt="Örnekler" loading="lazy"><div class="gallery-overlay"><span class="gallery-label">Örnekler</span></div></div>
-      <div class="gallery-item" onclick="openGalleryModal('resimler/foto3.jpg','Özel Dikim','Pencerenize özel ölçü ve desen.')"><img src="resimler/foto3.jpg" alt="Özel dikim" loading="lazy"><div class="gallery-overlay"><span class="gallery-label">Özel Dikim</span></div></div>
-      <div class="gallery-item" onclick="openGalleryModal('resimler/foto4.jpg','Ürünler','2026 sezon renkleri ve modelleri.')"><img src="resimler/foto4.jpg" alt="Ürünler" loading="lazy"><div class="gallery-overlay"><span class="gallery-label">Ürünler</span></div></div>
-      <div class="gallery-item" onclick="openGalleryModal('resimler/foto5.jpg','Örtü Modelleri','Mobilyalarınıza özel örtü çeşitleri.')"><img src="resimler/foto5.jpg" alt="Örtü modelleri" loading="lazy"><div class="gallery-overlay"><span class="gallery-label">Örtü Modelleri</span></div></div>
-    </div>
+    <div class="gallery-grid" id="installationGalleryGrid"></div>
   </div>
   <div class="reviews-section">
     <div class="section-header" style="max-width:100%;margin:0 auto 40px">
       <div><div class="section-tag">Google Yorumları</div><h2 class="section-title">Müşterilerimiz <em>Anlatıyor</em></h2></div>
     </div>
-    <div class="reviews-grid">
-      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Zeynel Bey'e çok teşekkürler. İşçilik muazzam, tam zamanında teslimat yapıldı."</p><div class="review-author">Google Haritalar · Doğrulanmış Müşteri</div></div>
-      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Bursa'da perde denince tek geçerim. Kalite ve güven bir arada, fiyatlar çok uygun."</p><div class="review-author">Google Haritalar · Doğrulanmış Müşteri</div></div>
-      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Koltuk örtüleri harika. Tam ölçülü dikildi, renk seçimi için de çok yardımcı oldular."</p><div class="review-author">Google Haritalar · Doğrulanmış Müşteri</div></div>
-    </div>
+    <div class="reviews-grid" id="customerReviewsGrid"></div>
   </div>
   <footer>
     <p>© 2026 <span>Göçmen Perde</span> — Tüm Hakları Saklıdır · Osmangazi, Bursa</p>
@@ -1286,6 +1273,65 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 
 <script>
 const WA_NUMBER = '905012110958';
+const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
+const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
+const DEFAULT_INSTALLATION_SHOWCASE = [
+  {src:'resimler/foto1.jpg',title:'Salon Tül Uygulaması',desc:'Özel ölçü tül perde montajı ile ferah salon görünümü.',label:'Salon Tül'},
+  {src:'resimler/foto2.jpg',title:'Zebra Perde Montajı',desc:'Gün ışığını kontrollü kullanan zebra perde çözümü.',label:'Zebra Sistem'},
+  {src:'resimler/foto9.jpg',title:'Yatak Odası Fon Perde',desc:'Fon + tül kombinasyonu ile premium bir atmosfer.',label:'Fon Kombin'},
+  {src:'resimler/foto10.jpg',title:'Plise Balkon Perdesi',desc:'Balkon kapısı için şık ve pratik plise uygulama.',label:'Plise Alan'},
+  {src:'resimler/foto11.jpg',title:'Ofis Stor Perde',desc:'Kurumsal alanlar için sade stor perde montajı.',label:'Ofis Stor'},
+  {src:'resimler/foto3.jpg',title:'Çocuk Odası Perde',desc:'Işık dengesini sağlayan güvenli çocuk odası montajı.',label:'Çocuk Odası'},
+  {src:'resimler/foto4.jpg',title:'Mutfak Zebra Perde',desc:'Kolay temizlenebilir modern mutfak perde uygulaması.',label:'Mutfak'},
+  {src:'resimler/foto5.jpg',title:'Koltuk Örtüsü Sunumu',desc:'Mobilyaya tam uyumlu koltuk örtüsü yerleşimi.',label:'Örtü Sunumu'}
+];
+const DEFAULT_CUSTOMER_SHOWCASE_REVIEWS = [
+  {rating:5,text:'Montaj ekibi çok temiz çalıştı, salonumuz bambaşka oldu.',author:'Google Haritalar · Doğrulanmış Müşteri'},
+  {rating:5,text:'Ölçü alımından montaja kadar her adım çok profesyoneldi.',author:'Google Haritalar · Doğrulanmış Müşteri'},
+  {rating:5,text:'Hem önerdikleri model hem işçilik gerçekten mükemmeldi.',author:'Google Haritalar · Doğrulanmış Müşteri'}
+];
+
+function parseShowcaseJSON(key, fallback){
+  try{
+    const raw = JSON.parse(localStorage.getItem(key) || 'null');
+    if(Array.isArray(raw) && raw.length) return raw;
+  }catch(_){}
+  return fallback;
+}
+function starsFromRating(rating){
+  const safe = Math.max(1, Math.min(5, Number(rating) || 5));
+  return '★'.repeat(safe) + '☆'.repeat(5-safe);
+}
+function escapeInline(str){
+  return String(str || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+function renderInstallationShowcase(){
+  const grid = document.getElementById('installationGalleryGrid');
+  if(!grid) return;
+  const items = parseShowcaseJSON(INSTALLATION_SHOWCASE_KEY, DEFAULT_INSTALLATION_SHOWCASE).slice(0,8);
+  grid.innerHTML = items.map((item, idx)=>`
+    <div class="gallery-item" onclick="openGalleryModal('${escapeInline(item.src)}','${escapeInline(item.title)}','${escapeInline(item.desc)}')">
+      <img src="${item.src}" alt="${item.title || ('Montaj görseli ' + (idx+1))}" loading="lazy">
+      <div class="gallery-overlay"><span class="gallery-label">${item.label || item.title || 'Montaj'}</span></div>
+    </div>
+  `).join('');
+}
+function renderCustomerShowcaseReviews(){
+  const grid = document.getElementById('customerReviewsGrid');
+  if(!grid) return;
+  const reviews = parseShowcaseJSON(CUSTOMER_SHOWCASE_REVIEWS_KEY, DEFAULT_CUSTOMER_SHOWCASE_REVIEWS).slice(0,6);
+  grid.innerHTML = reviews.map((review)=>`
+    <div class="review-card">
+      <div class="review-stars">${starsFromRating(review.rating)}</div>
+      <p class="review-text">"${review.text || 'Çok memnun kaldık, teşekkür ederiz.'}"</p>
+      <div class="review-author">${review.author || 'Doğrulanmış Müşteri'}</div>
+    </div>
+  `).join('');
+}
+function renderHomeShowcaseSections(){
+  renderInstallationShowcase();
+  renderCustomerShowcaseReviews();
+}
 
 // ── Ürün verisi ──
 let PRODUCTS = [];
@@ -2592,6 +2638,7 @@ window.addEventListener('load',()=>{
   const fromBackForward = sessionStorage.getItem('gp_fast_resume') === '1';
   if(fromBackForward) hideLoader(true);
   else setTimeout(()=>hideLoader(false),320);
+  renderHomeShowcaseSections();
   loadFavoritesFromStorage();
   loadFavoritesFromServer();
   loadCartFromStorage();
@@ -2609,6 +2656,12 @@ document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState === 'visible'){
     recoverUIAfterResume();
     loadProducts();
+  }
+});
+window.addEventListener('storage',(event)=>{
+  if(event.key===INSTALLATION_SHOWCASE_KEY || event.key===CUSTOMER_SHOWCASE_REVIEWS_KEY){
+    renderHomeShowcaseSections();
+    initObserver();
   }
 });
 

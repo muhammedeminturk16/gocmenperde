@@ -273,7 +273,7 @@
   },
   {
     "id": "zebra-perde-cizgili-1774963152707-579",
-    "name": "Zebra Perde Çizgili",
+    "name": "Zebra Perde Mor Beyaz Çizgili",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
     "image": "resimler/1774962968106-bulk-dc561de7-21d8-4410-b784-b564c53911e0-IMG_1794.jpeg",
     "images": [
@@ -287,7 +287,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
     "stock": null,
     "serialNumber": "Hayal V-04",
@@ -309,9 +309,9 @@
     "id": "zebra-perde-gri-beyaz-cizgili-1774963152707-620",
     "name": "Zebra Perde Gri Beyaz Çizgili",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774964058595-0-be4b77f7-d083-4de2-92be-4311a5fc42d0-IMG_1794.jpeg",
+    "image": "resimler/1774963114123-bulk-66a86ebf-cdd5-4b79-8475-770bc306f263-IMG_1795.jpeg",
     "images": [
-      "resimler/1774964058595-0-be4b77f7-d083-4de2-92be-4311a5fc42d0-IMG_1794.jpeg"
+      "resimler/1774963114123-bulk-66a86ebf-cdd5-4b79-8475-770bc306f263-IMG_1795.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -321,7 +321,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "manual",
+    "discountType": "percent",
     "discountValue": null,
     "stock": null,
     "serialNumber": "Hayal V-05",

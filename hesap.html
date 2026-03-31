@@ -14,9 +14,9 @@
             align-items: center;
             min-height: 100vh;
             background:
-                radial-gradient(circle at 14% 18%, rgba(114,188,221,0.30), transparent 38%),
-                radial-gradient(circle at 84% 82%, rgba(236,178,159,0.32), transparent 42%),
-                linear-gradient(135deg, #eef4ff 0%, #f8fbff 48%, #fff7f2 100%);
+                radial-gradient(circle at 14% 18%, rgba(201,168,76,0.20), transparent 40%),
+                radial-gradient(circle at 84% 82%, rgba(238,220,180,0.28), transparent 46%),
+                linear-gradient(145deg, #f7f4ef 0%, #fdfcf9 55%, #f8f2e6 100%);
             padding: 22px;
         }
         .auth-card {
@@ -30,32 +30,35 @@
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
         }
-        .tabs { display: flex; background: rgba(239,244,252,0.85); }
+        .tabs { display: flex; background: rgba(255,255,255,0.52); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; transition: 0.3s; color: #667085; }
-        .tab.active { background: rgba(255,255,255,0.94); color: #3d6699; border-bottom: 3px solid #6f9bd1; }
+        .tab.active { background: rgba(255,255,255,0.84); color: #3c3428; border-bottom: 3px solid #c9a84c; }
         .form-area { padding: 30px; }
         .form-group { display: none; }
         .form-group.active { display: block; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #d9e4f2; border-radius: 10px; box-sizing: border-box; background: rgba(255,255,255,0.92); }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid rgba(201,168,76,0.24); border-radius: 10px; box-sizing: border-box; background: rgba(255,255,255,0.86); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
         .btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #7ea8dd 0%, #5b87c2 100%);
-            color: white;
+            background: linear-gradient(135deg, rgba(255,255,255,0.78) 0%, rgba(246,235,210,0.62) 100%);
+            color: #2f291f;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
-            box-shadow: 0 10px 20px rgba(91,135,194,0.28);
+            box-shadow: 0 10px 24px rgba(15,14,13,0.12);
+            border: 1px solid rgba(255,255,255,0.58);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         .btn:disabled { background: #ccc; }
         .logo-area {
             text-align: center;
             padding: 22px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.90) 0%, rgba(234,243,255,0.92) 100%);
-            color: #2d3f57;
-            border-bottom: 1px solid #e4edf7;
+            background: linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(247,240,226,0.74) 100%);
+            color: #2e271d;
+            border-bottom: 1px solid rgba(201,168,76,0.2);
             letter-spacing: 1px;
         }
     </style>

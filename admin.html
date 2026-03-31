@@ -1908,7 +1908,7 @@ function renderFavorites(){
   favGrid.innerHTML = filtered.map(f=>{
     const prod = PRODUCTS.find(p=>p.id===f.productId);
     return `<div class="fav-item">
-      <img class="fav-item-img" src="${prod?.image||''}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2290%22 height=%2290%22><rect fill=%22%23f0f0f0%22 width=%2290%22 height=%2290%22/><text x=%2245%22 y=%2252%22 text-anchor=%22middle%22 font-size=%2228%22>📦</text></svg>'" alt="">
+      <img class="fav-item-img" src="${resolveAssetUrl(prod?.image||'')}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2290%22 height=%2290%22><rect fill=%22%23f0f0f0%22 width=%2290%22 height=%2290%22/><text x=%2245%22 y=%2252%22 text-anchor=%22middle%22 font-size=%2228%22>📦</text></svg>'" alt="">
       <div class="fav-item-info">
         <div class="fav-item-name">${f.productName}</div>
         <div style="font-size:0.77rem;color:var(--slate-light);margin-bottom:4px"><i class="fas fa-user" style="margin-right:4px"></i>${f.customerName||'Misafir'}</div>
@@ -1929,10 +1929,8 @@ function filterFavorites(){ renderFavorites(); }
 // ════════════════════════════════════
 function getProductImages(product){
   if(!product) return [];
-  if(Array.isArray(product.images) && product.images.length){
-    return product.images.filter(Boolean);
-  }
-  return product.image ? [product.image] : [];
+  const list=(Array.isArray(product.images) && product.images.length)?product.images:[product.image];
+  return list.filter(Boolean).map(resolveAssetUrl);
 }
 function getImagesFromField(){
   const raw = document.getElementById('f-images')?.value || '';
@@ -2344,6 +2342,7 @@ function saveBulkProducts(){
     const price=parseFloat(String(priceRaw).replace(',','.'));
     if(!name || !(price>0) || !imageRaw){aToast(`⚠️ ${i+1}. ürün panelinde ad/fiyat/resim zorunlu`, 'error');return;}
     const images=getBulkCardImages(cards[i]);
+    if(images.some(isInlineImageData)){aToast(`⚠️ ${i+1}. üründe görsel henüz GitHub'a yüklenmemiş`, 'error');return;}
     const oldPriceVal=sharedOldPrice?parseFloat(sharedOldPrice):null;
     const badge=buildBulkBadge(price,oldPriceVal,sharedDiscountType,sharedDiscountValue,sharedBadge);
     incoming.push({
@@ -2376,6 +2375,7 @@ function saveProduct(){
   const singleImage = document.getElementById('f-image').value.trim();
   if(singleImage && !images.includes(singleImage)) images.unshift(singleImage);
   images = images.filter(Boolean);
+  if(images.some(isInlineImageData)){aToast('⚠️ Görseller Base64 önizleme formatında. Önce GitHub'a yükleyin.','error');return;}
   const obj={
     id:'',name,desc:document.getElementById('f-desc').value.trim(),
     image:images[0]||'',
@@ -2431,12 +2431,12 @@ function previewImg(){
   if(single && !images.includes(single)) images.unshift(single);
   images = images.filter(Boolean);
   if(images.length){
-    prev.src=images[0];
+    prev.src=resolveAssetUrl(images[0]);
     prev.style.display='block';
     prev.onerror=()=>{prev.style.display='none';};
     grid.style.display='grid';
     grid.innerHTML = images.map((src,idx)=>`<div style="position:relative">
-      <img src="${src}" alt="Görsel ${idx+1}" style="width:100%;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+      <img src="${resolveAssetUrl(src)}" alt="Görsel ${idx+1}" style="width:100%;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
       <span style="position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.65);color:white;font-size:0.62rem;padding:2px 6px;border-radius:999px">${idx+1}</span>
       <div style="position:absolute;right:4px;bottom:4px;display:flex;gap:4px">
         ${idx>0?`<button type="button" onclick="setMainImage(${idx})" title="Ana görsel yap" style="width:24px;height:24px;border:none;border-radius:6px;background:rgba(36,113,163,0.9);color:#fff;cursor:pointer"><i class="fas fa-star" style="font-size:0.6rem"></i></button>`:''}
@@ -3072,6 +3072,66 @@ function clearField(fid,vid){
 //  IMAGE UPLOAD
 // ════════════════════════════════════
 const REPO_OWNER='gocmenperde',REPO_NAME='gocmenperde',FILE_PATH='products.json';
+const GITHUB_CDN_BASE=`https://cdn.jsdelivr.net/gh/${REPO_OWNER}/${REPO_NAME}@main`;
+const IMAGE_MAX_WIDTH=1800;
+const IMAGE_QUALITY=0.82;
+function resolveAssetUrl(path){
+  const raw=String(path||'').trim();
+  if(!raw) return '';
+  if(raw.startsWith('data:')) return raw;
+  if(/^https?:\/\//i.test(raw)) return raw;
+  const normalized=raw.replace(/^\/+/, '');
+  if(normalized.startsWith('resimler/')) return `${GITHUB_CDN_BASE}/${normalized}`;
+  return raw;
+}
+function isInlineImageData(value){
+  const raw=String(value||'').trim();
+  return raw.startsWith('data:image/') || raw.startsWith('blob:');
+}
+async function fileToBase64(file){
+  return await new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>resolve(String(e.target?.result||'').split(',')[1]||'');
+    reader.onerror=()=>reject(new Error('Dosya okunamadı'));
+    reader.readAsDataURL(file);
+  });
+}
+async function optimizeImageFile(file,{maxWidth=IMAGE_MAX_WIDTH,quality=IMAGE_QUALITY}={}){
+  if(!file || !file.type || !file.type.startsWith('image/')) return file;
+  if(file.type==='image/gif' || file.size<250*1024) return file;
+  const source=await new Promise((resolve,reject)=>{
+    const u=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{URL.revokeObjectURL(u);resolve(img);};
+    img.onerror=()=>{URL.revokeObjectURL(u);reject(new Error('Görsel çözümlenemedi'));};
+    img.src=u;
+  });
+  const ratio=Math.min(1,maxWidth/Math.max(source.width,1));
+  const w=Math.max(1,Math.round(source.width*ratio));
+  const h=Math.max(1,Math.round(source.height*ratio));
+  const c=document.createElement('canvas'); c.width=w; c.height=h;
+  const ctx=c.getContext('2d'); if(!ctx) return file;
+  ctx.drawImage(source,0,0,w,h);
+  const blob=await new Promise(resolve=>c.toBlob(resolve,'image/webp',quality));
+  if(!blob || blob.size>=file.size*0.95) return file;
+  const base=file.name.replace(/\.[^.]+$/,'')||'image';
+  return new File([blob], `${base}.webp`, {type:'image/webp'});
+}
+async function uploadImageToGithub(token,file,{prefix=''}={}){
+  const sanitize=v=>v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[ğ]/g,'g').replace(/[ü]/g,'u').replace(/[ş]/g,'s').replace(/[ı]/g,'i').replace(/[ö]/g,'o').replace(/[ç]/g,'c').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9._-]/g,'');
+  const uniqueSuffix=()=>window.crypto?.randomUUID?window.crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
+  const optimized=await optimizeImageFile(file);
+  const content=await fileToBase64(optimized);
+  const fileName=`resimler/${Date.now()}-${prefix?`${prefix}-`:''}${uniqueSuffix()}-${sanitize(optimized.name||file.name)}`;
+  const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
+  const payload={message:'Admin: Ürün resmi yüklendi',content};
+  const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
+  if(!res.ok){
+    const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
+    throw new Error(err.message||'GitHub yükleme hatası');
+  }
+  return fileName;
+}
 function getGithubToken(){return localStorage.getItem('gh_token');}
 function resetGithubToken(){const t=prompt('Yeni GitHub Token girin:');if(t){localStorage.setItem('gh_token',t);aToast('✓ Token güncellendi','success');}updateTokenStatus();}
 function utf8ToBase64(value){return btoa(unescape(encodeURIComponent(value)));}
@@ -3114,11 +3174,7 @@ async function handleImageSelect(input){
   renderSelectedImages();
   const token=getGithubToken();
   if(!token){
-    const previews = await Promise.all(files.map(file => new Promise(resolve=>{
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
-      reader.readAsDataURL(file);
-    })));
+    const previews = files.map(file => URL.createObjectURL(file));
     document.getElementById('f-image').value = previews[0] || '';
     document.getElementById('f-images').value = previews.join('\n');
     previewImg();
@@ -3130,39 +3186,9 @@ async function handleImageSelect(input){
   const status=document.getElementById('imgUploadStatus');
   status.className='img-status loading';status.innerHTML='<i class="fas fa-spinner fa-spin"></i> GitHub\'a yükleniyor...';status.style.display='flex';
   try{
-    const sanitize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[ğ]/g,'g').replace(/[ü]/g,'u').replace(/[ş]/g,'s').replace(/[ı]/g,'i').replace(/[ö]/g,'o').replace(/[ç]/g,'c').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9._-]/g,'');
-    const uniqueSuffix=()=>{
-      if(window.crypto?.randomUUID) return window.crypto.randomUUID();
-      return `${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
-    };
     const uploaded = [];
     for(let idx=0; idx<files.length; idx++){
-      const file=files[idx];
-      const content = await new Promise(resolve=>{
-        const reader=new FileReader();
-        reader.onload=e=>resolve(e.target.result.split(',')[1]);
-        reader.readAsDataURL(file);
-      });
-      const fileName=`resimler/${Date.now()}-${idx}-${uniqueSuffix()}-${sanitize(file.name)}`;
-      const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
-      let sha;
-      const currentFileRes=await fetch(url,{headers:githubHeaders(token)});
-      if(currentFileRes.ok){
-        const currentFileData=await currentFileRes.json();
-        sha=currentFileData.sha;
-      } else if(currentFileRes.status!==404){
-        const err=await currentFileRes.json().catch(()=>({message:'GitHub dosya kontrolü başarısız'}));
-        throw new Error(err.message||'GitHub dosya kontrolü başarısız');
-      }
-      const payload={message:'Admin: Ürün resmi yüklendi',content};
-      if(sha) payload.sha=sha;
-      const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
-      if(!res.ok){
-        const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
-        status.className='img-status error';status.innerHTML='<i class="fas fa-times-circle"></i> Hata: '+err.message;
-        aToast('❌ Yükleme hatası: '+err.message,'error');
-        return;
-      }
+      const fileName = await uploadImageToGithub(token, files[idx], {prefix:String(idx)});
       uploaded.push(fileName);
     }
     if(uploaded.length){
@@ -3187,15 +3213,7 @@ async function handleBulkImageSelect(input){
   if(!imageInput||!imagesArea) return;
   const token=getGithubToken();
   if(!token){
-    const previews=[];
-    for(const file of files){
-      const preview = await new Promise(resolve=>{
-        const reader = new FileReader();
-        reader.onload = e => resolve(e.target.result);
-        reader.readAsDataURL(file);
-      });
-      if(preview) previews.push(preview);
-    }
+    const previews=files.map(file=>URL.createObjectURL(file));
     if(previews.length){
       imageInput.value = previews[0];
       imagesArea.value = previews.join('\n');
@@ -3207,36 +3225,9 @@ async function handleBulkImageSelect(input){
   }
   try{
     if(fileNameEl) fileNameEl.textContent='Yükleniyor...';
-    const sanitize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[ğ]/g,'g').replace(/[ü]/g,'u').replace(/[ş]/g,'s').replace(/[ı]/g,'i').replace(/[ö]/g,'o').replace(/[ç]/g,'c').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9._-]/g,'');
-    const uniqueSuffix=()=>{
-      if(window.crypto?.randomUUID) return window.crypto.randomUUID();
-      return `${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
-    };
     const uploaded=[];
     for(const file of files){
-      const content = await new Promise(resolve=>{
-        const reader=new FileReader();
-        reader.onload=e=>resolve(e.target.result.split(',')[1]);
-        reader.readAsDataURL(file);
-      });
-      const fileName=`resimler/${Date.now()}-bulk-${uniqueSuffix()}-${sanitize(file.name)}`;
-      const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
-      let sha;
-      const currentFileRes=await fetch(url,{headers:githubHeaders(token)});
-      if(currentFileRes.ok){
-        const currentFileData=await currentFileRes.json();
-        sha=currentFileData.sha;
-      } else if(currentFileRes.status!==404){
-        const err=await currentFileRes.json().catch(()=>({message:'GitHub dosya kontrolü başarısız'}));
-        throw new Error(err.message||'GitHub dosya kontrolü başarısız');
-      }
-      const payload={message:'Admin: Toplu ürün resmi yüklendi',content};
-      if(sha) payload.sha=sha;
-      const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
-      if(!res.ok){
-        const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
-        throw new Error(err.message||'GitHub yükleme hatası');
-      }
+      const fileName=await uploadImageToGithub(token,file,{prefix:'bulk'});
       uploaded.push(fileName);
     }
     if(uploaded.length){

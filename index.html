@@ -1364,6 +1364,16 @@ const PRODUCTS_CACHE_KEY = 'gp_products_cache_v2';
 const PRODUCTS_CACHE_TTL_MS = 1000 * 30;
 const GITHUB_RAW_PRODUCTS_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/products.json';
 const GITHUB_RAW_CATEGORIES_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/categories.json';
+const GITHUB_CDN_BASE = 'https://cdn.jsdelivr.net/gh/gocmenperde/gocmenperde@main';
+function resolveAssetUrl(path){
+  const raw = String(path || '').trim();
+  if(!raw) return '';
+  if(raw.startsWith('data:')) return raw;
+  if(/^https?:\/\//i.test(raw)) return raw;
+  const normalized = raw.replace(/^\/+/, '');
+  if(normalized.startsWith('resimler/')) return `${GITHUB_CDN_BASE}/${normalized}`;
+  return raw;
+}
 const GITHUB_CONTENTS_BASE_URL = 'https://api.github.com/repos/gocmenperde/gocmenperde/contents';
 let productsLoadedOnce = false;
 let productRequestInFlight = null;
@@ -1694,7 +1704,7 @@ function getCategoryIconClass(catKey){
 }
 function getCategoryImage(catKey){
   const category = CATEGORIES.find(c=>c.key===catKey);
-  if(category?.image) return category.image;
+  if(category?.image) return resolveAssetUrl(category.image);
   const imageMap = {
     'tul-perde':'resimler/tulperde.WEBP',
     'plise-perde':'resimler/foto7.jpg',
@@ -1704,7 +1714,7 @@ function getCategoryImage(catKey){
     'koltuk':'resimler/koltuk_ortusu.jpeg',
     'fonperdeler':'resimler/brillant_fon.jpeg'
   };
-  return imageMap[catKey] || '';
+  return resolveAssetUrl(imageMap[catKey] || '');
 }
 function renderCategoryMenuVisual(category){
   const image = getCategoryImage(category.key);
@@ -1746,10 +1756,8 @@ function openCategoryFromMenu(catKey){
 }
 function getProductImages(product){
   if(!product) return [];
-  if(Array.isArray(product.images) && product.images.length){
-    return product.images.filter(Boolean);
-  }
-  return product.image ? [product.image] : [];
+  const list = (Array.isArray(product.images) && product.images.length) ? product.images : [product.image];
+  return list.filter(Boolean).map(resolveAssetUrl);
 }
 function getPrimaryImage(product){
   return getProductImages(product)[0] || '';
@@ -2064,7 +2072,7 @@ function updateDiscountSpotlight(list){
   document.getElementById('discountSpotlightSave').innerText=`${diff.toLocaleString('tr-TR')} TL avantaj`;
   document.getElementById('discountSpotlightOld').innerText=`${oldPrice.toLocaleString('tr-TR')} TL`;
   document.getElementById('discountSpotlightNew').innerText=`${newPrice.toLocaleString('tr-TR')} TL`;
-  const image=getPrimaryImage(p) || 'resimler/foto6.jpg';
+  const image=getPrimaryImage(p) || resolveAssetUrl('resimler/foto6.jpg');
   const imgEl=document.getElementById('discountSpotlightImg');
   imgEl.src=image;
   imgEl.alt=`${p.name} indirimli ürün görseli`;

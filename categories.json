@@ -14,8 +14,9 @@
   {
     "key": "plise-perde",
     "label": "Plise Perdeler",
+    "desc": "Plise perde çeşitleri (m² fiyatlı)",
     "icon": "fas fa-border-all",
-    "desc": "Plise perde çeşitleri (m² fiyatlı)"
+    "image": "resimler/1774941735219-cat-42dc129d-b47f-4bf3-862d-50f2f82d837a-IMG_1828.png"
   },
   {
     "key": "stor-perde",

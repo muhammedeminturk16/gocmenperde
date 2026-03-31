@@ -1444,14 +1444,16 @@ const PRODUCTS_CACHE_KEY = 'gp_products_cache_v2';
 const PRODUCTS_CACHE_TTL_MS = 1000 * 30;
 const GITHUB_RAW_PRODUCTS_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/products.json';
 const GITHUB_RAW_CATEGORIES_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/categories.json';
-const GITHUB_CDN_BASE = 'https://cdn.jsdelivr.net/gh/gocmenperde/gocmenperde@main';
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main';
 function resolveAssetUrl(path){
   const raw = String(path || '').trim();
   if(!raw) return '';
   if(raw.startsWith('data:')) return raw;
   if(/^https?:\/\//i.test(raw)) return raw;
   const normalized = raw.replace(/^\/+/, '');
-  if(normalized.startsWith('resimler/')) return `${GITHUB_CDN_BASE}/${normalized}`;
+  if(normalized.startsWith('resimler/')){
+    return `${GITHUB_RAW_BASE}/${normalized}`;
+  }
   return raw;
 }
 const GITHUB_CONTENTS_BASE_URL = 'https://api.github.com/repos/gocmenperde/gocmenperde/contents';

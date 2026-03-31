@@ -3243,7 +3243,7 @@ function clearField(fid,vid){
 //  IMAGE UPLOAD
 // ════════════════════════════════════
 const REPO_OWNER='gocmenperde',REPO_NAME='gocmenperde',FILE_PATH='products.json';
-const GITHUB_CDN_BASE=`https://cdn.jsdelivr.net/gh/${REPO_OWNER}/${REPO_NAME}@main`;
+const GITHUB_RAW_BASE=`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main`;
 const IMAGE_MAX_WIDTH=1800;
 const IMAGE_QUALITY=0.82;
 function resolveAssetUrl(path){
@@ -3252,7 +3252,9 @@ function resolveAssetUrl(path){
   if(raw.startsWith('data:')) return raw;
   if(/^https?:\/\//i.test(raw)) return raw;
   const normalized=raw.replace(/^\/+/, '');
-  if(normalized.startsWith('resimler/')) return `${GITHUB_CDN_BASE}/${normalized}`;
+  if(normalized.startsWith('resimler/')){
+    return `${GITHUB_RAW_BASE}/${normalized}`;
+  }
   return raw;
 }
 function isInlineImageData(value){

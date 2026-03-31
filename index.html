@@ -469,7 +469,7 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 /* ── Product Modal ── */
 .modal-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.88);display:none;align-items:flex-start;justify-content:center;padding:20px;backdrop-filter:blur(8px);overflow-y:auto;-webkit-overflow-scrolling:touch}
 .modal-overlay.open{display:flex}
-.modal-box{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:900px;max-height:calc(100dvh - 40px);margin:auto 0;border-radius:16px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,0.5);background:white;position:relative}
+.modal-box{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:980px;max-height:calc(100dvh - 40px);margin:auto 0;border-radius:16px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,0.5);background:white;position:relative}
 @media(max-width:700px){.modal-overlay{padding:10px}.modal-box{grid-template-columns:1fr;max-height:none;overflow:visible;margin:0}}
 .modal-close{position:absolute;top:16px;right:16px;z-index:20;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.95);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--ink);box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:var(--transition)}
 .modal-close:hover{background:var(--gold);color:white;transform:scale(1.1)}
@@ -544,6 +544,12 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
   .modal-reviews-wrap{margin-bottom:16px}
   .modal-qty-input.dimension-input{width:110px}
   .modal-qty-input.pile-select{min-width:100%}
+}
+@media(min-width:701px){
+  .modal-box{grid-template-columns:minmax(0,56%) minmax(0,44%)}
+  .modal-img-col{align-self:stretch;height:100%}
+  .modal-img-stage{flex:1;height:auto;min-height:560px}
+  .modal-info-col{min-height:0}
 }
 .modal-add-btn{flex:1;background:var(--ink);color:white;border:none;cursor:pointer;padding:12px 20px;border-radius:10px;font-size:0.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:var(--transition);font-family:var(--ff-body)}
 .modal-add-btn:hover{background:var(--gold);color:var(--ink)}

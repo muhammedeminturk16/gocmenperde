@@ -547,6 +547,7 @@ tbody tr:hover td{background:#fdfcf8}
         <div class="nav-item" onclick="showPage('products')"><i class="fas fa-boxes-stacked"></i> Ürün Yönetimi</div>
         <div class="nav-item" onclick="showPage('categories');renderCatTable()"><i class="fas fa-folder-open"></i> Kategoriler</div>
         <div class="nav-item" onclick="showPage('campaigns')"><i class="fas fa-tag"></i> Kampanyalar</div>
+        <div class="nav-item" onclick="showPage('showcase');renderShowcaseAdminPage()"><i class="fas fa-images"></i> Montaj & Yorum Alanı</div>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-section-label">Sistem</div>
@@ -883,6 +884,63 @@ Işık: Yarı Geçirgen"></textarea></div>
     <button class="btn btn-primary" onclick="openAddCampaignModal()"><i class="fas fa-plus"></i> Yeni Kampanya</button>
   </div>
   <div id="campaignList"></div>
+</div>
+
+<!-- ══ MONTAJ & YORUM ALANI ══ -->
+<div class="page" id="page-showcase">
+  <div class="breadcrumb"><i class="fas fa-home"></i> <span>Montaj & Yorum Alanı</span></div>
+  <div class="page-header">
+    <div><h1>Montaj <em>Vitrini</em></h1><p>Anasayfadaki montaj görsellerini ve müşteri yorumlarını yönetin</p></div>
+    <button class="btn btn-outline btn-sm" onclick="renderShowcaseAdminPage()"><i class="fas fa-rotate"></i> Yenile</button>
+  </div>
+
+  <div class="dash-panel" style="margin-bottom:16px">
+    <div class="dash-panel-header"><h3><i class="fas fa-camera-retro"></i> Yeni Montaj Görseli Ekle</h3></div>
+    <div class="dash-panel-body">
+      <div class="form-row">
+        <div class="fg"><label>Resim URL / Yol *</label><input type="text" id="showcaseImageSrc" placeholder="örn: resimler/foto12.jpg"></div>
+        <div class="fg"><label>Kart Etiketi</label><input type="text" id="showcaseImageLabel" placeholder="örn: Salon Tül"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Başlık *</label><input type="text" id="showcaseImageTitle" placeholder="örn: Salon Tül Uygulaması"></div>
+        <div class="fg"><label>Açıklama *</label><input type="text" id="showcaseImageDesc" placeholder="Modal penceresinde görünen kısa açıklama"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="addShowcaseImage()"><i class="fas fa-plus"></i> Görsel Ekle</button>
+    </div>
+  </div>
+
+  <div class="table-wrap" style="margin-bottom:22px">
+    <table>
+      <thead><tr><th>#</th><th>Görsel</th><th>Başlık</th><th>Etiket</th><th>İşlem</th></tr></thead>
+      <tbody id="showcaseImageTableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="dash-panel" style="margin-bottom:16px">
+    <div class="dash-panel-header"><h3><i class="fas fa-comments"></i> Müşteri Yorumu Ekle</h3></div>
+    <div class="dash-panel-body">
+      <div class="form-row">
+        <div class="fg"><label>Yorum *</label><textarea id="showcaseReviewText" placeholder="Müşteri yorumunu girin"></textarea></div>
+        <div class="fg">
+          <label>Yazar Bilgisi</label>
+          <input type="text" id="showcaseReviewAuthor" value="Google Haritalar · Doğrulanmış Müşteri">
+          <label style="margin-top:8px">Puan</label>
+          <select id="showcaseReviewRating"><option value="5">5 ★</option><option value="4">4 ★</option><option value="3">3 ★</option></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="addShowcaseReview()"><i class="fas fa-plus"></i> Yorum Ekle</button>
+        <button class="btn btn-outline btn-sm" onclick="seedAutoShowcaseReviews()"><i class="fas fa-wand-magic-sparkles"></i> Otomatik Güzel Yorumlar Ekle</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Puan</th><th>Yorum</th><th>Yazar</th><th>İşlem</th></tr></thead>
+      <tbody id="showcaseReviewTableBody"></tbody>
+    </table>
+  </div>
 </div>
 
 <!-- ══ BİLDİRİMLER ══ -->
@@ -1240,7 +1298,129 @@ function logout(){
 //  NAVIGATION
 // ════════════════════════════════════
 let currentPage = 'dashboard';
-const pageTitles = {dashboard:'Dashboard',orders:'Siparişler',customers:'Müşteriler',favorites:'Favoriler',products:'Ürün Yönetimi',categories:'Kategoriler',campaigns:'Kampanyalar',notifications:'Bildirimler',settings:'Ayarlar'};
+const pageTitles = {dashboard:'Dashboard',orders:'Siparişler',customers:'Müşteriler',favorites:'Favoriler',products:'Ürün Yönetimi',categories:'Kategoriler',campaigns:'Kampanyalar',showcase:'Montaj & Yorum Alanı',notifications:'Bildirimler',settings:'Ayarlar'};
+const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
+const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
+const SHOWCASE_DEFAULT_IMAGES = [
+  {src:'resimler/foto1.jpg',title:'Salon Tül Uygulaması',desc:'Özel ölçü tül perde montajı ile ferah salon görünümü.',label:'Salon Tül'},
+  {src:'resimler/foto2.jpg',title:'Zebra Perde Montajı',desc:'Gün ışığını kontrollü kullanan zebra perde çözümü.',label:'Zebra Sistem'},
+  {src:'resimler/foto9.jpg',title:'Yatak Odası Fon Perde',desc:'Fon + tül kombinasyonu ile premium bir atmosfer.',label:'Fon Kombin'},
+  {src:'resimler/foto10.jpg',title:'Plise Balkon Perdesi',desc:'Balkon kapısı için şık ve pratik plise uygulama.',label:'Plise Alan'},
+  {src:'resimler/foto11.jpg',title:'Ofis Stor Perde',desc:'Kurumsal alanlar için sade stor perde montajı.',label:'Ofis Stor'},
+  {src:'resimler/foto3.jpg',title:'Çocuk Odası Perde',desc:'Işık dengesini sağlayan güvenli çocuk odası montajı.',label:'Çocuk Odası'},
+  {src:'resimler/foto4.jpg',title:'Mutfak Zebra Perde',desc:'Kolay temizlenebilir modern mutfak perde uygulaması.',label:'Mutfak'},
+  {src:'resimler/foto5.jpg',title:'Koltuk Örtüsü Sunumu',desc:'Mobilyaya tam uyumlu koltuk örtüsü yerleşimi.',label:'Örtü Sunumu'}
+];
+const SHOWCASE_DEFAULT_REVIEWS = [
+  {rating:5,text:'Montaj ekibi çok temiz çalıştı, salonumuz bambaşka oldu.',author:'Google Haritalar · Doğrulanmış Müşteri'},
+  {rating:5,text:'Ölçü alımından montaja kadar her adım çok profesyoneldi.',author:'Google Haritalar · Doğrulanmış Müşteri'},
+  {rating:5,text:'Hem önerdikleri model hem işçilik gerçekten mükemmeldi.',author:'Google Haritalar · Doğrulanmış Müşteri'}
+];
+let showcaseImages = [];
+let showcaseReviews = [];
+
+function getShowcaseState(key, fallback){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(key) || 'null');
+    if(Array.isArray(parsed) && parsed.length) return parsed;
+  }catch(_){}
+  localStorage.setItem(key, JSON.stringify(fallback));
+  return [...fallback];
+}
+function saveShowcaseImages(){ localStorage.setItem(INSTALLATION_SHOWCASE_KEY, JSON.stringify(showcaseImages)); }
+function saveShowcaseReviews(){ localStorage.setItem(CUSTOMER_SHOWCASE_REVIEWS_KEY, JSON.stringify(showcaseReviews)); }
+function renderShowcaseImageRows(){
+  const body = document.getElementById('showcaseImageTableBody');
+  if(!body) return;
+  if(!showcaseImages.length){
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--slate-light)">Henüz görsel yok</td></tr>';
+    return;
+  }
+  body.innerHTML = showcaseImages.map((item, idx)=>`
+    <tr>
+      <td>${idx+1}</td>
+      <td><img class="product-thumb" src="${item.src}" alt="${item.title || 'Montaj görseli'}"></td>
+      <td><b>${item.title || '-'}</b><small style="display:block;color:var(--slate-light);margin-top:3px">${item.desc || '-'}</small></td>
+      <td>${item.label || '-'}</td>
+      <td><button class="icon-btn del" onclick="removeShowcaseImage(${idx})" title="Sil"><i class="fas fa-trash"></i></button></td>
+    </tr>
+  `).join('');
+}
+function renderShowcaseReviewRows(){
+  const body = document.getElementById('showcaseReviewTableBody');
+  if(!body) return;
+  if(!showcaseReviews.length){
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--slate-light)">Henüz yorum yok</td></tr>';
+    return;
+  }
+  body.innerHTML = showcaseReviews.map((item, idx)=>`
+    <tr>
+      <td>${idx+1}</td>
+      <td>${'★'.repeat(Math.max(1,Math.min(5,Number(item.rating)||5)))}</td>
+      <td>${item.text || '-'}</td>
+      <td>${item.author || 'Doğrulanmış Müşteri'}</td>
+      <td><button class="icon-btn del" onclick="removeShowcaseReview(${idx})" title="Sil"><i class="fas fa-trash"></i></button></td>
+    </tr>
+  `).join('');
+}
+function renderShowcaseAdminPage(){
+  showcaseImages = getShowcaseState(INSTALLATION_SHOWCASE_KEY, SHOWCASE_DEFAULT_IMAGES);
+  showcaseReviews = getShowcaseState(CUSTOMER_SHOWCASE_REVIEWS_KEY, SHOWCASE_DEFAULT_REVIEWS);
+  renderShowcaseImageRows();
+  renderShowcaseReviewRows();
+}
+function addShowcaseImage(){
+  const src = document.getElementById('showcaseImageSrc')?.value.trim();
+  const title = document.getElementById('showcaseImageTitle')?.value.trim();
+  const desc = document.getElementById('showcaseImageDesc')?.value.trim();
+  const label = document.getElementById('showcaseImageLabel')?.value.trim();
+  if(!src || !title || !desc){ aToast('Resim yolu, başlık ve açıklama zorunludur'); return; }
+  showcaseImages.unshift({src,title,desc,label:label || title});
+  showcaseImages = showcaseImages.slice(0,18);
+  saveShowcaseImages();
+  renderShowcaseImageRows();
+  ['showcaseImageSrc','showcaseImageTitle','showcaseImageDesc','showcaseImageLabel'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  aToast('✓ Montaj görseli eklendi','success');
+}
+function removeShowcaseImage(index){
+  showcaseImages.splice(index,1);
+  saveShowcaseImages();
+  renderShowcaseImageRows();
+  aToast('Görsel kaldırıldı');
+}
+function addShowcaseReview(){
+  const text = document.getElementById('showcaseReviewText')?.value.trim();
+  const author = document.getElementById('showcaseReviewAuthor')?.value.trim();
+  const rating = Number(document.getElementById('showcaseReviewRating')?.value || 5);
+  if(!text){ aToast('Yorum metni zorunludur'); return; }
+  showcaseReviews.unshift({rating:Math.max(1,Math.min(5,rating)),text,author:author || 'Google Haritalar · Doğrulanmış Müşteri'});
+  showcaseReviews = showcaseReviews.slice(0,16);
+  saveShowcaseReviews();
+  renderShowcaseReviewRows();
+  const textEl = document.getElementById('showcaseReviewText');
+  if(textEl) textEl.value = '';
+  aToast('✓ Yorum eklendi','success');
+}
+function removeShowcaseReview(index){
+  showcaseReviews.splice(index,1);
+  saveShowcaseReviews();
+  renderShowcaseReviewRows();
+  aToast('Yorum kaldırıldı');
+}
+function seedAutoShowcaseReviews(){
+  const samples = [
+    'Stor perdeler tam ölçü geldi, montaj aynı gün tamamlandı.',
+    'Ekip çok kibar ve titizdi, evimizi tertemiz bıraktılar.',
+    'Fon ve tül kombinasyonu beklediğimizden de şık oldu.'
+  ];
+  samples.forEach((text, idx)=>{
+    showcaseReviews.unshift({rating:5,text,author:`Google Haritalar · Memnun Müşteri ${idx+1}`});
+  });
+  showcaseReviews = showcaseReviews.slice(0,16);
+  saveShowcaseReviews();
+  renderShowcaseReviewRows();
+  aToast('✓ Otomatik örnek yorumlar eklendi','success');
+}
 
 function toggleSidebar(){
   const sb=document.getElementById('sidebar'), ov=document.getElementById('sidebarOverlay');
@@ -1261,6 +1441,7 @@ function showPage(id){
   closeSidebar();
   if(id==='favorites') renderFavorites();
   if(id==='campaigns') renderCampaigns();
+  if(id==='showcase') renderShowcaseAdminPage();
   if(id==='notifications') renderNotifs();
 }
 function handleStatCardKey(event, target, filter){
@@ -3232,6 +3413,7 @@ async function initAdmin(){
   rebuildCatDropdowns();
   renderCatTable();
   renderCampaigns();
+  renderShowcaseAdminPage();
   renderCustomTemplateButtons();
   renderCustomTemplateButtons('bulk');
   renderNotifs();

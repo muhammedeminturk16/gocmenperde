@@ -8,8 +8,9 @@
   {
     "key": "tul-perde",
     "label": "Tül Perdeler",
+    "desc": "Pileli tül perde modelleri",
     "icon": "fas fa-wind",
-    "desc": "Pileli tül perde modelleri"
+    "image": "resimler/1774941755360-cat-1dd638d6-c411-4946-ae24-166fd1310d1a-IMG_1827.jpeg"
   },
   {
     "key": "plise-perde",

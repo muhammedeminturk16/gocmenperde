@@ -601,10 +601,11 @@ footer span{color:var(--gold)}
 .mbn-badge{position:absolute;top:0;right:6px;background:var(--gold);color:var(--ink);font-size:0.55rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .product-gallery-meta{position:absolute;bottom:10px;left:10px;display:flex;align-items:center;gap:6px;background:rgba(15,14,13,0.68);color:white;padding:6px 10px;border-radius:999px;font-size:0.62rem;letter-spacing:1px;backdrop-filter:blur(4px)}
 .product-gallery-meta i{color:var(--gold)}
-.modal-gallery-controls{position:absolute;inset:0;pointer-events:none}
-.modal-gallery-btn{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border:none;border-radius:50%;background:rgba(255,255,255,0.92);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;box-shadow:0 8px 22px rgba(0,0,0,0.18);transition:var(--transition)}
+.modal-gallery-controls{position:absolute;inset:0;pointer-events:none;z-index:4}
+.modal-gallery-btn{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border:none;border-radius:50%;background:rgba(255,255,255,0.94);color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;box-shadow:0 8px 22px rgba(0,0,0,0.18);transition:var(--transition);z-index:5}
 .modal-gallery-btn:hover{background:var(--gold);color:white}
 .modal-gallery-btn.prev{left:14px}.modal-gallery-btn.next{right:14px}
+@media(max-width:700px){.modal-gallery-btn.prev{left:max(10px,env(safe-area-inset-left))}.modal-gallery-btn.next{right:max(10px,env(safe-area-inset-right))}}
 .modal-thumb-panel{padding:12px 14px;background:#fff;border-top:1px solid var(--border)}
 .modal-thumb-panel-title{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--slate);font-weight:600;margin-bottom:8px}
 .modal-thumbs{display:flex;gap:8px;overflow-x:auto;padding:0}
@@ -2102,6 +2103,14 @@ let modalSwipeStartY = 0;
 let modalSwipeTouchActive = false;
 let modalSwipePreventOpenUntil = 0;
 const modalImagePreloadCache = new Map();
+let modalBrokenImageMap = new Set();
+
+function preloadModalBatch(images, count=4){
+  if(!Array.isArray(images) || !images.length) return;
+  images.slice(0, Math.max(1, count)).forEach((src,idx)=>{
+    preloadImage(src, idx===0 ? 'high' : 'auto');
+  });
+}
 
 function lockPageScrollForModal(){
   modalLockedScrollY = window.scrollY || window.pageYOffset || 0;
@@ -2193,9 +2202,11 @@ function setModalImage(idx){
   currentModalImageIndex = (idx + currentModalImages.length) % currentModalImages.length;
   const img = document.getElementById('mImg');
   const nextSrc = currentModalImages[currentModalImageIndex];
+  if(!img) return;
   img.decoding = 'async';
   img.loading = 'eager';
   img.fetchPriority = 'high';
+  img.dataset.index = String(currentModalImageIndex);
   img.src = nextSrc;
   img.alt = `Ürün görseli ${currentModalImageIndex+1}`;
   warmModalImages(currentModalImages, currentModalImageIndex);
@@ -2261,6 +2272,8 @@ function openModalFromProduct(id){
   const social = getProductSocial(id);
   currentModalImages = getProductImages(p);
   currentModalImageIndex = 0;
+  modalBrokenImageMap = new Set();
+  preloadModalBatch(currentModalImages, 5);
 
   document.getElementById('mTitle').innerText = p.name;
   document.querySelector('.modal-rating-line')?.remove();
@@ -2345,6 +2358,8 @@ function openGalleryModal(src,title,desc){
   document.getElementById('mTag').innerText = 'Dükkanımız';
   currentModalImages = [src];
   currentModalImageIndex = 0;
+  modalBrokenImageMap = new Set();
+  preloadModalBatch(currentModalImages, 1);
   setModalImage(0);
   updateModalGalleryNav();
   renderModalThumbs();
@@ -2420,6 +2435,21 @@ function closeProductModal(){
   clearProductDeepLink();
 }
 function closeModalOverlay(e){ if(e.target===document.getElementById('productModal')) closeProductModal(); }
+function handleModalImageLoadError(){
+  const img = document.getElementById('mImg');
+  if(!img || !currentModalImages.length) return;
+  const failedIndex = Number(img.dataset.index || currentModalImageIndex || 0);
+  if(Number.isFinite(failedIndex)) modalBrokenImageMap.add(failedIndex);
+  if(modalBrokenImageMap.size >= currentModalImages.length) return;
+  let nextIndex = failedIndex;
+  for(let i=0;i<currentModalImages.length;i++){
+    nextIndex = (nextIndex + 1) % currentModalImages.length;
+    if(!modalBrokenImageMap.has(nextIndex)){
+      setModalImage(nextIndex);
+      return;
+    }
+  }
+}
 function zoomImg(e){
   if(window.innerWidth<=700) return;
   const img=document.getElementById('mImg'),col=document.getElementById('modalImgCol'),rect=col.getBoundingClientRect();
@@ -2474,6 +2504,11 @@ document.addEventListener('keydown', (e)=>{
 });
 
 attachModalSwipeHandlers();
+const modalImageElement = document.getElementById('mImg');
+if(modalImageElement && !modalImageElement.dataset.errorBound){
+  modalImageElement.addEventListener('error', handleModalImageLoadError);
+  modalImageElement.dataset.errorBound = '1';
+}
 
 // ── Menü & Popuplar ──
 function isMobileMenuOpen(){

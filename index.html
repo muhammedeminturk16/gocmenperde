@@ -95,6 +95,7 @@ img,video,canvas,svg{max-width:100%}
 #mobileMenu button{width:100%;justify-content:flex-start;background:linear-gradient(135deg,rgba(255,255,255,0.6),rgba(255,250,241,0.46));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.52);color:var(--ink);text-align:left;font-size:0.82rem;letter-spacing:1.6px;text-transform:uppercase;padding:12px 14px;border-radius:12px;cursor:pointer;transition:all 0.3s;border-bottom:none;font-family:var(--ff-body);font-weight:500;display:flex;align-items:center;gap:10px;min-height:52px;box-shadow:0 8px 18px rgba(15,14,13,0.08)}
 #mobileMenu button:hover{color:var(--ink);border-color:rgba(201,168,76,0.52);background:linear-gradient(135deg,rgba(255,255,255,0.82),rgba(246,235,210,0.62));transform:translateX(2px)}
 #mobileMenu .menu-entry-thumb{width:28px;height:28px;border-radius:8px;object-fit:cover;flex-shrink:0;border:1px solid rgba(201,168,76,0.4);box-shadow:0 4px 12px rgba(15,14,13,0.14)}
+#mobileMenu .menu-entry-icon{width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(201,168,76,0.35);background:rgba(201,168,76,0.12);color:var(--gold-dark);font-size:0.85rem;box-shadow:0 4px 12px rgba(15,14,13,0.08)}
 #mobileMenu .menu-close-btn{margin-top:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(201,168,76,0.45);border-radius:12px;padding:12px 0;letter-spacing:2px;background:rgba(201,168,76,0.14);color:var(--ink)}
 #mobileMenu .menu-close-btn:hover{color:var(--ink);background:rgba(201,168,76,0.2)}
 #mobileCategoryMenu{display:flex;flex-direction:column;gap:10px}
@@ -1202,34 +1203,34 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 <!-- MOBİL MENÜ -->
 <div id="mobileMenu">
   <div class="menu-logo">GÖÇMEN PERDE</div>
-  <button onclick="go('home');closeMobileMenuWrapper()"><img class="menu-entry-thumb" src="resimler/foto1.jpg" alt="Anasayfa görseli">ANASAYFA</button>
-  <button onclick="go('products');closeMobileMenuWrapper()"><img class="menu-entry-thumb" src="resimler/foto2.jpg" alt="Ürünler görseli">ÜRÜNLER</button>
+  <button onclick="go('home');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-house"></i></span>ANASAYFA</button>
+  <button onclick="go('products');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-border-all"></i></span>ÜRÜNLER</button>
   <div id="mobileCategoryMenu"></div>
-  <button onclick="go('about');closeMobileMenuWrapper()"><img class="menu-entry-thumb" src="resimler/foto3.jpg" alt="Hikayemiz görseli">HİKAYEMİZ</button>
-  <button onclick="go('contact');closeMobileMenuWrapper()"><img class="menu-entry-thumb" src="resimler/logo.jpg" alt="İletişim görseli">İLETİŞİM</button>
+  <button onclick="go('about');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-book-open"></i></span>HİKAYEMİZ</button>
+  <button onclick="go('contact');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-phone"></i></span>İLETİŞİM</button>
   <button onclick="togglePopup('miniCart');closeMobileMenuWrapper()">
-    <img class="menu-entry-thumb" src="resimler/foto4.jpg" alt="Sepetim görseli">SEPETİM
+    <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-bag-shopping"></i></span>SEPETİM
     <span id="cartCountMobile" style="background:#c9a84c;color:#0f0e0d;font-size:0.65rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:6px">0</span>
   </button>
   <div style="border-top:1px solid rgba(201,168,76,0.2);margin-top:10px;padding-top:10px">
     <button onclick="window.location.href='hesabim.html?mod=login';closeMobileMenuWrapper()">
-      <img class="menu-entry-thumb" src="resimler/foto5.jpg" alt="Kullanıcı girişi görseli"><span id="loginTextMobile">Giriş Yap</span>
+      <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-right-to-bracket"></i></span><span id="loginTextMobile">Giriş Yap</span>
     </button>
     <button id="registerBtnMobile" data-auth="register" onclick="window.location.href='hesabim.html?mod=register';closeMobileMenuWrapper()">
-      <img class="menu-entry-thumb" src="resimler/foto6.jpg" alt="Kayıt ol görseli">Kayıt Ol
+      <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-user-plus"></i></span>Kayıt Ol
     </button>
     <div id="mobileAccountLinks" style="display:none">
       <button onclick="window.location.href='hesabim.html?tab=orders';closeMobileMenuWrapper()">
-        <img class="menu-entry-thumb" src="resimler/foto7.jpg" alt="Siparişlerim görseli">Siparişlerim
+        <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-box"></i></span>Siparişlerim
       </button>
       <button onclick="window.location.href='hesabim.html?tab=addresses';closeMobileMenuWrapper()">
-        <img class="menu-entry-thumb" src="resimler/foto8.jpg" alt="Adreslerim görseli">Adreslerim
+        <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-location-dot"></i></span>Adreslerim
       </button>
       <button onclick="window.location.href='hesabim.html?tab=favorites';closeMobileMenuWrapper()">
-        <img class="menu-entry-thumb" src="resimler/foto9.jpg" alt="Favorilerim görseli">Favorilerim
+        <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-heart"></i></span>Favorilerim
       </button>
       <button onclick="logoutUser();closeMobileMenuWrapper()">
-        <img class="menu-entry-thumb" src="resimler/foto10.jpg" alt="Çıkış yap görseli">Çıkış Yap
+        <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-right-from-bracket"></i></span>Çıkış Yap
       </button>
     </div>
   </div>
@@ -2073,6 +2074,7 @@ let modalSwipeStartX = 0;
 let modalSwipeStartY = 0;
 let modalSwipeTouchActive = false;
 let modalSwipePreventOpenUntil = 0;
+const modalImagePreloadCache = new Map();
 
 function lockPageScrollForModal(){
   modalLockedScrollY = window.scrollY || window.pageYOffset || 0;
@@ -2093,6 +2095,29 @@ function unlockPageScrollForModal(){
   document.body.style.right = '';
   document.body.style.width = '';
   window.scrollTo(0, modalLockedScrollY || 0);
+}
+
+function preloadImage(src, priority='auto'){
+  if(!src) return Promise.resolve();
+  if(modalImagePreloadCache.has(src)) return modalImagePreloadCache.get(src);
+  const preloader = new Image();
+  preloader.decoding = 'async';
+  preloader.loading = 'eager';
+  if(priority === 'high') preloader.fetchPriority = 'high';
+  const promise = new Promise((resolve)=>{
+    preloader.onload = ()=>resolve(true);
+    preloader.onerror = ()=>resolve(false);
+  });
+  preloader.src = src;
+  modalImagePreloadCache.set(src, promise);
+  return promise;
+}
+function warmModalImages(images, activeIndex=0){
+  if(!Array.isArray(images) || !images.length) return;
+  preloadImage(images[activeIndex], 'high');
+  if(images.length === 1) return;
+  preloadImage(images[(activeIndex + 1) % images.length]);
+  preloadImage(images[(activeIndex - 1 + images.length) % images.length]);
 }
 
 function renderModalThumbs(){
@@ -2140,8 +2165,13 @@ function setModalImage(idx){
   if(!currentModalImages.length) return;
   currentModalImageIndex = (idx + currentModalImages.length) % currentModalImages.length;
   const img = document.getElementById('mImg');
-  img.src = currentModalImages[currentModalImageIndex];
+  const nextSrc = currentModalImages[currentModalImageIndex];
+  img.decoding = 'async';
+  img.loading = 'eager';
+  img.fetchPriority = 'high';
+  img.src = nextSrc;
   img.alt = `Ürün görseli ${currentModalImageIndex+1}`;
+  warmModalImages(currentModalImages, currentModalImageIndex);
   updateViewerImage();
   resetImgZoom();
   renderModalThumbs();
@@ -2208,7 +2238,7 @@ function openModalFromProduct(id){
   document.getElementById('mTitle').innerText = p.name;
   document.querySelector('.modal-rating-line')?.remove();
   document.getElementById('mTitle').insertAdjacentHTML('afterend', `<div class="modal-rating-line"><span class="stars">${renderStarText(social.avgRating)}</span><strong>${social.avgRating.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1})}</strong><span>${social.reviewCount} yorum</span></div>`);
-  document.getElementById('mImg').src = currentModalImages[0] || '';
+  setModalImage(0);
   const catMap = Object.fromEntries(CATEGORIES.map(c=>[c.key,c.label]));
   document.getElementById('mTag').innerText = catMap[p.cat]||p.cat;
   updateModalGalleryNav();
@@ -2285,10 +2315,10 @@ function openGalleryModal(src,title,desc){
   document.getElementById('mTitle').innerText = title;
   currentModalProductId = null;
   document.querySelector('.modal-rating-line')?.remove();
-  document.getElementById('mImg').src = src;
   document.getElementById('mTag').innerText = 'Dükkanımız';
   currentModalImages = [src];
   currentModalImageIndex = 0;
+  setModalImage(0);
   updateModalGalleryNav();
   renderModalThumbs();
   document.getElementById('mDesc').innerText = desc;
@@ -2341,8 +2371,12 @@ function viewerWheelZoom(e){
 function updateViewerImage(){
   const viewerImg = document.getElementById('imageViewerImg');
   if(!viewerImg || !currentModalImages.length) return;
+  viewerImg.decoding = 'async';
+  viewerImg.loading = 'eager';
+  viewerImg.fetchPriority = 'high';
   viewerImg.src = currentModalImages[currentModalImageIndex];
   viewerImg.alt = `Büyük ürün görseli ${currentModalImageIndex+1}`;
+  warmModalImages(currentModalImages, currentModalImageIndex);
   document.getElementById('imageViewerTitle').innerText = `Fotoğraf ${currentModalImageIndex+1} / ${currentModalImages.length}`;
   resetViewerScale();
 }

@@ -178,15 +178,29 @@
 
     /* ── ORDER CARD ── */
     .order-card {
-        background: white;
-        border-radius: var(--radius);
-        border: 1px solid var(--border-hard);
+        background: linear-gradient(145deg, rgba(255,255,255,0.88), rgba(255,255,255,0.72));
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.8);
         margin-bottom: 16px;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         overflow: hidden;
-        transition: box-shadow 0.2s;
+        transition: box-shadow 0.2s, transform 0.2s;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        position: relative;
     }
-    .order-card:hover { box-shadow: var(--shadow); }
+    .order-card::before {
+        content: '';
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        right: -90px;
+        top: -130px;
+        background: radial-gradient(circle at center, rgba(201,168,76,0.24), rgba(201,168,76,0));
+        pointer-events: none;
+    }
+    .order-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
     .order-card-top {
         padding: 16px 20px;
         display: flex;
@@ -209,6 +223,18 @@
         font-size: 1.05rem;
         font-weight: 600;
         color: var(--ink);
+    }
+    .order-id {
+        margin-top: 4px;
+        font-size: 0.72rem;
+        color: rgba(74,71,67,0.9);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.7);
+        border: 1px solid rgba(201,168,76,0.22);
+        border-radius: 999px;
+        padding: 4px 10px;
     }
     .order-status {
         display: inline-flex;
@@ -316,6 +342,123 @@
         gap: 7px;
     }
     .btn-detail:hover { background: var(--gold); color: var(--ink); }
+    .orders-shell {
+        background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.22) 100%);
+        border: 1px solid rgba(255,255,255,0.65);
+        border-radius: 24px;
+        padding: 18px;
+        box-shadow: 0 30px 70px rgba(0,0,0,0.08);
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+    }
+    .orders-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.45);
+        background: linear-gradient(120deg, #171410 0%, #2b251b 45%, #4a3b1f 100%);
+        padding: 18px;
+        margin-bottom: 14px;
+        color: #fff;
+    }
+    .orders-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 85% 10%, rgba(201,168,76,0.28), transparent 50%);
+        pointer-events: none;
+    }
+    .orders-hero-title {
+        font-family: var(--ffd);
+        font-size: 1.5rem;
+        margin-bottom: 4px;
+        position: relative;
+        z-index: 1;
+    }
+    .orders-hero-sub {
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.74);
+        position: relative;
+        z-index: 1;
+    }
+    .orders-stats {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0,1fr));
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+    .orders-stat {
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 14px;
+        padding: 10px;
+        background: rgba(255,255,255,0.06);
+    }
+    .orders-stat-value {
+        font-family: var(--ffd);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    .orders-stat-label {
+        margin-top: 2px;
+        font-size: 0.68rem;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,0.72);
+        text-transform: uppercase;
+    }
+    .orders-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+    .orders-search {
+        flex: 1;
+        min-width: 220px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.9);
+        border: 1px solid rgba(201,168,76,0.25);
+        border-radius: 999px;
+        padding: 10px 14px;
+        box-shadow: var(--shadow-sm);
+    }
+    .orders-search i { color: var(--gold-dark); }
+    .orders-search input {
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+        font-family: var(--ff);
+        font-size: 0.85rem;
+        color: var(--ink);
+    }
+    .order-filter-pills {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+    .order-pill {
+        border: 1px solid rgba(201,168,76,0.35);
+        background: rgba(255,255,255,0.85);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    .order-pill.active {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: #fff;
+    }
 
     /* ── ORDER DETAIL MODAL ── */
     .modal-overlay {
@@ -838,6 +981,8 @@
         .gp-header { padding: 0 4%; }
         .user-bar { padding: 14px 4%; }
         .tabs-inner { padding: 0 4%; }
+        .orders-stats { grid-template-columns: 1fr; }
+        .orders-shell { padding: 14px; border-radius: 20px; }
     }
 </style>
 
@@ -884,8 +1029,41 @@
 
 <!-- SİPARİŞLERİM -->
 <div id="section-orders" class="gp-section active">
-    <div id="ordersList">
-        <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
+    <div class="orders-shell">
+        <div class="orders-hero">
+            <div class="orders-hero-title">Siparişlerim</div>
+            <div class="orders-hero-sub">Siparişlerinizi canlı olarak takip edin, ürün detaylarına hızla ulaşın.</div>
+            <div class="orders-stats">
+                <div class="orders-stat">
+                    <div class="orders-stat-value" id="statTotalOrders">0</div>
+                    <div class="orders-stat-label">Toplam Sipariş</div>
+                </div>
+                <div class="orders-stat">
+                    <div class="orders-stat-value" id="statActiveOrders">0</div>
+                    <div class="orders-stat-label">Aktif Süreç</div>
+                </div>
+                <div class="orders-stat">
+                    <div class="orders-stat-value" id="statTotalSpent">0 TL</div>
+                    <div class="orders-stat-label">Toplam Harcama</div>
+                </div>
+            </div>
+        </div>
+        <div class="orders-controls">
+            <div class="orders-search">
+                <i class="fas fa-search"></i>
+                <input type="search" id="orderSearchInput" placeholder="Sipariş no, ürün adı veya durum ara..." oninput="applyOrderFilters()">
+            </div>
+            <div class="order-filter-pills">
+                <button class="order-pill active" data-status="all" onclick="setOrderFilter('all', this)">Tümü</button>
+                <button class="order-pill" data-status="Beklemede" onclick="setOrderFilter('Beklemede', this)">Beklemede</button>
+                <button class="order-pill" data-status="Hazırlanıyor" onclick="setOrderFilter('Hazırlanıyor', this)">Hazırlanıyor</button>
+                <button class="order-pill" data-status="Kargoda" onclick="setOrderFilter('Kargoda', this)">Kargoda</button>
+                <button class="order-pill" data-status="Teslim Edildi" onclick="setOrderFilter('Teslim Edildi', this)">Teslim</button>
+            </div>
+        </div>
+        <div id="ordersList">
+            <div class="loading-state"><i class="fas fa-circle-notch"></i> Yükleniyor...</div>
+        </div>
     </div>
 </div>
 
@@ -1055,6 +1233,7 @@ function showToast(msg, duration = 3000) {
 ═══════════════════════════════ */
 let allOrders = [];
 let productCatalog = [];
+let activeOrderFilter = 'all';
 const ORDER_SUGGESTIONS = [
     { id: "sug1", name: "Plise Perde Gri", price: 600, image: "resimler/1774722016200-IMG_1540.png" },
     { id: "sug2", name: "Tül Perde Bambu", price: 300, image: "resimler/bambutul.PNG" },
@@ -1145,6 +1324,7 @@ async function loadOrders() {
         const r = await fetch('/api/orders?action=my-orders', { headers: authHeaders() });
         const data = await r.json();
         allOrders = data.orders || [];
+        updateOrderStats(allOrders);
         if (!allOrders.length) {
             el.innerHTML = `
                 <div class="fav-empty-box">
@@ -1155,10 +1335,41 @@ async function loadOrders() {
                 </div>`;
             return;
         }
-        renderOrders(allOrders);
+        applyOrderFilters();
     } catch(e) {
         el.innerHTML = `<div class="empty-state"><i class="fas fa-wifi"></i><p>Siparişler yüklenemedi.</p></div>`;
     }
+}
+
+function updateOrderStats(orders = []) {
+    const total = orders.length;
+    const active = orders.filter(o => ['Beklemede', 'Hazırlanıyor', 'Kargoda'].includes(o.durum)).length;
+    const spent = orders.reduce((acc, o) => acc + Number(o.toplam || 0), 0);
+    document.getElementById('statTotalOrders').textContent = String(total);
+    document.getElementById('statActiveOrders').textContent = String(active);
+    document.getElementById('statTotalSpent').textContent = `${spent.toLocaleString('tr-TR')} TL`;
+}
+
+function setOrderFilter(status, btn) {
+    activeOrderFilter = status;
+    document.querySelectorAll('.order-pill').forEach(p => p.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    applyOrderFilters();
+}
+
+function applyOrderFilters() {
+    const query = (document.getElementById('orderSearchInput')?.value || '').trim().toLocaleLowerCase('tr-TR');
+    let filtered = allOrders.filter(o => activeOrderFilter === 'all' ? true : (o.durum === activeOrderFilter));
+    if (query) {
+        filtered = filtered.filter(o => {
+            const items = safeJsonParse(o.urunler, o.urunler || []);
+            const itemText = items.map(i => `${i.name || i.ad || ''}`).join(' ').toLocaleLowerCase('tr-TR');
+            const orderNo = String(o.id || '');
+            const durum = String(o.durum || '').toLocaleLowerCase('tr-TR');
+            return orderNo.includes(query) || itemText.includes(query) || durum.includes(query);
+        });
+    }
+    renderOrders(filtered, allOrders.length);
 }
 
 function getStatusClass(durum) {
@@ -1170,8 +1381,18 @@ function getStatusIcon(durum) {
     return map[durum] || 'fas fa-clock';
 }
 
-function renderOrders(orders) {
+function renderOrders(orders, totalCount = orders.length) {
     const el = document.getElementById('ordersList');
+    if (!orders.length) {
+        el.innerHTML = `
+            <div class="fav-empty-box">
+                <div class="fav-empty-icon"><i class="fas fa-filter-circle-xmark"></i></div>
+                <h3>Sonuç bulunamadı</h3>
+                <p>Aramayı veya filtreleri değiştirip tekrar deneyin.</p>
+            </div>
+            ${renderOrderSuggestions()}`;
+        return;
+    }
     el.innerHTML = orders.map(o => {
         const items = safeJsonParse(o.urunler, o.urunler || []);
         const date = new Date(o.created_at).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -1202,6 +1423,7 @@ function renderOrders(orders) {
                     <div class="order-meta-left">
                         <div class="order-date-label">Sipariş Tarihi</div>
                         <div class="order-date-value">${date}</div>
+                        <div class="order-id"><i class="fas fa-hashtag"></i> ${o.id || '—'}</div>
                     </div>
                     <span class="order-status ${statusClass}">
                         <i class="${statusIcon}"></i> ${o.durum || 'Beklemede'}
@@ -1220,7 +1442,11 @@ function renderOrders(orders) {
                     </button>
                 </div>
             </div>`;
-    }).join('') + renderOrderSuggestions();
+    }).join('') + `
+        <div style="margin-top:4px;font-size:.74rem;color:var(--slate);padding-left:6px">
+            ${orders.length} / ${totalCount} sipariş gösteriliyor.
+        </div>
+    ` + renderOrderSuggestions();
 }
 
 function openOrderDetail(orderId) {

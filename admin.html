@@ -1486,7 +1486,7 @@ function buildAutoFromYouComment(title, note){
     'Renk uyumu mükemmel oldu, salonumuz çok daha ferah görünüyor.'
   ];
   const pick = packs[Math.floor(Math.random()*packs.length)];
-  const prefix = title ? `"${title}" uygulamasında ` : '';
+  const prefix = 'Müşteri yorumu: ';
   return `${prefix}${pick}${note ? ` (${note})` : ''}`;
 }
 function getFromYouItemImages(item){

@@ -1356,13 +1356,25 @@ function getFromYouImages(item){
   const merged = [item.src, ...list].filter(Boolean).map(x=>String(x).trim()).filter(Boolean);
   return [...new Set(merged)];
 }
+function preloadCriticalImages(items=[], limit=4){
+  items.slice(0, limit).forEach((src)=>{
+    if(!src) return;
+    if(document.head.querySelector(`link[rel="preload"][as="image"][href="${src}"]`)) return;
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = src;
+    document.head.appendChild(link);
+  });
+}
 function renderInstallationShowcase(){
   const grid = document.getElementById('installationGalleryGrid');
   if(!grid) return;
   const items = parseShowcaseJSON(INSTALLATION_SHOWCASE_KEY, DEFAULT_INSTALLATION_SHOWCASE).slice(0,8);
+  preloadCriticalImages(items.map(item=>item?.src), 4);
   grid.innerHTML = items.map((item, idx)=>`
     <div class="gallery-item" onclick="openGalleryModal('${escapeInline(item.src)}','${escapeInline(item.title)}','${escapeInline(item.desc)}')">
-      <img src="${item.src}" alt="${item.title || ('Montaj görseli ' + (idx+1))}" loading="lazy">
+      <img src="${item.src}" alt="${item.title || ('Montaj görseli ' + (idx+1))}" loading="${idx < 2 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="async">
       <div class="gallery-overlay"><span class="gallery-label">${item.label || item.title || 'Montaj'}</span></div>
     </div>
   `).join('');
@@ -1388,6 +1400,7 @@ function renderFromYouShowcase(targetId='fromYouPageGrid', limit=12){
   const grid = document.getElementById(targetId);
   if(!grid) return;
   const list = parseShowcaseJSON(FROM_YOU_SHOWCASE_KEY, DEFAULT_FROM_YOU_SHOWCASE).slice(0, limit);
+  preloadCriticalImages(list.map(item=>getFromYouImages(item)[0]), targetId === 'fromYouPageGrid' ? 6 : 3);
   FROM_YOU_RENDERED_MAP[targetId] = list;
   if(!list.length){
     grid.innerHTML = '<div class="review-card">Henüz müşteri paylaşımı yok.</div>';
@@ -1395,10 +1408,10 @@ function renderFromYouShowcase(targetId='fromYouPageGrid', limit=12){
   }
   grid.innerHTML = list.map((item, idx)=>`
     <article class="from-you-card" role="button" tabindex="0" onclick="openFromYouGallery('${escapeInline(targetId)}',${idx})" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();openFromYouGallery('${escapeInline(targetId)}',${idx})}">
-      <img src="${getFromYouImages(item)[0] || ''}" alt="${item.title || ('Müşteri evi ' + (idx+1))}" loading="lazy">
+      <img src="${getFromYouImages(item)[0] || ''}" alt="${item.title || ('Müşteri evi ' + (idx+1))}" loading="${idx < 2 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="async">
       <div class="from-you-card-overlay">
         <span class="from-you-card-badge">${item.location || 'Doğrulanmış Müşteri'}</span>
-        <h4>${item.title || 'Müşteri evi uygulaması'}</h4>
+        <h4>Müşteri Yorumu</h4>
         <p>“${item.comment || 'Sonuç beklentimizin de üzerinde oldu.'}”</p>${getFromYouImages(item).length>1 ? `<p style="margin-top:6px;font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;opacity:0.85"><i class="fas fa-images"></i> ${getFromYouImages(item).length} fotoğraf</p>` : ''}
       </div>
     </article>

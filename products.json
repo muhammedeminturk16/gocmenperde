@@ -854,9 +854,10 @@
     "id": "zebra-perde-antrasit-gri-gecisli-1774899975522-561",
     "name": "Zebra Perde Antrasit Gri Geçişli",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774899890114-0-118de7a7-ceed-4929-a9b1-31ecddccb410-IMG_1771.jpeg",
+    "image": "resimler/1775109390172-0-d7ea8f8b-4e74-4c77-a8ec-41f07b1cf0c4-IMG_1946.webp",
     "images": [
-      "resimler/1774899890114-0-118de7a7-ceed-4929-a9b1-31ecddccb410-IMG_1771.jpeg"
+      "resimler/1775109390172-0-d7ea8f8b-4e74-4c77-a8ec-41f07b1cf0c4-IMG_1946.webp",
+      "resimler/1775109394522-1-67bfef3c-d539-4c32-a28d-94b2ef2eda18-IMG_1771.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -866,7 +867,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
     "stock": null,
     "serialNumber": "Adidas V-07",

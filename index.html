@@ -607,6 +607,26 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
   .modal-reviews-wrap{margin-bottom:16px}
   .modal-qty-input.dimension-input{width:110px}
   .modal-qty-input.pile-select{min-width:100%}
+  .modal-img-col,
+  .modal-img-stage,
+  .modal-thumb-panel,
+  .modal-thumbs,
+  .modal-info-col,
+  .image-viewer-overlay,
+  .image-viewer-topbar,
+  .image-viewer-stage,
+  .image-viewer-thumbs-wrap{
+    width:100%;
+    max-width:100vw;
+  }
+  .modal-thumb-panel{
+    padding-left:max(12px,env(safe-area-inset-left));
+    padding-right:max(12px,env(safe-area-inset-right));
+    overflow:hidden;
+  }
+  .modal-thumbs{
+    padding-right:2px;
+  }
 }
 @media(min-width:701px){
   .modal-box{grid-template-columns:minmax(0,56%) minmax(0,44%)}

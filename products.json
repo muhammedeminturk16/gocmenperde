@@ -718,9 +718,10 @@
     "id": "zebra-perde-yesil-gumus-desenli-1774957913388-696",
     "name": "Zebra Perde Yeşil Gümüş Desenli",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774957874486-bulk-0e62dbdb-67cd-4073-857a-d31b96f883a7-IMG_1783.jpeg",
+    "image": "resimler/1775112418397-0-159674c7-bc28-4afa-9f1c-7e6dc9ef9802-IMG_1951.png",
     "images": [
-      "resimler/1774957874486-bulk-0e62dbdb-67cd-4073-857a-d31b96f883a7-IMG_1783.jpeg"
+      "resimler/1775112418397-0-159674c7-bc28-4afa-9f1c-7e6dc9ef9802-IMG_1951.png",
+      "resimler/1775112422227-1-f080a06e-39f8-48ce-a9b9-342ec055c03c-IMG_1783.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -730,7 +731,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
     "stock": null,
     "serialNumber": "Meri V-05",

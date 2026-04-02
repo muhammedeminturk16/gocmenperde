@@ -752,9 +752,10 @@
     "id": "zebra-perde-mavi-bej-golgeli-1774902386360-483",
     "name": "Zebra Perde Mavi Bej Gölgeli",
     "desc": "Şık tasarımı ve kaliteli kumaşıyla yaşam alanınıza uyum sağlar. Ölçü ve kullanım ihtiyacınıza göre güvenle tercih edebilirsiniz.",
-    "image": "resimler/1774902378851-0-b66f096c-7aea-4ddb-8908-ce2f301128ed-IMG_1775.jpeg",
+    "image": "resimler/1775112273553-0-0addd091-3308-447b-9ea5-492f4f2d7bc9-IMG_1949.png",
     "images": [
-      "resimler/1774902378851-0-b66f096c-7aea-4ddb-8908-ce2f301128ed-IMG_1775.jpeg"
+      "resimler/1775112273553-0-0addd091-3308-447b-9ea5-492f4f2d7bc9-IMG_1949.png",
+      "resimler/1775112278814-1-3cf50f01-49cf-43c2-a12b-b733b5d2904b-IMG_1775.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -764,7 +765,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
     "stock": null,
     "serialNumber": "Gölge V-04",

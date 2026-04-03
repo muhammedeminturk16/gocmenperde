@@ -1624,9 +1624,9 @@
     "id": "orme-tul-perde-sarmasik-desen-1774881564791",
     "name": "Örme Tül Perde Sarmaşık Desen",
     "desc": "Bursa Osmangazi'de 30 yılı aşkın tecrübeyle üretilen, şık tasarımıyla evinize zarafet katacak dayanıklı ve estetik tül perde.",
-    "image": "resimler/1775248455662-0-ee982583-24b3-47d7-a207-25fca35d45d5-IMG_2035.jpeg",
+    "image": "/resimler/1775248455662-0-ee982583-24b3-47d7-a207-25fca35d45d5-IMG_2035.jpeg",
     "images": [
-      "resimler/1775248455662-0-ee982583-24b3-47d7-a207-25fca35d45d5-IMG_2035.jpeg"
+      "/resimler/1775248455662-0-ee982583-24b3-47d7-a207-25fca35d45d5-IMG_2035.jpeg"
     ],
     "price": 300,
     "oldPrice": 400,

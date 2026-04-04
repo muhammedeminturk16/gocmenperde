@@ -28,7 +28,7 @@
             --green: #27ae60;
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: var(--ff); background: var(--cream); color: var(--ink); min-height: 100vh; }
+        body { font-family: var(--ff); background: radial-gradient(circle at 15% -10%, rgba(201,168,76,0.18), transparent 40%), var(--cream); color: var(--ink); min-height: 100vh; }
 
     /* ── HEADER ── */
     .gp-header {
@@ -162,7 +162,7 @@
         align-items: center;
         gap: 7px;
     }
-    .gp-tab.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 600; }
+    .gp-tab.active { color: var(--gold); border-bottom-color: var(--gold); font-weight: 600; background: rgba(201,168,76,0.08); }
     .gp-tab:hover { color: var(--ink); }
     .gp-tab i { font-size: 0.85rem; }
 
@@ -171,6 +171,8 @@
     .section-shell {
         background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.45) 100%);
         border: 1px solid rgba(255,255,255,0.8);
+        position: relative;
+        overflow: hidden;
         border-radius: 24px;
         padding: 18px;
         box-shadow: 0 24px 60px rgba(0,0,0,0.08);
@@ -1400,7 +1402,7 @@ if (!token || !user) {
 function initUserDisplay() {
     const name = user?.ad_soyad || user?.email || 'Kullanıcı';
     document.getElementById('userNameDisplay').textContent = name;
-    const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    const initials = name.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase() || 'GP';
     document.getElementById('userAvatarText').textContent = initials;
     if (user?.created_at) {
         const d = new Date(user.created_at);
@@ -1412,7 +1414,8 @@ loadAccountExtras();
 
 
 function loadAccountExtras() {
-    const prefs = JSON.parse(localStorage.getItem('gp_account_prefs') || '{}');
+    let prefs = {};
+    try { prefs = JSON.parse(localStorage.getItem('gp_account_prefs') || '{}') || {}; } catch (_) { prefs = {}; }
     document.getElementById('prefOrderNotify').checked = prefs.orderNotify !== false;
     document.getElementById('prefCampaignNotify').checked = !!prefs.campaignNotify;
     document.getElementById('prefQuickOrder').checked = prefs.quickOrder !== false;
@@ -1483,7 +1486,9 @@ function showTab(tab, el) {
     document.querySelectorAll('.gp-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.gp-section').forEach(s => s.classList.remove('active'));
     if (el) el.classList.add('active');
-    document.getElementById('section-' + tab).classList.add('active');
+    const sectionEl = document.getElementById('section-' + tab);
+    if (!sectionEl) return;
+    sectionEl.classList.add('active');
     if (tab === 'orders') loadOrders();
     if (tab === 'addresses') loadAddresses();
     if (tab === 'favorites') loadFavorites();
@@ -2069,6 +2074,7 @@ async function updateProfile() {
         u.ad_soyad = ad_soyad;
         localStorage.setItem('user', JSON.stringify(u));
         document.getElementById('userNameDisplay').textContent = ad_soyad;
+        document.getElementById('userAvatarText').textContent = ad_soyad.split(' ').filter(Boolean).map(w => w[0]).slice(0,2).join('').toUpperCase() || 'GP';
         showToast('✓ Bilgiler güncellendi');
     } else {
         showToast('Hata: ' + (data.error || 'Bilinmeyen hata'));

@@ -40,7 +40,7 @@
   --shadow-lg:0 12px 40px rgba(0,0,0,0.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:var(--ff);background:#f0ece5;color:var(--ink);min-height:100vh;overflow-x:hidden}
+body{font-family:var(--ff);background:radial-gradient(circle at 8% -10%, rgba(201,168,76,0.16), transparent 28%),#f0ece5;color:var(--ink);min-height:100vh;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 button{font-family:var(--ff)}
 input,select,textarea{font-family:var(--ff)}
@@ -64,7 +64,7 @@ code{font-family:'Courier New',monospace}
 .login-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.12)}
 .login-btn{width:100%;padding:15px;background:var(--ink);color:white;border:none;border-radius:10px;font-size:0.85rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:0.3s;margin-top:4px}
 .login-btn:hover{background:var(--gold);color:var(--ink)}
-.login-error{color:var(--red);font-size:0.78rem;margin-top:10px;display:none;padding:10px 14px;background:var(--red-light);border-radius:8px}
+.login-error{color:var(--red);font-size:0.78rem;margin-top:10px;display:none;padding:10px 14px;background:var(--red-light);border-radius:8px;border:1px solid rgba(192,57,43,0.18)}
 
 /* ──────────── LAYOUT ──────────── */
 #adminApp{display:none}
@@ -92,7 +92,7 @@ code{font-family:'Courier New',monospace}
 .logout-btn:hover{background:var(--red);color:white;border-color:var(--red)}
 
 /* ──────────── TOPBAR ──────────── */
-.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:400;box-shadow:var(--shadow-sm)}
+.topbar{position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--topbar-h);background:rgba(255,255,255,0.85);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:400;box-shadow:var(--shadow-sm);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .topbar-left{display:flex;align-items:center;gap:14px}
 .hamburger-btn{display:none;background:none;border:none;color:var(--ink);font-size:1.2rem;cursor:pointer;padding:8px;border-radius:8px;transition:0.2s}
 .hamburger-btn:hover{background:var(--cream)}
@@ -108,7 +108,7 @@ code{font-family:'Courier New',monospace}
 
 /* ──────────── MAIN WRAPPER ──────────── */
 .admin-wrapper{margin-left:var(--sidebar-w);margin-top:var(--topbar-h);min-height:calc(100vh - var(--topbar-h));display:flex;flex-direction:column}
-.main-content{flex:1;padding:28px 32px;max-width:1400px;width:100%}
+.main-content{flex:1;padding:28px 32px;max-width:1400px;width:100%;margin:0 auto}
 .page{display:none}.page.active{display:block;animation:fadeIn 0.2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
@@ -122,7 +122,7 @@ code{font-family:'Courier New',monospace}
 
 /* ──────────── STATS GRID ──────────── */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-bottom:28px}
-.stat-card{background:white;border-radius:var(--radius);padding:22px;border:1px solid var(--border);position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;cursor:default}
+.stat-card{background:linear-gradient(180deg,#fff 0%,#fdfcf9 100%);border-radius:var(--radius);padding:22px;border:1px solid var(--border);position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;cursor:default}
 .stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
 .stat-card.clickable{cursor:pointer}
 .stat-card.clickable:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
@@ -443,7 +443,7 @@ tbody tr:hover td{background:#fdfcf8}
 .analytics-board{grid-template-columns:1fr}
 }
 @media(max-width:768px){
-:root{-sidebar-w:0px}
+:root{--sidebar-w:0px}
 .sidebar{transform:translateX(-260px);width:260px}
 .sidebar.open{transform:translateX(0)}
 .topbar{left:0}
@@ -464,11 +464,12 @@ tbody tr:hover td{background:#fdfcf8}
 .toolbar{gap:8px}
 .search-box{max-width:none;flex:1;min-width:0}
 .table-wrap{border-radius:10px}
+.sidebar{box-shadow:0 18px 40px rgba(0,0,0,0.32)}
 .dash-row{flex-direction:column!important}
 .metric-grid{grid-template-columns:1fr}
 }
 @media(max-width:480px){
-.stats-grid{grid-template-columns:1fr 1fr}
+.stats-grid{grid-template-columns:1fr}
 .stat-number{font-size:1.8rem}
 .page-header h1{font-size:1.7rem}
 }

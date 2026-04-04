@@ -77,9 +77,9 @@
   ]
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script>(function(){ emailjs.init("2YShEY9OBdyUyU3Xf"); })();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -195,6 +195,11 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.8s ease both 1.1s;padding:10px 12px;border-radius:999px;background:rgba(255,255,255,0.1);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .btn-primary,.btn-outline{background:rgba(255,255,255,0.82);color:#38322c;border:1px solid rgba(255,255,255,0.92);cursor:pointer;padding:16px 42px;border-radius:50px;font-size:0.75rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;transition:var(--transition);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
 .btn-primary:hover,.btn-outline:hover{background:rgba(255,255,255,0.96);border-color:#fff;color:var(--ink);transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,0.14)}
+.hero-proof-strip{margin-top:24px;display:grid;grid-template-columns:repeat(3,minmax(130px,1fr));gap:10px}
+.hero-proof-pill{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);border-radius:12px;padding:10px 12px;color:#fff}
+.hero-proof-pill b{display:block;font-family:var(--ff-display);font-size:1.15rem;color:#ffe9b0}
+.hero-proof-pill span{font-size:0.67rem;letter-spacing:1px;text-transform:uppercase;opacity:.85}
+@media(max-width:640px){.hero-proof-strip{grid-template-columns:1fr 1fr}.hero-proof-pill:last-child{grid-column:1/-1}}
 .hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,0.3);font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;animation:fadeUp 0.8s ease both 1.4s}
 .scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(201,168,76,0.8),transparent);animation:scrollAnim 2s ease-in-out infinite}
 @keyframes scrollAnim{0%,100%{transform:scaleY(0.5);opacity:0.3}50%{transform:scaleY(1);opacity:1}}
@@ -258,6 +263,13 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 #from-you .section-title{color:#fff}
 #from-you .section-desc{color:rgba(255,255,255,0.78)}
 .from-you-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.gallery-section,.reviews-section,.from-you-preview,.about-showcase,.about-values,.about-team,#from-you,.products-layout,.checkout-grid,.contact-grid{content-visibility:auto;contain-intrinsic-size:1px 900px}
+.floating-cta{position:fixed;right:16px;bottom:calc(var(--mobile-nav-offset, 0px) + env(safe-area-inset-bottom) + 16px);z-index:12110;display:flex;flex-direction:column;gap:10px}
+.floating-cta a{display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:999px;text-decoration:none;font-size:0.72rem;font-weight:700;letter-spacing:.7px;box-shadow:0 12px 28px rgba(0,0,0,.2)}
+.floating-cta .cta-whatsapp{background:#25D366;color:#fff}
+.floating-cta .cta-call{background:#fff;color:var(--ink);border:1px solid var(--border)}
+@media(max-width:640px){.floating-cta a span{display:none}.floating-cta a{width:44px;height:44px;justify-content:center;padding:0}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.cursor-dot,.cursor-ring{display:none!important}}
 .from-you-card{position:relative;overflow:hidden;border-radius:18px;border:1px solid rgba(255,255,255,0.16);background:rgba(255,255,255,0.06);backdrop-filter:blur(4px);min-height:320px;box-shadow:0 20px 40px rgba(0,0,0,0.22);transition:transform .35s ease, box-shadow .35s ease}
 .from-you-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 28px 50px rgba(0,0,0,0.32)}
 .from-you-card img{width:100%;height:100%;object-fit:cover;display:block}
@@ -866,6 +878,11 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
         <button class="btn-primary" onclick="go('products')">Ürünleri Keşfet</button>
         <button class="btn-outline" onclick="go('contact')">Bize Ulaşın</button>
       </div>
+      <div class="hero-proof-strip" aria-label="Güven göstergeleri">
+        <div class="hero-proof-pill"><b>30+ Yıl</b><span>Ustalık Tecrübesi</span></div>
+        <div class="hero-proof-pill"><b>5★</b><span>Google Memnuniyet</span></div>
+        <div class="hero-proof-pill"><b>Hızlı</b><span>Keşif &amp; Montaj</span></div>
+      </div>
     </div>
     <div class="hero-scroll"><span>Aşağı Kaydır</span><div class="scroll-line"></div></div>
   </div>
@@ -1358,6 +1375,10 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
     </div>
   </div>
   <button class="menu-close-btn" onclick="closeMobileMenuWrapper()"><i class="fas fa-xmark" style="margin-right:10px"></i>KAPAT</button>
+</div>
+<div class="floating-cta" id="floatingCta">
+  <a class="cta-whatsapp" href="https://wa.me/905012110958" target="_blank" rel="noopener" aria-label="WhatsApp ile hızlı teklif alın"><i class="fab fa-whatsapp"></i><span>Hızlı Teklif</span></a>
+  <a class="cta-call" href="tel:+905012110958" aria-label="Hemen ara"><i class="fas fa-phone"></i><span>Hemen Ara</span></a>
 </div>
 
 <div class="mobile-bottom-nav" aria-label="Mobil alt menü">
@@ -2929,6 +2950,7 @@ function applySectionState(id, {scroll=true} = {}){
   const mbnEl = document.getElementById('mbn-'+targetId);
   if(mbnEl) mbnEl.classList.add('active-nav');
   updateCartActionPanel();
+  updateFloatingCta(targetId);
 }
 
 function getSectionFromLocation(){
@@ -3850,16 +3872,25 @@ function setMobileNavPadding(){
     document.querySelectorAll('.section').forEach(s=>{ s.style.paddingBottom=''; });
   }
   updateCartActionPanel();
+  updateFloatingCta(getSectionFromLocation());
 }
 window.addEventListener('resize', setMobileNavPadding);
 document.addEventListener('DOMContentLoaded', setMobileNavPadding);
 
+function updateFloatingCta(activeSection='home'){
+  const cta = document.getElementById('floatingCta');
+  if(!cta) return;
+  const isHiddenZone = ['cart','checkout'].includes(activeSection) || document.body.classList.contains('product-modal-open');
+  cta.style.display = isHiddenZone ? 'none' : 'flex';
+}
+
 // ── Görsel Performansı ──
 function optimizeImageLoading(scope = document){
   scope.querySelectorAll('img').forEach((img, idx)=>{
+    const aboveFold = idx < 2 && !img.closest('.modal-overlay,.gallery-section,.reviews-section,#products,#from-you');
     if(!img.hasAttribute('decoding')) img.decoding = 'async';
-    if(!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', idx < 2 ? 'high' : 'low');
-    if(!img.hasAttribute('loading') && !img.closest('.hero')) img.loading = 'lazy';
+    if(!img.hasAttribute('fetchpriority')) img.setAttribute('fetchpriority', aboveFold ? 'high' : 'low');
+    if(!img.hasAttribute('loading')) img.loading = aboveFold ? 'eager' : 'lazy';
   });
 }
 document.addEventListener('DOMContentLoaded', ()=>{

@@ -221,6 +221,25 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .local-seo-box p{color:var(--slate);line-height:1.7;font-size:0.95rem}
 .local-seo-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .local-seo-tags span{border:1px solid var(--border);padding:8px 12px;border-radius:999px;background:#fff;font-size:0.75rem;letter-spacing:0.5px}
+.trust-section{padding:10px 5% 70px;background:linear-gradient(180deg,rgba(255,255,255,0.82) 0%,rgba(247,244,239,0.96) 100%)}
+.trust-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr;gap:18px}
+.trust-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 18px 40px rgba(15,14,13,.06)}
+.trust-title{font-family:var(--ff-display);font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:8px}
+.trust-desc{color:var(--slate);font-size:0.92rem;line-height:1.75}
+.trust-points{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.trust-point{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:rgba(201,168,76,0.06)}
+.trust-point i{color:var(--gold-dark);margin-top:2px}
+.trust-point span{font-size:0.82rem;color:var(--slate);line-height:1.45}
+.trust-kpi{display:flex;flex-direction:column;gap:10px}
+.trust-kpi-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px}
+.trust-kpi-item strong{display:block;font-family:var(--ff-display);font-size:1.55rem;color:var(--ink)}
+.trust-kpi-item span{font-size:0.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--slate)}
+.process-strip{max-width:1100px;margin:18px auto 0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.process-step{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;text-align:left}
+.process-step b{display:block;font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:7px}
+.process-step p{font-size:0.82rem;color:var(--slate);line-height:1.55}
+@media(max-width:900px){.trust-grid{grid-template-columns:1fr}.trust-points{grid-template-columns:1fr}.process-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.process-strip{grid-template-columns:1fr}}
 
 /* ── Gallery ── */
 .gallery-section{padding:80px 5%}
@@ -873,10 +892,10 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
     <div class="hero-content">
       <div class="hero-eyebrow">Bursa · Osmangazi · 30 Yıllık Tecrübe</div>
       <h1 class="hero-title">Göçmen<br><span>Perde</span></h1>
-      <p class="hero-subtitle">Bursa perdeci hizmetinde evinize yakışan zarafet</p>
+      <p class="hero-subtitle">Bursa'da keşiften montaja kadar güven veren perde hizmeti</p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="go('products')">Ürünleri Keşfet</button>
-        <button class="btn-outline" onclick="go('contact')">Bize Ulaşın</button>
+        <button class="btn-primary" onclick="go('products')">Modelleri İncele</button>
+        <button class="btn-outline" onclick="go('contact')">Ücretsiz Keşif Al</button>
       </div>
       <div class="hero-proof-strip" aria-label="Güven göstergeleri">
         <div class="hero-proof-pill"><b>30+ Yıl</b><span>Ustalık Tecrübesi</span></div>
@@ -901,6 +920,31 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
       <div class="local-seo-tags">
         <span>Bursa Perdeci</span><span>Bursa Perde</span><span>Osmangazi Perdeci</span><span>Tül Perde</span><span>Zebra Perde</span><span>Stor Perde</span>
       </div>
+    </div>
+  </div>
+  <div class="trust-section">
+    <div class="trust-grid">
+      <div class="trust-card">
+        <h2 class="trust-title">Karar Vermeyi Kolaylaştıran Şeffaf Hizmet</h2>
+        <p class="trust-desc">Müşterilerimizin bizi tercih etme nedeni yalnızca tasarım değil, süreç boyunca net iletişim ve söz verdiğimiz zamanda temiz montaj teslimatı. Her adımı önceden planlayıp maliyet, kumaş ve kullanım detaylarını açıkça anlatıyoruz.</p>
+        <div class="trust-points">
+          <div class="trust-point"><i class="fas fa-check-circle"></i><span>Yerinde ölçü ve kumaş önerisiyle hata riskini azaltıyoruz.</span></div>
+          <div class="trust-point"><i class="fas fa-shield-heart"></i><span>Usta işçilik ve montaj sonrası son kontrol ile teslim ediyoruz.</span></div>
+          <div class="trust-point"><i class="fas fa-comments"></i><span>Süreç boyunca tek muhatap: tekliften montaja aynı ekip.</span></div>
+          <div class="trust-point"><i class="fas fa-hand-holding-heart"></i><span>Satış sonrası destekle memnuniyetinizi garanti altına alıyoruz.</span></div>
+        </div>
+      </div>
+      <div class="trust-kpi">
+        <div class="trust-kpi-item"><strong>30+ Yıl</strong><span>Bursa Perde Tecrübesi</span></div>
+        <div class="trust-kpi-item"><strong>Aynı Gün</strong><span>Keşif Planlama Desteği</span></div>
+        <div class="trust-kpi-item"><strong>5★ Odaklı</strong><span>Müşteri Memnuniyet Anlayışı</span></div>
+      </div>
+    </div>
+    <div class="process-strip" aria-label="Hizmet süreci">
+      <div class="process-step"><b>1. İhtiyaç Analizi</b><p>Odanızın ışık, mahremiyet ve dekorasyon ihtiyacını birlikte belirliyoruz.</p></div>
+      <div class="process-step"><b>2. Ölçü &amp; Teklif</b><p>Yerinde ölçü alıp, kumaş ve model alternatiflerini net fiyatla sunuyoruz.</p></div>
+      <div class="process-step"><b>3. Özel Üretim</b><p>Seçtiğiniz modele göre özenli dikim ve kalite kontrol sürecini tamamlıyoruz.</p></div>
+      <div class="process-step"><b>4. Montaj &amp; Teslim</b><p>Randevu saatinde temiz montaj yapıp son kontrollerle teslim ediyoruz.</p></div>
     </div>
   </div>
   <div class="gallery-section">

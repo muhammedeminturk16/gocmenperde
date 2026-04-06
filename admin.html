@@ -1519,13 +1519,15 @@ function renderFromYouImagePreview(images=getFromYouImagesFromField()){
     wrap.innerHTML = '<div style="grid-column:1/-1;font-size:0.76rem;color:var(--slate-light)">Henüz fotoğraf eklenmedi</div>';
     return;
   }
-  wrap.innerHTML = images.map((src,idx)=>`
+  const previewLimit = 14;
+  const previewImages = images.slice(0, previewLimit);
+  wrap.innerHTML = previewImages.map((src,idx)=>`
     <div style="position:relative;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff">
       <img src="${resolveAssetUrl(src)}" ${withImageFallback(src)} alt="Müşteri fotoğrafı ${idx+1}" style="width:100%;height:86px;object-fit:cover;display:block">
       <button type="button" onclick="removeFromYouImageAt(${idx})" title="Fotoğrafı kaldır" style="position:absolute;top:6px;right:6px;width:22px;height:22px;border:none;border-radius:999px;background:rgba(0,0,0,0.7);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-xmark"></i></button>
       <div style="position:absolute;left:6px;bottom:6px;font-size:0.62rem;background:rgba(0,0,0,0.65);color:#fff;padding:2px 6px;border-radius:999px">${idx===0 ? 'Kapak' : 'Foto '+(idx+1)}</div>
     </div>
-  `).join('');
+  `).join('') + (images.length > previewLimit ? `<div style="grid-column:1/-1;font-size:0.75rem;color:var(--slate-light);padding-top:4px">+${images.length-previewLimit} görsel daha var. Donmayı önlemek için önizlemede ilk ${previewLimit} görsel gösteriliyor.</div>` : '');
 }
 function removeFromYouImageAt(index){
   const images = getFromYouImagesFromField();
@@ -3354,6 +3356,8 @@ const REPO_OWNER='gocmenperde',REPO_NAME='gocmenperde',FILE_PATH='products.json'
 const GITHUB_RAW_BASE=`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main`;
 const IMAGE_MAX_WIDTH=1800;
 const IMAGE_QUALITY=0.82;
+const MAX_MULTI_UPLOAD_COUNT = 24;
+const IMAGE_PLACEHOLDER_DATA_URI = `data:image/svg+xml,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='420' height='280'><rect width='100%' height='100%' fill='#f1eee7'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#8a8480' font-family='Outfit,Arial' font-size='16'>Görsel yüklenemedi</text></svg>")}`;
 function resolveAssetUrl(path){
   const raw=String(path||'').trim();
   if(!raw) return '';
@@ -3380,9 +3384,11 @@ function resolveAssetFallbackUrl(path){
 function withImageFallback(path){
   const main=resolveAssetUrl(path);
   const fallback=resolveAssetFallbackUrl(path);
-  if(!fallback || fallback===main) return '';
+  if(!fallback || fallback===main){
+    return `onerror="this.onerror=null;this.src='${IMAGE_PLACEHOLDER_DATA_URI}'"`;
+  }
   const escaped=fallback.replace(/'/g,"\\'");
-  return `onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src='${escaped}';}else{this.onerror=null;}"`;
+  return `onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src='${escaped}';}else{this.onerror=null;this.src='${IMAGE_PLACEHOLDER_DATA_URI}';}"`;
 }
 function isInlineImageData(value){
   const raw=String(value||'').trim();
@@ -3432,6 +3438,38 @@ async function uploadImageToGithub(token,file,{prefix=''}={}){
   }
   return fileName;
 }
+async function uploadImageWithRetry(token,file,opts={},attempt=1){
+  try{
+    return await uploadImageToGithub(token,file,opts);
+  }catch(err){
+    if(attempt>=2) throw err;
+    await new Promise(resolve=>setTimeout(resolve, 350*attempt));
+    return uploadImageWithRetry(token,file,opts,attempt+1);
+  }
+}
+async function uploadImagesWithConcurrency(token, files, {prefix='image', concurrency=2, onProgress} = {}){
+  const queue = files.map((file,idx)=>({file,idx}));
+  const uploaded = new Array(files.length);
+  const errors = [];
+  const workerCount = Math.min(concurrency, queue.length || 1);
+  const workers = Array.from({length:workerCount}, async ()=>{
+    while(queue.length){
+      const current = queue.shift();
+      if(!current) continue;
+      const {file, idx} = current;
+      try{
+        uploaded[idx] = await uploadImageWithRetry(token, file, {prefix:`${prefix}-${idx}`});
+        if(typeof onProgress === 'function'){
+          onProgress({done:uploaded.filter(Boolean).length,total:files.length,name:file.name});
+        }
+      }catch(err){
+        errors.push(`${file.name}: ${err.message}`);
+      }
+    }
+  });
+  await Promise.all(workers);
+  return {uploaded:uploaded.filter(Boolean), errors};
+}
 function getGithubToken(){return localStorage.getItem('gh_token');}
 function resetGithubToken(){const t=prompt('Yeni GitHub Token girin:');if(t){localStorage.setItem('gh_token',t);aToast('✓ Token güncellendi','success');}updateTokenStatus();}
 function utf8ToBase64(value){return btoa(unescape(encodeURIComponent(value)));}
@@ -3468,7 +3506,7 @@ function updateTokenStatus(){
 }
 
 async function handleImageSelect(input){
-  const files=Array.from(input.files||[]);
+  const files=Array.from(input.files||[]).slice(0, MAX_MULTI_UPLOAD_COUNT);
   if(!files.length) return;
   document.getElementById('f-imageFileName').textContent = files.length===1 ? files[0].name : `${files.length} dosya seçildi`;
   renderSelectedImages();
@@ -3486,11 +3524,13 @@ async function handleImageSelect(input){
   const status=document.getElementById('imgUploadStatus');
   status.className='img-status loading';status.innerHTML='<i class="fas fa-spinner fa-spin"></i> GitHub\'a yükleniyor...';status.style.display='flex';
   try{
-    const uploaded = [];
-    for(let idx=0; idx<files.length; idx++){
-      const fileName = await uploadImageToGithub(token, files[idx], {prefix:String(idx)});
-      uploaded.push(fileName);
-    }
+    const {uploaded, errors} = await uploadImagesWithConcurrency(token, files, {
+      prefix:'product',
+      concurrency:2,
+      onProgress:({done,total,name})=>{
+        status.innerHTML=`<i class="fas fa-spinner fa-spin"></i> Yükleniyor (${done}/${total}) — ${name}`;
+      }
+    });
     if(uploaded.length){
       document.getElementById('f-image').value=uploaded[0];
       document.getElementById('f-images').value=uploaded.join('\n');
@@ -3498,12 +3538,17 @@ async function handleImageSelect(input){
     }
     input.value='';
     renderSelectedImages();
-    status.className='img-status done';status.innerHTML=`<i class="fas fa-check-circle"></i> ${uploaded.length} resim yüklendi`;
-    aToast('✅ Resimler yüklendi','success');
+    if(errors.length){
+      status.className='img-status error';status.innerHTML=`<i class="fas fa-triangle-exclamation"></i> ${uploaded.length} yüklendi, ${errors.length} dosya başarısız`;
+      aToast(`⚠️ ${uploaded.length} resim yüklendi, ${errors.length} dosya hatalı`,'error');
+    }else{
+      status.className='img-status done';status.innerHTML=`<i class="fas fa-check-circle"></i> ${uploaded.length} resim yüklendi`;
+      aToast('✅ Resimler yüklendi','success');
+    }
   } catch(err){status.className='img-status error';status.innerHTML='<i class="fas fa-times-circle"></i> '+err.message;aToast('❌ '+err.message,'error');}
 }
 async function handleBulkImageSelect(input){
-  const files=Array.from(input?.files||[]);
+  const files=Array.from(input?.files||[]).slice(0, MAX_MULTI_UPLOAD_COUNT);
   if(!files.length) return;
   const card=input.closest('.bulk-item-card');
   const imageInput=card?.querySelector('.bulk-image');
@@ -3525,18 +3570,23 @@ async function handleBulkImageSelect(input){
   }
   try{
     if(fileNameEl) fileNameEl.textContent='Yükleniyor...';
-    const uploaded=[];
-    for(const file of files){
-      const fileName=await uploadImageToGithub(token,file,{prefix:'bulk'});
-      uploaded.push(fileName);
-    }
+    const {uploaded, errors}=await uploadImagesWithConcurrency(token, files, {
+      prefix:'bulk',
+      concurrency:2,
+      onProgress:({done,total})=>{ if(fileNameEl) fileNameEl.textContent=`Yükleniyor... (${done}/${total})`; }
+    });
     if(uploaded.length){
       imageInput.value=uploaded[0];
       imagesArea.value=uploaded.join('\n');
       refreshBulkCardImageOptions(card);
     }
-    if(fileNameEl) fileNameEl.textContent=`✓ ${uploaded.length} resim yüklendi`;
-    aToast('✅ Toplu ürün resimleri yüklendi','success');
+    if(errors.length){
+      if(fileNameEl) fileNameEl.textContent=`⚠️ ${uploaded.length} yüklendi, ${errors.length} hata`;
+      aToast(`⚠️ ${uploaded.length} resim yüklendi, ${errors.length} dosya hatalı`,'error');
+    }else{
+      if(fileNameEl) fileNameEl.textContent=`✓ ${uploaded.length} resim yüklendi`;
+      aToast('✅ Toplu ürün resimleri yüklendi','success');
+    }
   }catch(err){
     if(fileNameEl) fileNameEl.textContent='Yükleme başarısız';
     aToast('❌ '+err.message,'error');
@@ -3558,7 +3608,7 @@ async function handleShowcaseImageSelect(input){
   }
   try{
     if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
-    const uploaded = await uploadImageToGithub(token, file, {prefix:'showcase'});
+    const uploaded = await uploadImageWithRetry(token, file, {prefix:'showcase'});
     if(pathEl) pathEl.value = uploaded;
     if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded}`;
     aToast('✅ Montaj görseli yüklendi','success');
@@ -3570,7 +3620,7 @@ async function handleShowcaseImageSelect(input){
   }
 }
 async function handleFromYouImageSelect(input){
-  const files = Array.from(input?.files||[]);
+  const files = Array.from(input?.files||[]).slice(0, MAX_MULTI_UPLOAD_COUNT);
   const fileNameEl = document.getElementById('fromYouImageFileName');
   if(fileNameEl) fileNameEl.textContent = files.length ? (files.length===1 ? files[0].name : `${files.length} dosya seçildi`) : 'JPG, PNG, WEBP — çoklu yükleme destekli';
   if(!files.length) return;
@@ -3587,15 +3637,21 @@ async function handleFromYouImageSelect(input){
   }
   try{
     if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
-    const uploaded = [];
-    for(const file of files){
-      uploaded.push(await uploadImageToGithub(token, file, {prefix:'from-you'}));
-    }
+    const {uploaded, errors} = await uploadImagesWithConcurrency(token, files, {
+      prefix:'from-you',
+      concurrency:2,
+      onProgress:({done,total})=>{ if(fileNameEl) fileNameEl.textContent = `Yükleniyor... (${done}/${total})`; }
+    });
     if(pathEl) pathEl.value = uploaded[0] || '';
     if(listEl) listEl.value = uploaded.join('\n');
     renderFromYouImagePreview(uploaded);
-    if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded.length} resim yüklendi`;
-    aToast('✅ Müşteri evi fotoğrafları yüklendi','success');
+    if(errors.length){
+      if(fileNameEl) fileNameEl.textContent = `⚠️ ${uploaded.length} yüklendi, ${errors.length} hata`;
+      aToast(`⚠️ ${uploaded.length} fotoğraf yüklendi, ${errors.length} dosya hatalı`,'error');
+    }else{
+      if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded.length} resim yüklendi`;
+      aToast('✅ Müşteri evi fotoğrafları yüklendi','success');
+    }
   }catch(err){
     if(fileNameEl) fileNameEl.textContent = 'Yükleme başarısız';
     aToast('❌ '+err.message,'error');

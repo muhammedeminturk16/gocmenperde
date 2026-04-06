@@ -1509,7 +1509,7 @@ function renderInstallationShowcase(){
   preloadCriticalImages(items.map(item=>item?.src), 4);
   grid.innerHTML = items.map((item, idx)=>`
     <div class="gallery-item" onclick="openGalleryModal('${escapeInline(item.src)}','${escapeInline(item.title)}','${escapeInline(item.desc)}')">
-      <img src="${item.src}" alt="${item.title || ('Montaj görseli ' + (idx+1))}" loading="${idx < 2 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="async">
+      <img src="${resolveAssetUrl(item.src)}" ${imageFallbackAttr(item.src)} alt="${item.title || ('Montaj görseli ' + (idx+1))}" loading="${idx < 2 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="async">
       <div class="gallery-overlay"><span class="gallery-label">${item.label || item.title || 'Montaj'}</span></div>
     </div>
   `).join('');
@@ -1543,7 +1543,7 @@ function renderFromYouShowcase(targetId='fromYouPageGrid', limit=12){
   }
   grid.innerHTML = list.map((item, idx)=>`
     <article class="from-you-card" role="button" tabindex="0" onclick="openFromYouGallery('${escapeInline(targetId)}',${idx})" onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();openFromYouGallery('${escapeInline(targetId)}',${idx})}">
-      <img src="${getFromYouImages(item)[0] || ''}" alt="${item.title || ('Müşteri evi ' + (idx+1))}" loading="${idx < 2 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="async">
+      <img src="${resolveAssetUrl(getFromYouImages(item)[0] || '')}" ${imageFallbackAttr(getFromYouImages(item)[0] || '')} alt="${item.title || ('Müşteri evi ' + (idx+1))}" loading="${idx < 2 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="async">
       <div class="from-you-card-overlay">
         <span class="from-you-card-badge">${item.location || 'Doğrulanmış Müşteri'}</span>
         <h4>Müşteri Yorumu</h4>
@@ -1596,6 +1596,7 @@ const PRODUCTS_CACHE_TTL_MS = 1000 * 30;
 const GITHUB_RAW_PRODUCTS_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/products.json';
 const GITHUB_RAW_CATEGORIES_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/categories.json';
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main';
+const IMAGE_PLACEHOLDER_DATA_URI = `data:image/svg+xml,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='420' height='280'><rect width='100%' height='100%' fill='#f1eee7'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#8a8480' font-family='Outfit,Arial' font-size='16'>Görsel yüklenemedi</text></svg>")}`;
 function resolveAssetUrl(path){
   const raw = String(path || '').trim();
   if(!raw) return '';
@@ -1606,6 +1607,22 @@ function resolveAssetUrl(path){
     return `/${normalized}`;
   }
   return raw;
+}
+function resolveAssetFallbackUrl(path){
+  const raw = String(path || '').trim();
+  if(!raw || raw.startsWith('data:') || /^https?:\/\//i.test(raw)) return '';
+  const normalized = raw.replace(/^\/+/, '');
+  if(normalized.startsWith('resimler/')){
+    return `${GITHUB_RAW_BASE}/${normalized}`;
+  }
+  return '';
+}
+function imageFallbackAttr(path){
+  const fallback = resolveAssetFallbackUrl(path);
+  if(!fallback){
+    return `onerror="this.onerror=null;this.src='${IMAGE_PLACEHOLDER_DATA_URI}'"`;
+  }
+  return `onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src='${fallback}';}else{this.onerror=null;this.src='${IMAGE_PLACEHOLDER_DATA_URI}';}"`;
 }
 const GITHUB_CONTENTS_BASE_URL = 'https://api.github.com/repos/gocmenperde/gocmenperde/contents';
 let productsLoadedOnce = false;
@@ -2467,15 +2484,23 @@ function renderModalThumbs(){
   }
   if(thumbPanel) thumbPanel.style.display = 'block';
   if(viewerWrap) viewerWrap.style.display = 'block';
-  const cacheKey = currentModalImages.join('|');
+  const maxThumbs = 18;
+  const sliceStart = Math.max(0, Math.min(currentModalImages.length - maxThumbs, currentModalImageIndex - Math.floor(maxThumbs/2)));
+  const visibleImages = currentModalImages.slice(sliceStart, sliceStart + maxThumbs);
+  const cacheKey = `${currentModalImages.join('|')}|${sliceStart}`;
   if(cacheKey !== modalThumbsCacheKey){
-    const html = currentModalImages.map((img,idx)=>`
-      <button class="modal-thumb ${idx===currentModalImageIndex?'active':''}" type="button" data-idx="${idx}" onclick="selectModalImage(${idx})">
-        <img src="${img}" alt="Ürün görseli ${idx+1}" loading="${idx<=5?'eager':'lazy'}" decoding="async" fetchpriority="${getThumbFetchPriority(idx)}">
+    const html = visibleImages.map((img,localIdx)=>{
+      const idx = sliceStart + localIdx;
+      return `<button class="modal-thumb ${idx===currentModalImageIndex?'active':''}" type="button" data-idx="${idx}" onclick="selectModalImage(${idx})">
+        <img src="${img}" alt="Ürün görseli ${idx+1}" ${imageFallbackAttr(img)} loading="${localIdx<=5?'eager':'lazy'}" decoding="async" fetchpriority="${getThumbFetchPriority(idx)}">
       </button>
-    `).join('');
-    thumbs.innerHTML = html;
-    viewerThumbs.innerHTML = html;
+    `;
+    }).join('');
+    const truncatedInfo = currentModalImages.length > maxThumbs
+      ? `<div style="font-size:0.62rem;color:var(--slate-light);padding:2px 4px 0;white-space:nowrap">Fotoğraf ${sliceStart+1}-${Math.min(currentModalImages.length,sliceStart+maxThumbs)} / ${currentModalImages.length}</div>`
+      : '';
+    thumbs.innerHTML = html + truncatedInfo;
+    viewerThumbs.innerHTML = html + truncatedInfo;
     modalThumbsCacheKey = cacheKey;
   }
   syncActiveModalThumbs();

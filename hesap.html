@@ -68,38 +68,34 @@
             max-width:1280px;
             width:100%;
         }
-        .payment-logo-box{
-            height:76px;
-            min-width:170px;
-            padding:0 22px;
-            border:3px solid #d7d8db;
-            border-radius:18px;
-            background:#fff;
-            display:flex;
+        .payment-badge{
+            display:inline-flex;
             align-items:center;
             justify-content:center;
-            box-sizing:border-box;
+            min-height:40px;
+            padding:8px 14px;
+            border:1px solid rgba(201,168,76,0.35);
+            border-radius:999px;
+            background:#fff;
+            color:#2e3b3a;
+            font-size:0.78rem;
+            font-weight:700;
+            letter-spacing:0.3px;
         }
-        .payment-logo-box.compact{min-width:140px}
-        .payment-logo-box.wide{min-width:260px}
-        .payment-logo-img{
-            height:42px;
-            width:auto;
-            max-width:100%;
-            display:block;
+        .payment-badge.secure{
+            background:linear-gradient(135deg,#fff8e8,#fef3d4);
+            color:#9a7a29;
+            border-color:rgba(201,168,76,0.5);
         }
         @media (max-width:768px){
             .global-trust-strip{gap:10px}
-            .payment-logo-box{
-                min-width:145px;
-                height:66px;
-                border-width:2px;
-                border-radius:14px;
-                padding:0 14px;
+            .payment-badge{
+                flex:1 1 calc(50% - 10px);
+                max-width:220px;
+                min-height:38px;
+                font-size:0.74rem;
+                padding:7px 10px;
             }
-            .payment-logo-box.compact{min-width:122px}
-            .payment-logo-box.wide{min-width:200px}
-            .payment-logo-img{height:34px}
         }
     </style>
 </head>
@@ -132,13 +128,13 @@
 </div>
 
 <div class="global-trust-strip" aria-label="Güvenli ödeme logoları">
-    <div class="payment-logo-box compact"><img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png" alt="Troy" loading="lazy" decoding="async"></div>
-    <div class="payment-logo-box"><img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/American_Express_logo_%282018%29.svg/320px-American_Express_logo_%282018%29.svg.png" alt="American Express" loading="lazy" decoding="async"></div>
-    <div class="payment-logo-box compact"><img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png" alt="Visa" loading="lazy" decoding="async"></div>
-    <div class="payment-logo-box compact"><img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/320px-Mastercard-logo.svg.png" alt="Mastercard" loading="lazy" decoding="async"></div>
-    <div class="payment-logo-box compact"><img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UnionPay_logo.svg/320px-UnionPay_logo.svg.png" alt="UnionPay" loading="lazy" decoding="async"></div>
-    <div class="payment-logo-box compact"><img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/3D_Secure_logo.svg/320px-3D_Secure_logo.svg.png" alt="3D Secure" loading="lazy" decoding="async"></div>
-    <div class="payment-logo-box wide"><img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_lock-ltr.svg/256px-OOjs_UI_icon_lock-ltr.svg.png" alt="Güvenli Öde" loading="lazy" decoding="async"></div>
+    <span class="payment-badge">Troy</span>
+    <span class="payment-badge">American Express</span>
+    <span class="payment-badge">Visa</span>
+    <span class="payment-badge">Mastercard</span>
+    <span class="payment-badge">UnionPay</span>
+    <span class="payment-badge">3D Secure</span>
+    <span class="payment-badge secure">Güvenli Ödeme</span>
 </div>
 
 <script>

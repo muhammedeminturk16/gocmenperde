@@ -59,8 +59,48 @@
             border-bottom: 1px solid #e4edf7;
             letter-spacing: 1px;
         }
-        .global-trust-strip{margin-top:18px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:720px}
-        .payment-logo-img{height:34px;width:auto;max-width:none;display:block;border:none;border-radius:10px;background:transparent;padding:0}
+        .global-trust-strip{
+            margin-top:22px;
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+            gap:14px;
+            max-width:1280px;
+            width:100%;
+        }
+        .payment-logo-box{
+            height:76px;
+            min-width:170px;
+            padding:0 22px;
+            border:3px solid #d7d8db;
+            border-radius:18px;
+            background:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-sizing:border-box;
+        }
+        .payment-logo-box.compact{min-width:140px}
+        .payment-logo-box.wide{min-width:260px}
+        .payment-logo-img{
+            height:42px;
+            width:auto;
+            max-width:100%;
+            display:block;
+        }
+        @media (max-width:768px){
+            .global-trust-strip{gap:10px}
+            .payment-logo-box{
+                min-width:145px;
+                height:66px;
+                border-width:2px;
+                border-radius:14px;
+                padding:0 14px;
+            }
+            .payment-logo-box.compact{min-width:122px}
+            .payment-logo-box.wide{min-width:200px}
+            .payment-logo-img{height:34px}
+        }
     </style>
 </head>
 <body>
@@ -92,7 +132,13 @@
 </div>
 
 <div class="global-trust-strip" aria-label="Güvenli ödeme logoları">
-    <img class="payment-logo-img" src="/resimler/payment-logos/troy.svg" alt="Troy" loading="lazy" decoding="async"><img class="payment-logo-img" src="/resimler/payment-logos/amex.svg" alt="American Express" loading="lazy" decoding="async"><img class="payment-logo-img" src="/resimler/payment-logos/visa.svg" alt="Visa" loading="lazy" decoding="async"><img class="payment-logo-img" src="/resimler/payment-logos/mastercard.svg" alt="Mastercard" loading="lazy" decoding="async"><img class="payment-logo-img" src="/resimler/payment-logos/unionpay.svg" alt="UnionPay" loading="lazy" decoding="async"><img class="payment-logo-img" src="/resimler/payment-logos/3d-secure.svg" alt="3D Secure" loading="lazy" decoding="async"><img class="payment-logo-img" src="/resimler/payment-logos/guvenli-ode.svg" alt="Güvenli Öde" loading="lazy" decoding="async">
+    <div class="payment-logo-box compact"><img class="payment-logo-img" src="/resimler/payment-logos/troy.svg" alt="Troy" loading="lazy" decoding="async"></div>
+    <div class="payment-logo-box"><img class="payment-logo-img" src="/resimler/payment-logos/amex.svg" alt="American Express" loading="lazy" decoding="async"></div>
+    <div class="payment-logo-box compact"><img class="payment-logo-img" src="/resimler/payment-logos/visa.svg" alt="Visa" loading="lazy" decoding="async"></div>
+    <div class="payment-logo-box compact"><img class="payment-logo-img" src="/resimler/payment-logos/mastercard.svg" alt="Mastercard" loading="lazy" decoding="async"></div>
+    <div class="payment-logo-box compact"><img class="payment-logo-img" src="/resimler/payment-logos/unionpay.svg" alt="UnionPay" loading="lazy" decoding="async"></div>
+    <div class="payment-logo-box compact"><img class="payment-logo-img" src="/resimler/payment-logos/3d-secure.svg" alt="3D Secure" loading="lazy" decoding="async"></div>
+    <div class="payment-logo-box wide"><img class="payment-logo-img" src="/resimler/payment-logos/guvenli-ode.svg" alt="Güvenli Öde" loading="lazy" decoding="async"></div>
 </div>
 
 <script>

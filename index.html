@@ -3804,7 +3804,7 @@ async function submitOrder(){
       sessionStorage.setItem('gp_pending_order', JSON.stringify({
         name, phone, email, addr, note, method, items: savedBasket, total: savedTotal
       }));
-      const response = await fetch('/api/payment?action=create-checkout-session',{
+      const response = await fetch('/api/payment?action=create-paytr-token',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -3817,20 +3817,20 @@ async function submitOrder(){
           customer:{ email },
           successUrl,
           cancelUrl,
-          currency:'try',
+          currency:'TL',
           orderNote: note
         })
       });
       const data = await response.json();
       if(!response.ok || !data?.checkout_url){
-        throw new Error(data?.error || 'Ödeme oturumu oluşturulamadı.');
+        throw new Error(data?.error || 'PayTR ödeme oturumu oluşturulamadı.');
       }
       window.location.href = data.checkout_url;
       return;
     } catch(err){
       btn.innerHTML=orig; btn.disabled=false;
       sessionStorage.removeItem('gp_pending_order');
-      showToast(`Kartla ödeme başlatılamadı: ${err.message}`);
+      showToast(`Online ödeme başlatılamadı: ${err.message}`);
       return;
     }
   }

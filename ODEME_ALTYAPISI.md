@@ -1,20 +1,13 @@
-# Online Ödeme Altyapısı Kurulum Planı (Göçmen Perde)
+# Online Ödeme Altyapısı (Göçmen Perde)
 
-Bu projede şu an checkout ekranında kart alanları görünüyor ama **gerçek kart tahsilatı yok**. Güvenli canlı ödeme için kart bilgilerini kendi sunucunda toplamak yerine Stripe Checkout / iyzico Hosted Payment Page gibi bir yönlendirme sayfası kullanmalısın.
+Bu repo artık kartla ödemeyi **PayTR iFrame v2 token akışı** ile başlatacak şekilde güncellendi.
 
-## 1) Mevcut durum (neden eksik?)
+## 1) Eklenen/Güncellenen endpoint
 
-- `index.html` içinde `kredikarti` seçeneği mevcut, fakat ödeme sağlayıcıya giden gerçek bir API çağrısı yok.
-- Siparişler doğrudan `/api/orders?action=create` ile kaydediliyor.
-- Bu yüzden şu anda “kartla ödeme” sadece arayüz seviyesinde görünüyor.
-
-## 2) Bu repoya eklenen temel ödeme endpoint'i
-
-Bu çalışma ile `api/payment.js` dosyası eklendi:
-
-- `POST /api/payment?action=create-checkout-session`
-- Ürün listesinden Stripe Checkout Session oluşturur.
-- Dönüşte `checkout_url` verir; kullanıcı o URL'ye yönlendirilir.
+- `POST /api/payment?action=create-paytr-token`
+- Sepetteki ürünleri PayTR formatına çevirir.
+- `https://www.paytr.com/odeme/api/get-token` çağrısı yapar.
+- Başarılı olursa `checkout_url` (PayTR güvenli ödeme URL’i) döndürür.
 
 ### Beklenen body örneği
 
@@ -23,123 +16,45 @@ Bu çalışma ile `api/payment.js` dosyası eklendi:
   "items": [
     { "name": "Fon Perde", "price": 1299.9, "qty": 2 }
   ],
-  "customer": { "email": "musteri@example.com" },
+  "customer": {
+    "email": "musteri@example.com",
+    "name": "Müşteri Adı",
+    "phone": "05555555555"
+  },
   "successUrl": "https://senindomainin.com/?payment=success",
   "cancelUrl": "https://senindomainin.com/?payment=cancel",
-  "currency": "try",
-  "orderNote": "Ölçü notu"
+  "currency": "TL",
+  "orderNote": "Ölçü notu",
+  "shippingAddress": "Teslimat adresi"
 }
 ```
 
-## 3) Vercel ortam değişkenleri
+## 2) Frontend akışı
 
-Vercel Project Settings → Environment Variables:
+`index.html` içindeki `submitOrder()` fonksiyonu ödeme yöntemi `kredikarti` olduğunda:
 
-- `STRIPE_SECRET_KEY=sk_live_...`
+1. `/api/payment?action=create-paytr-token` endpoint’ine istek atar.
+2. Dönüşte gelen `checkout_url`’e yönlendirir.
+3. `?payment=success` dönüşünde siparişi yerel + API’ye kaydeder.
+4. `?payment=cancel` dönüşünde kullanıcıyı checkout’da bırakır.
 
-> Not: Testte `sk_test_...` kullan.
-
-## 4) Frontend entegrasyonu (en kritik adım)
-
-`submitOrder()` içinde, ödeme yöntemi `kredikarti` ise şu akışı kullan:
-
-1. Sepet + müşteri bilgilerini `/api/payment?action=create-checkout-session` endpoint’ine gönder.
-2. Dönen `checkout_url` ile `window.location.href = checkout_url` yap.
-3. `successUrl` dönüşünde siparişi “ödendi” statüsüyle kaydet.
-4. `cancelUrl` dönüşünde kullanıcıyı checkout’a geri al.
-
-## 5) Güvenlik ve doğruluk
-
-- Toplam tutarı **frontend’den körü körüne kabul etme**; backend’de ürün fiyatını tekrar doğrula.
-- Mümkünse webhook ile ödeme sonucunu kesinleştir (`checkout.session.completed`).
-- Kart numarası/CVV’yi asla kendi DB’ne yazma.
-
-## 6) Türkiye için alternatif
-
-Eğer Stripe yerine iyzico / PayTR kullanacaksan mantık aynıdır:
-
-- Backend'de ödeme oturumu/token üret.
-- Kullanıcıyı sağlayıcının güvenli ödeme sayfasına yönlendir.
-- Callback/webhook ile siparişi kesinleştir.
-
----
-
-İstersen bir sonraki adımda `index.html` içindeki `submitOrder()` fonksiyonunu doğrudan bu endpoint’e bağlayıp, “kartla ödeme”yi uçtan uca çalışır hale getirebilirim.
-
-## 7) PayTR İşlem Dökümü (API)
-
-Bu repoda PayTR işlem dökümü için örnek bir endpoint de mevcut:
-
-- `POST /api/paytr-report?action=transaction-report`
-
-### Gerekli ortam değişkenleri
+## 3) Gerekli ortam değişkenleri (Vercel)
 
 - `PAYTR_MERCHANT_ID`
 - `PAYTR_MERCHANT_KEY`
 - `PAYTR_MERCHANT_SALT`
+- `PAYTR_TEST_MODE` (`1` test, `0` canlı)
+- `PAYTR_DEBUG_ON` (`1` debug, `0` kapalı)
 
-### İstek body örneği
+## 4) Güvenlik notu
 
-```json
-{
-  "start_date": "2026-04-01 00:00:00",
-  "end_date": "2026-04-03 23:59:59",
-  "dummy": 0
-}
-```
+- Merchant bilgileri kod içine gömülmemeli; sadece ortam değişkenlerinden okunmalı.
+- Callback doğrulaması (`/callback`) hash kontrolüyle ayrıca eklenmelidir.
+- Ödeme sonucu kesinleştirmeyi callback/webhook ile yapmak önerilir.
 
-> Notlar:
-> - Tarih formatı `YYYY-MM-DD hh:mm:ss` olmalıdır.
-> - Aralık en fazla 3 gün olabilir.
-> - `dummy: 1` test amaçlı (simülasyon) cevap döndürmek için kullanılabilir.
+## 5) Bu repodaki ek PayTR endpoint’leri
 
-### Örnek cURL
+- Callback endpoint (hash doğrulama): `POST /api/paytr-callback`
+- İşlem dökümü: `POST /api/paytr-report?action=transaction-report`
+- İade: `POST /api/paytr-refund?action=refund`
 
-```bash
-curl -X POST 'https://senindomainin.com/api/paytr-report?action=transaction-report' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "start_date": "2026-04-01 00:00:00",
-    "end_date": "2026-04-03 23:59:59",
-    "dummy": 0
-  }'
-```
-
-## 8) PayTR İade (Refund) API
-
-Bu repoda PayTR iade işlemi için örnek bir endpoint eklendi:
-
-- `POST /api/paytr-refund?action=refund`
-
-### Gerekli ortam değişkenleri
-
-- `PAYTR_MERCHANT_ID`
-- `PAYTR_MERCHANT_KEY`
-- `PAYTR_MERCHANT_SALT`
-
-### İstek body örneği
-
-```json
-{
-  "merchant_oid": "SIPARIS-12345",
-  "return_amount": "11.97",
-  "reference_no": "IADE-12345"
-}
-```
-
-> Notlar:
-> - `merchant_oid` zorunludur (1-64 karakter).
-> - `return_amount` zorunludur, pozitif ve en fazla 2 ondalıklı olmalıdır.
-> - `reference_no` opsiyoneldir (en fazla 64 karakter, alfanümerik + `_` + `-`).
-
-### Örnek cURL
-
-```bash
-curl -X POST 'https://senindomainin.com/api/paytr-refund?action=refund' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "merchant_oid": "SIPARIS-12345",
-    "return_amount": "11.97",
-    "reference_no": "IADE-12345"
-  }'
-```

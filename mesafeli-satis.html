@@ -32,8 +32,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.5);text-align:center;paddi
 footer a{color:var(--gold);text-decoration:none}
 .footer-security-note{margin-top:12px;color:rgba(255,255,255,0.82);font-size:0.74rem}
 .footer-security-strip{margin-top:14px;display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}
-.footer-security-badge{display:inline-flex;align-items:center;justify-content:center;min-width:74px;padding:7px 10px;border-radius:10px;border:1px solid rgba(201,168,76,0.34);background:rgba(255,255,255,0.08);color:#fff;font-size:0.62rem;font-weight:700;letter-spacing:0.3px}
-@media(max-width:640px){.footer-security-badge{font-size:0.56rem;padding:6px 9px}}
+.payment-logo-img{height:30px;width:auto;max-width:112px;display:block;border:1px solid rgba(201,168,76,0.34);border-radius:10px;background:#fff;padding:4px 8px}
+@media(max-width:640px){.payment-logo-img{height:26px;max-width:100px;padding:3px 7px}}
 .back-link{display:inline-flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--slate);text-decoration:none;margin-bottom:32px;padding:8px 16px;background:white;border-radius:8px;border:1px solid rgba(0,0,0,0.08);transition:0.2s}
 .back-link:hover{border-color:var(--gold);color:var(--gold)}
 @media(max-width:600px){.parties{grid-template-columns:1fr}}
@@ -136,13 +136,13 @@ footer a{color:var(--gold);text-decoration:none}
   © 2026 Göçmen Perde · <a href="/gizlilik-politikasi.html">Gizlilik Politikası</a> · <a href="/mesafeli-satis.html">Mesafeli Satış Sözleşmesi</a> · <a href="/iade-politikasi.html">İade Politikası</a>
   <p class="footer-security-note">Ödeme adımında PayTR güvenli ödeme sayfasına yönlendirilirsiniz.</p>
   <div class="footer-security-strip" aria-label="Güvenli alışveriş logoları">
-    <span class="footer-security-badge">TROY</span>
-    <span class="footer-security-badge">AMEX</span>
-    <span class="footer-security-badge">VISA</span>
-    <span class="footer-security-badge">MASTERCARD</span>
-    <span class="footer-security-badge">UNIONPAY</span>
-    <span class="footer-security-badge">3D SECURE</span>
-    <span class="footer-security-badge">GÜVENLİ ÖDE</span>
+    <img class="payment-logo-img" src="/resimler/payment-logos/troy.svg" alt="Troy" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="/resimler/payment-logos/amex.svg" alt="American Express" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="/resimler/payment-logos/visa.svg" alt="Visa" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="/resimler/payment-logos/mastercard.svg" alt="Mastercard" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="/resimler/payment-logos/unionpay.svg" alt="UnionPay" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="/resimler/payment-logos/3d-secure.svg" alt="3D Secure" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="/resimler/payment-logos/guvenli-ode.svg" alt="Güvenli Öde" loading="lazy" decoding="async">
   </div>
 </footer>
 </body>

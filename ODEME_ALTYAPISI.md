@@ -104,3 +104,42 @@ curl -X POST 'https://senindomainin.com/api/paytr-report?action=transaction-repo
     "dummy": 0
   }'
 ```
+
+## 8) PayTR İade (Refund) API
+
+Bu repoda PayTR iade işlemi için örnek bir endpoint eklendi:
+
+- `POST /api/paytr-refund?action=refund`
+
+### Gerekli ortam değişkenleri
+
+- `PAYTR_MERCHANT_ID`
+- `PAYTR_MERCHANT_KEY`
+- `PAYTR_MERCHANT_SALT`
+
+### İstek body örneği
+
+```json
+{
+  "merchant_oid": "SIPARIS-12345",
+  "return_amount": "11.97",
+  "reference_no": "IADE-12345"
+}
+```
+
+> Notlar:
+> - `merchant_oid` zorunludur (1-64 karakter).
+> - `return_amount` zorunludur, pozitif ve en fazla 2 ondalıklı olmalıdır.
+> - `reference_no` opsiyoneldir (en fazla 64 karakter, alfanümerik + `_` + `-`).
+
+### Örnek cURL
+
+```bash
+curl -X POST 'https://senindomainin.com/api/paytr-refund?action=refund' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "merchant_oid": "SIPARIS-12345",
+    "return_amount": "11.97",
+    "reference_no": "IADE-12345"
+  }'
+```

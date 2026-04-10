@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="148" height="64" viewBox="0 0 148 64" role="img" aria-label="Troy">
-  <rect width="148" height="64" rx="12" fill="#fff" stroke="#d8dde6"/>
-  <text x="74" y="40" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="34" letter-spacing="0.4" fill="#1f2d3d">troy</text>
-  <rect x="38" y="43" width="72" height="3" rx="2" fill="#0ea772"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="220" viewBox="0 0 420 220" role="img" aria-label="Troy">
+  <rect x="12" y="12" width="396" height="196" rx="28" fill="#f4f4f5" stroke="#c7c9cc" stroke-width="6"/>
+  <text x="210" y="142" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="120" font-style="italic" font-weight="700" fill="#2f3c4b" letter-spacing="-3">tr</text>
+  <circle cx="225" cy="100" r="28" fill="#16b4c2"/>
+  <circle cx="225" cy="100" r="11" fill="#f4f4f5"/>
+  <text x="273" y="142" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="120" font-style="italic" font-weight="700" fill="#2f3c4b" letter-spacing="-5">y</text>
 </svg>

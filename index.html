@@ -725,11 +725,9 @@ footer span{color:var(--gold)}
 .footer-links{margin-top:14px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;text-transform:none;letter-spacing:0}
 .footer-links a{color:rgba(201,168,76,0.7);text-decoration:none;font-size:0.72rem;transition:color 0.3s}
 .footer-links a:hover{color:var(--gold)}
-.footer-security-strip{margin-top:18px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px 12px;text-transform:none;letter-spacing:0}
 .footer-security-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;border:1px solid rgba(201,168,76,0.35);background:rgba(255,255,255,0.04);color:rgba(247,244,239,0.92);font-size:0.68rem;font-weight:600;line-height:1.1}
 .footer-security-badge i{color:var(--gold)}
 @media(max-width:640px){
-  .footer-security-strip{gap:8px}
   .footer-security-badge{font-size:0.62rem;padding:6px 10px}
 }
 
@@ -4196,25 +4194,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   mo.observe(document.body, {childList:true, subtree:true});
 });
 
-function injectFooterSecurityBadges(){
-  document.querySelectorAll('footer').forEach((footer)=>{
-    if(footer.querySelector('.footer-security-strip, .payment-logo-strip')) return;
-    const strip = document.createElement('div');
-    strip.className = 'footer-security-strip';
-    strip.setAttribute('aria-label', 'Güvenli alışveriş logoları');
-    strip.innerHTML = `
-      <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png" alt="Troy" loading="lazy" decoding="async">
-      <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/American_Express_logo_%282018%29.svg/320px-American_Express_logo_%282018%29.svg.png" alt="American Express" loading="lazy" decoding="async">
-      <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png" alt="Visa" loading="lazy" decoding="async">
-      <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/320px-Mastercard-logo.svg.png" alt="Mastercard" loading="lazy" decoding="async">
-      <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UnionPay_logo.svg/320px-UnionPay_logo.svg.png" alt="UnionPay" loading="lazy" decoding="async">
-      <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/3D_Secure_logo.svg/320px-3D_Secure_logo.svg.png" alt="3D Secure" loading="lazy" decoding="async">
-      <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_lock-ltr.svg/256px-OOjs_UI_icon_lock-ltr.svg.png" alt="Güvenli Öde" loading="lazy" decoding="async">
-    `;
-    footer.appendChild(strip);
-  });
-}
-document.addEventListener('DOMContentLoaded', injectFooterSecurityBadges);
 </script>
 </body>
 </html>

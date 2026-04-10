@@ -1,14 +1,14 @@
 const crypto = require('crypto');
+const { getPaytrCredentials } = require('./_paytr-config');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).send('METHOD_NOT_ALLOWED');
   }
 
-  const merchantKey = process.env.PAYTR_MERCHANT_KEY;
-  const merchantSalt = process.env.PAYTR_MERCHANT_SALT;
+  const { merchantKey, merchantSalt, hasRequiredCredentials } = getPaytrCredentials();
 
-  if (!merchantKey || !merchantSalt) {
+  if (!hasRequiredCredentials) {
     return res.status(500).send('ENV_MISSING');
   }
 

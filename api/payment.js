@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { getPaytrCredentials } = require('./_paytr-config');
 
 const SUPPORTED_CURRENCIES = new Set(['TL', 'USD', 'EUR', 'GBP']);
 
@@ -45,11 +46,9 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Geçersiz işlem.' });
   }
 
-  const merchantId = process.env.PAYTR_MERCHANT_ID;
-  const merchantKey = process.env.PAYTR_MERCHANT_KEY;
-  const merchantSalt = process.env.PAYTR_MERCHANT_SALT;
+  const { merchantId, merchantKey, merchantSalt, hasRequiredCredentials } = getPaytrCredentials();
 
-  if (!merchantId || !merchantKey || !merchantSalt) {
+  if (!hasRequiredCredentials) {
     return res.status(500).json({
       error: 'PAYTR_MERCHANT_ID, PAYTR_MERCHANT_KEY ve PAYTR_MERCHANT_SALT ortam değişkenleri tanımlı değil.'
     });

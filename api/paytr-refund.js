@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { getPaytrCredentials } = require('./_paytr-config');
 
 const REFUND_AMOUNT_PATTERN = /^\d+(\.\d{1,2})?$/;
 const ORDER_ID_MAX_LENGTH = 64;
@@ -29,11 +30,9 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Geçersiz işlem. action=refund kullanın.' });
   }
 
-  const merchantId = process.env.PAYTR_MERCHANT_ID;
-  const merchantKey = process.env.PAYTR_MERCHANT_KEY;
-  const merchantSalt = process.env.PAYTR_MERCHANT_SALT;
+  const { merchantId, merchantKey, merchantSalt, hasRequiredCredentials } = getPaytrCredentials();
 
-  if (!merchantId || !merchantKey || !merchantSalt) {
+  if (!hasRequiredCredentials) {
     return res.status(500).json({
       error: 'PAYTR_MERCHANT_ID, PAYTR_MERCHANT_KEY, PAYTR_MERCHANT_SALT ortam değişkenleri zorunludur.'
     });

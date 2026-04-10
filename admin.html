@@ -378,6 +378,17 @@ tbody tr:hover td{background:#fdfcf8}
 .settings-row:last-child{border-bottom:none}
 .settings-row-label h4{font-size:0.86rem;font-weight:500;margin-bottom:2px}
 .settings-row-label p{font-size:0.76rem;color:var(--slate-light)}
+.logo-settings-grid{display:grid;grid-template-columns:1.2fr .9fr .7fr auto;gap:10px;padding:14px 22px;border-bottom:1px solid var(--border);align-items:center}
+.logo-settings-grid.header{background:#fcfbf7;font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--slate-light)}
+.logo-settings-grid:last-child{border-bottom:none}
+.logo-settings-grid img{height:34px;border-radius:999px;border:1px solid var(--border);padding:4px 8px;background:#fff}
+.logo-settings-actions{display:flex;gap:6px;justify-content:flex-end}
+.logo-settings-toolbar{padding:14px 22px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1.2fr .9fr auto;gap:10px;align-items:center}
+.logo-settings-note{font-size:0.74rem;color:var(--slate-light);padding:0 22px 14px}
+@media(max-width:900px){
+  .logo-settings-grid{grid-template-columns:1fr;gap:6px}
+  .logo-settings-toolbar{grid-template-columns:1fr}
+}
 
 /* ──────────── NOTIFS ──────────── */
 .notif-item{background:white;border-radius:var(--radius);padding:18px;border:1px solid var(--border);display:flex;gap:14px;margin-bottom:10px;box-shadow:var(--shadow-sm);transition:0.2s}
@@ -1025,6 +1036,21 @@ Işık: Yarı Geçirgen"></textarea></div>
     </div>
   </div>
   <div class="settings-section">
+    <div class="settings-section-header"><i class="fas fa-credit-card"></i> Footer Ödeme Logoları</div>
+    <div class="settings-body">
+      <div class="logo-settings-toolbar">
+        <input id="footerLogoSrc" class="search-box" style="max-width:none" type="text" placeholder="Logo görsel URL veya /resimler/logo.png">
+        <input id="footerLogoAlt" class="search-box" style="max-width:none" type="text" placeholder="Logo adı (örn: Mastercard)">
+        <button class="btn btn-primary" onclick="addFooterLogo()"><i class="fas fa-plus"></i> Ekle</button>
+      </div>
+      <div class="logo-settings-grid header">
+        <div>Logo URL</div><div>Ad / Alt</div><div>Önizleme</div><div style="text-align:right">İşlem</div>
+      </div>
+      <div id="footerLogoRows"></div>
+      <p class="logo-settings-note">Ekledikleriniz tüm sayfalarda footer ödeme logolarını anında günceller. Sıralama için ↑↓ butonlarını kullanın.</p>
+    </div>
+  </div>
+  <div class="settings-section">
     <div class="settings-section-header"><i class="fas fa-shield-alt"></i> Güvenlik</div>
     <div class="settings-body">
       <div class="settings-row"><div class="settings-row-label"><h4>Admin Şifresi</h4><p>Son değişim: Bugün</p></div><button class="btn btn-outline btn-sm" onclick="showPasswordModal()">Değiştir</button></div>
@@ -1359,6 +1385,13 @@ const pageTitles = {dashboard:'Dashboard',orders:'Siparişler',customers:'Müşt
 const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
 const FROM_YOU_SHOWCASE_KEY = 'gp_from_you_showcase_v1';
+const FOOTER_PAYMENT_LOGOS_KEY = 'gp_footer_payment_logos_v1';
+const DEFAULT_FOOTER_PAYMENT_LOGOS = [
+  {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png',alt:'Troy'},
+  {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/320px-Mastercard-logo.svg.png',alt:'Mastercard'},
+  {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png',alt:'Visa'},
+  {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/3D_Secure_logo.svg/320px-3D_Secure_logo.svg.png',alt:'3D Secure'}
+];
 const SHOWCASE_DEFAULT_IMAGES = [
   {src:'resimler/foto1.jpg',title:'Salon Tül Uygulaması',desc:'Özel ölçü tül perde montajı ile ferah salon görünümü.',label:'Salon Tül'},
   {src:'resimler/foto2.jpg',title:'Zebra Perde Montajı',desc:'Gün ışığını kontrollü kullanan zebra perde çözümü.',label:'Zebra Sistem'},
@@ -1378,6 +1411,7 @@ let showcaseImages = [];
 let showcaseReviews = [];
 let fromYouItems = [];
 let editingFromYouIndex = -1;
+let footerPaymentLogos = [];
 
 function getShowcaseState(key, fallback){
   try{
@@ -1386,6 +1420,71 @@ function getShowcaseState(key, fallback){
   }catch(_){}
   localStorage.setItem(key, JSON.stringify(fallback));
   return [...fallback];
+}
+function getFooterPaymentLogoState(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(FOOTER_PAYMENT_LOGOS_KEY) || 'null');
+    if(Array.isArray(parsed) && parsed.length){
+      return parsed.map((item)=>({
+        src:String(item?.src||'').trim(),
+        alt:String(item?.alt||item?.name||'Ödeme logosu').trim()
+      })).filter((item)=>item.src);
+    }
+  }catch(_){}
+  localStorage.setItem(FOOTER_PAYMENT_LOGOS_KEY, JSON.stringify(DEFAULT_FOOTER_PAYMENT_LOGOS));
+  return [...DEFAULT_FOOTER_PAYMENT_LOGOS];
+}
+function saveFooterPaymentLogos(){
+  localStorage.setItem(FOOTER_PAYMENT_LOGOS_KEY, JSON.stringify(footerPaymentLogos));
+}
+function renderFooterLogoRows(){
+  const wrap = document.getElementById('footerLogoRows');
+  if(!wrap) return;
+  if(!footerPaymentLogos.length){
+    wrap.innerHTML = `<div class="logo-settings-grid"><div style="grid-column:1/-1;color:var(--slate-light)">Henüz logo eklenmedi.</div></div>`;
+    return;
+  }
+  wrap.innerHTML = footerPaymentLogos.map((item, idx)=>`
+    <div class="logo-settings-grid">
+      <div style="font-size:0.78rem;word-break:break-all">${item.src}</div>
+      <div style="font-size:0.84rem">${item.alt || 'Ödeme logosu'}</div>
+      <div><img src="${item.src}" alt="${item.alt || 'Ödeme logosu'}"></div>
+      <div class="logo-settings-actions">
+        <button class="icon-btn edit" onclick="moveFooterLogo(${idx},-1)" title="Yukarı"><i class="fas fa-arrow-up"></i></button>
+        <button class="icon-btn edit" onclick="moveFooterLogo(${idx},1)" title="Aşağı"><i class="fas fa-arrow-down"></i></button>
+        <button class="icon-btn del" onclick="deleteFooterLogo(${idx})" title="Sil"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+function addFooterLogo(){
+  const srcInput = document.getElementById('footerLogoSrc');
+  const altInput = document.getElementById('footerLogoAlt');
+  const src = (srcInput?.value || '').trim();
+  const alt = (altInput?.value || '').trim();
+  if(!src){ aToast('⚠️ Logo URL zorunlu','error'); return; }
+  footerPaymentLogos.push({src,alt:alt||'Ödeme logosu'});
+  saveFooterPaymentLogos();
+  renderFooterLogoRows();
+  if(srcInput) srcInput.value = '';
+  if(altInput) altInput.value = '';
+  aToast('✓ Footer logosu eklendi','success');
+}
+function moveFooterLogo(index, direction){
+  const target = index + direction;
+  if(target < 0 || target >= footerPaymentLogos.length) return;
+  [footerPaymentLogos[index], footerPaymentLogos[target]] = [footerPaymentLogos[target], footerPaymentLogos[index]];
+  saveFooterPaymentLogos();
+  renderFooterLogoRows();
+}
+function deleteFooterLogo(index){
+  const item = footerPaymentLogos[index];
+  if(!item) return;
+  if(!confirm(`"${item.alt || 'Ödeme logosu'}" silinsin mi?`)) return;
+  footerPaymentLogos.splice(index,1);
+  saveFooterPaymentLogos();
+  renderFooterLogoRows();
+  aToast('Logo silindi');
 }
 function saveShowcaseImages(){ localStorage.setItem(INSTALLATION_SHOWCASE_KEY, JSON.stringify(showcaseImages)); }
 function saveShowcaseReviews(){ localStorage.setItem(CUSTOMER_SHOWCASE_REVIEWS_KEY, JSON.stringify(showcaseReviews)); }
@@ -1648,6 +1747,7 @@ function showPage(id){
   if(id==='showcase') renderShowcaseAdminPage();
   if(id==='fromyou') renderFromYouAdminPage();
   if(id==='notifications') renderNotifs();
+  if(id==='settings') renderFooterLogoRows();
 }
 function handleStatCardKey(event, target, filter){
   if(event.key!=='Enter' && event.key!==' ') return;
@@ -3821,6 +3921,8 @@ async function initAdmin(){
   renderCatTable();
   renderCampaigns();
   renderShowcaseAdminPage();
+  footerPaymentLogos = getFooterPaymentLogoState();
+  renderFooterLogoRows();
   renderCustomTemplateButtons();
   renderCustomTemplateButtons('bulk');
   renderNotifs();

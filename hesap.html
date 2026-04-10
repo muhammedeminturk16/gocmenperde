@@ -68,10 +68,21 @@
             max-width:1280px;
             width:100%;
         }
+        .payment-logo-img{
+            height:30px;
+            width:auto;
+            max-width:none;
+            display:block;
+            border:1px solid rgba(201,168,76,.34);
+            border-radius:999px;
+            background:#fff;
+            padding:4px 9px;
+        }
         .payment-badge{
             display:inline-flex;
             align-items:center;
             justify-content:center;
+            gap:6px;
             min-height:40px;
             padding:8px 14px;
             border:1px solid rgba(201,168,76,0.35);
@@ -128,13 +139,13 @@
 </div>
 
 <div class="global-trust-strip" aria-label="Güvenli ödeme logoları">
-    <span class="payment-badge">Troy</span>
-    <span class="payment-badge">American Express</span>
-    <span class="payment-badge">Visa</span>
-    <span class="payment-badge">Mastercard</span>
-    <span class="payment-badge">UnionPay</span>
-    <span class="payment-badge">3D Secure</span>
-    <span class="payment-badge secure">Güvenli Ödeme</span>
+    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png" alt="Troy" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/American_Express_logo_%282018%29.svg/320px-American_Express_logo_%282018%29.svg.png" alt="American Express" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png" alt="Visa" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/320px-Mastercard-logo.svg.png" alt="Mastercard" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UnionPay_logo.svg/320px-UnionPay_logo.svg.png" alt="UnionPay" loading="lazy" decoding="async">
+    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/3D_Secure_logo.svg/320px-3D_Secure_logo.svg.png" alt="3D Secure" loading="lazy" decoding="async">
+    <span class="payment-badge secure"><i class="fas fa-circle-question" aria-hidden="true"></i> Güvenli Öde</span>
 </div>
 
 <script>

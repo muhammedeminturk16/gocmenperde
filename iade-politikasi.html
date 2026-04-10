@@ -39,10 +39,10 @@ ul li{font-size:0.93rem;color:#2a2826;margin-bottom:8px}
 .contact-card p{font-size:0.88rem;font-weight:600;margin:0;color:var(--ink)}
 footer{background:var(--ink);color:rgba(255,255,255,0.5);text-align:center;padding:24px;font-size:0.78rem;margin-top:60px}
 footer a{color:var(--gold);text-decoration:none}
+.footer-security-note{margin-top:12px;color:rgba(255,255,255,0.82);font-size:0.74rem}
 .footer-security-strip{margin-top:14px;display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}
-.footer-security-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid rgba(201,168,76,0.34);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.9);font-size:0.66rem;letter-spacing:0.4px}
-.footer-security-badge i{color:var(--gold)}
-@media(max-width:640px){.footer-security-badge{font-size:0.6rem;padding:6px 9px}}
+.footer-security-badge{display:inline-flex;align-items:center;justify-content:center;min-width:74px;padding:7px 10px;border-radius:10px;border:1px solid rgba(201,168,76,0.34);background:rgba(255,255,255,0.08);color:#fff;font-size:0.62rem;font-weight:700;letter-spacing:0.3px}
+@media(max-width:640px){.footer-security-badge{font-size:0.56rem;padding:6px 9px}}
 .back-link{display:inline-flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--slate);text-decoration:none;margin-bottom:32px;padding:8px 16px;background:white;border-radius:8px;border:1px solid rgba(0,0,0,0.08);transition:0.2s}
 .back-link:hover{border-color:var(--gold);color:var(--gold)}
 @media(max-width:600px){.contact-grid{grid-template-columns:1fr}}
@@ -150,10 +150,15 @@ footer a{color:var(--gold);text-decoration:none}
 
 <footer>
   © 2026 Göçmen Perde · <a href="/gizlilik-politikasi.html">Gizlilik Politikası</a> · <a href="/mesafeli-satis.html">Mesafeli Satış Sözleşmesi</a> · <a href="/iade-politikasi.html">İade Politikası</a>
+  <p class="footer-security-note">Ödeme adımında PayTR güvenli ödeme sayfasına yönlendirilirsiniz.</p>
   <div class="footer-security-strip" aria-label="Güvenli alışveriş logoları">
-    <span class="footer-security-badge"><i>🛡️</i> PAYTR Güvenli Ödeme</span>
-    <span class="footer-security-badge"><i>🔒</i> 3D Secure</span>
-    <span class="footer-security-badge"><i>✅</i> SSL Korumalı</span>
+    <span class="footer-security-badge">TROY</span>
+    <span class="footer-security-badge">AMEX</span>
+    <span class="footer-security-badge">VISA</span>
+    <span class="footer-security-badge">MASTERCARD</span>
+    <span class="footer-security-badge">UNIONPAY</span>
+    <span class="footer-security-badge">3D SECURE</span>
+    <span class="footer-security-badge">GÜVENLİ ÖDE</span>
   </div>
 </footer>
 </body>

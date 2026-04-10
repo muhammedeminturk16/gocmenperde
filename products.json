@@ -479,10 +479,10 @@
     "id": "zebra-perde-gri-beyaz-cizgili-1774963152707-620",
     "name": "Zebra Perde Koyu Yeşil Beyaz Çizgili",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774965094704-0-91a6b2eb-ef9f-447d-915d-d1d6098a867c-IMG_1856.jpeg",
+    "image": "resimler/1775858669467-product-0-02d6e7bc-9219-4c46-8175-a9043d03d7de-IMG_2358.png",
     "images": [
-      "resimler/1774965094704-0-91a6b2eb-ef9f-447d-915d-d1d6098a867c-IMG_1856.jpeg",
-      "resimler/1774965098038-1-662970a0-3693-4d50-8599-148e9e39d81d-IMG_1795.jpeg"
+      "resimler/1775858669467-product-0-02d6e7bc-9219-4c46-8175-a9043d03d7de-IMG_2358.png",
+      "resimler/1775858675435-product-1-1e58dd4a-ac4c-418a-aba9-b14ca73aa2bc-IMG_1795.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -1630,7 +1630,7 @@
     ],
     "price": 300,
     "oldPrice": 400,
-    "cat": "ormetulperde",
+    "cat": "tul-perde",
     "unit": "mt",
     "isMeter": true,
     "isSquareMeter": false,
@@ -1665,7 +1665,7 @@
     ],
     "price": 300,
     "oldPrice": 400,
-    "cat": "ormetulperde",
+    "cat": "tul-perde",
     "unit": "mt",
     "isMeter": true,
     "isSquareMeter": false,

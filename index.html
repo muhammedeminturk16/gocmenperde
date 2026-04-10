@@ -484,9 +484,8 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .paytr-info-box p{margin:0;color:var(--slate);font-size:0.9rem;line-height:1.65}
 .paytr-notice{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(201,168,76,0.12);font-size:0.83rem;color:var(--ink)}
 .trust-badges{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
-.payment-redirect-note{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid rgba(201,168,76,0.34);background:rgba(201,168,76,0.1);font-size:0.8rem;color:var(--ink)}
 .payment-logo-strip{margin-top:14px;display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}
-.payment-logo-img{height:32px;width:auto;max-width:none;display:block;border:1px solid rgba(201,168,76,0.34);border-radius:10px;background:#fff;padding:4px 8px}
+.payment-logo-img{height:36px;width:auto;max-width:none;display:block;border:none;border-radius:10px;background:transparent;padding:0}
 
 /* ── Contact ── */
 #contact{background:var(--ink)}
@@ -1223,15 +1222,14 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
           <div class="paytr-info-box">
             <h4><i class="fas fa-shield-halved" style="color:var(--gold);margin-right:8px"></i>3D Secure Güvenli Ödeme</h4>
             <p>
-              Kart bilgilerinizi bu sitede girmiyorsunuz. “Onayla ve Bitir” sonrası doğrudan
-              PayTR'nin güvenli ödeme sayfasına yönlendirilirsiniz; kart bilginiz sadece PayTR ekranında işlenir.
+              Kart bilgilerinizi bu sitede girmiyorsunuz. “Onayla ve Bitir” sonrası banka onaylı güvenli ödeme
+              ekranında işlem tamamlanır.
             </p>
             <div class="paytr-notice">
               <i class="fas fa-lock" style="margin-right:6px;color:var(--gold-dark)"></i>
               3D Secure doğrulaması banka ekranında tamamlanır.
             </div>
-            <div class="payment-redirect-note"><i class="fas fa-circle-check" style="color:var(--gold-dark);margin-right:6px"></i>Bir sonraki adımda PayTR güvenli ödeme sayfasına yönlendirileceksiniz.</div>
-            <div class="trust-badges" aria-label="Güvenli ödeme logoları">
+                        <div class="trust-badges" aria-label="Güvenli ödeme logoları">
               <img class="payment-logo-img" src="/resimler/payment-logos/troy.svg" alt="Troy" loading="lazy" decoding="async">
               <img class="payment-logo-img" src="/resimler/payment-logos/amex.svg" alt="American Express" loading="lazy" decoding="async">
               <img class="payment-logo-img" src="/resimler/payment-logos/visa.svg" alt="Visa" loading="lazy" decoding="async">

@@ -111,17 +111,34 @@
     </div>
 </div>
 
-<div class="global-trust-strip" aria-label="Güvenli ödeme logoları">
-    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png" alt="Troy" loading="lazy" decoding="async">
-    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/American_Express_logo_%282018%29.svg/320px-American_Express_logo_%282018%29.svg.png" alt="American Express" loading="lazy" decoding="async">
-    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png" alt="Visa" loading="lazy" decoding="async">
-    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/320px-Mastercard-logo.svg.png" alt="Mastercard" loading="lazy" decoding="async">
-    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/UnionPay_logo.svg/320px-UnionPay_logo.svg.png" alt="UnionPay" loading="lazy" decoding="async">
-    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/3D_Secure_logo.svg/320px-3D_Secure_logo.svg.png" alt="3D Secure" loading="lazy" decoding="async">
-    <img class="payment-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_lock-ltr.svg/256px-OOjs_UI_icon_lock-ltr.svg.png" alt="Güvenli Öde" loading="lazy" decoding="async">
-</div>
+<div class="global-trust-strip" aria-label="Güvenli ödeme logoları"></div>
 
 <script>
+    const FOOTER_PAYMENT_LOGOS_KEY = 'gp_footer_payment_logos_v1';
+    const DEFAULT_FOOTER_PAYMENT_LOGOS = [
+        {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png',alt:'Troy'},
+        {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/320px-Mastercard-logo.svg.png',alt:'Mastercard'},
+        {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png',alt:'Visa'},
+        {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/3D_Secure_logo.svg/320px-3D_Secure_logo.svg.png',alt:'3D Secure'}
+    ];
+
+    function renderFooterPaymentLogos(){
+        let logos = DEFAULT_FOOTER_PAYMENT_LOGOS;
+        try {
+            const parsed = JSON.parse(localStorage.getItem(FOOTER_PAYMENT_LOGOS_KEY) || 'null');
+            if(Array.isArray(parsed) && parsed.length){
+                logos = parsed.map(item=>({
+                    src:String(item?.src||'').trim(),
+                    alt:String(item?.alt||item?.name||'Ödeme logosu').trim()
+                })).filter(item=>item.src);
+            }
+        } catch(_){ }
+        const strip = document.querySelector('.global-trust-strip');
+        if(!strip) return;
+        strip.innerHTML = logos.map(item=>`<img class="payment-logo-img" src="${item.src}" alt="${item.alt || 'Ödeme logosu'}" loading="lazy" decoding="async">`).join('');
+    }
+
+    renderFooterPaymentLogos();
     const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.get('mod') === 'register') showForm('register');
 

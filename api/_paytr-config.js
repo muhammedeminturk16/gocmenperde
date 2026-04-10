@@ -3,12 +3,6 @@ const path = require('path');
 
 let cachedDotEnvValues = null;
 
-const DEFAULT_PAYTR_CREDENTIALS = {
-  merchantId: '690414',
-  merchantKey: 'qiyTzuAETF2mB8pk',
-  merchantSalt: '4o3qjuMhFhc7DpQH'
-};
-
 
 function stripInlineComment(value) {
   let quote = null;
@@ -136,15 +130,11 @@ function getPaytrCredentials() {
     'merchant_salt'
   );
 
-  const resolvedMerchantId = merchantId || DEFAULT_PAYTR_CREDENTIALS.merchantId;
-  const resolvedMerchantKey = merchantKey || DEFAULT_PAYTR_CREDENTIALS.merchantKey;
-  const resolvedMerchantSalt = merchantSalt || DEFAULT_PAYTR_CREDENTIALS.merchantSalt;
-
   return {
-    merchantId: resolvedMerchantId,
-    merchantKey: resolvedMerchantKey,
-    merchantSalt: resolvedMerchantSalt,
-    hasRequiredCredentials: Boolean(resolvedMerchantId && resolvedMerchantKey && resolvedMerchantSalt)
+    merchantId,
+    merchantKey,
+    merchantSalt,
+    hasRequiredCredentials: Boolean(merchantId && merchantKey && merchantSalt)
   };
 }
 

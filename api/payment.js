@@ -3,16 +3,43 @@ const { getPaytrCredentials } = require('./_paytr-config');
 
 const SUPPORTED_CURRENCIES = new Set(['TL', 'USD', 'EUR', 'GBP']);
 
+
+const IPV4_PATTERN = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+
+function normalizeIp(value) {
+  const candidate = String(value || '').trim();
+  if (!candidate) return '';
+
+  if (candidate.includes(',')) {
+    return normalizeIp(candidate.split(',')[0]);
+  }
+
+  const mappedIpv4 = candidate.match(/::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
+  if (mappedIpv4) {
+    return mappedIpv4[1];
+  }
+
+  if (IPV4_PATTERN.test(candidate)) {
+    const parts = candidate.split('.').map(Number);
+    if (parts.every((part) => part >= 0 && part <= 255)) {
+      return candidate;
+    }
+  }
+
+  return '';
+}
+
 function getClientIp(req) {
-  const xForwardedFor = req.headers['x-forwarded-for'];
-  if (typeof xForwardedFor === 'string' && xForwardedFor.trim()) {
-    return xForwardedFor.split(',')[0].trim();
-  }
-  const xRealIp = req.headers['x-real-ip'];
-  if (typeof xRealIp === 'string' && xRealIp.trim()) {
-    return xRealIp.trim();
-  }
-  return req.socket?.remoteAddress || req.connection?.remoteAddress || '127.0.0.1';
+  const xForwardedFor = normalizeIp(req.headers['x-forwarded-for']);
+  if (xForwardedFor) return xForwardedFor;
+
+  const xRealIp = normalizeIp(req.headers['x-real-ip']);
+  if (xRealIp) return xRealIp;
+
+  const socketIp = normalizeIp(req.socket?.remoteAddress || req.connection?.remoteAddress);
+  if (socketIp) return socketIp;
+
+  return '127.0.0.1';
 }
 
 function buildPaytrBasket(items) {
@@ -99,7 +126,7 @@ module.exports = async function handler(req, res) {
     const userIp = getClientIp(req);
     const userEmail = String(customer.email || '').trim().toLowerCase() || 'musteri@example.com';
     const customerName = String(userName || customer.name || 'Müşteri').slice(0, 60);
-    const customerPhone = String(customer.phone || '05000000000').replace(/[^\d+]/g, '').slice(0, 20) || '05000000000';
+    const customerPhone = String(customer.phone || '05000000000').replace(/\D/g, '').slice(0, 20) || '05000000000';
     const customerAddress = String(shippingAddress || orderNote || 'Adres belirtilmedi').slice(0, 400);
 
     const hashStr = `${merchantId}${userIp}${merchantOid}${userEmail}${paymentAmount}${userBasket}${noInstallment}${maxInstallment}${normalizedCurrency}${testMode}`;
@@ -139,7 +166,13 @@ module.exports = async function handler(req, res) {
       body: params
     });
 
-    const data = await paytrResponse.json();
+    const responseText = await paytrResponse.text();
+    let data = null;
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      data = { status: 'failed', reason: responseText || 'INVALID_PAYTR_RESPONSE' };
+    }
 
     if (!paytrResponse.ok || data?.status !== 'success' || !data?.token) {
       return res.status(502).json({

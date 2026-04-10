@@ -4,6 +4,6 @@
     <path d="M36 22c-22 0-40 18-40 40s18 40 40 40c16 0 29-6 38-18l-18-13c-5 6-12 10-20 10-11 0-20-9-20-19s9-19 20-19c8 0 15 3 20 9l18-14C65 28 52 22 36 22z" fill="#12aebd"/>
     <circle cx="117" cy="62" r="34" fill="#12aebd"/>
     <path d="M118 28h112c16 0 30 13 30 30v8c0 16-14 30-30 30H118" fill="none" stroke="#12aebd" stroke-width="34" stroke-linecap="round"/>
-    <text x="182" y="84" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700" fill="#12aebd">GÜVENLİ ÖDE</text>
+    <text x="72" y="84" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="700" fill="#12aebd">GÜVENLİ ÖDE</text>
   </g>
 </svg>

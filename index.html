@@ -3000,6 +3000,7 @@ window.addEventListener('load',()=>{
   loadProducts();
   initUserSession();
   startVisitTracking();
+  handlePaymentReturnState();
 });
 window.addEventListener('pagehide',()=>{ sessionStorage.setItem('gp_fast_resume','1'); });
 window.addEventListener('pageshow',(ev)=>{
@@ -3796,6 +3797,44 @@ async function submitOrder(){
   const finalTotal = Math.max(0, roundTo2(total - couponDiscountAmount));
   const savedBasket=[...basket], savedTotal=finalTotal;
 
+  if(method==='kredikarti'){
+    try{
+      const successUrl = `${window.location.origin}${window.location.pathname}?payment=success#checkout`;
+      const cancelUrl = `${window.location.origin}${window.location.pathname}?payment=cancel#checkout`;
+      sessionStorage.setItem('gp_pending_order', JSON.stringify({
+        name, phone, email, addr, note, method, items: savedBasket, total: savedTotal
+      }));
+      const response = await fetch('/api/payment?action=create-checkout-session',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          items: savedBasket.map(item=>({
+            name: item.name,
+            price: Number(item.price || 0),
+            qty: Number(item.qty || 1),
+            variant: item.width && item.height ? `Ölçü: ${formatDimension(item.width)}m x ${formatDimension(item.height)}m` : ''
+          })),
+          customer:{ email },
+          successUrl,
+          cancelUrl,
+          currency:'try',
+          orderNote: note
+        })
+      });
+      const data = await response.json();
+      if(!response.ok || !data?.checkout_url){
+        throw new Error(data?.error || 'Ödeme oturumu oluşturulamadı.');
+      }
+      window.location.href = data.checkout_url;
+      return;
+    } catch(err){
+      btn.innerHTML=orig; btn.disabled=false;
+      sessionStorage.removeItem('gp_pending_order');
+      showToast(`Kartla ödeme başlatılamadı: ${err.message}`);
+      return;
+    }
+  }
+
  // LocalStorage'a kaydet (admin paneli buradan okur)
   saveOrderToLocalStorage(name,phone,email,method,addr,note,savedBasket,savedTotal);
 
@@ -3819,6 +3858,101 @@ async function submitOrder(){
   basket=[]; total=0; appliedCouponCode=''; couponDiscountAmount=0; updateCartCount(); saveCartToStorage();
   document.getElementById('successModal').classList.add('open');
   setTimeout(()=>sendWhatsApp(name,phone,method,addr,note,savedBasket,savedTotal),1200);
+}
+
+async function finalizePendingOnlinePaymentOrder(){
+  const raw = sessionStorage.getItem('gp_pending_order');
+  if(!raw) return false;
+  let pending = null;
+  try{
+    pending = JSON.parse(raw);
+  } catch(_){
+    sessionStorage.removeItem('gp_pending_order');
+    return false;
+  }
+  if(!pending?.name || !Array.isArray(pending?.items) || !pending.items.length){
+    sessionStorage.removeItem('gp_pending_order');
+    return false;
+  }
+
+  saveOrderToLocalStorage(
+    pending.name,
+    pending.phone || '',
+    pending.email || '',
+    pending.method || 'kredikarti',
+    pending.addr || '',
+    pending.note || '',
+    pending.items,
+    Number(pending.total || 0)
+  );
+
+  let orderApiResult = null;
+  try{
+    const response = await fetch('/api/orders?action=create',{
+      method:'POST',
+      headers:{'Content-Type':'application/json',...(getAuthToken()?{'Authorization':'Bearer '+getAuthToken()}:{})},
+      body:JSON.stringify({
+        name: pending.name,
+        phone: pending.phone || '',
+        email: pending.email || '',
+        address: pending.addr || '',
+        note: pending.note || '',
+        payment: pending.method || 'kredikarti',
+        items: pending.items,
+        total: Number(pending.total || 0)
+      })
+    });
+    if(response.ok) orderApiResult = await response.json();
+  } catch(e){ console.warn('Online ödeme sipariş kaydı API hatası:', e); }
+
+  await sendOrderEmailNotification({
+    name: pending.name,
+    phone: pending.phone || '',
+    email: pending.email || '',
+    addr: pending.addr || '',
+    note: pending.note || '',
+    method: pending.method || 'kredikarti',
+    items: pending.items,
+    total: Number(pending.total || 0),
+    apiResult: orderApiResult
+  });
+
+  sessionStorage.removeItem('gp_pending_order');
+  basket=[]; total=0; appliedCouponCode=''; couponDiscountAmount=0; updateCartCount(); saveCartToStorage();
+  document.getElementById('successModal').classList.add('open');
+  setTimeout(()=>{
+    sendWhatsApp(
+      pending.name,
+      pending.phone || '',
+      pending.method || 'kredikarti',
+      pending.addr || '',
+      pending.note || '',
+      pending.items,
+      Number(pending.total || 0)
+    );
+  }, 1200);
+  return true;
+}
+
+async function handlePaymentReturnState(){
+  const params = new URLSearchParams(window.location.search);
+  const paymentStatus = params.get('payment');
+  if(!paymentStatus) return;
+  if(paymentStatus === 'cancel'){
+    showToast('Kart ödeme işlemi iptal edildi. Dilerseniz tekrar deneyin.');
+    return;
+  }
+  if(paymentStatus !== 'success') return;
+
+  const processedSession = sessionStorage.getItem('gp_payment_processed_session');
+  const pendingRaw = sessionStorage.getItem('gp_pending_order') || '';
+  const sessionFingerprint = `${paymentStatus}:${pendingRaw.length}:${pendingRaw.slice(0,120)}`;
+  if(processedSession === sessionFingerprint) return;
+  const completed = await finalizePendingOnlinePaymentOrder();
+  if(completed){
+    sessionStorage.setItem('gp_payment_processed_session', sessionFingerprint);
+    showToast('Ödemeniz alındı, siparişiniz oluşturuldu.');
+  }
 }
 
 function showRequiredFieldWarning(label){
@@ -3849,17 +3983,6 @@ function validateCheckoutForm(){
   if(accepted && !accepted.checked){
     showRequiredFieldWarning('Mesafeli satış sözleşmesi ve cayma koşulları onayı');
     return false;
-  }
-  const method = document.getElementById('f-payment')?.value;
-  if(method==='kredikarti'){
-    const cn=document.getElementById('f-cardnumber').value.replace(/\s/g,'');
-    const cvv=document.getElementById('f-cvv').value;
-    const exp=document.getElementById('f-expiry').value;
-    const ch=document.getElementById('f-cardholder').value.trim();
-    if(cn.length!==16){ showRequiredFieldWarning('Kart Numarası'); return false; }
-    if(cvv.length!==3){ showRequiredFieldWarning('CVV'); return false; }
-    if(!exp.includes('/')||exp.length!==5){ showRequiredFieldWarning('Son Kullanma'); return false; }
-    if(!ch){ showRequiredFieldWarning('Kart Sahibinin Adı'); return false; }
   }
   return true;
 }

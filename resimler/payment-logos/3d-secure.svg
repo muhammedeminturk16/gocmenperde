@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="420" height="220" viewBox="0 0 420 220" role="img" aria-label="3D Secure">
   <rect x="12" y="12" width="396" height="196" rx="28" fill="#f4f4f5" stroke="#c7c9cc" stroke-width="6"/>
-  <path d="M210 58l68 34v57l-68 33-68-33V92l68-34z" fill="#d9dadc" stroke="#c4c6c9" stroke-width="8"/>
-  <path d="M210 58v124l68-33V92l-68-34z" fill="#ececed"/>
-  <text x="210" y="122" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="98" font-weight="700" fill="#3f4043">3D</text>
-  <text x="210" y="160" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700" fill="#3f4043">SECURE</text>
+  <g transform="translate(0 2)">
+    <path d="M210 46l74 37v62l-74 36-74-36V83l74-37z" fill="#d9dadc" stroke="#c4c6c9" stroke-width="8"/>
+    <path d="M210 46v135l74-36V83l-74-37z" fill="#ececed"/>
+    <text x="210" y="122" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="102" font-weight="700" fill="#44464a">3D</text>
+    <text x="210" y="172" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="66" font-weight="700" fill="#44464a" letter-spacing="1">SECURE</text>
+  </g>
 </svg>

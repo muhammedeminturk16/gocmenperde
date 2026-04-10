@@ -1,7 +1,18 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/$1" }
-  ]
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ],
+  "env": {
+    "PAYTR_MERCHANT_ID": "690414",
+    "PAYTR_MERCHANT_KEY": "qiyTzuAETF2mB8pk",
+    "PAYTR_MERCHANT_SALT": "4o3qjuMhFhc7DpQH"
+  }
 }

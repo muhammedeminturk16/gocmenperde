@@ -157,6 +157,9 @@ module.exports = async function handler(req, res) {
     params.set('paytr_token', paytrToken);
     params.set('iframe_v2', '1');
     params.set('iframe_v2_dark', '0');
+    // Hosted PayTR iFrame akışında kart bilgileri yalnızca PayTR tarafında girilir.
+    // non_3d=0 ile 3D Secure akışı zorunlu tutulur.
+    params.set('non_3d', '0');
 
     const paytrResponse = await fetch('https://www.paytr.com/odeme/api/get-token', {
       method: 'POST',
@@ -186,7 +189,8 @@ module.exports = async function handler(req, res) {
       provider: 'paytr',
       iframe_token: data.token,
       checkout_url: `https://www.paytr.com/odeme/guvenli/${data.token}`,
-      merchant_oid: merchantOid
+      merchant_oid: merchantOid,
+      secure_mode: '3d'
     });
   } catch (err) {
     console.error('Payment error:', err.message);

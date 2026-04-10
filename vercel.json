@@ -2,6 +2,10 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/paytr/callback",
+      "destination": "/api/paytr-callback"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },

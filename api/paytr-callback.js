@@ -1,6 +1,25 @@
 const crypto = require('crypto');
 const { getPaytrCredentials } = require('./_paytr-config');
 
+function normalizeCallbackBody(body) {
+  if (!body) return {};
+
+  if (typeof body === 'string') {
+    const params = new URLSearchParams(body);
+    return Object.fromEntries(params.entries());
+  }
+
+  if (body instanceof URLSearchParams) {
+    return Object.fromEntries(body.entries());
+  }
+
+  if (typeof body === 'object') {
+    return body;
+  }
+
+  return {};
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).send('METHOD_NOT_ALLOWED');
@@ -13,7 +32,12 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const callback = req.body || {};
+    const callback = normalizeCallbackBody(req.body);
+
+    if (!callback.merchant_oid || !callback.status || !callback.total_amount || !callback.hash) {
+      return res.status(400).send('BAD_REQUEST');
+    }
+
     const raw = `${callback.merchant_oid || ''}${merchantSalt}${callback.status || ''}${callback.total_amount || ''}`;
     const token = crypto.createHmac('sha256', merchantKey).update(raw).digest('base64');
 

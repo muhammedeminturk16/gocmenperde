@@ -3814,11 +3814,17 @@ async function submitOrder(){
             qty: Number(item.qty || 1),
             variant: item.width && item.height ? `Ölçü: ${formatDimension(item.width)}m x ${formatDimension(item.height)}m` : ''
           })),
-          customer:{ email },
+          customer:{
+            email,
+            name,
+            phone
+          },
           successUrl,
           cancelUrl,
           currency:'TL',
-          orderNote: note
+          orderNote: note,
+          shippingAddress: addr,
+          userName: name
         })
       });
       const data = await response.json();

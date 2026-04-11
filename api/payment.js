@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { getPaytrCredentials } = require('./_paytr-config');
 
 const SUPPORTED_CURRENCIES = new Set(['TL', 'USD', 'EUR', 'GBP']);
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 const IPV4_PATTERN = /^(?:\d{1,3}\.){3}\d{1,3}$/;
@@ -40,6 +41,23 @@ function getClientIp(req) {
   if (socketIp) return socketIp;
 
   return '127.0.0.1';
+}
+
+function normalizeEmail(value) {
+  const email = String(value || '').trim().toLowerCase();
+  return EMAIL_PATTERN.test(email) ? email : '';
+}
+
+function sanitizeRedirectUrl(value, fallback) {
+  const raw = String(value || '').trim();
+  if (!raw) return fallback;
+  try {
+    const url = new URL(raw);
+    if (!['https:', 'http:'].includes(url.protocol)) return fallback;
+    return url.toString();
+  } catch {
+    return fallback;
+  }
 }
 
 function buildPaytrBasket(items) {
@@ -124,10 +142,12 @@ module.exports = async function handler(req, res) {
     const maxInstallment = '0';
     const timeoutLimit = '30';
     const userIp = getClientIp(req);
-    const userEmail = String(customer.email || '').trim().toLowerCase() || 'musteri@example.com';
+    const userEmail = normalizeEmail(customer.email) || 'musteri@example.com';
     const customerName = String(userName || customer.name || 'Müşteri').slice(0, 60);
     const customerPhone = String(customer.phone || '05000000000').replace(/\D/g, '').slice(0, 20) || '05000000000';
-    const customerAddress = String(shippingAddress || orderNote || 'Adres belirtilmedi').slice(0, 400);
+    const customerAddress = String(shippingAddress || orderNote || 'Adres belirtilmedi').trim().slice(0, 400);
+    const merchantOkUrl = sanitizeRedirectUrl(successUrl, 'https://example.com/?payment=success');
+    const merchantFailUrl = sanitizeRedirectUrl(cancelUrl, 'https://example.com/?payment=cancel');
 
     const hashStr = `${merchantId}${userIp}${merchantOid}${userEmail}${paymentAmount}${userBasket}${noInstallment}${maxInstallment}${normalizedCurrency}${testMode}`;
     const paytrToken = crypto
@@ -143,8 +163,8 @@ module.exports = async function handler(req, res) {
     params.set('user_name', customerName);
     params.set('user_address', customerAddress);
     params.set('user_phone', customerPhone);
-    params.set('merchant_ok_url', successUrl || 'https://example.com/?payment=success');
-    params.set('merchant_fail_url', cancelUrl || 'https://example.com/?payment=cancel');
+    params.set('merchant_ok_url', merchantOkUrl);
+    params.set('merchant_fail_url', merchantFailUrl);
     params.set('user_basket', userBasket);
     params.set('user_ip', userIp);
     params.set('timeout_limit', timeoutLimit);

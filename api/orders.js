@@ -27,8 +27,9 @@ module.exports = async function handler(req, res) {
   try {
     if (action === 'create' && req.method === 'POST') {
       const { name, phone, email, address, note, payment, items, total } = req.body || {};
-      if (!name || !phone || !address || !Array.isArray(items) || total === undefined || total === null) {
-        return res.status(400).json({ error: 'Eksik bilgi.' });
+      const validation = validateCreateOrderPayload({ name, phone, email, address, note, payment, items, total });
+      if (!validation.ok) {
+        return res.status(400).json({ error: validation.error });
       }
 
       let musteri_id = null;
@@ -38,28 +39,30 @@ module.exports = async function handler(req, res) {
           const decoded = verifyAuthToken(req);
           musteri_id = decoded?.id || null;
         }
-      } catch {}
+      } catch (error) {
+        console.warn('Auth token doğrulama atlandı:', error.message);
+      }
 
-      const cleanEmail = normalizeEmail(email);
+      const cleanEmail = normalizeEmail(validation.value.email);
       const insertResult = await insertOrder({
         musteri_id,
-        name,
-        phone,
+        name: validation.value.name,
+        phone: validation.value.phone,
         email: cleanEmail,
-        address,
-        payment,
-        items,
-        total,
-        note,
+        address: validation.value.address,
+        payment: validation.value.payment,
+        items: validation.value.items,
+        total: validation.value.total,
+        note: validation.value.note,
       });
 
       const emailResult = await sendOrderCreatedEmails({
         orderId: insertResult.rows[0].id,
-        customer: { name, phone, email: cleanEmail, address },
-        note,
-        payment,
-        items,
-        total,
+        customer: { name: validation.value.name, phone: validation.value.phone, email: cleanEmail, address: validation.value.address },
+        note: validation.value.note,
+        payment: validation.value.payment,
+        items: validation.value.items,
+        total: validation.value.total,
       });
 
       return res.status(201).json({
@@ -324,6 +327,80 @@ function normalizeEmail(value) {
   const email = String(value || '').trim().toLowerCase();
   if (!email) return '';
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : '';
+}
+
+function normalizePhone(value) {
+  return String(value || '').replace(/[^\d+]/g, '').slice(0, 20);
+}
+
+function normalizePayment(value) {
+  const allowed = new Set(['kapida', 'havale', 'kredikarti']);
+  const candidate = String(value || '').trim().toLocaleLowerCase('tr-TR');
+  return allowed.has(candidate) ? candidate : '';
+}
+
+function validateCreateOrderPayload(payload) {
+  const name = String(payload?.name || '').trim().slice(0, 120);
+  const phone = normalizePhone(payload?.phone);
+  const email = normalizeEmail(payload?.email);
+  const address = String(payload?.address || '').trim().slice(0, 1200);
+  const note = String(payload?.note || '').trim().slice(0, 1500);
+  const payment = normalizePayment(payload?.payment);
+  const items = sanitizeOrderItems(payload?.items);
+  const total = Number(payload?.total);
+
+  if (!name || name.length < 2) return { ok: false, error: 'Geçerli bir ad soyad girin.' };
+  if (!phone || phone.replace(/\D/g, '').length < 10) return { ok: false, error: 'Geçerli bir telefon numarası girin.' };
+  if (payload?.email && !email) return { ok: false, error: 'Geçerli bir e-posta adresi girin.' };
+  if (!address || address.length < 8) return { ok: false, error: 'Teslimat adresi eksik görünüyor.' };
+  if (!payment) return { ok: false, error: 'Geçersiz ödeme yöntemi.' };
+  if (!items.length) return { ok: false, error: 'Sipariş için en az bir ürün gereklidir.' };
+  if (!Number.isFinite(total) || total <= 0) return { ok: false, error: 'Toplam tutar geçersiz.' };
+
+  const computedTotal = items.reduce((sum, item) => sum + Number(item.sub || 0), 0);
+  if (Math.abs(computedTotal - total) > 1) {
+    return { ok: false, error: 'Sepet toplamı uyuşmuyor. Lütfen sepeti güncelleyip tekrar deneyin.' };
+  }
+
+  return {
+    ok: true,
+    value: {
+      name,
+      phone,
+      email,
+      address,
+      note,
+      payment,
+      items,
+      total: Number(total.toFixed(2)),
+    },
+  };
+}
+
+function sanitizeOrderItems(items) {
+  if (!Array.isArray(items)) return [];
+  return items
+    .map((item) => {
+      const price = Number(item?.price || 0);
+      const qty = Number(item?.qty || 1);
+      const sub = Number(item?.sub || price * qty);
+      if (!Number.isFinite(price) || price <= 0) return null;
+      if (!Number.isFinite(qty) || qty <= 0) return null;
+      if (!Number.isFinite(sub) || sub <= 0) return null;
+      return {
+        id: String(item?.id || '').slice(0, 120),
+        name: String(item?.name || 'Ürün').trim().slice(0, 180),
+        price: Number(price.toFixed(2)),
+        qty: Number(qty.toFixed(3)),
+        sub: Number(sub.toFixed(2)),
+        image: String(item?.image || '').slice(0, 600),
+        unitLabel: String(item?.unitLabel || item?.unit || 'adet').slice(0, 40),
+        width: item?.width ?? null,
+        height: item?.height ?? null,
+      };
+    })
+    .filter(Boolean)
+    .slice(0, 120);
 }
 
 function paymentLabel(payment) {

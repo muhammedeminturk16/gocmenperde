@@ -380,6 +380,10 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 @media(max-width:600px){.product-name{font-size:1rem}}
 .product-desc{font-size:0.78rem;color:var(--slate);margin-bottom:14px;line-height:1.7}
 @media(max-width:600px){.product-desc{display:none}}
+.product-meta-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.meta-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;font-size:0.62rem;letter-spacing:.6px;background:#f8f6f1;border:1px solid var(--border);color:var(--slate);font-weight:600}
+.meta-chip.stock-ok{background:rgba(46,125,50,0.08);color:#23622b;border-color:rgba(46,125,50,0.25)}
+.meta-chip.stock-low{background:rgba(194,95,24,0.1);color:#8a4d12;border-color:rgba(194,95,24,0.25)}
 .product-rating{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--slate);margin-bottom:10px}
 .product-rating .stars{color:var(--gold);letter-spacing:1px;font-size:0.74rem}
 .product-rating b{color:var(--ink);font-size:0.78rem}
@@ -628,6 +632,11 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .modal-features{display:flex;flex-direction:column;gap:8px}
 .modal-feat{display:flex;align-items:center;gap:10px;font-size:0.8rem;color:var(--slate)}
 .modal-feat i{color:var(--gold);font-size:0.85rem;width:16px}
+.modal-commerce-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.modal-commerce-item{padding:10px;border:1px solid var(--border);border-radius:10px;background:#faf8f3}
+.modal-commerce-label{display:block;font-size:.62rem;letter-spacing:1.4px;text-transform:uppercase;color:var(--slate);margin-bottom:4px}
+.modal-commerce-value{font-size:.82rem;font-weight:600;color:var(--ink)}
+@media(max-width:700px){.modal-commerce-grid{grid-template-columns:1fr}}
 .modal-specs{display:flex;flex-direction:column}
 .modal-spec-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem}
 .modal-spec-row:last-child{border-bottom:none}
@@ -2439,6 +2448,12 @@ function buildCard(p, index=0){
   const requireSize = needsDimensions(p);
   const requireHeight = squareProduct || pleatedMeterProduct;
   const social = getProductSocial(p.id);
+  const stockCount = Number(p.stock);
+  const stockLabel = Number.isFinite(stockCount)
+    ? (stockCount <= 5 ? `Son ${stockCount} stok` : `Stokta: ${stockCount}`)
+    : 'Stokta';
+  const stockClass = Number.isFinite(stockCount) && stockCount <= 5 ? 'stock-low' : 'stock-ok';
+  const variantLabel = String(p.serialNumber || p.variant || '').trim();
   const priceHTML = p.oldPrice
     ? `<span class="old-price">${p.oldPrice.toLocaleString('tr-TR')} TL</span>
        <span class="current-price">${p.price.toLocaleString('tr-TR')} TL <span class="price-unit">/ ${p.unit}</span></span>`
@@ -2470,6 +2485,10 @@ function buildCard(p, index=0){
     <div class="product-info">
       <div class="product-name">${p.name}</div>
       <div class="product-desc">${p.desc}</div>
+      <div class="product-meta-row">
+        ${variantLabel ? `<span class="meta-chip"><i class="fas fa-palette"></i>${variantLabel}</span>` : ''}
+        <span class="meta-chip ${stockClass}"><i class="fas fa-box"></i>${stockLabel}</span>
+      </div>
       <div class="product-rating"><span class="stars">${renderStarText(social.avgRating)}</span><b>${social.avgRating.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1})}</b><span>(${social.reviewCount} yorum)</span></div>
       <div class="product-bottom">
         <div class="product-price">${priceHTML}</div>
@@ -2630,7 +2649,7 @@ function scrollToDiscountedProduct(){
 
 // ── Filtreler ──
 function applyFilters(){
-  const search = document.getElementById('searchInput').value.toLowerCase();
+  const search = document.getElementById('searchInput').value.toLocaleLowerCase('tr');
   const sort   = document.getElementById('sortSelect').value;
   const minP   = parseFloat(document.getElementById('minPrice').value)||0;
   const maxP   = parseFloat(document.getElementById('maxPrice').value)||Infinity;
@@ -2651,7 +2670,8 @@ function applyFilters(){
   let filtered = PRODUCTS.filter(p => {
     const social = getProductSocial(p.id);
     if(!p.active) return false;
-    if(search && !p.name.toLowerCase().includes(search) && !(p.desc||'').toLowerCase().includes(search)) return false;
+    const haystack = `${p.name || ''} ${p.desc || ''} ${p.cat || ''} ${p.features || ''} ${p.serialNumber || ''}`.toLocaleLowerCase('tr');
+    if(search && !haystack.includes(search)) return false;
     if(p.price < minP || p.price > maxP) return false;
     if(!catAll && activeCats.length > 0 && !activeCats.includes(p.cat)) return false;
     const f = (p.features||'').split(',');
@@ -2920,6 +2940,24 @@ function openModalFromProduct(id){
   }
 
   document.getElementById('mDesc').innerText = p.desc||'';
+  const normalizedStock = Number(p.stock);
+  const stockText = Number.isFinite(normalizedStock)
+    ? (normalizedStock <= 5 ? `Son ${normalizedStock} adet` : `${normalizedStock} adet stokta`)
+    : 'Stokta';
+  const variantText = String(p.serialNumber || p.variant || 'Standart').trim();
+  const specsNode = document.getElementById('mSpecs');
+  specsNode.innerHTML = `
+    <div class="modal-commerce-grid">
+      <div class="modal-commerce-item">
+        <span class="modal-commerce-label">Varyant</span>
+        <span class="modal-commerce-value">${variantText}</span>
+      </div>
+      <div class="modal-commerce-item">
+        <span class="modal-commerce-label">Stok Durumu</span>
+        <span class="modal-commerce-value">${stockText}</span>
+      </div>
+    </div>
+  `;
   const feats = [
     {icon:'fas fa-check-circle',text:'Kaliteli Bursa işçiliği'},
     {icon:'fas fa-star',text:'Zeynel Türkoğlu güvencesi'},
@@ -2927,7 +2965,7 @@ function openModalFromProduct(id){
     {icon:'fas fa-rotate-left',text:'Memnuniyet garantisi'}
   ];
   document.getElementById('mFeatures').innerHTML = feats.map(f=>`<div class="modal-feat"><i class="${f.icon}"></i> ${f.text}</div>`).join('');
-  document.getElementById('mSpecs').innerHTML = Object.entries(p.specs||{}).map(([k,v])=>`<div class="modal-spec-row"><span class="modal-spec-key">${k}</span><span class="modal-spec-val">${v}</span></div>`).join('') || '<p style="color:var(--slate);font-size:0.84rem;padding:12px 0">Özellik bilgisi eklenmemiş.</p>';
+  specsNode.innerHTML += Object.entries(p.specs||{}).map(([k,v])=>`<div class="modal-spec-row"><span class="modal-spec-key">${k}</span><span class="modal-spec-val">${v}</span></div>`).join('') || '<p style="color:var(--slate);font-size:0.84rem;padding:12px 0">Özellik bilgisi eklenmemiş.</p>';
   document.getElementById('mCare').innerHTML  = Object.entries(p.care||{}).map(([k,v])=>`<div class="modal-spec-row"><span class="modal-spec-key">${k}</span><span class="modal-spec-val">${v}</span></div>`).join('') || '<p style="color:var(--slate);font-size:0.84rem;padding:12px 0">Bakım bilgisi eklenmemiş.</p>';
 
   const isFav = favorites.some(f => f.id === id);
@@ -4240,6 +4278,10 @@ function validateCheckoutForm(){
   }
   const email = document.getElementById('f-email')?.value.trim().toLowerCase() || '';
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast('Geçerli bir e-posta adresi girin'); return false; }
+  const phone = (document.getElementById('f-phone')?.value || '').replace(/\D/g, '');
+  if(phone.length < 10){ showToast('Telefon numarası en az 10 haneli olmalı'); return false; }
+  const address = document.getElementById('f-addr')?.value.trim() || '';
+  if(address.length < 8){ showToast('Teslimat adresini daha detaylı girin'); return false; }
   const accepted = document.getElementById('f-contract-accept');
   if(accepted && !accepted.checked){
     showRequiredFieldWarning('Mesafeli satış sözleşmesi ve cayma koşulları onayı');

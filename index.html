@@ -113,6 +113,7 @@
 html{scroll-behavior:smooth}
 html{scroll-behavior:smooth;background:var(--cream)}
 body{background:var(--cream);color:var(--ink);font-family:var(--ff-body);font-weight:300;overflow-x:hidden;width:100%;max-width:100%}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 8% 10%, rgba(201,168,76,0.16), transparent 30%),radial-gradient(circle at 90% 20%, rgba(201,168,76,0.12), transparent 33%),radial-gradient(circle at 50% 100%, rgba(255,255,255,0.45), transparent 40%)}
 img,video,canvas,svg{max-width:100%}
 @media(min-width:768px){body{cursor:none}.cursor-dot,.cursor-ring{display:block}body.native-cursor-mode{cursor:auto}.native-cursor-mode .cursor-dot,.native-cursor-mode .cursor-ring{opacity:0}}
 @media(max-width:767px){body{cursor:auto}.cursor-dot,.cursor-ring{display:none}button,a,[onclick]{cursor:pointer!important}}
@@ -1516,11 +1517,23 @@ const FROM_YOU_RENDERED_MAP = {};
 
 const FOOTER_PAYMENT_LOGOS_KEY = 'gp_footer_payment_logos_v1';
 const DEFAULT_FOOTER_PAYMENT_LOGOS = [
-  {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png',alt:'Troy'},
-  {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/320px-Mastercard-logo.svg.png',alt:'Mastercard'},
-  {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/320px-Visa_Inc._logo.svg.png',alt:'Visa'},
-  {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/3D_Secure_logo.svg/320px-3D_Secure_logo.svg.png',alt:'3D Secure'}
+  {src:'/resimler/Troy.jpg',alt:'Troy'},
+  {src:'/resimler/Mastercard.PNG',alt:'Mastercard'},
+  {src:'/resimler/Visa.PNG',alt:'Visa'},
+  {src:'/resimler/3dsecure.JPG',alt:'3D Secure'},
+  {src:'/resimler/Guvenli.JPG',alt:'Güvenli Öde'}
 ];
+const FOOTER_PAYMENT_LOGO_FALLBACKS = {
+  troy:'/resimler/Troy.jpg',
+  mastercard:'/resimler/Mastercard.PNG',
+  visa:'/resimler/Visa.PNG',
+  '3d secure':'/resimler/3dsecure.JPG',
+  'güvenli öde':'/resimler/Guvenli.JPG',
+  'guvenli ode':'/resimler/Guvenli.JPG'
+};
+function paymentLogoFallbackByAlt(alt=''){
+  return FOOTER_PAYMENT_LOGO_FALLBACKS[String(alt).trim().toLocaleLowerCase('tr-TR')] || '/resimler/Guvenli.JPG';
+}
 
 function parseShowcaseJSON(key, fallback){
   try{
@@ -1591,7 +1604,10 @@ function getFooterPaymentLogos(){
 }
 function renderFooterPaymentLogos(){
   const logos = getFooterPaymentLogos();
-  const html = logos.map((item)=>`<img class="payment-logo-img" src="${item.src}" alt="${item.alt || 'Ödeme logosu'}" loading="lazy" decoding="async">`).join('');
+  const html = logos.map((item)=>{
+    const alt = item.alt || 'Ödeme logosu';
+    return `<img class="payment-logo-img" src="${item.src}" alt="${alt}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${paymentLogoFallbackByAlt(alt)}'">`;
+  }).join('');
   document.querySelectorAll('.payment-logo-strip, .global-trust-strip').forEach((strip)=>{
     strip.innerHTML = html;
   });

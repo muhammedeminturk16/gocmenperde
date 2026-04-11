@@ -912,8 +912,50 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 }
 @media(max-width:640px){.live-categories-grid{grid-template-columns:1fr}}
 
+/* Görsel zenginleştirme ve yerleşim düzeltmeleri */
+.pulse-announcement{
+  margin-top:75px;
+  border-radius:0 0 20px 20px;
+  box-shadow:0 14px 30px rgba(17,28,58,.10);
+}
+.pulse-announcement-inner{
+  background:linear-gradient(135deg,rgba(255,255,255,.72),rgba(247,249,255,.68));
+  border:1px solid rgba(34,45,78,.10);
+  border-radius:16px;
+  padding:14px 16px;
+}
+.gallery-section{
+  background:linear-gradient(180deg,#f8f9fd 0%,#f6f7fb 56%,#f9f6ef 100%);
+}
+.gallery-section .section-header{
+  background:linear-gradient(135deg,#ffffff 0%,#f8f2e6 100%);
+  box-shadow:0 14px 34px rgba(17,28,58,.08);
+}
+.reviews-section{
+  background:linear-gradient(180deg,#f6f8fe 0%,#fffaf0 100%);
+}
+.reviews-section .section-header{
+  padding:24px;
+  border-radius:18px;
+  background:linear-gradient(130deg,#ffffff 0%,#f7f1e3 100%);
+  border:1px solid rgba(34,45,78,.10);
+  box-shadow:0 12px 30px rgba(17,28,58,.07);
+}
+.review-card{
+  background:linear-gradient(160deg,#ffffff 0%,#fbf7ef 100%);
+  box-shadow:0 10px 24px rgba(17,28,58,.08);
+}
+.review-card:hover{
+  box-shadow:0 18px 34px rgba(17,28,58,.14);
+}
+@media(max-width:760px){
+  .pulse-announcement{margin-top:72px}
+  .pulse-announcement-inner{padding:12px}
+}
+
 </style>
 </head>
+<body>
 
 <div id="menuOverlay" onclick="toggleMenu()"></div>
 <div class="overlay" id="globalOverlay" onclick="closeAllPopups()"></div>
@@ -955,7 +997,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
   </div>
 </div>
 
-<body>
 <a class="skip-link" href="#home">Ana içeriğe geç</a>
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>

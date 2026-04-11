@@ -1484,6 +1484,18 @@ function authHeaders() {
     return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
 }
 
+
+async function apiFetch(url, options = {}, timeoutMs = 10000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        return response;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 function showTab(tab, el) {
     document.querySelectorAll('.gp-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.gp-section').forEach(s => s.classList.remove('active'));
@@ -1604,7 +1616,7 @@ async function loadOrders() {
     el.innerHTML = '<div class="loading-state"><i class="fas fa-circle-notch"></i> Siparişler yükleniyor...</div>';
     try {
         await loadProductCatalog();
-        const r = await fetch('/api/orders?action=my-orders', { headers: authHeaders() });
+        const r = await apiFetch('/api/orders?action=my-orders', { headers: authHeaders() });
         const data = await r.json();
         allOrders = data.orders || [];
         updateProfileMetrics({ orders: allOrders.length });
@@ -1904,7 +1916,7 @@ async function loadAddresses() {
     const el = document.getElementById('addressList');
     el.innerHTML = '<div class="loading-state"><i class="fas fa-circle-notch"></i></div>';
     try {
-        const r = await fetch('/api/auth?action=addresses', { headers: authHeaders() });
+        const r = await apiFetch('/api/auth?action=addresses', { headers: authHeaders() });
         const data = await r.json();
         if (!data.addresses?.length) {
             updateProfileMetrics({ addresses: 0 });
@@ -1938,7 +1950,7 @@ async function addAddress() {
         return;
     }
     const adres = [`Mahalle: ${mahalle}`, `Sokak/Cadde: ${sokak}`, `Kapı No: ${kapiNo}`, `İlçe: ${ilce}`, `İl: ${il}`].join('\n');
-    const r = await fetch('/api/auth?action=add-address', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ baslik, adres }) });
+    const r = await apiFetch('/api/auth?action=add-address', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ baslik, adres }) });
     const data = await r.json();
     if (data.success) {
         ['aBaslik','aMahalle','aSokak','aKapiNo','aIlce','aIl'].forEach(id => document.getElementById(id).value = '');
@@ -1951,7 +1963,7 @@ async function addAddress() {
 
 async function deleteAddress(id) {
     if (!confirm('Bu adresi silmek istediğinize emin misiniz?')) return;
-    const r = await fetch('/api/auth?action=delete-address', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ id }) });
+    const r = await apiFetch('/api/auth?action=delete-address', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ id }) });
     const data = await r.json();
     if (data.success) { showToast('✓ Adres silindi'); loadAddresses(); }
 }
@@ -1972,7 +1984,7 @@ async function loadFavorites() {
     const el = document.getElementById('favContent');
     el.innerHTML = '<div class="loading-state"><i class="fas fa-circle-notch"></i></div>';
     try {
-        const r = await fetch('/api/favorites?action=list', { headers: authHeaders() });
+        const r = await apiFetch('/api/favorites?action=list', { headers: authHeaders() });
         const data = await r.json();
         if (!data.favorites?.length) {
             updateProfileMetrics({ favorites: 0 });
@@ -2031,7 +2043,7 @@ function renderSuggestions() {
 
 async function removeFav(urun_id, btn) {
     if (btn) btn.disabled = true;
-    const r = await fetch('/api/favorites?action=remove', {
+    const r = await apiFetch('/api/favorites?action=remove', {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({ urun_id })
@@ -2055,7 +2067,7 @@ async function removeFav(urun_id, btn) {
 ═══════════════════════════════ */
 async function loadProfile() {
     try {
-        const r = await fetch('/api/auth?action=profile', { headers: authHeaders() });
+        const r = await apiFetch('/api/auth?action=profile', { headers: authHeaders() });
         const data = await r.json();
         if (data.user) {
             document.getElementById('pName').value = data.user.ad_soyad || '';
@@ -2069,7 +2081,7 @@ async function updateProfile() {
     const ad_soyad = document.getElementById('pName').value.trim();
     const telefon = document.getElementById('pPhone').value.trim();
     if (!ad_soyad) { showToast('⚠️ Ad soyad zorunlu'); return; }
-    const r = await fetch('/api/auth?action=update', { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ ad_soyad, telefon }) });
+    const r = await apiFetch('/api/auth?action=update', { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ ad_soyad, telefon }) });
     const data = await r.json();
     if (data.success) {
         const u = JSON.parse(localStorage.getItem('user') || '{}');
@@ -2090,7 +2102,7 @@ async function changePassword() {
         showToast('⚠️ Şifre en az 6 karakter olmalı, harf ve sayı içermelidir');
         return;
     }
-    const r = await fetch('/api/auth?action=change-password', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ eski_sifre, yeni_sifre }) });
+    const r = await apiFetch('/api/auth?action=change-password', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ eski_sifre, yeni_sifre }) });
     const data = await r.json();
     if (data.success) {
         showToast('✓ Şifre değiştirildi');
@@ -2126,7 +2138,7 @@ function getVisitSessionId(){
 function trackAccountVisit(){
     const sessionId = getVisitSessionId();
     if(!sessionId) return;
-    fetch('/api/visits?action=track', {
+    apiFetch('/api/visits?action=track', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         keepalive:true,

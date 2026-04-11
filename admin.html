@@ -1785,6 +1785,17 @@ let activeSwitchState = true;
 const AREA_PRICE_CATEGORIES = ['stor-perde','zebra-perde','plise-perde'];
 const GITHUB_RAW_PRODUCTS_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/products.json';
 const GITHUB_RAW_CATEGORIES_URL = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main/categories.json';
+const ADMIN_CACHE_KEY = 'gp_admin_products_cache_v1';
+
+async function apiFetch(url, options = {}, timeoutMs = 12000){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
+  try{
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 function detectCurtainCategory(product){
   const text = `${product?.name || ''} ${product?.desc || ''} ${product?.features || ''}`.toLocaleLowerCase('tr');
@@ -1826,14 +1837,27 @@ async function fetchProducts(){
   try{
     let sourceData = null;
     try{
-      const remote = await fetch(`${GITHUB_RAW_PRODUCTS_URL}?v=${Date.now()}`, { cache:'no-store' });
+      const remote = await apiFetch(`${GITHUB_RAW_PRODUCTS_URL}?v=${Date.now()}`, { cache:'no-store' });
       if(remote.ok) sourceData = await remote.json();
     }catch(_){}
+
     if(!Array.isArray(sourceData) || !sourceData.length){
-      const local = await fetch('/products.json?v='+Date.now(), { cache:'no-store' });
+      const cached = localStorage.getItem(ADMIN_CACHE_KEY);
+      if(cached){
+        try{
+          const parsed = JSON.parse(cached);
+          if(Array.isArray(parsed) && parsed.length) sourceData = parsed;
+        }catch(_){ }
+      }
+    }
+
+    if(!Array.isArray(sourceData) || !sourceData.length){
+      const local = await apiFetch('/products.json?v='+Date.now(), { cache:'no-store' });
       if(!local.ok) throw new Error('HTTP '+local.status);
       sourceData = await local.json();
     }
+
+    localStorage.setItem(ADMIN_CACHE_KEY, JSON.stringify(sourceData));
     PRODUCTS = sourceData.map(normalizeProductCatalog);
   } catch(e){
     PRODUCTS = [
@@ -1855,7 +1879,7 @@ async function loadAdminOrders(){
   const tbody = document.getElementById('ordersTableBody');
   tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--slate-light)"><i class="fas fa-spinner fa-spin"></i> Yükleniyor...</td></tr>`;
   try{
-    const r = await fetch('/api/orders?action=all', {
+    const r = await apiFetch('/api/orders?action=all', {
       headers:{'Content-Type':'application/json','x-admin-key':getAdminApiKey()}
     });
     if(!r.ok) throw new Error('HTTP '+r.status);
@@ -1994,7 +2018,7 @@ function waOrder(id){
 async function updateOrderStatus(){
   const durum = document.getElementById('orderStatusSelect').value;
   try{
-    const r = await fetch('/api/orders?action=update-status',{
+    const r = await apiFetch('/api/orders?action=update-status',{
       method:'POST',headers:{'Content-Type':'application/json','x-admin-key':getAdminApiKey()},
       body:JSON.stringify({id:currentOrderId,durum})
     });
@@ -2031,7 +2055,7 @@ async function loadCustomers(){
   const grid = document.getElementById('customerGrid');
   grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--slate-light)"><i class="fas fa-spinner fa-spin" style="font-size:1.5rem"></i></div>`;
   try{
-    const r = await fetch('/api/customers?action=all',{headers:{'x-admin-key':getAdminApiKey()}});
+    const r = await apiFetch('/api/customers?action=all',{headers:{'x-admin-key':getAdminApiKey()}});
     if(!r.ok) throw new Error('HTTP '+r.status);
     const data = await r.json();
     ALL_CUSTOMERS = data.customers||[];
@@ -3128,7 +3152,7 @@ function getTopPageLabel(topPages=[]){
 
 async function loadVisitAnalytics(){
   try{
-    const r = await fetch('/api/visits?action=stats', {
+    const r = await apiFetch('/api/visits?action=stats', {
       headers:{'x-admin-key':getAdminApiKey()}
     });
     if(!r.ok) throw new Error('HTTP '+r.status);

@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const { verifyAuthToken } = require('./_auth-utils');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -7,7 +8,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const user = verifyToken(req);
+  const user = verifyAuthToken(req);
   if (!user) return res.status(401).json({ error: 'Oturum geçersiz.' });
 
   const { action } = req.query;
@@ -46,13 +47,3 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Sunucu hatası: ' + err.message });
   }
 };
-
-function verifyToken(req) {
-  try {
-    const auth = req.headers.authorization;
-    if (!auth || !auth.startsWith('Bearer ')) return null;
-    const decoded = JSON.parse(Buffer.from(auth.slice(7), 'base64').toString());
-    if (!decoded.id || !decoded.email) return null;
-    return decoded;
-  } catch { return null; }
-}

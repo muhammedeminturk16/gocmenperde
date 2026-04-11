@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const { verifyAuthToken } = require('./_auth-utils');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const ADMIN_API_KEY = 'gocmen1993';
@@ -34,8 +35,8 @@ module.exports = async function handler(req, res) {
       try {
         const auth = req.headers.authorization;
         if (auth && auth.startsWith('Bearer ')) {
-          const decoded = JSON.parse(Buffer.from(auth.slice(7), 'base64').toString());
-          musteri_id = decoded.id || null;
+          const decoded = verifyAuthToken(req);
+          musteri_id = decoded?.id || null;
         }
       } catch {}
 
@@ -69,7 +70,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === 'my-orders' && req.method === 'GET') {
-      const user = verifyToken(req);
+      const user = verifyAuthToken(req);
       if (!user) return res.status(401).json({ error: 'Oturum geçersiz.' });
       const result = await pool.query(
         'SELECT id, musteri_adi, telefon, adres, odeme_yontemi, urunler, toplam, durum, siparis_notu, created_at FROM siparisler WHERE musteri_id = $1 ORDER BY created_at DESC',
@@ -511,16 +512,4 @@ function resolveFromAddress() {
   }
 
   return from;
-}
-
-function verifyToken(req) {
-  try {
-    const auth = req.headers.authorization;
-    if (!auth || !auth.startsWith('Bearer ')) return null;
-    const decoded = JSON.parse(Buffer.from(auth.slice(7), 'base64').toString());
-    if (!decoded.id || !decoded.email) return null;
-    return decoded;
-  } catch {
-    return null;
-  }
 }

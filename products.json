@@ -139,9 +139,9 @@
     "id": "zebra-perde-siyah-1774990805411-411",
     "name": "Zebra Perde Siyah",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774990722556-bulk-66527fcf-b1ae-4d3d-bf08-9620ae869fe1-IMG_1802.jpeg",
+    "image": "/resimler/1774990722556-bulk-66527fcf-b1ae-4d3d-bf08-9620ae869fe1-IMG_1802.jpeg",
     "images": [
-      "resimler/1774990722556-bulk-66527fcf-b1ae-4d3d-bf08-9620ae869fe1-IMG_1802.jpeg"
+      "/resimler/1774990722556-bulk-66527fcf-b1ae-4d3d-bf08-9620ae869fe1-IMG_1802.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -151,9 +151,9 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 74,
     "serialNumber": "Düz V-05",
     "active": true,
     "specs": {

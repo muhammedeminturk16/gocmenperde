@@ -173,9 +173,9 @@
     "id": "zebra-perde-gumus-sarmasik-1774963152707-983",
     "name": "Zebra Perde Gümüş Sarmaşık",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774962404905-bulk-c99460dc-e835-491a-8ed8-f148297162a3-IMG_1784.jpeg",
+    "image": "/resimler/1774962404905-bulk-c99460dc-e835-491a-8ed8-f148297162a3-IMG_1784.jpeg",
     "images": [
-      "resimler/1774962404905-bulk-c99460dc-e835-491a-8ed8-f148297162a3-IMG_1784.jpeg"
+      "/resimler/1774962404905-bulk-c99460dc-e835-491a-8ed8-f148297162a3-IMG_1784.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -185,9 +185,9 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 74,
     "serialNumber": "Sarmaşık V-01",
     "active": true,
     "specs": {

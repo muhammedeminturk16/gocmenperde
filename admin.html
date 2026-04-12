@@ -1113,6 +1113,42 @@ Işık: Yarı Geçirgen"></textarea></div>
       <p class="logo-settings-note">Ekledikleriniz tüm sayfalarda footer ödeme logolarını anında günceller. Sıralama için ↑↓ butonlarını kullanın.</p>
     </div>
   </div>
+
+  <div class="settings-section">
+    <div class="settings-section-header"><i class="fas fa-rectangle-ad"></i> Anasayfa Reklam Paneli</div>
+    <div class="settings-body" style="padding:16px 22px;display:grid;gap:14px">
+      <div class="form-row">
+        <div class="fg"><label>Panel Durumu</label><select id="homePromoEnabled"><option value="1">Aktif</option><option value="0">Pasif</option></select></div>
+        <div class="fg"><label>Açılış Gecikmesi (ms)</label><input type="number" id="homePromoDelay" min="0" step="100" placeholder="1400"></div>
+      </div>
+      <div class="fg"><label>Kampanya Etiketi</label><input type="text" id="homePromoCampaignLabel" placeholder="Kampanya"></div>
+      <div class="fg"><label>Ana Başlık</label><input type="text" id="homePromoTitle" placeholder="NİSAN'DA ZAM YOK!"></div>
+      <div class="fg"><label>Alt Metin</label><textarea id="homePromoSubtitle" placeholder="Tüm ürünlerde 2025 fiyatları devam ediyor!"></textarea></div>
+      <div class="form-row-3">
+        <div class="fg"><label>Özellik 1</label><input type="text" id="homePromoFeature1" placeholder="Ücretsiz Teslimat"></div>
+        <div class="fg"><label>Özellik 2</label><input type="text" id="homePromoFeature2" placeholder="Ücretsiz Kurulum"></div>
+        <div class="fg"><label>Özellik 3</label><input type="text" id="homePromoFeature3" placeholder="Taksit Seçenekleri"></div>
+      </div>
+      <div class="fg"><label>Arka Plan Görseli URL / Path</label><input type="text" id="homePromoImage" placeholder="resimler/tulperde.WEBP"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+        <label class="btn btn-outline btn-sm" style="cursor:pointer"><i class="fas fa-image"></i> Cihazdan Fotoğraf Seç
+          <input type="file" id="homePromoImageFile" accept="image/*" onchange="handleHomePromoImageUpload(this)" style="display:none">
+        </label>
+        <button class="btn btn-outline btn-sm" onclick="clearHomePromoImage()"><i class="fas fa-eraser"></i> Görseli Temizle</button>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:12px;padding:12px;background:#fcfbf8">
+        <div style="font-size:0.72rem;color:var(--slate-light);margin-bottom:8px">Önizleme</div>
+        <img id="homePromoPreview" src="" alt="Reklam paneli önizleme" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;border:1px solid var(--border)">
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <button class="btn btn-primary btn-sm" onclick="saveHomePromoSettings()"><i class="fas fa-floppy-disk"></i> Kaydet</button>
+        <button class="btn btn-outline btn-sm" onclick="resetHomePromoSettings()"><i class="fas fa-rotate-left"></i> Varsayılana Dön</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteHomePromoSettings()"><i class="fas fa-trash"></i> Reklamı Sil</button>
+      </div>
+      <p style="font-size:0.75rem;color:var(--slate-light)">Bu panel sadece anasayfada görünür. Ürünler veya diğer sayfalara geçildiğinde otomatik kapanır.</p>
+    </div>
+  </div>
+
   <div class="settings-section">
     <div class="settings-section-header"><i class="fas fa-shield-alt"></i> Güvenlik</div>
     <div class="settings-body">
@@ -1518,6 +1554,20 @@ const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
 const FROM_YOU_SHOWCASE_KEY = 'gp_from_you_showcase_v1';
 const FOOTER_PAYMENT_LOGOS_KEY = 'gp_footer_payment_logos_v1';
+const HOME_PROMO_PANEL_KEY = 'gp_home_promo_panel_v1';
+const DEFAULT_HOME_PROMO_PANEL = {
+  enabled:true,
+  delayMs:1400,
+  campaignLabel:'Kampanya',
+  title:'NİSAN\'DA ZAM YOK!',
+  subtitle:'Tüm ürünlerde 2025 fiyatları devam ediyor!',
+  image:'resimler/tulperde.WEBP',
+  features:[
+    {icon:'fas fa-truck-fast',text:'Ücretsiz Teslimat'},
+    {icon:'fas fa-screwdriver-wrench',text:'Ücretsiz Kurulum'},
+    {icon:'fas fa-credit-card',text:'Taksit Seçenekleri'}
+  ]
+};
 const DEFAULT_FOOTER_PAYMENT_LOGOS = [
   {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png',alt:'Troy'},
   {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/320px-Mastercard-logo.svg.png',alt:'Mastercard'},
@@ -1618,6 +1668,94 @@ function deleteFooterLogo(index){
   renderFooterLogoRows();
   aToast('Logo silindi');
 }
+
+function getHomePromoSettings(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(HOME_PROMO_PANEL_KEY) || 'null');
+    if(parsed && typeof parsed==='object'){
+      return {
+        ...DEFAULT_HOME_PROMO_PANEL,
+        ...parsed,
+        features: Array.isArray(parsed.features) && parsed.features.length ? parsed.features : DEFAULT_HOME_PROMO_PANEL.features
+      };
+    }
+  }catch(_){ }
+  return {...DEFAULT_HOME_PROMO_PANEL};
+}
+function renderHomePromoSettings(){
+  const cfg = getHomePromoSettings();
+  const features = Array.isArray(cfg.features) ? cfg.features : DEFAULT_HOME_PROMO_PANEL.features;
+  const byId = (id)=>document.getElementById(id);
+  if(byId('homePromoEnabled')) byId('homePromoEnabled').value = cfg.enabled ? '1' : '0';
+  if(byId('homePromoDelay')) byId('homePromoDelay').value = Number(cfg.delayMs) || 1400;
+  if(byId('homePromoCampaignLabel')) byId('homePromoCampaignLabel').value = cfg.campaignLabel || '';
+  if(byId('homePromoTitle')) byId('homePromoTitle').value = cfg.title || '';
+  if(byId('homePromoSubtitle')) byId('homePromoSubtitle').value = cfg.subtitle || '';
+  if(byId('homePromoFeature1')) byId('homePromoFeature1').value = features[0]?.text || '';
+  if(byId('homePromoFeature2')) byId('homePromoFeature2').value = features[1]?.text || '';
+  if(byId('homePromoFeature3')) byId('homePromoFeature3').value = features[2]?.text || '';
+  if(byId('homePromoImage')) byId('homePromoImage').value = cfg.image || '';
+  updateHomePromoPreview();
+}
+function updateHomePromoPreview(){
+  const src = (document.getElementById('homePromoImage')?.value || '').trim();
+  const img = document.getElementById('homePromoPreview');
+  if(!img) return;
+  img.src = src || DEFAULT_HOME_PROMO_PANEL.image;
+}
+function handleHomePromoImageUpload(input){
+  const file = input?.files?.[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    const result = String(e?.target?.result || '').trim();
+    if(!result) return;
+    const imageInput = document.getElementById('homePromoImage');
+    if(imageInput) imageInput.value = result;
+    updateHomePromoPreview();
+    aToast('✓ Görsel yüklendi','success');
+  };
+  reader.readAsDataURL(file);
+}
+function clearHomePromoImage(){
+  const imageInput = document.getElementById('homePromoImage');
+  if(imageInput) imageInput.value = '';
+  const fileInput = document.getElementById('homePromoImageFile');
+  if(fileInput) fileInput.value = '';
+  updateHomePromoPreview();
+}
+function saveHomePromoSettings(){
+  const cfg = {
+    enabled: document.getElementById('homePromoEnabled')?.value !== '0',
+    delayMs: Math.max(0, Number(document.getElementById('homePromoDelay')?.value) || 0),
+    campaignLabel: (document.getElementById('homePromoCampaignLabel')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.campaignLabel,
+    title: (document.getElementById('homePromoTitle')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.title,
+    subtitle: (document.getElementById('homePromoSubtitle')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.subtitle,
+    image: (document.getElementById('homePromoImage')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.image,
+    features: [
+      {icon:'fas fa-truck-fast',text:(document.getElementById('homePromoFeature1')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[0].text},
+      {icon:'fas fa-screwdriver-wrench',text:(document.getElementById('homePromoFeature2')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[1].text},
+      {icon:'fas fa-credit-card',text:(document.getElementById('homePromoFeature3')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[2].text}
+    ]
+  };
+  localStorage.setItem(HOME_PROMO_PANEL_KEY, JSON.stringify(cfg));
+  updateHomePromoPreview();
+  aToast('✓ Anasayfa reklam paneli kaydedildi','success');
+}
+function resetHomePromoSettings(){
+  localStorage.setItem(HOME_PROMO_PANEL_KEY, JSON.stringify(DEFAULT_HOME_PROMO_PANEL));
+  renderHomePromoSettings();
+  aToast('Varsayılan reklam ayarları yüklendi');
+}
+function deleteHomePromoSettings(){
+  if(!confirm('Anasayfa reklam paneli ayarları silinsin mi?')) return;
+  localStorage.removeItem(HOME_PROMO_PANEL_KEY);
+  renderHomePromoSettings();
+  document.getElementById('homePromoEnabled').value = '0';
+  saveHomePromoSettings();
+  aToast('Reklam paneli pasife alındı');
+}
+
 function saveShowcaseImages(){ localStorage.setItem(INSTALLATION_SHOWCASE_KEY, JSON.stringify(showcaseImages)); }
 function saveShowcaseReviews(){ localStorage.setItem(CUSTOMER_SHOWCASE_REVIEWS_KEY, JSON.stringify(showcaseReviews)); }
 function renderShowcaseImageRows(){
@@ -1880,7 +2018,7 @@ function showPage(id){
   if(id==='showcase') renderShowcaseAdminPage();
   if(id==='fromyou') renderFromYouAdminPage();
   if(id==='notifications') renderNotifs();
-  if(id==='settings') renderFooterLogoRows();
+  if(id==='settings'){ renderFooterLogoRows(); renderHomePromoSettings(); }
 }
 function handleStatCardKey(event, target, filter){
   if(event.key!=='Enter' && event.key!==' ') return;
@@ -4424,6 +4562,7 @@ async function initAdmin(){
   renderShowcaseAdminPage();
   footerPaymentLogos = getFooterPaymentLogoState();
   renderFooterLogoRows();
+  renderHomePromoSettings();
   renderCustomTemplateButtons();
   renderCustomTemplateButtons('bulk');
   renderNotifs();
@@ -4448,6 +4587,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     zone.addEventListener('dragleave',()=>zone.classList.remove('drag'));
     zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag');const files=Array.from(e.dataTransfer.files||[]);if(files.length){const input=document.getElementById('f-imageFile');const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));input.files=dt.files;handleImageSelect(input);}});
   }
+  document.getElementById('homePromoImage')?.addEventListener('input', updateHomePromoPreview);
   window.addEventListener('pageshow', (event) => {
     if (!event.persisted) return;
     document.body.style.opacity = '0.99';

@@ -58,28 +58,20 @@ function parseDotEnv(content) {
   return values;
 }
 
-function loadDotEnvValues() {
-  if (cachedDotEnvValues) {
-    return cachedDotEnvValues;
+
+function resolveEnvValue(...keys) {
+  // Önce doğrudan sistem değişkenlerine (Vercel) bak
+  for (const key of keys) {
+    if (process.env[key]) return process.env[key].trim();
   }
 
-  const envFiles = ['.env.local', '.env'];
-  const mergedValues = {};
-
-  for (const fileName of envFiles) {
-    const filePath = path.join(process.cwd(), fileName);
-    if (!fs.existsSync(filePath)) continue;
-
-    try {
-      const parsed = parseDotEnv(fs.readFileSync(filePath, 'utf8'));
-      Object.assign(mergedValues, parsed);
-    } catch {
-      // ignore parse/read errors and keep trying other sources
-    }
+  // Eğer sistemde yoksa dosyalara bak
+  const dotEnvValues = loadDotEnvValues();
+  for (const key of keys) {
+    if (dotEnvValues[key]) return dotEnvValues[key].trim();
   }
 
-  cachedDotEnvValues = mergedValues;
-  return cachedDotEnvValues;
+  return '';
 }
 
 function resolveEnvValue(...keys) {

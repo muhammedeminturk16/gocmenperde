@@ -1928,7 +1928,7 @@ function openFromYouGallery(targetId, index){
 
 async function loadHomeSlider(){
   try{
-    const res = await fetch('/api/slider', { cache:'no-store' });
+    const res = await fetch('/api/slider-ads', { cache:'no-store' });
     if(!res.ok) throw new Error('Slider alınamadı');
     const payload = await res.json();
     const items = Array.isArray(payload?.items) ? payload.items : [];
@@ -1953,10 +1953,10 @@ function renderHomeSlider(){
     return;
   }
   const cards = HOME_SLIDES.map((item, idx)=>`
-    <a class="hero-ad-card" href="${item.linkUrl || '#'}" target="_self" rel="noopener">
-      <img src="${resolveAssetUrl(item.imageUrl || '')}" alt="${item.title || 'Kampanya'}" loading="lazy" decoding="async">
+    <a class="hero-ad-card" href="${item.targetPath || '#'}" target="_self" rel="noopener">
+      <img src="${resolveAssetUrl(item.imageUrl || '')}" alt="Kampanya görseli" loading="lazy" decoding="async">
       <div class="hero-ad-copy">
-        <h4>${item.title || 'Kampanya'}</h4>
+        <h4>Kampanya</h4>
         <span>Detayları görüntüle →</span>
       </div>
     </a>
@@ -2041,9 +2041,9 @@ let homeSlideIndex = 0;
 let HOME_SLIDER_AUTOPLAY = null;
 let HOME_SLIDER_EVENTS_BOUND = false;
 const HOME_SLIDES_FALLBACK = [
-  { title:'Ücretsiz Keşif Randevusu', imageUrl:'resimler/foto1.jpg', linkUrl:'#contact' },
-  { title:'Yeni Sezon Zebra Perde Modelleri', imageUrl:'resimler/1774687325299-IMG_1471.jpeg', linkUrl:'#products' },
-  { title:'Salonlara Özel Tül Perde Koleksiyonu', imageUrl:'resimler/1774694045163-IMG_9907.jpeg', linkUrl:'#products' }
+  { imageUrl:'resimler/foto1.jpg', targetPath:'#contact' },
+  { imageUrl:'resimler/1774687325299-IMG_1471.jpeg', targetPath:'#products' },
+  { imageUrl:'resimler/1774694045163-IMG_9907.jpeg', targetPath:'#products' }
 ];
 let currentModalProductId = null;
 // Kategoriler (admin'den senkronize edilir)

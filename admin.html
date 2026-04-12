@@ -958,7 +958,7 @@ Işık: Yarı Geçirgen"></textarea></div>
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#</th><th>Başlık</th><th>Görsel</th><th>Link</th><th>Sıra</th><th>İşlem</th></tr></thead>
+      <thead><tr><th>#</th><th>Durum</th><th>Görsel</th><th>Hedef Yol</th><th>Sıra</th><th>İşlem</th></tr></thead>
       <tbody id="sliderTableBody"><tr><td colspan="6" style="text-align:center;padding:30px">Yükleniyor...</td></tr></tbody>
     </table>
   </div>
@@ -1310,9 +1310,19 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
     </div>
     <div class="form-modal-body">
       <input type="hidden" id="sliderEditId">
-      <div class="fg"><label>Başlık *</label><input type="text" id="sliderTitle" placeholder="Başlık"></div>
-      <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/..."></div>
-      <div class="fg"><label>Yönlendirme Linki *</label><input type="text" id="sliderLink" placeholder="#products veya /..."></div>
+      <div class="fg">
+        <label>Görsel Seç *</label>
+        <input type="file" id="sliderImageFile" accept="image/*" onchange="handleSliderImageFileSelect(this)">
+        <div id="sliderImagePreviewWrap" style="display:none;margin-top:8px">
+          <img id="sliderImagePreview" src="" alt="Slider önizleme" style="max-height:160px;border-radius:10px;border:1px solid var(--border);object-fit:cover">
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+          <button type="button" class="btn btn-outline btn-sm" onclick="uploadSliderImage()"><i class="fas fa-cloud-upload-alt"></i> Görseli Yükle</button>
+          <span id="sliderImageUploadStatus" style="font-size:0.74rem;color:var(--slate-light)">Henüz yüklenmedi</span>
+        </div>
+      </div>
+      <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/... veya https://..."></div>
+      <div class="fg"><label>Hedef Yol *</label><input type="text" id="sliderTargetPath" placeholder="/urunler/stor-perdeler"></div>
       <div class="fg"><label>Sıra</label><input type="number" id="sliderOrder" value="0"></div>
       <label style="display:flex;align-items:center;gap:8px;font-size:0.83rem"><input type="checkbox" id="sliderActive" checked> Aktif</label>
     </div>
@@ -1994,12 +2004,76 @@ async function fetchProducts(){
 
 
 let SLIDER_ITEMS = [];
+let sliderSelectedDataUrl = '';
+let sliderSelectedFileName = '';
+
+function setSliderImagePreview(src=''){
+  const wrap = document.getElementById('sliderImagePreviewWrap');
+  const img = document.getElementById('sliderImagePreview');
+  if(!wrap || !img) return;
+  if(src){
+    img.src = src;
+    wrap.style.display = 'block';
+  }else{
+    img.src = '';
+    wrap.style.display = 'none';
+  }
+}
+
+function handleSliderImageFileSelect(input){
+  const file = Array.from(input?.files || [])[0];
+  const status = document.getElementById('sliderImageUploadStatus');
+  sliderSelectedDataUrl = '';
+  sliderSelectedFileName = '';
+  if(!file){
+    setSliderImagePreview('');
+    if(status) status.textContent = 'Henüz yüklenmedi';
+    return;
+  }
+  sliderSelectedFileName = file.name;
+  const reader = new FileReader();
+  reader.onload = (event)=>{
+    sliderSelectedDataUrl = String(event.target?.result || '');
+    setSliderImagePreview(sliderSelectedDataUrl);
+    if(status) status.textContent = `Seçildi: ${file.name}`;
+  };
+  reader.onerror = ()=>{
+    setSliderImagePreview('');
+    if(status) status.textContent = 'Dosya okunamadı';
+    aToast('❌ Dosya önizleme için okunamadı','error');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadSliderImage(){
+  const status = document.getElementById('sliderImageUploadStatus');
+  if(!sliderSelectedDataUrl){
+    aToast('⚠️ Önce bir görsel seçin','error');
+    return;
+  }
+  try{
+    if(status) status.textContent = 'Yükleniyor...';
+    const res = await apiFetch('/api/admin/upload-image', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-key':'gocmen1993'},
+      body: JSON.stringify({ dataUrl: sliderSelectedDataUrl, fileName: sliderSelectedFileName })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data?.error || 'Yükleme başarısız');
+    document.getElementById('sliderImage').value = data.imageUrl || '';
+    if(status) status.textContent = `Yüklendi: ${data.imageUrl}`;
+    aToast('✅ Slider görseli yüklendi','success');
+  }catch(err){
+    if(status) status.textContent = 'Yükleme başarısız';
+    aToast('❌ '+err.message,'error');
+  }
+}
 
 async function loadSliderItems(){
   const body = document.getElementById('sliderTableBody');
   if(body) body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px">Yükleniyor...</td></tr>';
   try{
-    const res = await apiFetch('/api/slider', { headers:{ 'x-admin-key':'gocmen1993' } });
+    const res = await apiFetch('/api/admin/slider-ads', { headers:{ 'x-admin-key':'gocmen1993' } });
     const payload = await res.json();
     if(!res.ok) throw new Error(payload?.error || 'Slider verileri alınamadı');
     SLIDER_ITEMS = Array.isArray(payload?.items) ? payload.items : [];
@@ -2018,10 +2092,10 @@ function renderSliderTable(){
   }
   body.innerHTML = SLIDER_ITEMS.map((item,idx)=>`<tr>
     <td>${idx+1}</td>
-    <td>${item.title || '-'}</td>
+    <td>${item.isActive===false ? 'Pasif' : 'Aktif'}</td>
     <td><img src="${item.imageUrl || ''}" alt="slide" class="product-thumb"></td>
-    <td style="max-width:260px;word-break:break-all">${item.linkUrl || '-'}</td>
-    <td>${Number(item.displayOrder)||0}</td>
+    <td style="max-width:260px;word-break:break-all">${item.targetPath || '-'}</td>
+    <td>${Number(item.orderNo)||0}</td>
     <td><div class="action-btns"><button class="icon-btn edit" onclick="editSliderItem(${item.id})"><i class="fas fa-pen"></i></button><button class="icon-btn del" onclick="deleteSliderItem(${item.id})"><i class="fas fa-trash"></i></button></div></td>
   </tr>`).join('');
 }
@@ -2029,11 +2103,15 @@ function renderSliderTable(){
 function openSliderModal(){
   document.getElementById('sliderModalTitle').textContent='Yeni Slayt';
   document.getElementById('sliderEditId').value='';
-  document.getElementById('sliderTitle').value='';
   document.getElementById('sliderImage').value='';
-  document.getElementById('sliderLink').value='';
+  document.getElementById('sliderTargetPath').value='';
   document.getElementById('sliderOrder').value='0';
   document.getElementById('sliderActive').checked=true;
+  document.getElementById('sliderImageFile').value='';
+  document.getElementById('sliderImageUploadStatus').textContent='Henüz yüklenmedi';
+  sliderSelectedDataUrl='';
+  sliderSelectedFileName='';
+  setSliderImagePreview('');
   document.getElementById('sliderModal').classList.add('open');
 }
 
@@ -2042,27 +2120,29 @@ function editSliderItem(id){
   if(!item) return;
   document.getElementById('sliderModalTitle').textContent='Slayt Düzenle';
   document.getElementById('sliderEditId').value=String(item.id);
-  document.getElementById('sliderTitle').value=item.title || '';
   document.getElementById('sliderImage').value=item.imageUrl || '';
-  document.getElementById('sliderLink').value=item.linkUrl || '';
-  document.getElementById('sliderOrder').value=String(Number(item.displayOrder)||0);
+  document.getElementById('sliderTargetPath').value=item.targetPath || '';
+  document.getElementById('sliderOrder').value=String(Number(item.orderNo)||0);
   document.getElementById('sliderActive').checked=item.isActive !== false;
+  document.getElementById('sliderImageUploadStatus').textContent='Mevcut kayıt yüklü';
+  sliderSelectedDataUrl='';
+  sliderSelectedFileName='';
+  setSliderImagePreview(item.imageUrl || '');
   document.getElementById('sliderModal').classList.add('open');
 }
 
 async function saveSliderItem(){
   const id = document.getElementById('sliderEditId').value;
   const payload = {
-    title: document.getElementById('sliderTitle').value.trim(),
     imageUrl: document.getElementById('sliderImage').value.trim(),
-    linkUrl: document.getElementById('sliderLink').value.trim(),
-    displayOrder: Number(document.getElementById('sliderOrder').value) || 0,
+    targetPath: document.getElementById('sliderTargetPath').value.trim(),
+    orderNo: Number(document.getElementById('sliderOrder').value) || 0,
     isActive: document.getElementById('sliderActive').checked,
   };
-  if(!payload.title || !payload.imageUrl || !payload.linkUrl){ aToast('⚠️ Başlık, görsel ve link zorunlu','error'); return; }
+  if(!payload.imageUrl || !payload.targetPath){ aToast('⚠️ Görsel ve hedef yol zorunlu','error'); return; }
   try{
     const isEdit = Boolean(id);
-    const res = await apiFetch(`/api/slider${isEdit?`?id=${encodeURIComponent(id)}`:''}`, {
+    const res = await apiFetch(`/api/admin/slider-ads${isEdit?`?id=${encodeURIComponent(id)}`:''}`, {
       method: isEdit ? 'PUT' : 'POST',
       headers:{'Content-Type':'application/json','x-admin-key':'gocmen1993'},
       body: JSON.stringify(payload)
@@ -2078,7 +2158,7 @@ async function saveSliderItem(){
 async function deleteSliderItem(id){
   if(!confirm('Kayıt silinsin mi?')) return;
   try{
-    const res = await apiFetch(`/api/slider?id=${encodeURIComponent(id)}`, { method:'DELETE', headers:{'x-admin-key':'gocmen1993'} });
+    const res = await apiFetch(`/api/admin/slider-ads?id=${encodeURIComponent(id)}`, { method:'DELETE', headers:{'x-admin-key':'gocmen1993'} });
     const data = await res.json();
     if(!res.ok) throw new Error(data?.error || 'Silinemedi');
     aToast('✓ Slider kaydı silindi','success');

@@ -2271,10 +2271,24 @@ function setSliderImagePreview(src=''){
   const img = document.getElementById('sliderImagePreview');
   if(!wrap || !img) return;
   if(src){
-    img.src = src;
+    const safeSrc = resolveAssetUrl(src);
+    img.src = safeSrc;
+    img.onerror = function(){
+      if(this.dataset.fallbackApplied) return;
+      const fallback = resolveAssetFallbackUrl(src);
+      if(fallback){
+        this.dataset.fallbackApplied = '1';
+        this.src = fallback;
+        return;
+      }
+      this.onerror = null;
+      this.src = IMAGE_PLACEHOLDER_DATA_URI;
+    };
+    delete img.dataset.fallbackApplied;
     wrap.style.display = 'block';
   }else{
     img.src = '';
+    img.onerror = null;
     wrap.style.display = 'none';
   }
 }
@@ -2357,7 +2371,7 @@ function renderSliderTable(){
   body.innerHTML = SLIDER_ITEMS.map((item,idx)=>`<tr>
     <td>${idx+1}</td>
     <td>${item.isActive===false ? 'Pasif' : 'Aktif'}</td>
-    <td><img src="${item.imageUrl || ''}" alt="slide" class="product-thumb"></td>
+    <td><img src="${resolveAssetUrl(item.imageUrl || '')}" ${withImageFallback(item.imageUrl || '')} alt="slide" class="product-thumb"></td>
     <td style="max-width:260px;word-break:break-all">${item.targetPath || '-'}</td>
     <td>${Number(item.orderNo)||0}</td>
     <td><div class="action-btns"><button class="icon-btn edit" onclick="editSliderItem(${item.id})"><i class="fas fa-pen"></i></button><button class="icon-btn del" onclick="deleteSliderItem(${item.id})"><i class="fas fa-trash"></i></button></div></td>

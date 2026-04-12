@@ -917,9 +917,10 @@ header{background:rgba(255,255,255,.95);border-bottom:1px solid rgba(34,45,78,.0
 footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255,.74)}
 
 
-.hero-ad-slider{padding:88px 5% 18px;background:linear-gradient(180deg,#ffffff 0%,#f4f7ff 45%,#f9f6ef 100%)}
-.hero-ad-slider-shell{position:relative;max-width:1300px;margin:0 auto;border:1px solid rgba(24,30,48,.18);border-radius:24px;padding:16px;background:linear-gradient(160deg,#101626 0%,#1f2b45 60%,#273458 100%);box-shadow:0 24px 48px rgba(11,14,24,.28);overflow:hidden}
+.hero-ad-slider{padding:75px 0 0;background:linear-gradient(180deg,#ffffff 0%,#f4f7ff 45%,#f9f6ef 100%)}
+.hero-ad-slider-shell{position:relative;width:100%;margin:0;border-top:1px solid rgba(24,30,48,.2);border-bottom:1px solid rgba(24,30,48,.2);padding:14px 5%;background:linear-gradient(130deg,#0e1524 0%,#1d2a46 50%,#2a3b61 100%);box-shadow:0 20px 40px rgba(11,14,24,.25);overflow:hidden}
 .hero-ad-slider-shell::before{content:'';position:absolute;inset:-40% auto auto -20%;width:62%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(241,201,110,.22),transparent 70%);pointer-events:none}
+.hero-ad-slider-shell::after{content:'';position:absolute;inset:auto -10% -65% auto;width:48%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(125,173,255,.22),transparent 70%);pointer-events:none}
 .hero-ad-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;position:relative;z-index:2}
 .hero-ad-title{font-size:.82rem;font-weight:800;letter-spacing:1.1px;color:#f2d594;text-transform:uppercase}
 .hero-ad-controls{display:flex;align-items:center;gap:8px}
@@ -929,8 +930,9 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .hero-ad-viewport{overflow-x:auto;scroll-snap-type:x mandatory;display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:12px;scrollbar-width:thin;padding-bottom:6px;-webkit-overflow-scrolling:touch;position:relative;z-index:2}
 .hero-ad-viewport::-webkit-scrollbar{height:8px}
 .hero-ad-viewport::-webkit-scrollbar-thumb{background:rgba(213,163,63,.38);border-radius:999px}
-.hero-ad-card{position:relative;scroll-snap-align:start;border:1px solid rgba(255,255,255,.18);border-radius:18px;overflow:hidden;background:#111;text-decoration:none;color:#fff;display:block;min-width:0;min-height:320px}
-.hero-ad-card img{width:100%;height:100%;min-height:320px;object-fit:cover;display:block}
+.hero-ad-card{position:relative;scroll-snap-align:start;border:1px solid rgba(255,255,255,.18);border-radius:18px;overflow:hidden;background:#111;text-decoration:none;color:#fff;display:block;min-width:0;min-height:300px}
+.hero-ad-card img{width:100%;height:100%;min-height:300px;object-fit:cover;display:block;transform:scale(1.01);transition:transform .55s ease}
+.hero-ad-card:hover img{transform:scale(1.06)}
 .hero-ad-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,16,.86) 8%,rgba(8,10,16,.2) 50%,rgba(8,10,16,.1) 100%)}
 .hero-ad-copy{position:absolute;left:18px;right:18px;bottom:18px;z-index:2}
 .hero-ad-copy h4{font-family:var(--ff-display);font-size:clamp(1.25rem,3vw,2.1rem);line-height:1.15;margin-bottom:7px}
@@ -939,10 +941,11 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .hero-ad-dot{width:8px;height:8px;border:none;border-radius:999px;background:rgba(255,255,255,.35);cursor:pointer}
 .hero-ad-dot.active{background:#f0cf84;transform:scale(1.15)}
 @media(max-width:760px){
-  .hero-ad-slider{padding-top:82px}
-  .hero-ad-slider-shell{padding:12px;border-radius:18px}
+  .hero-ad-slider{padding-top:75px}
+  .hero-ad-slider-shell{padding:10px 12px}
+  .hero-ad-title{font-size:.72rem}
 }
-@media(max-width:700px){.hero-ad-card,.hero-ad-card img{min-height:230px}}
+@media(max-width:700px){.hero-ad-card,.hero-ad-card img{min-height:220px}}
 
 .pulse-announcement{position:relative;overflow:hidden;background:linear-gradient(122deg,#f5f1e7,#efe8da,#e9ebf6);background-size:200% 100%;animation:pulseShift 16s linear infinite;padding:20px 5%;color:#202737;border-top:1px solid rgba(34,45,78,.08);border-bottom:1px solid rgba(34,45,78,.08)}
 .pulse-announcement-inner{max-width:1300px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
@@ -2074,9 +2077,9 @@ function renderHomeSlider(){
   }
   const cards = HOME_SLIDES.map((item, idx)=>`
     <a class="hero-ad-card" href="${item.targetPath || '#'}" target="_self" rel="noopener">
-      <img src="${resolveAssetUrl(item.imageUrl || '')}" alt="Kampanya görseli" loading="lazy" decoding="async">
+      <img src="${resolveAssetUrl(item.imageUrl || '')}" ${imageFallbackAttr(item.imageUrl || '')} alt="Kampanya görseli" loading="lazy" decoding="async">
       <div class="hero-ad-copy">
-        <h4>Kampanya</h4>
+        <h4>${idx===0 ? 'Öne Çıkan Kampanya' : `Kampanya ${idx+1}`}</h4>
         <span>Detayları görüntüle →</span>
       </div>
     </a>

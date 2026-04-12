@@ -110,8 +110,8 @@
   --radius:12px;--transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94)
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;background:var(--cream)}
-body{background:var(--cream);color:var(--ink);font-family:var(--ff-body);font-weight:300;overflow-x:hidden;width:100%;max-width:100%}
+html{scroll-behavior:smooth;background:#fff}
+body{background:#fff;color:#1a1a1a;font-family:var(--ff-body);font-weight:400;overflow-x:hidden;width:100%;max-width:100%}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 8% 10%, rgba(201,168,76,0.16), transparent 30%),radial-gradient(circle at 90% 20%, rgba(201,168,76,0.12), transparent 33%),radial-gradient(circle at 50% 100%, rgba(255,255,255,0.45), transparent 40%)}
 img,video,canvas,svg{max-width:100%}
 @media(min-width:768px){body{cursor:none}.cursor-dot,.cursor-ring{display:block}body.native-cursor-mode{cursor:auto}.native-cursor-mode .cursor-dot,.native-cursor-mode .cursor-ring{opacity:0}}
@@ -869,48 +869,6 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
   --slate:#606878;
   --border:rgba(34,45,78,0.12);
 }
-body.theme-dark{
-  --gold:#e7b14f;
-  --gold-light:#dcbf7f;
-  --gold-dark:#f0c778;
-  --ink:#ececf5;
-  --cream:#10141f;
-  --warm-white:#141a2a;
-  --slate:#adb7cf;
-  --border:rgba(195,205,232,0.2);
-}
-body.theme-dark{background:var(--cream);color:var(--ink)}
-body.theme-dark header{background:rgba(12,16,24,.86);border-bottom-color:rgba(195,205,232,0.18)}
-body.theme-dark .nav-link{color:#cbd6ed}
-body.theme-dark .hero{background:linear-gradient(160deg,#111827 0%,#151b2b 55%,#161f33 100%)}
-body.theme-dark .hero-title{color:#f8f9ff}
-body.theme-dark .hero-subtitle{color:#dae2f5;background:rgba(17,24,39,.78);border-color:rgba(195,205,232,.22)}
-body.theme-dark .hero-actions{background:rgba(15,23,42,.5)}
-body.theme-dark .btn-primary,body.theme-dark .btn-outline{background:#1f293f;color:#ecf1ff;border-color:rgba(195,205,232,.25)}
-body.theme-dark .section-tag{background:#222a3d;color:#eec777;border-color:rgba(238,199,119,.25)}
-body.theme-dark .feature-item,body.theme-dark .product-card,body.theme-dark .trust-card,body.theme-dark .trust-kpi-item,body.theme-dark .process-step,body.theme-dark .gallery-section .section-header,body.theme-dark .review-card,body.theme-dark .sort-bar,body.theme-dark .filters-panel,body.theme-dark .campaign-stream-card,body.theme-dark .top-product-slider{background:#171f32;color:#e8ebf7;border-color:rgba(195,205,232,.18)!important;box-shadow:none}
-body.theme-dark .product-name,body.theme-dark .section-title,body.theme-dark .campaign-stream-name{color:#ecf1ff}
-body.theme-dark .product-desc,body.theme-dark .section-desc,body.theme-dark .campaign-stream-sub{color:#b7c3de}
-body.theme-dark .live-pill{background:#1b2438;border-color:rgba(195,205,232,.2);color:#e8ebf7}
-body.theme-dark .live-categories-shell{background:linear-gradient(120deg,#161e31,#1a243a);border-color:rgba(195,205,232,.2);box-shadow:none}
-body.theme-dark .live-categories-head strong{color:#eef3ff}
-body.theme-dark .live-categories-head span{color:#aeb9d7}
-body.theme-dark .live-pill-text b{color:#eef3ff}
-body.theme-dark .live-pill-text small{color:#afbbd8}
-body.theme-dark .pulse-announcement{background:linear-gradient(122deg,#1a2235,#1b2740,#263150);color:#eaf0ff;border-color:rgba(195,205,232,.18)}
-body.theme-dark .mini-cart,body.theme-dark .search-bar,body.theme-dark .favorite-bar{background:#151d2f;color:#e8ebf7;border-color:rgba(195,205,232,.2)}
-body.theme-dark #headerSearchInput,body.theme-dark #searchInput,body.theme-dark #sortSelect,body.theme-dark #minPrice,body.theme-dark #maxPrice{background:#0f1727;color:#e8ebf7;border-color:rgba(195,205,232,.25)}
-body.theme-dark #headerSearchInput::placeholder,body.theme-dark #searchInput::placeholder{color:#98a5c4}
-body.theme-dark .local-seo-section{background:linear-gradient(180deg,#0f1727,#101b2f)}
-body.theme-dark .local-seo-box{background:#141d30;border-color:rgba(195,205,232,.2)}
-body.theme-dark .local-seo-box h2{color:#eef3ff}
-body.theme-dark .local-seo-box p{color:#b7c3de}
-body.theme-dark .local-seo-tags span{background:#1a2439;border-color:rgba(195,205,232,.24);color:#d8e2f8}
-body.theme-dark #mobileMenu{background:linear-gradient(165deg,rgba(14,20,33,.96) 0%,rgba(17,26,43,.94) 100%);border-right-color:rgba(195,205,232,.2)}
-body.theme-dark #mobileMenu .menu-logo{color:#ffd682;border-bottom-color:rgba(213,163,63,.35)}
-body.theme-dark #mobileMenu button{background:linear-gradient(135deg,rgba(34,46,71,.92),rgba(28,38,59,.88));border-color:rgba(195,205,232,.22);color:#ecf1ff;box-shadow:none}
-body.theme-dark #mobileMenu .menu-entry-icon{background:rgba(213,163,63,.2);color:#ffd682;border-color:rgba(213,163,63,.38)}
-body.theme-dark #mobileMenu .menu-close-btn{background:rgba(213,163,63,.18);color:#f8f1df}
 body::before{background:
   radial-gradient(circle at 5% 12%, rgba(213,163,63,0.08), transparent 35%),
   radial-gradient(circle at 90% 10%, rgba(78,116,255,0.05), transparent 35%),
@@ -940,6 +898,18 @@ header{background:rgba(255,255,255,.95);border-bottom:1px solid rgba(34,45,78,.0
 .product-card:hover{transform:translateY(-8px);box-shadow:0 20px 36px rgba(17,28,58,.14)}
 .sort-bar{border:1px solid rgba(34,45,78,.13);background:linear-gradient(135deg,#fff,#f8f9fc)}
 footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255,.74)}
+
+
+.hero-ad-slider{padding:18px 5%;background:#fff}
+.hero-ad-slider-shell{max-width:1300px;margin:0 auto;border:1px solid rgba(34,45,78,.12);border-radius:16px;padding:12px;overflow:hidden;background:#fff}
+.hero-ad-track{display:flex;gap:12px;min-width:max-content;animation:heroAdsFlow 28s linear infinite;will-change:transform}
+.hero-ad-slider-shell:hover .hero-ad-track{animation-play-state:paused}
+.hero-ad-card{min-width:280px;max-width:280px;border:1px solid rgba(34,45,78,.12);border-radius:14px;overflow:hidden;background:#fff;text-decoration:none;color:#1d2434;display:flex;flex-direction:column}
+.hero-ad-card img{width:100%;height:140px;object-fit:cover}
+.hero-ad-card h4{font-size:.88rem;padding:10px 12px 2px}
+.hero-ad-card span{font-size:.72rem;color:#4b5569;padding:0 12px 12px;display:block}
+@keyframes heroAdsFlow{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 6px))}}
+@media(max-width:700px){.hero-ad-card{min-width:220px;max-width:220px}.hero-ad-card img{height:112px}}
 
 .pulse-announcement{position:relative;overflow:hidden;background:linear-gradient(122deg,#f5f1e7,#efe8da,#e9ebf6);background-size:200% 100%;animation:pulseShift 16s linear infinite;padding:20px 5%;color:#202737;border-top:1px solid rgba(34,45,78,.08);border-bottom:1px solid rgba(34,45,78,.08)}
 .pulse-announcement-inner{max-width:1300px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
@@ -1110,9 +1080,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
       <button class="nav-link" onclick="go('from-you')">Sizden Gelenler</button>
       <button class="nav-link" onclick="go('contact')">İletişim</button>
       <button class="nav-icon" onclick="togglePopup('searchBar')"><i class="fas fa-search"></i></button>
-      <button class="nav-icon" id="themeToggleBtn" onclick="toggleTheme()" title="Tema değiştir" aria-label="Gece modunu aç veya kapat" aria-pressed="false">
-        <i class="fas fa-moon"></i>
-      </button>
       <button class="nav-icon" onclick="togglePopup('favoriteBar')" title="Favorilerim">
         <i class="far fa-heart"></i><span class="badge" id="favoriteCount">0</span>
       </button>
@@ -1156,6 +1123,11 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
       <div class="feature-item"><div class="feature-icon"><i class="fas fa-truck"></i></div><div class="feature-text"><h4>Bursa İçi Teslimat</h4><p>Kapınıza kadar</p></div></div>
       <div class="feature-item"><div class="feature-icon"><i class="fas fa-award"></i></div><div class="feature-text"><h4>Zeynel Bey Güvencesi</h4><p>30 yıllık ustadan</p></div></div>
       <div class="feature-item"><div class="feature-icon"><i class="fas fa-rotate-left"></i></div><div class="feature-text"><h4>Memnuniyet Garantisi</h4><p>Kaliteli hizmet</p></div></div>
+    </div>
+  </div>
+  <div class="hero-ad-slider" id="heroAdSlider" style="display:none">
+    <div class="hero-ad-slider-shell">
+      <div class="hero-ad-track" id="heroAdTrack"></div>
     </div>
   </div>
   <div class="live-categories" aria-label="Hızlı kategori geçişleri">
@@ -1725,7 +1697,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 
 <script>
 const WA_NUMBER = '905012110958';
-const THEME_STORAGE_KEY = 'gp_theme_mode_v1';
 const LIVE_CAMPAIGN_STREAM_KEY = 'gp_live_campaign_stream_v1';
 const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
@@ -1932,34 +1903,44 @@ function openFromYouGallery(targetId, index){
   preloadModalBatch(currentModalImages, 5);
   openImageViewer();
 }
-function setTheme(mode='light'){
-  const normalized = mode === 'dark' ? 'dark' : 'light';
-  const dark = normalized === 'dark';
-  document.body.classList.toggle('theme-dark', dark);
-  const btn = document.getElementById('themeToggleBtn');
-  if(btn){
-    btn.classList.toggle('is-active', dark);
-    btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
-    btn.innerHTML = `<i class="fas fa-${dark ? 'sun' : 'moon'}"></i>`;
-    btn.title = dark ? 'Açık temaya geç' : 'Koyu temaya geç';
-  }
-  try{ localStorage.setItem(THEME_STORAGE_KEY, normalized); }catch(_){}
-}
-function getInitialThemeMode(){
+
+async function loadHomeSlider(){
   try{
-    const saved = localStorage.getItem(THEME_STORAGE_KEY);
-    if(saved === 'dark' || saved === 'light') return saved;
-  }catch(_){}
-  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const res = await fetch('/api/slider', { cache:'no-store' });
+    if(!res.ok) throw new Error('Slider alınamadı');
+    const payload = await res.json();
+    HOME_SLIDES = Array.isArray(payload?.items) ? payload.items : [];
+    renderHomeSlider();
+  }catch(_){
+    HOME_SLIDES = [];
+    renderHomeSlider();
+  }
 }
-function toggleTheme(){
-  const next = document.body.classList.contains('theme-dark') ? 'light' : 'dark';
-  setTheme(next);
+
+function renderHomeSlider(){
+  const wrap = document.getElementById('heroAdSlider');
+  const track = document.getElementById('heroAdTrack');
+  if(!wrap || !track) return;
+  if(!HOME_SLIDES.length){
+    wrap.style.display='none';
+    track.innerHTML='';
+    return;
+  }
+  const cards = HOME_SLIDES.map((item)=>`
+    <a class="hero-ad-card" href="${item.linkUrl || '#'}" target="_self" rel="noopener">
+      <img src="${resolveAssetUrl(item.imageUrl || '')}" alt="${item.title || 'Kampanya'}" loading="lazy" decoding="async">
+      <h4>${item.title || 'Kampanya'}</h4>
+      <span>Detayları görüntüle →</span>
+    </a>
+  `).join('');
+  track.innerHTML = cards + cards;
+  wrap.style.display='block';
 }
 
 // ── Ürün verisi ──
 let PRODUCTS = [];
 let PRODUCT_SOCIAL = {};
+let HOME_SLIDES = [];
 let currentModalProductId = null;
 // Kategoriler (admin'den senkronize edilir)
 let CATEGORIES = [
@@ -3409,7 +3390,6 @@ function startVisitTracking(){
 }
 
 window.addEventListener('load',()=>{
-  setTheme(getInitialThemeMode());
   const fromBackForward = sessionStorage.getItem('gp_fast_resume') === '1';
   if(fromBackForward) hideLoader(true);
   else setTimeout(()=>hideLoader(false),320);
@@ -3421,6 +3401,7 @@ window.addEventListener('load',()=>{
   loadFavoritesFromServer();
   loadCartFromStorage();
   loadProducts();
+  loadHomeSlider();
   initUserSession();
   startVisitTracking();
   handlePaymentReturnState();

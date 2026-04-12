@@ -1,5 +1,4 @@
-const { Pool } = require('pg');
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const { pool } = require('./_db');
 const { verifyAuthToken } = require('./_auth-utils');
 
 module.exports = async function handler(req, res) {

@@ -564,6 +564,7 @@ tbody tr:hover td{background:#fdfcf8}
         <div class="nav-item" onclick="showPage('products')"><i class="fas fa-boxes-stacked"></i> Ürün Yönetimi</div>
         <div class="nav-item" onclick="showPage('categories');renderCatTable()"><i class="fas fa-folder-open"></i> Kategoriler</div>
         <div class="nav-item" onclick="showPage('campaigns')"><i class="fas fa-tag"></i> Kampanyalar</div>
+        <div class="nav-item" onclick="showPage('slider');loadSliderItems()"><i class="fas fa-sliders"></i> Slider Paneli</div>
         <div class="nav-item" onclick="showPage('showcase');renderShowcaseAdminPage()"><i class="fas fa-images"></i> Montaj & Yorum Alanı</div>
         <div class="nav-item" onclick="showPage('fromyou');renderFromYouAdminPage()"><i class="fas fa-camera-retro"></i> Sizden Gelenler</div>
       </div>
@@ -946,6 +947,21 @@ Işık: Yarı Geçirgen"></textarea></div>
   <div id="campaignList"></div>
 </div>
 
+<!-- ══ SLIDER PANELİ ══ -->
+<div class="page" id="page-slider">
+  <div class="breadcrumb"><i class="fas fa-home"></i> <span>Slider</span></div>
+  <div class="page-header">
+    <div><h1>Slider <em>Yönetimi</em></h1><p>Anasayfa reklam slider kayıtlarını yönetin</p></div>
+    <button class="btn btn-primary" onclick="openSliderModal()"><i class="fas fa-plus"></i> Yeni Slayt</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Başlık</th><th>Görsel</th><th>Link</th><th>Sıra</th><th>İşlem</th></tr></thead>
+      <tbody id="sliderTableBody"><tr><td colspan="6" style="text-align:center;padding:30px">Yükleniyor...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
 <!-- ══ MONTAJ & YORUM ALANI ══ -->
 <div class="page" id="page-showcase">
   <div class="breadcrumb"><i class="fas fa-home"></i> <span>Montaj & Yorum Alanı</span></div>
@@ -1279,6 +1295,28 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
     <div class="form-modal-footer">
       <button class="btn btn-outline" onclick="closeModal('productModal')">İptal</button>
       <button class="btn btn-success" onclick="saveProduct()"><i class="fas fa-save"></i> Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDER MODAL ══ -->
+<div class="modal-bg" id="sliderModal" onclick="if(event.target===this)closeModal('sliderModal')">
+  <div class="form-modal" style="max-width:560px">
+    <div class="form-modal-header">
+      <h3 id="sliderModalTitle">Yeni Slayt</h3>
+      <button class="close-btn" onclick="closeModal('sliderModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="form-modal-body">
+      <input type="hidden" id="sliderEditId">
+      <div class="fg"><label>Başlık *</label><input type="text" id="sliderTitle" placeholder="Başlık"></div>
+      <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/..."></div>
+      <div class="fg"><label>Yönlendirme Linki *</label><input type="text" id="sliderLink" placeholder="#products veya /..."></div>
+      <div class="fg"><label>Sıra</label><input type="number" id="sliderOrder" value="0"></div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:0.83rem"><input type="checkbox" id="sliderActive" checked> Aktif</label>
+    </div>
+    <div class="form-modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('sliderModal')">İptal</button>
+      <button class="btn btn-success" onclick="saveSliderItem()"><i class="fas fa-save"></i> Kaydet</button>
     </div>
   </div>
 </div>
@@ -1789,6 +1827,7 @@ function showPage(id){
   closeSidebar();
   if(id==='favorites') renderFavorites();
   if(id==='campaigns') renderCampaigns();
+  if(id==='slider') loadSliderItems();
   if(id==='showcase') renderShowcaseAdminPage();
   if(id==='fromyou') renderFromYouAdminPage();
   if(id==='notifications') renderNotifs();
@@ -1912,6 +1951,100 @@ async function fetchProducts(){
     ].map(normalizeProductCatalog);
     aToast('⚠️ Ürünler yüklenemedi, demo veriler gösteriliyor');
   }
+}
+
+
+let SLIDER_ITEMS = [];
+
+async function loadSliderItems(){
+  const body = document.getElementById('sliderTableBody');
+  if(body) body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px">Yükleniyor...</td></tr>';
+  try{
+    const res = await apiFetch('/api/slider', { headers:{ 'x-admin-key':'gocmen1993' } });
+    const payload = await res.json();
+    if(!res.ok) throw new Error(payload?.error || 'Slider verileri alınamadı');
+    SLIDER_ITEMS = Array.isArray(payload?.items) ? payload.items : [];
+    renderSliderTable();
+  }catch(err){
+    if(body) body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--red)">${err.message}</td></tr>`;
+  }
+}
+
+function renderSliderTable(){
+  const body = document.getElementById('sliderTableBody');
+  if(!body) return;
+  if(!SLIDER_ITEMS.length){
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px">Kayıt bulunamadı.</td></tr>';
+    return;
+  }
+  body.innerHTML = SLIDER_ITEMS.map((item,idx)=>`<tr>
+    <td>${idx+1}</td>
+    <td>${item.title || '-'}</td>
+    <td><img src="${item.imageUrl || ''}" alt="slide" class="product-thumb"></td>
+    <td style="max-width:260px;word-break:break-all">${item.linkUrl || '-'}</td>
+    <td>${Number(item.displayOrder)||0}</td>
+    <td><div class="action-btns"><button class="icon-btn edit" onclick="editSliderItem(${item.id})"><i class="fas fa-pen"></i></button><button class="icon-btn del" onclick="deleteSliderItem(${item.id})"><i class="fas fa-trash"></i></button></div></td>
+  </tr>`).join('');
+}
+
+function openSliderModal(){
+  document.getElementById('sliderModalTitle').textContent='Yeni Slayt';
+  document.getElementById('sliderEditId').value='';
+  document.getElementById('sliderTitle').value='';
+  document.getElementById('sliderImage').value='';
+  document.getElementById('sliderLink').value='';
+  document.getElementById('sliderOrder').value='0';
+  document.getElementById('sliderActive').checked=true;
+  document.getElementById('sliderModal').classList.add('open');
+}
+
+function editSliderItem(id){
+  const item = SLIDER_ITEMS.find(x=>Number(x.id)===Number(id));
+  if(!item) return;
+  document.getElementById('sliderModalTitle').textContent='Slayt Düzenle';
+  document.getElementById('sliderEditId').value=String(item.id);
+  document.getElementById('sliderTitle').value=item.title || '';
+  document.getElementById('sliderImage').value=item.imageUrl || '';
+  document.getElementById('sliderLink').value=item.linkUrl || '';
+  document.getElementById('sliderOrder').value=String(Number(item.displayOrder)||0);
+  document.getElementById('sliderActive').checked=item.isActive !== false;
+  document.getElementById('sliderModal').classList.add('open');
+}
+
+async function saveSliderItem(){
+  const id = document.getElementById('sliderEditId').value;
+  const payload = {
+    title: document.getElementById('sliderTitle').value.trim(),
+    imageUrl: document.getElementById('sliderImage').value.trim(),
+    linkUrl: document.getElementById('sliderLink').value.trim(),
+    displayOrder: Number(document.getElementById('sliderOrder').value) || 0,
+    isActive: document.getElementById('sliderActive').checked,
+  };
+  if(!payload.title || !payload.imageUrl || !payload.linkUrl){ aToast('⚠️ Başlık, görsel ve link zorunlu','error'); return; }
+  try{
+    const isEdit = Boolean(id);
+    const res = await apiFetch(`/api/slider${isEdit?`?id=${encodeURIComponent(id)}`:''}`, {
+      method: isEdit ? 'PUT' : 'POST',
+      headers:{'Content-Type':'application/json','x-admin-key':'gocmen1993'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data?.error || 'Kayıt başarısız');
+    aToast(isEdit ? '✓ Slider güncellendi' : '✓ Slider eklendi','success');
+    closeModal('sliderModal');
+    loadSliderItems();
+  }catch(err){ aToast('❌ '+err.message,'error'); }
+}
+
+async function deleteSliderItem(id){
+  if(!confirm('Kayıt silinsin mi?')) return;
+  try{
+    const res = await apiFetch(`/api/slider?id=${encodeURIComponent(id)}`, { method:'DELETE', headers:{'x-admin-key':'gocmen1993'} });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data?.error || 'Silinemedi');
+    aToast('✓ Slider kaydı silindi','success');
+    loadSliderItems();
+  }catch(err){ aToast('❌ '+err.message,'error'); }
 }
 
 // ════════════════════════════════════
@@ -2737,37 +2870,63 @@ function saveBulkProducts(){
 }
 
 function saveProduct(){
-  const name=document.getElementById('f-name').value.trim();
-  const price=parseFloat(document.getElementById('f-price').value);
+  const getVal = (id) => document.getElementById(id)?.value ?? '';
+  const name = String(getVal('f-name')).trim();
+  const price = Number.parseFloat(getVal('f-price'));
   if(!name){aToast('⚠️ Ürün adı zorunlu','error');return;}
-  if(!price){aToast('⚠️ Fiyat zorunlu','error');return;}
+  if(!Number.isFinite(price) || price <= 0){aToast('⚠️ Geçerli bir fiyat zorunlu','error');return;}
   if(!validateStructuredField('f-specs','specs-valid')){aToast('⚠️ Teknik özellik formatı hatalı','error');return;}
   if(!validateStructuredField('f-care','care-valid')){aToast('⚠️ Bakım talimatı formatı hatalı','error');return;}
-  const stockVal = document.getElementById('f-stock').value;
-  const unitVal=document.getElementById('f-unit').value;
-  let images = getImagesFromField();
-  const singleImage = document.getElementById('f-image').value.trim();
-  if(singleImage && !images.includes(singleImage)) images.unshift(singleImage);
-  images = images.filter(Boolean);
-  if(images.some(isInlineImageData)){aToast("⚠️ Görseller Base64 önizleme formatında. Önce GitHub'a yükleyin.",'error');return;}
-  const obj={
-    id:'',name,desc:document.getElementById('f-desc').value.trim(),
-    image:images[0]||'',
+
+  const stockVal = getVal('f-stock');
+  const unitVal = getVal('f-unit');
+  const images = (()=>{
+    const base = getImagesFromField();
+    const singleImage = String(getVal('f-image')).trim();
+    if(singleImage && !base.includes(singleImage)) base.unshift(singleImage);
+    return base.filter(Boolean);
+  })();
+
+  if(images.some(isInlineImageData)){
+    aToast('⚠️ Görseller Base64 önizleme formatında. Önce GitHub'a yükleyin.','error');
+    return;
+  }
+
+  const editIndexRaw = getVal('editIndex');
+  const editIndex = editIndexRaw === '' ? -1 : Number.parseInt(editIndexRaw, 10);
+  const existing = Number.isInteger(editIndex) && editIndex >= 0 ? PRODUCTS[editIndex] : null;
+
+  const obj = {
+    id: existing?.id || createProductId(name),
+    name,
+    desc: String(getVal('f-desc')).trim(),
+    image: images[0] || '',
     images,
-    price,oldPrice:document.getElementById('f-oldprice').value?parseFloat(document.getElementById('f-oldprice').value):null,
-    cat:document.getElementById('f-cat').value,unit:unitVal,isMeter:unitVal==='mt',isSquareMeter:unitVal==='m2',
-    features:document.getElementById('f-features').value.replace(/\s*,\s*/g,',').trim(),
-    badge:document.getElementById('f-badge').value||'',
-    discountType:document.getElementById('f-discountType').value||'manual',
-    discountValue:document.getElementById('f-discountValue').value?parseFloat(document.getElementById('f-discountValue').value):null,
-    stock:stockVal!==''?parseInt(stockVal):null,
-    serialNumber:document.getElementById('f-serial').value.trim()||null,
-    active:activeSwitchState,
-    specs:parseStructuredField('f-specs'),care:parseStructuredField('f-care')
+    price,
+    oldPrice: getVal('f-oldprice') ? Number.parseFloat(getVal('f-oldprice')) : null,
+    cat: getVal('f-cat'),
+    unit: unitVal,
+    isMeter: unitVal === 'mt',
+    isSquareMeter: unitVal === 'm2',
+    features: String(getVal('f-features')).replace(/\s*,\s*/g,',').trim(),
+    badge: getVal('f-badge') || '',
+    discountType: getVal('f-discountType') || 'manual',
+    discountValue: getVal('f-discountValue') ? Number.parseFloat(getVal('f-discountValue')) : null,
+    stock: stockVal !== '' ? Number.parseInt(stockVal, 10) : null,
+    serialNumber: String(getVal('f-serial')).trim() || null,
+    active: activeSwitchState,
+    specs: parseStructuredField('f-specs'),
+    care: parseStructuredField('f-care')
   };
-  const idx=document.getElementById('editIndex').value;
-  if(idx!==''){obj.id=PRODUCTS[parseInt(idx)].id;PRODUCTS[parseInt(idx)]=obj;aToast('✓ Güncellendi: '+name,'success');}
-  else{obj.id=createProductId(name);PRODUCTS.unshift(obj);aToast('✓ Eklendi: '+name,'success');}
+
+  if(existing){
+    PRODUCTS[editIndex] = obj;
+    aToast('✓ Güncellendi: ' + name,'success');
+  } else {
+    PRODUCTS.unshift(obj);
+    aToast('✓ Eklendi: ' + name,'success');
+  }
+
   closeModal('productModal');
   renderTable();
   renderDashboard();
@@ -4137,6 +4296,7 @@ async function initAdmin(){
   rebuildCatDropdowns();
   renderCatTable();
   renderCampaigns();
+  loadSliderItems();
   renderShowcaseAdminPage();
   footerPaymentLogos = getFooterPaymentLogoState();
   renderFooterLogoRows();

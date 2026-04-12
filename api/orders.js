@@ -1,7 +1,6 @@
-const { Pool } = require('pg');
 const { verifyAuthToken } = require('./_auth-utils');
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const { pool } = require('./_db');
 const ADMIN_API_KEY = 'gocmen1993';
 const ORDER_STATUSES = ['Beklemede', 'Hazırlanıyor', 'Kargoda', 'Teslim Edildi', 'İptal'];
 const ORDER_STATUS_ALIASES = {

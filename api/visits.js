@@ -1,6 +1,5 @@
-const { Pool } = require('pg');
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const { pool } = require('./_db');
 const ADMIN_API_KEY = 'gocmen1993';
 let schemaReady = false;
 

@@ -1,7 +1,6 @@
-const { Pool } = require('pg');
 const { createAuthToken, verifyAuthToken, hashPassword, verifyPassword } = require('./_auth-utils');
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const { pool } = require('./_db');
 const loginAttempts = new Map();
 const MAX_ATTEMPTS = 7;
 const WINDOW_MS = 1000 * 60 * 10;

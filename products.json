@@ -105,9 +105,9 @@
     "id": "zebra-perde-gri-1774990805411-745",
     "name": "Zebra Perde Gri",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774990691106-bulk-84670ebf-ca93-4bc2-8481-f212f57a9e39-IMG_1801.jpeg",
+    "image": "/resimler/1774990691106-bulk-84670ebf-ca93-4bc2-8481-f212f57a9e39-IMG_1801.jpeg",
     "images": [
-      "resimler/1774990691106-bulk-84670ebf-ca93-4bc2-8481-f212f57a9e39-IMG_1801.jpeg"
+      "/resimler/1774990691106-bulk-84670ebf-ca93-4bc2-8481-f212f57a9e39-IMG_1801.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -117,9 +117,9 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 87,
     "serialNumber": "Düz V-04",
     "active": true,
     "specs": {

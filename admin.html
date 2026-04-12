@@ -1358,7 +1358,27 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
         </div>
       </div>
       <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/... veya https://..."></div>
-      <div class="fg"><label>Hedef Yol *</label><input type="text" id="sliderTargetPath" placeholder="/urunler/stor-perdeler"></div>
+      <div class="fg">
+        <label>Hedef Tipi *</label>
+        <select id="sliderTargetMode" onchange="handleSliderTargetModeChange()">
+          <option value="category">Kategoriye yönlendir</option>
+          <option value="product">Ürüne yönlendir</option>
+          <option value="manual">Özel yol (manuel)</option>
+        </select>
+      </div>
+      <div class="fg" id="sliderTargetCategoryWrap">
+        <label>Kategori Seç *</label>
+        <select id="sliderTargetCategory" onchange="handleSliderTargetCategoryChange()"></select>
+      </div>
+      <div class="fg" id="sliderTargetProductWrap" style="display:none">
+        <label>Ürün Seç *</label>
+        <select id="sliderTargetProduct" onchange="handleSliderTargetProductChange()"></select>
+      </div>
+      <div class="fg">
+        <label>Hedef Yol *</label>
+        <input type="text" id="sliderTargetPath" placeholder="/?category=stor-perde#products">
+        <p id="sliderTargetHint" style="margin-top:6px;font-size:0.75rem;color:var(--slate-light)">Kategori/ürün seçimi yaptığınızda hedef yol otomatik oluşur.</p>
+      </div>
       <div class="fg"><label>Sıra</label><input type="number" id="sliderOrder" value="0"></div>
       <label style="display:flex;align-items:center;gap:8px;font-size:0.83rem"><input type="checkbox" id="sliderActive" checked> Aktif</label>
     </div>
@@ -2144,6 +2164,107 @@ async function fetchProducts(){
 let SLIDER_ITEMS = [];
 let sliderSelectedDataUrl = '';
 let sliderSelectedFileName = '';
+const SLIDER_TARGET_MODE = {
+  MANUAL: 'manual',
+  CATEGORY: 'category',
+  PRODUCT: 'product'
+};
+
+function buildSliderCategoryTargetPath(catKey=''){
+  const clean = String(catKey || '').trim();
+  if(!clean) return '';
+  return `/?category=${encodeURIComponent(clean)}#products`;
+}
+
+function buildSliderProductTargetPath(productId=''){
+  const clean = String(productId || '').trim();
+  if(!clean) return '';
+  return `/?product=${encodeURIComponent(clean)}#products`;
+}
+
+function resolveSliderTargetPresetFromPath(rawPath=''){
+  const path = String(rawPath || '').trim();
+  if(!path) return { mode:SLIDER_TARGET_MODE.CATEGORY, categoryKey:'', productId:'' };
+  try{
+    const parsed = new URL(path, window.location.origin);
+    const productId = parsed.searchParams.get('product');
+    if(productId){
+      return { mode:SLIDER_TARGET_MODE.PRODUCT, categoryKey:'', productId:String(productId).trim() };
+    }
+    const categoryKey = parsed.searchParams.get('category');
+    if(categoryKey){
+      return { mode:SLIDER_TARGET_MODE.CATEGORY, categoryKey:String(categoryKey).trim(), productId:'' };
+    }
+  }catch(_){}
+  return { mode:SLIDER_TARGET_MODE.MANUAL, categoryKey:'', productId:'' };
+}
+
+function refreshSliderTargetPresetOptions(){
+  const categorySelect = document.getElementById('sliderTargetCategory');
+  const productSelect = document.getElementById('sliderTargetProduct');
+  if(categorySelect){
+    const categoryOptions = CATEGORIES.map(c=>`<option value="${c.key}">${c.label}</option>`).join('');
+    categorySelect.innerHTML = categoryOptions || '<option value="">Kategori bulunamadı</option>';
+  }
+  if(productSelect){
+    const productOptions = PRODUCTS
+      .filter(p=>p?.id && p?.name)
+      .map(p=>`<option value="${String(p.id).replace(/"/g,'&quot;')}">${p.name}</option>`)
+      .join('');
+    productSelect.innerHTML = productOptions || '<option value="">Ürün bulunamadı</option>';
+  }
+}
+
+function sliderSelectHasOption(selectId, value){
+  const select = document.getElementById(selectId);
+  if(!select) return false;
+  return Array.from(select.options || []).some(opt=>String(opt.value)===String(value));
+}
+
+function syncSliderTargetPathFromSelection({ force=false } = {}){
+  const mode = document.getElementById('sliderTargetMode')?.value || SLIDER_TARGET_MODE.CATEGORY;
+  const targetInput = document.getElementById('sliderTargetPath');
+  if(!targetInput) return;
+  if(mode===SLIDER_TARGET_MODE.MANUAL && !force) return;
+  if(mode===SLIDER_TARGET_MODE.CATEGORY){
+    targetInput.value = buildSliderCategoryTargetPath(document.getElementById('sliderTargetCategory')?.value || '');
+    return;
+  }
+  if(mode===SLIDER_TARGET_MODE.PRODUCT){
+    targetInput.value = buildSliderProductTargetPath(document.getElementById('sliderTargetProduct')?.value || '');
+  }
+}
+
+function handleSliderTargetModeChange(){
+  const mode = document.getElementById('sliderTargetMode')?.value || SLIDER_TARGET_MODE.CATEGORY;
+  const categoryWrap = document.getElementById('sliderTargetCategoryWrap');
+  const productWrap = document.getElementById('sliderTargetProductWrap');
+  const targetInput = document.getElementById('sliderTargetPath');
+  const hint = document.getElementById('sliderTargetHint');
+  if(categoryWrap) categoryWrap.style.display = mode===SLIDER_TARGET_MODE.CATEGORY ? 'block' : 'none';
+  if(productWrap) productWrap.style.display = mode===SLIDER_TARGET_MODE.PRODUCT ? 'block' : 'none';
+  if(targetInput) targetInput.readOnly = mode!==SLIDER_TARGET_MODE.MANUAL;
+  if(hint){
+    hint.textContent = mode===SLIDER_TARGET_MODE.MANUAL
+      ? 'Manuel modda hedef yolu siz düzenleyebilirsiniz.'
+      : 'Seçime göre hedef yol otomatik oluşturulur.';
+  }
+  syncSliderTargetPathFromSelection();
+}
+
+function handleSliderTargetCategoryChange(){
+  syncSliderTargetPathFromSelection();
+}
+
+function handleSliderTargetProductChange(){
+  const selectedProductId = document.getElementById('sliderTargetProduct')?.value || '';
+  const product = PRODUCTS.find(p=>String(p.id)===String(selectedProductId));
+  const categorySelect = document.getElementById('sliderTargetCategory');
+  if(product?.cat && categorySelect && CATEGORIES.some(c=>c.key===product.cat)){
+    categorySelect.value = product.cat;
+  }
+  syncSliderTargetPathFromSelection();
+}
 
 function setSliderImagePreview(src=''){
   const wrap = document.getElementById('sliderImagePreviewWrap');
@@ -2244,10 +2365,18 @@ function renderSliderTable(){
 }
 
 function openSliderModal(){
+  refreshSliderTargetPresetOptions();
   document.getElementById('sliderModalTitle').textContent='Yeni Slayt';
   document.getElementById('sliderEditId').value='';
   document.getElementById('sliderImage').value='';
   document.getElementById('sliderTargetPath').value='';
+  document.getElementById('sliderTargetMode').value = SLIDER_TARGET_MODE.CATEGORY;
+  if(document.getElementById('sliderTargetCategory')?.options?.length){
+    document.getElementById('sliderTargetCategory').selectedIndex = 0;
+  }
+  if(document.getElementById('sliderTargetProduct')?.options?.length){
+    document.getElementById('sliderTargetProduct').selectedIndex = 0;
+  }
   document.getElementById('sliderOrder').value='0';
   document.getElementById('sliderActive').checked=true;
   document.getElementById('sliderImageFile').value='';
@@ -2255,34 +2384,55 @@ function openSliderModal(){
   sliderSelectedDataUrl='';
   sliderSelectedFileName='';
   setSliderImagePreview('');
+  handleSliderTargetModeChange();
   document.getElementById('sliderModal').classList.add('open');
 }
 
 function editSliderItem(id){
   const item = SLIDER_ITEMS.find(x=>Number(x.id)===Number(id));
   if(!item) return;
+  refreshSliderTargetPresetOptions();
   document.getElementById('sliderModalTitle').textContent='Slayt Düzenle';
   document.getElementById('sliderEditId').value=String(item.id);
   document.getElementById('sliderImage').value=item.imageUrl || '';
   document.getElementById('sliderTargetPath').value=item.targetPath || '';
+  const preset = resolveSliderTargetPresetFromPath(item.targetPath || '');
+  document.getElementById('sliderTargetMode').value = preset.mode;
+  if(preset.categoryKey && sliderSelectHasOption('sliderTargetCategory', preset.categoryKey)){
+    document.getElementById('sliderTargetCategory').value = preset.categoryKey;
+  }else if(document.getElementById('sliderTargetCategory')?.options?.length){
+    document.getElementById('sliderTargetCategory').selectedIndex = 0;
+  }
+  if(preset.productId && sliderSelectHasOption('sliderTargetProduct', preset.productId)){
+    document.getElementById('sliderTargetProduct').value = preset.productId;
+  }else if(document.getElementById('sliderTargetProduct')?.options?.length){
+    document.getElementById('sliderTargetProduct').selectedIndex = 0;
+  }
   document.getElementById('sliderOrder').value=String(Number(item.orderNo)||0);
   document.getElementById('sliderActive').checked=item.isActive !== false;
   document.getElementById('sliderImageUploadStatus').textContent='Mevcut kayıt yüklü';
   sliderSelectedDataUrl='';
   sliderSelectedFileName='';
   setSliderImagePreview(item.imageUrl || '');
+  handleSliderTargetModeChange();
+  if(preset.mode===SLIDER_TARGET_MODE.MANUAL){
+    document.getElementById('sliderTargetPath').value=item.targetPath || '';
+  }else{
+    syncSliderTargetPathFromSelection({ force:true });
+  }
   document.getElementById('sliderModal').classList.add('open');
 }
 
 async function saveSliderItem(){
   const id = document.getElementById('sliderEditId').value;
+  syncSliderTargetPathFromSelection();
   const payload = {
     imageUrl: document.getElementById('sliderImage').value.trim(),
     targetPath: document.getElementById('sliderTargetPath').value.trim(),
     orderNo: Number(document.getElementById('sliderOrder').value) || 0,
     isActive: document.getElementById('sliderActive').checked,
   };
-  if(!payload.imageUrl || !payload.targetPath){ aToast('⚠️ Görsel ve hedef yol zorunlu','error'); return; }
+  if(!payload.imageUrl || !payload.targetPath){ aToast('⚠️ Görsel ve hedef seçimi zorunlu','error'); return; }
   try{
     const isEdit = Boolean(id);
     const res = await apiFetch(`/api/admin/slider-ads${isEdit?`?id=${encodeURIComponent(id)}`:''}`, {

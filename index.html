@@ -2205,6 +2205,9 @@ function resolveAssetUrl(path){
   if(/^https?:\/\//i.test(raw)) return raw;
   const normalized = raw.replace(/^\/+/, '');
   if(normalized.startsWith('resimler/')){
+    if(/^resimler\/\d{13}-/i.test(normalized)){
+      return `${GITHUB_RAW_BASE}/${normalized}`;
+    }
     return `/${normalized}`;
   }
   return raw;

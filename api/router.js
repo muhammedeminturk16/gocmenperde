@@ -1,3 +1,10 @@
+// api/router.js veya ana server dosyanın EN ÜSTÜNE ekle
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
+// PayTR değişkenlerini burada bir kez konsola yazdır ki yüklendiğini gör
+console.log("Sistem Başlatıldı - PayTR ID:", process.env.NEXT_PUBLIC_PAYTR_MERCHANT_ID ? "OK" : "YOK");
 const auth = require('../server/handlers/auth');
 const customer = require('../server/handlers/customer');
 const customers = require('../server/handlers/customers');

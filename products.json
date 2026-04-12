@@ -343,9 +343,9 @@
     "id": "zebra-perde-kahverengi-cizgili-1774963152707-985",
     "name": "Zebra Perde Kahverengi Çizgili",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774962749302-bulk-bb16dcf9-6a81-4fab-b12f-f3d6788c4caa-IMG_1791.jpeg",
+    "image": "/resimler/1774962749302-bulk-bb16dcf9-6a81-4fab-b12f-f3d6788c4caa-IMG_1791.jpeg",
     "images": [
-      "resimler/1774962749302-bulk-bb16dcf9-6a81-4fab-b12f-f3d6788c4caa-IMG_1791.jpeg"
+      "/resimler/1774962749302-bulk-bb16dcf9-6a81-4fab-b12f-f3d6788c4caa-IMG_1791.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -355,9 +355,9 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 83,
     "serialNumber": "Hayal V-02",
     "active": true,
     "specs": {

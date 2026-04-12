@@ -1,6 +1,6 @@
-const { verifyAuthToken } = require('./_auth-utils');
+const { verifyAuthToken } = require('../lib/_auth-utils');
 
-const { pool } = require('./_db');
+const { pool } = require('../lib/_db');
 const ADMIN_API_KEY = 'gocmen1993';
 const ORDER_STATUSES = ['Beklemede', 'Hazırlanıyor', 'Kargoda', 'Teslim Edildi', 'İptal'];
 const ORDER_STATUS_ALIASES = {

@@ -1,5 +1,5 @@
-const { pool } = require('./_db');
-const { verifyAuthToken } = require('./_auth-utils');
+const { pool } = require('../lib/_db');
+const { verifyAuthToken } = require('../lib/_auth-utils');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');

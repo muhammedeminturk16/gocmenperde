@@ -1,5 +1,5 @@
 
-const { pool } = require('./_db');
+const { pool } = require('../lib/_db');
 const ADMIN_API_KEY = 'gocmen1993';
 let schemaReady = false;
 

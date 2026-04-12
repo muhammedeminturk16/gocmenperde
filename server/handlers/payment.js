@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { getPaytrCredentials } = require('./_paytr-config');
+const { getPaytrCredentials } = require('../lib/_paytr-config');
 
 const SUPPORTED_CURRENCIES = new Set(['TL', 'USD', 'EUR', 'GBP']);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

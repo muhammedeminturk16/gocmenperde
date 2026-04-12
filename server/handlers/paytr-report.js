@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { getPaytrCredentials } = require('./_paytr-config');
+const { getPaytrCredentials } = require('../lib/_paytr-config');
 
 const DATE_FORMAT = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
 const MAX_RANGE_MS = 3 * 24 * 60 * 60 * 1000;

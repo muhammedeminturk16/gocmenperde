@@ -1,5 +1,5 @@
-const { pool } = require('./_db');
-const { ensureSliderAdsSchema } = require('./_slider_ads');
+const { pool } = require('../lib/_db');
+const { ensureSliderAdsSchema } = require('../lib/_slider_ads');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');

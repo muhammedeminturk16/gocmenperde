@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { getPaytrCredentials } = require('./_paytr-config');
+const { getPaytrCredentials } = require('../lib/_paytr-config');
 
 function normalizeCallbackBody(body) {
   if (!body) return {};

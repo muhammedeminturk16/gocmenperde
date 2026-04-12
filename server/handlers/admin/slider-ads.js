@@ -1,5 +1,5 @@
-const { pool } = require('../_db');
-const { ensureSliderAdsSchema, normalizeSliderAdPayload } = require('../_slider_ads');
+const { pool } = require('../../lib/_db');
+const { ensureSliderAdsSchema, normalizeSliderAdPayload } = require('../../lib/_slider_ads');
 
 const ADMIN_API_KEY = 'gocmen1993';
 

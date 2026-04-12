@@ -1,6 +1,6 @@
-const { createAuthToken, verifyAuthToken, hashPassword, verifyPassword } = require('./_auth-utils');
+const { createAuthToken, verifyAuthToken, hashPassword, verifyPassword } = require('../lib/_auth-utils');
 
-const { pool } = require('./_db');
+const { pool } = require('../lib/_db');
 const loginAttempts = new Map();
 const MAX_ATTEMPTS = 7;
 const WINDOW_MS = 1000 * 60 * 10;

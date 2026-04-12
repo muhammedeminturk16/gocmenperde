@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { getPaytrCredentials } = require('./_paytr-config');
+const { getPaytrCredentials } = require('../lib/_paytr-config');
 
 const REFUND_AMOUNT_PATTERN = /^\d+(\.\d{1,2})?$/;
 const ORDER_ID_MAX_LENGTH = 64;

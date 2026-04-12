@@ -1470,6 +1470,14 @@ function logout(){
   closeSidebar();
 }
 window.doLogin = doLogin;
+document.getElementById('adminLoginForm')?.addEventListener('submit', function(e){
+  e.preventDefault();
+  doLogin();
+});
+document.querySelector('#adminLoginForm .login-btn')?.addEventListener('click', function(e){
+  e.preventDefault();
+  doLogin();
+});
 ['loginPass','loginEmail'].forEach(id=>document.getElementById(id).addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); }));
 ['f-price','f-oldprice'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateDiscountBadgeFromInputs));
 

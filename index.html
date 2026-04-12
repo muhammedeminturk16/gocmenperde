@@ -876,66 +876,68 @@ body::before{background:
 header{background:rgba(255,255,255,.95);border-bottom:1px solid rgba(34,45,78,.08)}
 .nav-cart{background:linear-gradient(135deg,#2a3558,#3d4f80);color:#fff}
 .nav-cart:hover{background:linear-gradient(135deg,#36446e,#4b6096)}
-.hero{background:linear-gradient(160deg,#ffffff 0%,#f8f8f6 55%,#f1f2f7 100%)}
+.hero{background:radial-gradient(circle at 18% 10%,rgba(213,163,63,.22),transparent 42%),linear-gradient(165deg,#12141d 0%,#1c2233 48%,#242d44 100%)}
 .hero-bg{background:
   radial-gradient(ellipse at 18% 25%,rgba(213,163,63,.14),transparent 55%),
   radial-gradient(ellipse at 90% 12%,rgba(61,79,128,.09),transparent 55%),
   linear-gradient(140deg,rgba(255,255,255,.82),rgba(213,163,63,.06))}
 .hero-pattern{opacity:.1;background-image:radial-gradient(circle at 1px 1px, rgba(34,45,78,.12) 1px, transparent 0);background-size:22px 22px}
-.hero-title{color:#1c2233}
-.hero-title span{color:var(--gold-dark)}
-.hero-eyebrow{color:#5d6577}
-.hero-subtitle{color:#434b5c;background:rgba(255,255,255,.85);border-color:rgba(34,45,78,.12);box-shadow:0 8px 24px rgba(17,28,58,.08)}
-.hero-actions{background:rgba(255,255,255,.72)}
+.hero-title{color:#fff;text-shadow:0 14px 34px rgba(0,0,0,.33)}
+.hero-title span{color:#f1c96e}
+.hero-eyebrow{color:rgba(255,255,255,.72)}
+.hero-subtitle{color:rgba(255,255,255,.88);background:rgba(10,13,22,.52);border-color:rgba(213,163,63,.35);box-shadow:0 10px 28px rgba(0,0,0,.26)}
+.hero-actions{background:rgba(8,10,17,.46);border:1px solid rgba(255,255,255,.12)}
 .btn-primary,.btn-outline{background:#fff;color:#222c44;border:1px solid rgba(34,45,78,.15)}
 .btn-primary:hover,.btn-outline:hover{background:#f8f9fc}
 .features-strip{background:linear-gradient(120deg,#ffffff,#f7f7f5)}
 .feature-item{padding:14px 12px;border:1px solid rgba(34,45,78,.1);border-radius:14px;background:rgba(255,255,255,.92)}
 .feature-icon{background:linear-gradient(135deg,rgba(213,163,63,.15),rgba(61,79,128,.1));border:1px solid rgba(34,45,78,.14)}
 .local-seo-box,.trust-card,.trust-kpi-item,.process-step,.promo-banner,.first-order-banner,.top-product-slider{border-color:rgba(34,45,78,.14)!important}
-.section-tag{background:#f5f2e9;color:#7a5a1f;border:1px solid rgba(165,120,31,.24)}
+.section-tag{background:linear-gradient(135deg,#1a2131 0%,#2d3a58 100%);color:#f3cf82;border:1px solid rgba(213,163,63,.42);padding:7px 14px;border-radius:999px;display:inline-flex;box-shadow:0 8px 18px rgba(12,16,28,.2)}
 .product-card{border:1px solid rgba(34,45,78,.12);box-shadow:0 12px 26px rgba(17,28,58,.08)}
 .product-card:hover{transform:translateY(-8px);box-shadow:0 20px 36px rgba(17,28,58,.14)}
 .sort-bar{border:1px solid rgba(34,45,78,.13);background:linear-gradient(135deg,#fff,#f8f9fc)}
 footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255,.74)}
 
 
-.hero-ad-slider{padding:18px 5%;background:#fff}
-.hero-ad-slider-shell{max-width:1300px;margin:0 auto;border:1px solid rgba(34,45,78,.12);border-radius:16px;padding:12px;background:#fff}
+.hero-ad-slider{padding:18px 5%;background:linear-gradient(180deg,#f6f7fb 0%,#f9f6ef 100%)}
+.hero-ad-slider-shell{max-width:1300px;margin:0 auto;border:1px solid rgba(24,30,48,.2);border-radius:20px;padding:14px;background:linear-gradient(165deg,#111521 0%,#20293e 100%);box-shadow:0 18px 36px rgba(11,14,24,.28)}
 .hero-ad-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.hero-ad-title{font-size:.86rem;font-weight:800;letter-spacing:1px;color:#2a3656;text-transform:uppercase}
+.hero-ad-title{font-size:.86rem;font-weight:800;letter-spacing:1px;color:#f2d594;text-transform:uppercase}
 .hero-ad-controls{display:flex;align-items:center;gap:6px}
-.hero-ad-btn{width:34px;height:34px;border-radius:999px;border:1px solid rgba(34,45,78,.18);background:#fff;color:#2a3656;cursor:pointer}
+.hero-ad-btn{width:34px;height:34px;border-radius:999px;border:1px solid rgba(213,163,63,.42);background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
 .hero-ad-btn:disabled{opacity:.4;cursor:not-allowed}
-.hero-ad-viewport{overflow-x:auto;scroll-snap-type:x mandatory;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(220px,1fr);gap:12px;scrollbar-width:thin;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.hero-ad-viewport{overflow-x:auto;scroll-snap-type:x mandatory;display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:12px;scrollbar-width:thin;padding-bottom:6px;-webkit-overflow-scrolling:touch}
 .hero-ad-viewport::-webkit-scrollbar{height:8px}
-.hero-ad-viewport::-webkit-scrollbar-thumb{background:rgba(34,45,78,.22);border-radius:999px}
-.hero-ad-card{scroll-snap-align:start;border:1px solid rgba(34,45,78,.12);border-radius:14px;overflow:hidden;background:#fff;text-decoration:none;color:#1d2434;display:flex;flex-direction:column;min-width:0}
-.hero-ad-card img{width:100%;height:140px;object-fit:cover}
-.hero-ad-card h4{font-size:.88rem;padding:10px 12px 2px}
-.hero-ad-card span{font-size:.72rem;color:#4b5569;padding:0 12px 12px;display:block}
+.hero-ad-viewport::-webkit-scrollbar-thumb{background:rgba(213,163,63,.38);border-radius:999px}
+.hero-ad-card{position:relative;scroll-snap-align:start;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden;background:#111;text-decoration:none;color:#fff;display:block;min-width:0;min-height:280px}
+.hero-ad-card img{width:100%;height:100%;min-height:280px;object-fit:cover;display:block}
+.hero-ad-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,16,.86) 8%,rgba(8,10,16,.2) 50%,rgba(8,10,16,.1) 100%)}
+.hero-ad-copy{position:absolute;left:18px;right:18px;bottom:18px;z-index:2}
+.hero-ad-copy h4{font-family:var(--ff-display);font-size:clamp(1.2rem,3vw,2rem);line-height:1.15;margin-bottom:7px}
+.hero-ad-copy span{font-size:.78rem;color:rgba(255,255,255,.86);display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid rgba(213,163,63,.5);background:rgba(10,14,24,.45)}
 .hero-ad-dots{display:flex;justify-content:center;gap:6px;margin-top:10px}
-.hero-ad-dot{width:8px;height:8px;border:none;border-radius:999px;background:rgba(34,45,78,.22);cursor:pointer}
-.hero-ad-dot.active{background:#2a3656;transform:scale(1.15)}
-@media(max-width:700px){.hero-ad-card img{height:112px}}
+.hero-ad-dot{width:8px;height:8px;border:none;border-radius:999px;background:rgba(255,255,255,.35);cursor:pointer}
+.hero-ad-dot.active{background:#f0cf84;transform:scale(1.15)}
+@media(max-width:700px){.hero-ad-card,.hero-ad-card img{min-height:210px}}
 
 .pulse-announcement{position:relative;overflow:hidden;background:linear-gradient(122deg,#f5f1e7,#efe8da,#e9ebf6);background-size:200% 100%;animation:pulseShift 16s linear infinite;padding:20px 5%;color:#202737;border-top:1px solid rgba(34,45,78,.08);border-bottom:1px solid rgba(34,45,78,.08)}
 .pulse-announcement-inner{max-width:1300px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
 .campaign-stream-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .campaign-stream-title{font-size:.78rem;letter-spacing:1.4px;text-transform:uppercase;display:flex;align-items:center;gap:8px;color:#3a4254;font-weight:800}
 .campaign-stream-sub{font-size:.82rem;color:#586078}
-.campaign-stream-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.campaign-stream-card{position:relative;background:linear-gradient(160deg,#fff 0%,#f8f7f3 100%);border:1px solid rgba(34,45,78,.11);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 22px rgba(17,28,58,.08)}
-.campaign-stream-media{position:relative;height:140px;border-radius:12px;overflow:hidden;background:#f0f2f7}
+.campaign-stream-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.campaign-stream-card{position:relative;background:linear-gradient(145deg,#0f1524 0%,#202a3f 62%,#2c3957 100%);border:1px solid rgba(213,163,63,.3);border-radius:18px;padding:12px;display:grid;grid-template-columns:minmax(220px,34%) 1fr;gap:14px;align-items:stretch;box-shadow:0 16px 30px rgba(8,12,22,.28)}
+.campaign-stream-media{position:relative;height:200px;border-radius:14px;overflow:hidden;background:#f0f2f7}
 .campaign-stream-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
 .campaign-stream-card:hover .campaign-stream-media img{transform:scale(1.04)}
 .campaign-stream-badge{position:absolute;top:10px;left:10px;background:rgba(19,18,26,.76);color:#fff;padding:5px 9px;border-radius:999px;font-size:.58rem;letter-spacing:1px;border:1px solid rgba(213,163,63,.35)}
-.campaign-stream-name{font-size:.88rem;font-weight:700;color:#242c3e}
+.campaign-stream-name{font-size:1.05rem;font-weight:700;color:#fff}
 .campaign-stream-price{display:flex;align-items:flex-end;gap:8px}
-.campaign-stream-price .new{font-size:1rem;font-weight:800;color:#1f2941}
-.campaign-stream-price .old{text-decoration:line-through;font-size:.74rem;color:#8e96aa}
-.campaign-stream-price .unit{font-size:.68rem;color:#6f778b}
-.campaign-stream-btn{border:1px solid rgba(34,45,78,.16);background:#fff;color:#2a3656;padding:10px 12px;border-radius:10px;font-size:.66rem;font-weight:800;letter-spacing:.8px;cursor:pointer;box-shadow:0 8px 20px rgba(17,28,58,.08)}
+.campaign-stream-price .new{font-size:1.08rem;font-weight:800;color:#f7d58f}
+.campaign-stream-price .old{text-decoration:line-through;font-size:.74rem;color:rgba(255,255,255,.45)}
+.campaign-stream-price .unit{font-size:.68rem;color:rgba(255,255,255,.7)}
+.campaign-stream-btn{border:1px solid rgba(213,163,63,.45);background:rgba(255,255,255,.1);color:#fff;padding:10px 12px;border-radius:10px;font-size:.66rem;font-weight:800;letter-spacing:.8px;cursor:pointer;box-shadow:0 8px 20px rgba(3,6,12,.35)}
 .campaign-stream-empty{border:1px dashed rgba(34,45,78,.25);border-radius:12px;padding:14px;background:rgba(255,255,255,.6);font-size:.82rem;color:#586078}
 @keyframes pulseShift{0%{background-position:0 0}100%{background-position:200% 0}}
 
@@ -962,7 +964,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .gallery-grid{margin-top:28px}
 @media(max-width:760px){
   .pulse-announcement{padding:14px}
-  .campaign-stream-grid{grid-template-columns:1fr}
+  .campaign-stream-card{grid-template-columns:1fr}
   .campaign-stream-media{height:180px}
   .gallery-section .section-header{padding:20px;border-radius:16px}
   .live-categories-shell{padding:12px}
@@ -993,8 +995,9 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
   background:linear-gradient(180deg,#f8f9fd 0%,#f6f7fb 56%,#f9f6ef 100%);
 }
 .gallery-section .section-header{
-  background:linear-gradient(135deg,#ffffff 0%,#f8f2e6 100%);
-  box-shadow:0 14px 34px rgba(17,28,58,.08);
+  background:linear-gradient(140deg,#ffffff 0%,#f8f2e6 35%,#f2f5ff 100%);
+  box-shadow:0 16px 36px rgba(17,28,58,.1);
+  border:1px solid rgba(34,45,78,.14);
 }
 .reviews-section{
   background:linear-gradient(180deg,#f6f8fe 0%,#fffaf0 100%);
@@ -1002,10 +1005,13 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .reviews-section .section-header{
   padding:24px;
   border-radius:18px;
-  background:linear-gradient(130deg,#ffffff 0%,#f7f1e3 100%);
-  border:1px solid rgba(34,45,78,.10);
-  box-shadow:0 12px 30px rgba(17,28,58,.07);
+  background:linear-gradient(145deg,#111827 0%,#26314a 52%,#374e72 100%);
+  border:1px solid rgba(213,163,63,.34);
+  box-shadow:0 16px 34px rgba(12,16,28,.26);
 }
+.reviews-section .section-title{color:#fff}
+.reviews-section .section-title em{color:#f1c96e}
+.reviews-section .section-desc{color:rgba(255,255,255,.78)}
 .review-card{
   background:linear-gradient(160deg,#ffffff 0%,#fbf7ef 100%);
   box-shadow:0 10px 24px rgba(17,28,58,.08);
@@ -1949,8 +1955,10 @@ function renderHomeSlider(){
   const cards = HOME_SLIDES.map((item, idx)=>`
     <a class="hero-ad-card" href="${item.linkUrl || '#'}" target="_self" rel="noopener">
       <img src="${resolveAssetUrl(item.imageUrl || '')}" alt="${item.title || 'Kampanya'}" loading="lazy" decoding="async">
-      <h4>${item.title || 'Kampanya'}</h4>
-      <span>Detayları görüntüle →</span>
+      <div class="hero-ad-copy">
+        <h4>${item.title || 'Kampanya'}</h4>
+        <span>Detayları görüntüle →</span>
+      </div>
     </a>
   `).join('');
   track.innerHTML = cards;

@@ -445,9 +445,9 @@
     "id": "zebra-perde-cizgili-1774963152707-579",
     "name": "Zebra Perde Mor Beyaz Çizgili",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774962968106-bulk-dc561de7-21d8-4410-b784-b564c53911e0-IMG_1794.jpeg",
+    "image": "/resimler/1774962968106-bulk-dc561de7-21d8-4410-b784-b564c53911e0-IMG_1794.jpeg",
     "images": [
-      "resimler/1774962968106-bulk-dc561de7-21d8-4410-b784-b564c53911e0-IMG_1794.jpeg"
+      "/resimler/1774962968106-bulk-dc561de7-21d8-4410-b784-b564c53911e0-IMG_1794.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -459,7 +459,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 76,
     "serialNumber": "Hayal V-04",
     "active": true,
     "specs": {

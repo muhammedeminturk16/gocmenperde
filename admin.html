@@ -2047,21 +2047,26 @@ function handleSliderImageFileSelect(input){
 
 async function uploadSliderImage(){
   const status = document.getElementById('sliderImageUploadStatus');
-  if(!sliderSelectedDataUrl){
+  const token = getGithubToken();
+  if(!token){
+    aToast('⚠️ Önce geçerli bir GitHub token girin','error');
+    resetGithubToken();
+    return;
+  }
+  if(!sliderSelectedDataUrl && !sliderSelectedFileName){
     aToast('⚠️ Önce bir görsel seçin','error');
     return;
   }
   try{
     if(status) status.textContent = 'Yükleniyor...';
-    const res = await apiFetch('/api/admin/upload-image', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-admin-key':'gocmen1993'},
-      body: JSON.stringify({ dataUrl: sliderSelectedDataUrl, fileName: sliderSelectedFileName })
-    });
-    const data = await res.json();
-    if(!res.ok) throw new Error(data?.error || 'Yükleme başarısız');
-    document.getElementById('sliderImage').value = data.imageUrl || '';
-    if(status) status.textContent = `Yüklendi: ${data.imageUrl}`;
+    const fileInput = document.getElementById('sliderImageFile');
+    const file = Array.from(fileInput?.files || [])[0];
+    if(!file){
+      throw new Error('Yüklenecek dosya bulunamadı');
+    }
+    const uploadedPath = await uploadImageWithRetry(token, file, { prefix:'slider' });
+    document.getElementById('sliderImage').value = uploadedPath || '';
+    if(status) status.textContent = `Yüklendi: ${uploadedPath}`;
     aToast('✅ Slider görseli yüklendi','success');
   }catch(err){
     if(status) status.textContent = 'Yükleme başarısız';

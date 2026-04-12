@@ -952,18 +952,18 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .campaign-stream-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .campaign-stream-title{font-size:.78rem;letter-spacing:1.4px;text-transform:uppercase;display:flex;align-items:center;gap:8px;color:#3a4254;font-weight:800}
 .campaign-stream-sub{font-size:.82rem;color:#586078}
-.campaign-stream-grid{display:grid;grid-template-columns:1fr;gap:14px}
-.campaign-stream-card{position:relative;background:linear-gradient(145deg,#0f1524 0%,#202a3f 62%,#2c3957 100%);border:1px solid rgba(213,163,63,.3);border-radius:18px;padding:12px;display:grid;grid-template-columns:minmax(220px,34%) 1fr;gap:14px;align-items:stretch;box-shadow:0 16px 30px rgba(8,12,22,.28)}
+.campaign-stream-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.campaign-stream-card{position:relative;background:linear-gradient(145deg,#0f1524 0%,#202a3f 62%,#2c3957 100%);border:1px solid rgba(213,163,63,.3);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:12px;align-items:stretch;box-shadow:0 16px 30px rgba(8,12,22,.28)}
 .campaign-stream-media{position:relative;height:200px;border-radius:14px;overflow:hidden;background:#f0f2f7}
 .campaign-stream-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
 .campaign-stream-card:hover .campaign-stream-media img{transform:scale(1.04)}
 .campaign-stream-badge{position:absolute;top:10px;left:10px;background:rgba(19,18,26,.76);color:#fff;padding:5px 9px;border-radius:999px;font-size:.58rem;letter-spacing:1px;border:1px solid rgba(213,163,63,.35)}
-.campaign-stream-name{font-size:1.05rem;font-weight:700;color:#fff}
+.campaign-stream-name{font-size:1.05rem;font-weight:700;color:#fff;line-height:1.35;min-height:44px}
 .campaign-stream-price{display:flex;align-items:flex-end;gap:8px}
 .campaign-stream-price .new{font-size:1.08rem;font-weight:800;color:#f7d58f}
 .campaign-stream-price .old{text-decoration:line-through;font-size:.74rem;color:rgba(255,255,255,.45)}
 .campaign-stream-price .unit{font-size:.68rem;color:rgba(255,255,255,.7)}
-.campaign-stream-btn{border:1px solid rgba(213,163,63,.45);background:rgba(255,255,255,.1);color:#fff;padding:10px 12px;border-radius:10px;font-size:.66rem;font-weight:800;letter-spacing:.8px;cursor:pointer;box-shadow:0 8px 20px rgba(3,6,12,.35)}
+.campaign-stream-btn{border:1px solid rgba(213,163,63,.45);background:rgba(255,255,255,.1);color:#fff;padding:10px 12px;border-radius:10px;font-size:.66rem;font-weight:800;letter-spacing:.8px;cursor:pointer;box-shadow:0 8px 20px rgba(3,6,12,.35);margin-top:auto}
 .campaign-stream-empty{border:1px dashed rgba(34,45,78,.25);border-radius:12px;padding:14px;background:rgba(255,255,255,.6);font-size:.82rem;color:#586078}
 @keyframes pulseShift{0%{background-position:0 0}100%{background-position:200% 0}}
 
@@ -990,7 +990,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .gallery-grid{margin-top:28px}
 @media(max-width:760px){
   .pulse-announcement{padding:14px}
-  .campaign-stream-card{grid-template-columns:1fr}
   .campaign-stream-media{height:180px}
   .gallery-section .section-header{padding:20px;border-radius:16px}
   .live-categories-shell{padding:12px}
@@ -1164,6 +1163,19 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
       </div>
       <div class="hero-ad-viewport" id="heroAdTrack" role="region" aria-label="Reklam slider"></div>
       <div class="hero-ad-dots" id="heroAdDots" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="pulse-announcement" id="campaignHeroSection">
+    <div class="pulse-announcement-inner">
+      <div class="campaign-stream-header">
+        <div>
+          <div class="campaign-stream-title"><i class="fas fa-crown"></i> <span id="campaignHeroLabel">Premium Kampanya</span></div>
+          <h3 id="campaignHeroTitle" style="margin-top:8px;font-family:var(--ff-display);font-size:clamp(1.2rem,2.5vw,1.95rem);color:#202737">Vitrin Ürünlerde Özel Fiyatlar</h3>
+          <p class="campaign-stream-sub" id="campaignHeroSubtitle">Tam genişlikte premium vitrin; yönetim panelinden seçtiğiniz ürünler anında güncellenir.</p>
+        </div>
+        <button class="campaign-stream-btn" type="button" id="campaignHeroActionBtn" onclick="go('products')">Tüm Ürünleri Gör</button>
+      </div>
+      <div class="campaign-stream-grid" id="campaignStreamGrid"></div>
     </div>
   </div>
   <div class="hero">
@@ -1760,6 +1772,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 <script>
 const WA_NUMBER = '905012110958';
 const LIVE_CAMPAIGN_STREAM_KEY = 'gp_live_campaign_stream_v1';
+const CAMPAIGN_HERO_CONTENT_KEY = 'gp_campaign_hero_content_v1';
 const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
 const FROM_YOU_SHOWCASE_KEY = 'gp_from_you_showcase_v1';
@@ -1789,6 +1802,12 @@ const DEFAULT_LIVE_CAMPAIGN_STREAM = [
   {id:'plise-kampanya',productId:'plise-krem-160x200',title:'Plise Perde Krem 160x200',label:'Kampanya',price:1450,oldPrice:1690,image:'resimler/foto7.jpg',buttonText:'İncele'},
   {id:'stor-salon',productId:'stor-salon-antrasit',title:'Stor Perde Antrasit Seri',label:'Çok Satan',price:1890,oldPrice:2190,image:'resimler/foto8.jpg',buttonText:'Detaylar'}
 ];
+const DEFAULT_CAMPAIGN_HERO_CONTENT = {
+  label:'Premium Kampanya',
+  title:'Vitrin Ürünlerde Özel Fiyatlar',
+  subtitle:'Tam genişlikte premium vitrin; yönetim panelinden seçtiğiniz ürünler anında güncellenir.',
+  actionText:'Tüm Ürünleri Gör'
+};
 
 
 const HOME_PROMO_PANEL_KEY = 'gp_home_promo_panel_v1';
@@ -1985,9 +2004,34 @@ function getLiveCampaignStreamItems(){
 function formatTl(value){
   return `${(Number(value)||0).toLocaleString('tr-TR')} TL`;
 }
+function getCampaignHeroContent(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(CAMPAIGN_HERO_CONTENT_KEY) || 'null') || {};
+    return {
+      label: String(parsed.label || DEFAULT_CAMPAIGN_HERO_CONTENT.label).trim(),
+      title: String(parsed.title || DEFAULT_CAMPAIGN_HERO_CONTENT.title).trim(),
+      subtitle: String(parsed.subtitle || DEFAULT_CAMPAIGN_HERO_CONTENT.subtitle).trim(),
+      actionText: String(parsed.actionText || DEFAULT_CAMPAIGN_HERO_CONTENT.actionText).trim()
+    };
+  }catch(_){
+    return {...DEFAULT_CAMPAIGN_HERO_CONTENT};
+  }
+}
+function renderCampaignHeroContent(){
+  const content = getCampaignHeroContent();
+  const label = document.getElementById('campaignHeroLabel');
+  const title = document.getElementById('campaignHeroTitle');
+  const subtitle = document.getElementById('campaignHeroSubtitle');
+  const btn = document.getElementById('campaignHeroActionBtn');
+  if(label) label.textContent = content.label || DEFAULT_CAMPAIGN_HERO_CONTENT.label;
+  if(title) title.textContent = content.title || DEFAULT_CAMPAIGN_HERO_CONTENT.title;
+  if(subtitle) subtitle.textContent = content.subtitle || DEFAULT_CAMPAIGN_HERO_CONTENT.subtitle;
+  if(btn) btn.textContent = content.actionText || DEFAULT_CAMPAIGN_HERO_CONTENT.actionText;
+}
 function renderLiveCampaignStream(){
   const grid = document.getElementById('campaignStreamGrid');
   if(!grid) return;
+  renderCampaignHeroContent();
   const list = getLiveCampaignStreamItems().filter(item=>item && item.active!==false).slice(0,6);
   if(!list.length){
     grid.innerHTML = '<div class="campaign-stream-empty">Canlı fırsat kartı bulunmuyor. Admin panelinden ekleyebilirsiniz.</div>';
@@ -3684,7 +3728,7 @@ window.addEventListener('storage',(event)=>{
     renderFromYouShowcase('fromYouPageGrid', 12);
     initObserver();
   }
-  if(event.key===LIVE_CAMPAIGN_STREAM_KEY) renderLiveCampaignStream();
+  if(event.key===LIVE_CAMPAIGN_STREAM_KEY || event.key===CAMPAIGN_HERO_CONTENT_KEY) renderLiveCampaignStream();
 });
 
 // ── Navigasyon ──

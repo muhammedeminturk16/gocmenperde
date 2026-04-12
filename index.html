@@ -141,22 +141,9 @@ img,video,canvas,svg{max-width:100%}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;display:none}.overlay.open{display:block}
 
-.home-promo-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(8,8,8,0.68);backdrop-filter:blur(4px)}
-.home-promo-modal.open{display:flex}
-.home-promo-shell{position:relative;width:min(960px,95vw);min-height:min(82vh,620px);border-radius:24px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#111;box-shadow:0 24px 70px rgba(0,0,0,.45)}
-.home-promo-bg{position:absolute;inset:0;background:center/cover no-repeat;transform:scale(1.02)}
-.home-promo-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.16),rgba(8,8,8,.62))}
-.home-promo-card{position:relative;z-index:2;width:min(420px,88%);background:rgba(18,18,18,.84);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:28px 24px;color:#fff;text-align:center;backdrop-filter:blur(8px)}
-.home-promo-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.13);font:700 .72rem 'Poppins',var(--ff-body);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:16px}
-.home-promo-title{font:800 clamp(1.9rem,4.8vw,2.8rem) 'Poppins',var(--ff-body);line-height:1.08;margin-bottom:10px}
-.home-promo-sub{font:500 clamp(.86rem,2.5vw,1rem) 'Poppins',var(--ff-body);opacity:.92;line-height:1.6;margin-bottom:20px}
-.home-promo-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.home-promo-feature{border:1px solid rgba(255,255,255,.24);border-radius:12px;padding:10px 8px;background:rgba(255,255,255,.07)}
-.home-promo-feature i{font-size:1rem;margin-bottom:6px}
-.home-promo-feature span{display:block;font-size:.64rem;line-height:1.35;letter-spacing:.2px}
-.home-promo-close{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:#111;cursor:pointer;font-size:1.05rem;z-index:3;box-shadow:0 8px 20px rgba(0,0,0,.25)}
-.home-promo-close:hover{background:#fff}
-@media(max-width:640px){.home-promo-modal{padding:12px}.home-promo-shell{min-height:70vh;border-radius:18px}.home-promo-card{padding:20px 16px;border-radius:16px}.home-promo-features{grid-template-columns:1fr;}}
+/* Eski popup/promosyon modalı kaldırıldı */
+
+
 
 /* ── Header ── */
 .mini-cart,.search-bar,.favorite-bar{position:fixed;top:75px;right:5%;width:90%;max-width:400px;background:white;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);z-index:1000;display:none;padding:20px;max-height:70vh;overflow-y:auto}
@@ -919,20 +906,19 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 
 .hero-ad-slider{padding:18px 5%;background:linear-gradient(180deg,#f6f7fb 0%,#f9f6ef 100%)}
 .hero-ad-slider-shell{max-width:1300px;margin:0 auto;border:1px solid rgba(24,30,48,.2);border-radius:20px;padding:14px;background:linear-gradient(165deg,#111521 0%,#20293e 100%);box-shadow:0 18px 36px rgba(11,14,24,.28)}
-.hero-ad-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.hero-ad-title{font-size:.86rem;font-weight:800;letter-spacing:1px;color:#f2d594;text-transform:uppercase}
+.hero-ad-header{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-bottom:10px}
 .hero-ad-controls{display:flex;align-items:center;gap:6px}
 .hero-ad-btn{width:34px;height:34px;border-radius:999px;border:1px solid rgba(213,163,63,.42);background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
-.hero-ad-btn:disabled{opacity:.4;cursor:not-allowed}
-.hero-ad-viewport{overflow-x:auto;scroll-snap-type:x mandatory;display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:12px;scrollbar-width:thin;padding-bottom:6px;-webkit-overflow-scrolling:touch}
-.hero-ad-viewport::-webkit-scrollbar{height:8px}
-.hero-ad-viewport::-webkit-scrollbar-thumb{background:rgba(213,163,63,.38);border-radius:999px}
-.hero-ad-card{position:relative;scroll-snap-align:start;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden;background:#111;text-decoration:none;color:#fff;display:block;min-width:0;min-height:280px}
+.hero-ad-viewport{position:relative;overflow:hidden;border-radius:16px}
+.hero-ad-track{display:flex;transition:transform .75s cubic-bezier(.22,.61,.36,1);will-change:transform}
+.hero-ad-card{position:relative;min-width:100%;border:1px solid rgba(255,255,255,.14);overflow:hidden;background:#111;text-decoration:none;color:#fff;display:block;min-height:280px}
 .hero-ad-card img{width:100%;height:100%;min-height:280px;object-fit:cover;display:block}
 .hero-ad-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,16,.86) 8%,rgba(8,10,16,.2) 50%,rgba(8,10,16,.1) 100%)}
 .hero-ad-copy{position:absolute;left:18px;right:18px;bottom:18px;z-index:2}
 .hero-ad-copy h4{font-family:var(--ff-display);font-size:clamp(1.2rem,3vw,2rem);line-height:1.15;margin-bottom:7px}
-.hero-ad-copy span{font-size:.78rem;color:rgba(255,255,255,.86);display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;border:1px solid rgba(213,163,63,.5);background:rgba(10,14,24,.45)}
+.hero-ad-copy p{font-size:.8rem;color:rgba(255,255,255,.88)}
+.hero-slide-badge{position:absolute;right:18px;top:18px;z-index:3;padding:8px 12px;border-radius:999px;font-size:.68rem;font-weight:700;letter-spacing:.8px;color:#1f1a0c;background:linear-gradient(135deg,#ffe4a0,#f3c357);box-shadow:0 8px 20px rgba(0,0,0,.28);transform:translateX(130%);opacity:0;transition:transform .55s ease,opacity .45s ease}
+.hero-slide-badge.is-visible{transform:translateX(0);opacity:1}
 .hero-ad-dots{display:flex;justify-content:center;gap:6px;margin-top:10px}
 .hero-ad-dot{width:8px;height:8px;border:none;border-radius:999px;background:rgba(255,255,255,.35);cursor:pointer}
 .hero-ad-dot.active{background:#f0cf84;transform:scale(1.15)}
@@ -1049,19 +1035,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 <div id="menuOverlay" onclick="toggleMenu()"></div>
 <div class="overlay" id="globalOverlay" onclick="closeAllPopups()"></div>
 
-<div class="home-promo-modal" id="homePromoModal" aria-hidden="true">
-  <div class="home-promo-shell" role="dialog" aria-modal="true" aria-labelledby="homePromoTitle">
-    <button class="home-promo-close" id="homePromoClose" type="button" aria-label="Kapat"><i class="fas fa-xmark"></i></button>
-    <div class="home-promo-bg" id="homePromoBg"></div>
-    <div class="home-promo-overlay"></div>
-    <div class="home-promo-card">
-      <div class="home-promo-badge" id="homePromoBadge"><i class="fas fa-bullhorn"></i> Kampanya</div>
-      <h2 class="home-promo-title" id="homePromoTitle">NİSAN'DA ZAM YOK!</h2>
-      <p class="home-promo-sub" id="homePromoSubtitle">Tüm ürünlerde 2025 fiyatları devam ediyor!</p>
-      <div class="home-promo-features" id="homePromoFeatures"></div>
-    </div>
-  </div>
-</div>
+
 
 <div class="search-bar" id="searchBar">
   <input type="text" id="headerSearchInput" placeholder="Ürün ara..." style="width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;font-family:var(--ff-body)" oninput="liveSearch(this.value)">
@@ -1179,7 +1153,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
           <button type="button" class="hero-ad-btn" id="heroAdNext" aria-label="Sonraki reklam"><i class="fas fa-chevron-right"></i></button>
         </div>
       </div>
-      <div class="hero-ad-viewport" id="heroAdTrack" role="region" aria-label="Reklam slider"></div>
+      <div class="hero-ad-viewport" role="region" aria-label="Reklam slider"><div class="hero-ad-track" id="heroAdTrack"></div></div>
       <div class="hero-ad-dots" id="heroAdDots" aria-hidden="true"></div>
     </div>
   </div>
@@ -1782,107 +1756,7 @@ const DEFAULT_LIVE_CAMPAIGN_STREAM = [
 ];
 
 
-const HOME_PROMO_PANEL_KEY = 'gp_home_promo_panel_v1';
-const HOME_PROMO_SEEN_SESSION_KEY = 'gp_home_promo_seen_v1';
-const DEFAULT_HOME_PROMO_PANEL = {
-  enabled:true,
-  delayMs:1400,
-  campaignLabel:'Kampanya',
-  title:'NİSAN\'DA ZAM YOK!',
-  subtitle:'Tüm ürünlerde 2025 fiyatları devam ediyor!',
-  image:'resimler/tulperde.WEBP',
-  features:[
-    {icon:'fas fa-truck-fast',text:'Ücretsiz Teslimat'},
-    {icon:'fas fa-screwdriver-wrench',text:'Ücretsiz Kurulum'},
-    {icon:'fas fa-credit-card',text:'Taksit Seçenekleri'}
-  ]
-};
-let homePromoTimer = null;
-
-const FOOTER_PAYMENT_LOGOS_KEY = 'gp_footer_payment_logos_v1';
-const DEFAULT_FOOTER_PAYMENT_LOGOS = [
-  {src:'/resimler/Troy.jpg',alt:'Troy'},
-  {src:'/resimler/Mastercard.PNG',alt:'Mastercard'},
-  {src:'/resimler/Visa.PNG',alt:'Visa'},
-  {src:'/resimler/3dsecure.JPG',alt:'3D Secure'},
-  {src:'/resimler/Guvenli.JPG',alt:'Güvenli Öde'}
-];
-const FOOTER_PAYMENT_LOGO_FALLBACKS = {
-  troy:'/resimler/Troy.jpg',
-  mastercard:'/resimler/Mastercard.PNG',
-  visa:'/resimler/Visa.PNG',
-  '3d secure':'/resimler/3dsecure.JPG',
-  'güvenli öde':'/resimler/Guvenli.JPG',
-  'guvenli ode':'/resimler/Guvenli.JPG'
-};
-function paymentLogoFallbackByAlt(alt=''){
-  return FOOTER_PAYMENT_LOGO_FALLBACKS[String(alt).trim().toLocaleLowerCase('tr-TR')] || '/resimler/Guvenli.JPG';
-}
-
-
-function getHomePromoPanelConfig(){
-  try{
-    const parsed = JSON.parse(localStorage.getItem(HOME_PROMO_PANEL_KEY) || 'null') || {};
-    const base = {...DEFAULT_HOME_PROMO_PANEL, ...parsed};
-    const features = Array.isArray(base.features) ? base.features.slice(0,3) : DEFAULT_HOME_PROMO_PANEL.features;
-    base.features = features.map((item,idx)=>({
-      icon: String(item?.icon || DEFAULT_HOME_PROMO_PANEL.features[idx]?.icon || 'fas fa-circle-check').trim(),
-      text: String(item?.text || DEFAULT_HOME_PROMO_PANEL.features[idx]?.text || '').trim()
-    })).filter(x=>x.text);
-    if(!base.features.length) base.features = [...DEFAULT_HOME_PROMO_PANEL.features];
-    base.delayMs = Math.max(0, Number(base.delayMs) || DEFAULT_HOME_PROMO_PANEL.delayMs);
-    return base;
-  }catch(_){
-    return {...DEFAULT_HOME_PROMO_PANEL};
-  }
-}
-function renderHomePromoPanel(){
-  const config = getHomePromoPanelConfig();
-  const bg = document.getElementById('homePromoBg');
-  const badge = document.getElementById('homePromoBadge');
-  const title = document.getElementById('homePromoTitle');
-  const sub = document.getElementById('homePromoSubtitle');
-  const features = document.getElementById('homePromoFeatures');
-  if(bg) bg.style.backgroundImage = `url('${resolveAssetUrl(config.image || DEFAULT_HOME_PROMO_PANEL.image)}')`;
-  if(badge) badge.innerHTML = `<i class="fas fa-bullhorn"></i> ${config.campaignLabel || 'Kampanya'}`;
-  if(title) title.textContent = config.title || DEFAULT_HOME_PROMO_PANEL.title;
-  if(sub) sub.textContent = config.subtitle || DEFAULT_HOME_PROMO_PANEL.subtitle;
-  if(features){
-    features.innerHTML = config.features.map(item=>`<div class="home-promo-feature"><i class="${item.icon || 'fas fa-circle-check'}"></i><span>${item.text}</span></div>`).join('');
-  }
-}
-function openHomePromoPanel(){
-  const el = document.getElementById('homePromoModal');
-  const config = getHomePromoPanelConfig();
-  if(!el || !config.enabled) return;
-  renderHomePromoPanel();
-  el.classList.add('open');
-  el.setAttribute('aria-hidden','false');
-}
-function closeHomePromoPanel(markSeen=true){
-  const el = document.getElementById('homePromoModal');
-  if(!el) return;
-  el.classList.remove('open');
-  el.setAttribute('aria-hidden','true');
-  if(markSeen) sessionStorage.setItem(HOME_PROMO_SEEN_SESSION_KEY, '1');
-}
-function scheduleHomePromoPanel(){
-  clearTimeout(homePromoTimer);
-  const config = getHomePromoPanelConfig();
-  if(!config.enabled || sessionStorage.getItem(HOME_PROMO_SEEN_SESSION_KEY)==='1') return;
-  homePromoTimer = setTimeout(()=>{
-    const active = document.querySelector('.section.active');
-    if(active?.id === 'home') openHomePromoPanel();
-  }, config.delayMs);
-}
-function syncHomePromoVisibility(targetId){
-  if(targetId === 'home'){
-    scheduleHomePromoPanel();
-    return;
-  }
-  clearTimeout(homePromoTimer);
-  closeHomePromoPanel(false);
-}
+const HOME_SLIDER_STORAGE_KEY = 'gp_home_slider_items_v2';
 
 function parseShowcaseJSON(key, fallback){
   try{
@@ -2041,12 +1915,30 @@ function openFromYouGallery(targetId, index){
 }
 
 async function loadHomeSlider(){
+  let localItems = [];
+  try{
+    localItems = JSON.parse(localStorage.getItem(HOME_SLIDER_STORAGE_KEY) || '[]');
+  }catch(_){ localItems = []; }
+  if(Array.isArray(localItems) && localItems.length){
+    HOME_SLIDES = localItems;
+    renderHomeSlider();
+    return;
+  }
   try{
     const res = await fetch('/api/slider-ads', { cache:'no-store' });
     if(!res.ok) throw new Error('Slider alınamadı');
     const payload = await res.json();
     const items = Array.isArray(payload?.items) ? payload.items : [];
-    HOME_SLIDES = items.length ? items : HOME_SLIDES_FALLBACK;
+    HOME_SLIDES = items.map((item,idx)=>({
+      id: item.id || Date.now()+idx,
+      imageUrl: item.imageUrl || '',
+      title: item.title || 'Kampanya',
+      subtitle: item.subtitle || 'Detayları görüntüleyin',
+      badge: item.badge || 'Öne Çıkan',
+      orderNo: Number(item.orderNo)||idx,
+      isActive: item.isActive !== false
+    })).filter(item=>item.isActive && item.imageUrl);
+    if(!HOME_SLIDES.length) HOME_SLIDES = HOME_SLIDES_FALLBACK;
     renderHomeSlider();
   }catch(_){
     HOME_SLIDES = HOME_SLIDES_FALLBACK;
@@ -2060,91 +1952,57 @@ function renderHomeSlider(){
   const dots = document.getElementById('heroAdDots');
   if(!wrap || !track || !dots) return;
   clearHomeSliderAutoplay();
-  if(!HOME_SLIDES.length){
+  const list = [...HOME_SLIDES].filter(item=>item?.imageUrl).sort((a,b)=>(Number(a.orderNo)||0)-(Number(b.orderNo)||0));
+  if(!list.length){
     wrap.style.display='none';
     track.innerHTML='';
     dots.innerHTML='';
     return;
   }
-  const cards = HOME_SLIDES.map((item, idx)=>`
-    <a class="hero-ad-card" href="${item.targetPath || '#'}" target="_self" rel="noopener">
-      <img src="${resolveAssetUrl(item.imageUrl || '')}" alt="Kampanya görseli" loading="lazy" decoding="async">
-      <div class="hero-ad-copy">
-        <h4>Kampanya</h4>
-        <span>Detayları görüntüle →</span>
-      </div>
-    </a>
-  `).join('');
-  track.innerHTML = cards;
+  HOME_SLIDES = list;
+  track.innerHTML = HOME_SLIDES.map((item)=>`<a class="hero-ad-card" href="#products" target="_self" rel="noopener"><span class="hero-slide-badge">${item.badge || 'Kampanya'}</span><img src="${resolveAssetUrl(item.imageUrl || '')}" alt="${item.title || 'Slider görseli'}" loading="lazy" decoding="async"><div class="hero-ad-copy"><h4>${item.title || 'Kampanya'}</h4><p>${item.subtitle || ''}</p></div></a>`).join('');
   dots.innerHTML = HOME_SLIDES.map((_, idx)=>`<button type="button" class="hero-ad-dot${idx===0?' active':''}" aria-label="${idx+1}. slayta git" onclick="goHomeSlide(${idx})"></button>`).join('');
-  wrap.style.display='block';
   homeSlideIndex = 0;
-  setHomeSliderActiveDot(0);
+  updateHomeSlideUI(true);
   attachHomeSliderEvents();
-  HOME_SLIDER_AUTOPLAY = window.setInterval(()=>goHomeSlide(homeSlideIndex + 1), 5000);
+  restartHomeSliderAutoplay();
+  wrap.style.display='block';
 }
 
 function attachHomeSliderEvents(){
   if(HOME_SLIDER_EVENTS_BOUND) return;
   HOME_SLIDER_EVENTS_BOUND = true;
-  const prev = document.getElementById('heroAdPrev');
-  const next = document.getElementById('heroAdNext');
-  const track = document.getElementById('heroAdTrack');
-  if(prev) prev.addEventListener('click', ()=>goHomeSlide(homeSlideIndex - 1));
-  if(next) next.addEventListener('click', ()=>goHomeSlide(homeSlideIndex + 1));
-  if(track){
-    track.addEventListener('scroll', debounce(()=>syncHomeSlideFromScroll(), 90), { passive:true });
-    track.addEventListener('pointerdown', clearHomeSliderAutoplay, { passive:true });
-    track.addEventListener('pointerup', restartHomeSliderAutoplay, { passive:true });
-    track.addEventListener('touchstart', clearHomeSliderAutoplay, { passive:true });
-    track.addEventListener('touchend', restartHomeSliderAutoplay, { passive:true });
-  }
+  document.getElementById('heroAdPrev')?.addEventListener('click', ()=>goHomeSlide(homeSlideIndex - 1));
+  document.getElementById('heroAdNext')?.addEventListener('click', ()=>goHomeSlide(homeSlideIndex + 1));
 }
 function goHomeSlide(nextIndex){
   if(!HOME_SLIDES.length) return;
-  const track = document.getElementById('heroAdTrack');
-  if(!track) return;
-  const card = track.querySelector('.hero-ad-card');
-  if(!card) return;
   homeSlideIndex = (nextIndex + HOME_SLIDES.length) % HOME_SLIDES.length;
-  const targetLeft = homeSlideIndex * (card.getBoundingClientRect().width + 12);
-  track.scrollTo({ left: targetLeft, behavior:'smooth' });
-  setHomeSliderActiveDot(homeSlideIndex);
+  updateHomeSlideUI();
   restartHomeSliderAutoplay();
 }
-function syncHomeSlideFromScroll(){
+function updateHomeSlideUI(immediate=false){
   const track = document.getElementById('heroAdTrack');
-  const card = track?.querySelector('.hero-ad-card');
-  if(!track || !card) return;
-  const step = card.getBoundingClientRect().width + 12;
-  const idx = Math.round(track.scrollLeft / step);
-  if(Number.isFinite(idx)){
-    homeSlideIndex = Math.max(0, Math.min(HOME_SLIDES.length - 1, idx));
-    setHomeSliderActiveDot(homeSlideIndex);
+  if(track){
+    track.style.transition = immediate ? 'none' : 'transform .75s cubic-bezier(.22,.61,.36,1)';
+    track.style.transform = `translateX(-${homeSlideIndex * 100}%)`;
+    if(immediate) requestAnimationFrame(()=>{ track.style.transition='transform .75s cubic-bezier(.22,.61,.36,1)'; });
   }
+  setHomeSliderActiveDot(homeSlideIndex);
+  const badges = document.querySelectorAll('.hero-slide-badge');
+  badges.forEach((badge)=>badge.classList.remove('is-visible'));
+  const activeBadge = badges[homeSlideIndex];
+  if(activeBadge) setTimeout(()=>activeBadge.classList.add('is-visible'), 220);
 }
 function setHomeSliderActiveDot(idx){
-  const dots = document.querySelectorAll('#heroAdDots .hero-ad-dot');
-  dots.forEach((dot, i)=>dot.classList.toggle('active', i===idx));
+  document.querySelectorAll('#heroAdDots .hero-ad-dot').forEach((dot, i)=>dot.classList.toggle('active', i===idx));
 }
 function clearHomeSliderAutoplay(){
-  if(HOME_SLIDER_AUTOPLAY){
-    clearInterval(HOME_SLIDER_AUTOPLAY);
-    HOME_SLIDER_AUTOPLAY = null;
-  }
+  if(HOME_SLIDER_AUTOPLAY){ clearInterval(HOME_SLIDER_AUTOPLAY); HOME_SLIDER_AUTOPLAY = null; }
 }
 function restartHomeSliderAutoplay(){
   clearHomeSliderAutoplay();
-  if(HOME_SLIDES.length > 1){
-    HOME_SLIDER_AUTOPLAY = window.setInterval(()=>goHomeSlide(homeSlideIndex + 1), 5000);
-  }
-}
-function debounce(fn, wait){
-  let t;
-  return function(...args){
-    clearTimeout(t);
-    t = setTimeout(()=>fn.apply(this, args), wait);
-  };
+  if(HOME_SLIDES.length > 1) HOME_SLIDER_AUTOPLAY = window.setInterval(()=>goHomeSlide(homeSlideIndex + 1), 5200);
 }
 
 // ── Ürün verisi ──
@@ -2155,9 +2013,9 @@ let homeSlideIndex = 0;
 let HOME_SLIDER_AUTOPLAY = null;
 let HOME_SLIDER_EVENTS_BOUND = false;
 const HOME_SLIDES_FALLBACK = [
-  { imageUrl:'resimler/foto1.jpg', targetPath:'#contact' },
-  { imageUrl:'resimler/1774687325299-IMG_1471.jpeg', targetPath:'#products' },
-  { imageUrl:'resimler/1774694045163-IMG_9907.jpeg', targetPath:'#products' }
+  { id:1, imageUrl:'resimler/foto1.jpg', title:'Nisan\'da Zam Yok', subtitle:'Tül, zebra ve stor perdelerde avantajlı fiyatlar.', badge:'Yeni Fiyat' },
+  { id:2, imageUrl:'resimler/1774687325299-IMG_1471.jpeg', title:'Salonlara Özel Koleksiyon', subtitle:'Kurumsal ve modern görünüm için yeni seri.', badge:'Özel Seri' },
+  { id:3, imageUrl:'resimler/1774694045163-IMG_9907.jpeg', title:'Keşif + Montaj Tek Ekip', subtitle:'Bursa içi hızlı keşif ve profesyonel montaj.', badge:'Hizmet' }
 ];
 let currentModalProductId = null;
 // Kategoriler (admin'den senkronize edilir)
@@ -3459,14 +3317,8 @@ function ensureReviewFormVisibleOnMobile(){
   }, 110);
 }
 
-document.getElementById('homePromoClose')?.addEventListener('click',()=>closeHomePromoPanel(true));
-document.getElementById('homePromoModal')?.addEventListener('click',(e)=>{ if(e.target===document.getElementById('homePromoModal')) closeHomePromoPanel(true); });
 
 document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape' && document.getElementById('homePromoModal')?.classList.contains('open')){
-    closeHomePromoPanel(true);
-    return;
-  }
   const modalOpen = document.getElementById('productModal')?.classList.contains('open');
   if(!modalOpen && !imageViewerOpen) return;
   if(e.key === 'Escape'){
@@ -3677,7 +3529,6 @@ function applySectionState(id, {scroll=true} = {}){
   if(mbnEl) mbnEl.classList.add('active-nav');
   updateCartActionPanel();
   updateFloatingCta(targetId);
-  syncHomePromoVisibility(targetId);
 }
 
 function getSectionFromLocation(){

@@ -953,12 +953,12 @@ Işık: Yarı Geçirgen"></textarea></div>
 <div class="page" id="page-slider">
   <div class="breadcrumb"><i class="fas fa-home"></i> <span>Slider</span></div>
   <div class="page-header">
-    <div><h1>Slider <em>Yönetimi</em></h1><p>Anasayfa reklam slider kayıtlarını yönetin</p></div>
+    <div><h1>Slider <em>Yönetimi</em></h1><p>Ön yüzdeki dinamik slider görsellerini başlık/alt metin ile yönetin</p></div>
     <button class="btn btn-primary" onclick="openSliderModal()"><i class="fas fa-plus"></i> Yeni Slayt</button>
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#</th><th>Durum</th><th>Görsel</th><th>Hedef Yol</th><th>Sıra</th><th>İşlem</th></tr></thead>
+      <thead><tr><th>#</th><th>Görsel</th><th>Başlık</th><th>Alt Metin</th><th>Sıra</th><th>İşlem</th></tr></thead>
       <tbody id="sliderTableBody"><tr><td colspan="6" style="text-align:center;padding:30px">Yükleniyor...</td></tr></tbody>
     </table>
   </div>
@@ -1348,19 +1348,20 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
       <input type="hidden" id="sliderEditId">
       <div class="fg">
         <label>Görsel Seç *</label>
-        <input type="file" id="sliderImageFile" accept="image/*" onchange="handleSliderImageFileSelect(this)">
+        <label class="upload-zone" style="padding:14px;border-radius:10px">
+          <i class="fas fa-image" style="font-size:1.2rem;margin-bottom:6px"></i>
+          <p><span class="highlight">Dosya Seç</span> (mobil/PC)</p>
+          <input type="file" id="sliderImageFile" accept="image/*" onchange="handleSliderImageFileSelect(this)">
+        </label>
         <div id="sliderImagePreviewWrap" style="display:none;margin-top:8px">
-          <img id="sliderImagePreview" src="" alt="Slider önizleme" style="max-height:160px;border-radius:10px;border:1px solid var(--border);object-fit:cover">
+          <img id="sliderImagePreview" src="" alt="Slider önizleme" style="max-height:180px;border-radius:10px;border:1px solid var(--border);object-fit:cover">
         </div>
-        <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
-          <button type="button" class="btn btn-outline btn-sm" onclick="uploadSliderImage()"><i class="fas fa-cloud-upload-alt"></i> Görseli Yükle</button>
-          <span id="sliderImageUploadStatus" style="font-size:0.74rem;color:var(--slate-light)">Henüz yüklenmedi</span>
-        </div>
+        <span id="sliderImageUploadStatus" style="font-size:0.74rem;color:var(--slate-light);display:block;margin-top:6px">Henüz görsel seçilmedi</span>
       </div>
-      <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/... veya https://..."></div>
-      <div class="fg"><label>Hedef Yol *</label><input type="text" id="sliderTargetPath" placeholder="/urunler/stor-perdeler"></div>
-      <div class="fg"><label>Sıra</label><input type="number" id="sliderOrder" value="0"></div>
-      <label style="display:flex;align-items:center;gap:8px;font-size:0.83rem"><input type="checkbox" id="sliderActive" checked> Aktif</label>
+      <div class="fg"><label>Başlık *</label><input type="text" id="sliderTitle" placeholder="Örn: Nisan'da Zam Yok"></div>
+      <div class="fg"><label>Alt Metin *</label><input type="text" id="sliderSubtitle" placeholder="Örn: Tüm ürünlerde 2025 fiyatları devam ediyor"></div>
+      <div class="fg"><label>Kampanya Rozeti</label><input type="text" id="sliderBadge" placeholder="Örn: Kampanya"></div>
+      <div class="fg"><label>Sıra</label><input type="number" id="sliderOrder" value="1" min="1"></div>
     </div>
     <div class="form-modal-footer">
       <button class="btn btn-outline" onclick="closeModal('sliderModal')">İptal</button>
@@ -2141,31 +2142,42 @@ async function fetchProducts(){
 }
 
 
-let SLIDER_ITEMS = [];
 let sliderSelectedDataUrl = '';
 let sliderSelectedFileName = '';
+const HOME_SLIDER_STORAGE_KEY = 'gp_home_slider_items_v2';
+const SLIDER_DEFAULT_ITEMS = [
+  {id:1,imageUrl:'resimler/foto1.jpg',title:'Nisan\'da Zam Yok',subtitle:'Tüm ürünlerde avantajlı fiyatlar devam ediyor.',badge:'Kampanya',orderNo:1},
+  {id:2,imageUrl:'resimler/1774687325299-IMG_1471.jpeg',title:'Yeni Sezon Zebra',subtitle:'Kurumsal, modern ve ölçüye özel çözümler.',badge:'Yeni Sezon',orderNo:2},
+  {id:3,imageUrl:'resimler/1774694045163-IMG_9907.jpeg',title:'Ücretsiz Keşif',subtitle:'Bursa içi keşif ve montaj tek ekipten.',badge:'Hizmet',orderNo:3}
+];
+let SLIDER_ITEMS = [];
 
+function getSliderItemsFromStorage(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(HOME_SLIDER_STORAGE_KEY) || 'null');
+    if(Array.isArray(parsed) && parsed.length) return parsed;
+  }catch(_){ }
+  localStorage.setItem(HOME_SLIDER_STORAGE_KEY, JSON.stringify(SLIDER_DEFAULT_ITEMS));
+  return [...SLIDER_DEFAULT_ITEMS];
+}
+function saveSliderItemsToStorage(){
+  localStorage.setItem(HOME_SLIDER_STORAGE_KEY, JSON.stringify(SLIDER_ITEMS));
+}
 function setSliderImagePreview(src=''){
   const wrap = document.getElementById('sliderImagePreviewWrap');
   const img = document.getElementById('sliderImagePreview');
   if(!wrap || !img) return;
-  if(src){
-    img.src = src;
-    wrap.style.display = 'block';
-  }else{
-    img.src = '';
-    wrap.style.display = 'none';
-  }
+  if(src){ img.src = src; wrap.style.display = 'block'; }
+  else { img.removeAttribute('src'); wrap.style.display = 'none'; }
 }
-
 function handleSliderImageFileSelect(input){
-  const file = Array.from(input?.files || [])[0];
+  const file = input?.files?.[0];
   const status = document.getElementById('sliderImageUploadStatus');
   sliderSelectedDataUrl = '';
   sliderSelectedFileName = '';
   if(!file){
     setSliderImagePreview('');
-    if(status) status.textContent = 'Henüz yüklenmedi';
+    if(status) status.textContent = 'Henüz görsel seçilmedi';
     return;
   }
   sliderSelectedFileName = file.name;
@@ -2173,57 +2185,14 @@ function handleSliderImageFileSelect(input){
   reader.onload = (event)=>{
     sliderSelectedDataUrl = String(event.target?.result || '');
     setSliderImagePreview(sliderSelectedDataUrl);
-    if(status) status.textContent = `Seçildi: ${file.name}`;
-  };
-  reader.onerror = ()=>{
-    setSliderImagePreview('');
-    if(status) status.textContent = 'Dosya okunamadı';
-    aToast('❌ Dosya önizleme için okunamadı','error');
+    if(status) status.textContent = `Seçildi: ${sliderSelectedFileName}`;
   };
   reader.readAsDataURL(file);
 }
 
-async function uploadSliderImage(){
-  const status = document.getElementById('sliderImageUploadStatus');
-  const token = getGithubToken();
-  if(!token){
-    aToast('⚠️ Önce geçerli bir GitHub token girin','error');
-    resetGithubToken();
-    return;
-  }
-  if(!sliderSelectedDataUrl && !sliderSelectedFileName){
-    aToast('⚠️ Önce bir görsel seçin','error');
-    return;
-  }
-  try{
-    if(status) status.textContent = 'Yükleniyor...';
-    const fileInput = document.getElementById('sliderImageFile');
-    const file = Array.from(fileInput?.files || [])[0];
-    if(!file){
-      throw new Error('Yüklenecek dosya bulunamadı');
-    }
-    const uploadedPath = await uploadImageWithRetry(token, file, { prefix:'slider' });
-    document.getElementById('sliderImage').value = uploadedPath || '';
-    if(status) status.textContent = `Yüklendi: ${uploadedPath}`;
-    aToast('✅ Slider görseli yüklendi','success');
-  }catch(err){
-    if(status) status.textContent = 'Yükleme başarısız';
-    aToast('❌ '+err.message,'error');
-  }
-}
-
 async function loadSliderItems(){
-  const body = document.getElementById('sliderTableBody');
-  if(body) body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px">Yükleniyor...</td></tr>';
-  try{
-    const res = await apiFetch('/api/admin/slider-ads', { headers:{ 'x-admin-key':'gocmen1993' } });
-    const payload = await res.json();
-    if(!res.ok) throw new Error(payload?.error || 'Slider verileri alınamadı');
-    SLIDER_ITEMS = Array.isArray(payload?.items) ? payload.items : [];
-    renderSliderTable();
-  }catch(err){
-    if(body) body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--red)">${err.message}</td></tr>`;
-  }
+  SLIDER_ITEMS = getSliderItemsFromStorage().sort((a,b)=>(Number(a.orderNo)||0)-(Number(b.orderNo)||0));
+  renderSliderTable();
 }
 
 function renderSliderTable(){
@@ -2235,23 +2204,23 @@ function renderSliderTable(){
   }
   body.innerHTML = SLIDER_ITEMS.map((item,idx)=>`<tr>
     <td>${idx+1}</td>
-    <td>${item.isActive===false ? 'Pasif' : 'Aktif'}</td>
     <td><img src="${item.imageUrl || ''}" alt="slide" class="product-thumb"></td>
-    <td style="max-width:260px;word-break:break-all">${item.targetPath || '-'}</td>
+    <td><b>${item.title || '-'}</b></td>
+    <td style="max-width:260px">${item.subtitle || '-'}</td>
     <td>${Number(item.orderNo)||0}</td>
-    <td><div class="action-btns"><button class="icon-btn edit" onclick="editSliderItem(${item.id})"><i class="fas fa-pen"></i></button><button class="icon-btn del" onclick="deleteSliderItem(${item.id})"><i class="fas fa-trash"></i></button></div></td>
+    <td><div class="action-btns"><button class="icon-btn edit" onclick="moveSliderItem(${item.id},-1)" title="Yukarı"><i class="fas fa-arrow-up"></i></button><button class="icon-btn edit" onclick="moveSliderItem(${item.id},1)" title="Aşağı"><i class="fas fa-arrow-down"></i></button><button class="icon-btn edit" onclick="editSliderItem(${item.id})"><i class="fas fa-pen"></i></button><button class="icon-btn del" onclick="deleteSliderItem(${item.id})"><i class="fas fa-trash"></i></button></div></td>
   </tr>`).join('');
 }
 
 function openSliderModal(){
   document.getElementById('sliderModalTitle').textContent='Yeni Slayt';
   document.getElementById('sliderEditId').value='';
-  document.getElementById('sliderImage').value='';
-  document.getElementById('sliderTargetPath').value='';
-  document.getElementById('sliderOrder').value='0';
-  document.getElementById('sliderActive').checked=true;
+  document.getElementById('sliderTitle').value='';
+  document.getElementById('sliderSubtitle').value='';
+  document.getElementById('sliderBadge').value='Kampanya';
+  document.getElementById('sliderOrder').value=String(SLIDER_ITEMS.length + 1);
   document.getElementById('sliderImageFile').value='';
-  document.getElementById('sliderImageUploadStatus').textContent='Henüz yüklenmedi';
+  document.getElementById('sliderImageUploadStatus').textContent='Henüz görsel seçilmedi';
   sliderSelectedDataUrl='';
   sliderSelectedFileName='';
   setSliderImagePreview('');
@@ -2263,50 +2232,63 @@ function editSliderItem(id){
   if(!item) return;
   document.getElementById('sliderModalTitle').textContent='Slayt Düzenle';
   document.getElementById('sliderEditId').value=String(item.id);
-  document.getElementById('sliderImage').value=item.imageUrl || '';
-  document.getElementById('sliderTargetPath').value=item.targetPath || '';
+  document.getElementById('sliderTitle').value=item.title || '';
+  document.getElementById('sliderSubtitle').value=item.subtitle || '';
+  document.getElementById('sliderBadge').value=item.badge || 'Kampanya';
   document.getElementById('sliderOrder').value=String(Number(item.orderNo)||0);
-  document.getElementById('sliderActive').checked=item.isActive !== false;
-  document.getElementById('sliderImageUploadStatus').textContent='Mevcut kayıt yüklü';
-  sliderSelectedDataUrl='';
+  document.getElementById('sliderImageUploadStatus').textContent='Mevcut görsel kullanılıyor';
+  sliderSelectedDataUrl=item.imageUrl || '';
   sliderSelectedFileName='';
   setSliderImagePreview(item.imageUrl || '');
   document.getElementById('sliderModal').classList.add('open');
 }
 
-async function saveSliderItem(){
-  const id = document.getElementById('sliderEditId').value;
+function saveSliderItem(){
+  const id = Number(document.getElementById('sliderEditId').value || 0);
   const payload = {
-    imageUrl: document.getElementById('sliderImage').value.trim(),
-    targetPath: document.getElementById('sliderTargetPath').value.trim(),
-    orderNo: Number(document.getElementById('sliderOrder').value) || 0,
-    isActive: document.getElementById('sliderActive').checked,
+    imageUrl: sliderSelectedDataUrl,
+    title: document.getElementById('sliderTitle').value.trim(),
+    subtitle: document.getElementById('sliderSubtitle').value.trim(),
+    badge: document.getElementById('sliderBadge').value.trim() || 'Kampanya',
+    orderNo: Number(document.getElementById('sliderOrder').value) || 1,
+    isActive: true
   };
-  if(!payload.imageUrl || !payload.targetPath){ aToast('⚠️ Görsel ve hedef yol zorunlu','error'); return; }
-  try{
-    const isEdit = Boolean(id);
-    const res = await apiFetch(`/api/admin/slider-ads${isEdit?`?id=${encodeURIComponent(id)}`:''}`, {
-      method: isEdit ? 'PUT' : 'POST',
-      headers:{'Content-Type':'application/json','x-admin-key':'gocmen1993'},
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if(!res.ok) throw new Error(data?.error || 'Kayıt başarısız');
-    aToast(isEdit ? '✓ Slider güncellendi' : '✓ Slider eklendi','success');
-    closeModal('sliderModal');
-    loadSliderItems();
-  }catch(err){ aToast('❌ '+err.message,'error'); }
+  if(!payload.imageUrl || !payload.title || !payload.subtitle){
+    aToast('⚠️ Görsel, başlık ve alt metin zorunlu','error');
+    return;
+  }
+  if(id){
+    const idx = SLIDER_ITEMS.findIndex(x=>Number(x.id)===id);
+    if(idx>=0) SLIDER_ITEMS[idx] = {...SLIDER_ITEMS[idx], ...payload};
+  }else{
+    payload.id = Date.now();
+    SLIDER_ITEMS.push(payload);
+  }
+  SLIDER_ITEMS.sort((a,b)=>(Number(a.orderNo)||0)-(Number(b.orderNo)||0));
+  saveSliderItemsToStorage();
+  closeModal('sliderModal');
+  renderSliderTable();
+  aToast('✓ Slider kaydedildi','success');
 }
 
-async function deleteSliderItem(id){
+function moveSliderItem(id, direction){
+  const idx = SLIDER_ITEMS.findIndex(item=>Number(item.id)===Number(id));
+  if(idx < 0) return;
+  const targetIdx = idx + direction;
+  if(targetIdx < 0 || targetIdx >= SLIDER_ITEMS.length) return;
+  [SLIDER_ITEMS[idx], SLIDER_ITEMS[targetIdx]] = [SLIDER_ITEMS[targetIdx], SLIDER_ITEMS[idx]];
+  SLIDER_ITEMS.forEach((item,index)=>{ item.orderNo = index + 1; });
+  saveSliderItemsToStorage();
+  renderSliderTable();
+}
+
+function deleteSliderItem(id){
   if(!confirm('Kayıt silinsin mi?')) return;
-  try{
-    const res = await apiFetch(`/api/admin/slider-ads?id=${encodeURIComponent(id)}`, { method:'DELETE', headers:{'x-admin-key':'gocmen1993'} });
-    const data = await res.json();
-    if(!res.ok) throw new Error(data?.error || 'Silinemedi');
-    aToast('✓ Slider kaydı silindi','success');
-    loadSliderItems();
-  }catch(err){ aToast('❌ '+err.message,'error'); }
+  SLIDER_ITEMS = SLIDER_ITEMS.filter(item=>Number(item.id)!==Number(id));
+  SLIDER_ITEMS.forEach((item,index)=>{ item.orderNo = index + 1; });
+  saveSliderItemsToStorage();
+  renderSliderTable();
+  aToast('✓ Slider kaydı silindi','success');
 }
 
 // ════════════════════════════════════

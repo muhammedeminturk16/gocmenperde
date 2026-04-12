@@ -910,6 +910,20 @@ Işık: Yarı Geçirgen"></textarea></div>
     <div class="dash-panel-header"><h3><i class="fas fa-display"></i> Ana Sayfa Canlı Fırsat Vitrini</h3></div>
     <div class="dash-panel-body">
       <div class="form-row">
+        <div class="fg"><label>Üst Etiket</label><input id="campaignHeroLabel" type="text" placeholder="Premium Kampanya"></div>
+        <div class="fg"><label>Buton Metni</label><input id="campaignHeroActionText" type="text" placeholder="Tüm Ürünleri Gör"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Başlık</label><input id="campaignHeroTitle" type="text" placeholder="Vitrin Ürünlerde Özel Fiyatlar"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Açıklama</label><textarea id="campaignHeroSubtitle" placeholder="Tam genişlikte premium vitrin; yönetim panelinden seçtiğiniz ürünler anında güncellenir."></textarea></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn btn-outline btn-sm" onclick="saveCampaignHeroContent()"><i class="fas fa-floppy-disk"></i> Başlık Alanını Kaydet</button>
+        <button class="btn btn-outline btn-sm" onclick="resetCampaignHeroContent()"><i class="fas fa-rotate-left"></i> Varsayılan Başlık</button>
+      </div>
+      <div class="form-row">
         <div class="fg">
           <label>Ürün Bağlantısı (opsiyonel)</label>
           <select id="liveFeedProduct"></select>
@@ -1575,6 +1589,7 @@ const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
 const FROM_YOU_SHOWCASE_KEY = 'gp_from_you_showcase_v1';
 const FOOTER_PAYMENT_LOGOS_KEY = 'gp_footer_payment_logos_v1';
 const HOME_PROMO_PANEL_KEY = 'gp_home_promo_panel_v1';
+const CAMPAIGN_HERO_CONTENT_KEY = 'gp_campaign_hero_content_v1';
 const DEFAULT_HOME_PROMO_PANEL = {
   enabled:true,
   delayMs:1400,
@@ -1587,6 +1602,12 @@ const DEFAULT_HOME_PROMO_PANEL = {
     {icon:'fas fa-screwdriver-wrench',text:'Ücretsiz Kurulum'},
     {icon:'fas fa-credit-card',text:'Taksit Seçenekleri'}
   ]
+};
+const DEFAULT_CAMPAIGN_HERO_CONTENT = {
+  label:'Premium Kampanya',
+  title:'Vitrin Ürünlerde Özel Fiyatlar',
+  subtitle:'Tam genişlikte premium vitrin; yönetim panelinden seçtiğiniz ürünler anında güncellenir.',
+  actionText:'Tüm Ürünleri Gör'
 };
 const DEFAULT_FOOTER_PAYMENT_LOGOS = [
   {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png',alt:'Troy'},
@@ -3637,6 +3658,41 @@ const DEFAULT_LIVE_CAMPAIGN_STREAM=[
   {id:'plise-kampanya',productId:'plise-krem-160x200',title:'Plise Perde Krem 160x200',label:'Kampanya',price:1450,oldPrice:1690,image:'resimler/foto7.jpg',buttonText:'İncele',active:true},
   {id:'stor-salon',productId:'stor-salon-antrasit',title:'Stor Perde Antrasit Seri',label:'Çok Satan',price:1890,oldPrice:2190,image:'resimler/foto8.jpg',buttonText:'Detaylar',active:true}
 ];
+function getCampaignHeroContent(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(CAMPAIGN_HERO_CONTENT_KEY) || 'null') || {};
+    return {
+      label: String(parsed.label || DEFAULT_CAMPAIGN_HERO_CONTENT.label).trim(),
+      title: String(parsed.title || DEFAULT_CAMPAIGN_HERO_CONTENT.title).trim(),
+      subtitle: String(parsed.subtitle || DEFAULT_CAMPAIGN_HERO_CONTENT.subtitle).trim(),
+      actionText: String(parsed.actionText || DEFAULT_CAMPAIGN_HERO_CONTENT.actionText).trim()
+    };
+  }catch(_){
+    return {...DEFAULT_CAMPAIGN_HERO_CONTENT};
+  }
+}
+function fillCampaignHeroContentForm(){
+  const content = getCampaignHeroContent();
+  if(document.getElementById('campaignHeroLabel')) document.getElementById('campaignHeroLabel').value = content.label;
+  if(document.getElementById('campaignHeroTitle')) document.getElementById('campaignHeroTitle').value = content.title;
+  if(document.getElementById('campaignHeroSubtitle')) document.getElementById('campaignHeroSubtitle').value = content.subtitle;
+  if(document.getElementById('campaignHeroActionText')) document.getElementById('campaignHeroActionText').value = content.actionText;
+}
+function saveCampaignHeroContent(){
+  const payload = {
+    label: (document.getElementById('campaignHeroLabel')?.value || '').trim() || DEFAULT_CAMPAIGN_HERO_CONTENT.label,
+    title: (document.getElementById('campaignHeroTitle')?.value || '').trim() || DEFAULT_CAMPAIGN_HERO_CONTENT.title,
+    subtitle: (document.getElementById('campaignHeroSubtitle')?.value || '').trim() || DEFAULT_CAMPAIGN_HERO_CONTENT.subtitle,
+    actionText: (document.getElementById('campaignHeroActionText')?.value || '').trim() || DEFAULT_CAMPAIGN_HERO_CONTENT.actionText
+  };
+  localStorage.setItem(CAMPAIGN_HERO_CONTENT_KEY, JSON.stringify(payload));
+  aToast('✓ Vitrin başlık alanı kaydedildi','success');
+}
+function resetCampaignHeroContent(){
+  localStorage.setItem(CAMPAIGN_HERO_CONTENT_KEY, JSON.stringify(DEFAULT_CAMPAIGN_HERO_CONTENT));
+  fillCampaignHeroContentForm();
+  aToast('✓ Varsayılan vitrin başlığı yüklendi','success');
+}
 function getCampaigns(){return JSON.parse(localStorage.getItem(CAMP_KEY)||'null')||defaultCampaigns();}
 function saveCampaignsList(arr){localStorage.setItem(CAMP_KEY,JSON.stringify(arr));}
 function getLiveCampaignStreamItems(){
@@ -3658,6 +3714,7 @@ function defaultCampaigns(){
 
 function renderCampaigns(){
   const list = getCampaigns();
+  fillCampaignHeroContentForm();
   const productSelect = document.getElementById('liveFeedProduct');
   if(productSelect){
     productSelect.innerHTML = `<option value="">Ürün seçmeden manuel vitrin kartı</option>${

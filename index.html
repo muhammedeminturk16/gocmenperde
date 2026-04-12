@@ -1925,10 +1925,11 @@ async function loadHomeSlider(){
     const res = await fetch('/api/slider', { cache:'no-store' });
     if(!res.ok) throw new Error('Slider alınamadı');
     const payload = await res.json();
-    HOME_SLIDES = Array.isArray(payload?.items) ? payload.items : [];
+    const items = Array.isArray(payload?.items) ? payload.items : [];
+    HOME_SLIDES = items.length ? items : HOME_SLIDES_FALLBACK;
     renderHomeSlider();
   }catch(_){
-    HOME_SLIDES = [];
+    HOME_SLIDES = HOME_SLIDES_FALLBACK;
     renderHomeSlider();
   }
 }
@@ -2031,6 +2032,11 @@ let HOME_SLIDES = [];
 let homeSlideIndex = 0;
 let HOME_SLIDER_AUTOPLAY = null;
 let HOME_SLIDER_EVENTS_BOUND = false;
+const HOME_SLIDES_FALLBACK = [
+  { title:'Ücretsiz Keşif Randevusu', imageUrl:'resimler/foto1.jpg', linkUrl:'#contact' },
+  { title:'Yeni Sezon Zebra Perde Modelleri', imageUrl:'resimler/1774687325299-IMG_1471.jpeg', linkUrl:'#products' },
+  { title:'Salonlara Özel Tül Perde Koleksiyonu', imageUrl:'resimler/1774694045163-IMG_9907.jpeg', linkUrl:'#products' }
+];
 let currentModalProductId = null;
 // Kategoriler (admin'den senkronize edilir)
 let CATEGORIES = [

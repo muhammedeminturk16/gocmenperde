@@ -1432,7 +1432,14 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
 // ════════════════════════════════════
 const ADMIN_PASS_KEY = 'gp_admin_pass';
 const ADMIN_EMAIL = 'muhammedeminturk.16@gmail.com';
-function getPass(){ return localStorage.getItem(ADMIN_PASS_KEY) || 'Emin.016'; }
+const ADMIN_PASS_FALLBACKS = ['Emin.016', 'gocmen1993'];
+function getStoredPass(){ return (localStorage.getItem(ADMIN_PASS_KEY) || '').trim(); }
+function isValidAdminPassword(pass){
+  const candidate = (pass || '').trim();
+  if(!candidate) return false;
+  const pool = new Set([getStoredPass(), ...ADMIN_PASS_FALLBACKS].filter(Boolean));
+  return pool.has(candidate);
+}
 function getAdminApiKey(){ return 'gocmen1993'; }
 if(window.location.pathname === '/admin/login'){
   window.history.replaceState({}, '', '/admin.html');
@@ -1440,8 +1447,8 @@ if(window.location.pathname === '/admin/login'){
 
 function doLogin(){
   const e = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
-  const p = document.getElementById('loginPass').value;
-  if(e === ADMIN_EMAIL && p === getPass()){
+  const p = (document.getElementById('loginPass').value || '').trim();
+  if(e === ADMIN_EMAIL && isValidAdminPassword(p)){
     document.getElementById('loginScreen').classList.add('hide');
     document.getElementById('adminApp').classList.add('show');
     initAdmin();

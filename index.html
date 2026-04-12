@@ -2320,14 +2320,36 @@ async function loadProducts({forceRefresh=false} = {}){
   return productRequestInFlight;
 }
 
+function applyCategoryDeepLink(categoryKey=''){
+  const cleanKey = String(categoryKey || '').trim();
+  if(!cleanKey) return false;
+  const exists = CATEGORIES.some(c=>String(c?.key || '')===cleanKey);
+  if(!exists) return false;
+  go('products');
+  setTimeout(()=>{
+    const all = document.getElementById('cat-all');
+    if(all) all.checked = false;
+    CATEGORIES.forEach(c=>{
+      const el = document.getElementById('cat-'+c.key);
+      if(el) el.checked = c.key===cleanKey;
+    });
+    applyFilters();
+  }, 120);
+  return true;
+}
+
 function handleInitialProductDeepLink(){
   const params = new URLSearchParams(window.location.search);
   const productId = params.get('product');
-  if(!productId) return;
-  const target = PRODUCTS.find(p=>String(p.id) === String(productId));
-  if(!target) return;
-  go('products');
-  setTimeout(()=>openModalFromProduct(target.id), 120);
+  if(productId){
+    const target = PRODUCTS.find(p=>String(p.id) === String(productId));
+    if(!target) return;
+    go('products');
+    setTimeout(()=>openModalFromProduct(target.id), 120);
+    return;
+  }
+  const categoryKey = params.get('category');
+  if(categoryKey) applyCategoryDeepLink(categoryKey);
 }
 
 function useFirstOrderCouponFromBanner(){

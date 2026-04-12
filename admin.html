@@ -513,7 +513,7 @@ tbody tr:hover td{background:#fdfcf8}
       <form id="adminLoginForm">
         <input type="email" class="login-input" id="loginEmail" placeholder="E-posta adresinizi girin" autocomplete="username">
         <input type="password" class="login-input" id="loginPass" placeholder="Şifrenizi girin" autocomplete="current-password">
-        <button type="button" id="adminLoginBtn" class="login-btn"><i class="fas fa-lock"></i>&nbsp;&nbsp;Giriş Yap</button>
+        <button type="submit" id="adminLoginBtn" class="login-btn"><i class="fas fa-lock"></i>&nbsp;&nbsp;Giriş Yap</button>
       </form>
       <p class="login-error" id="loginError"><i class="fas fa-exclamation-triangle"></i> &nbsp;E-posta veya şifre hatalı!</p>
     </div>
@@ -1470,15 +1470,33 @@ function logout(){
   closeSidebar();
 }
 window.doLogin = doLogin;
-document.getElementById('adminLoginForm')?.addEventListener('submit', function(e){
-  e.preventDefault();
-  doLogin();
-});
-document.getElementById('adminLoginBtn')?.addEventListener('click', function(e){
-  e.preventDefault();
-  doLogin();
-});
-['loginPass','loginEmail'].forEach(id=>document.getElementById(id).addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); }));
+function bindLoginEvents(){
+  const loginForm = document.getElementById('adminLoginForm');
+  const loginBtn = document.getElementById('adminLoginBtn');
+  if(loginForm && !loginForm.dataset.bound){
+    loginForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      doLogin();
+    });
+    loginForm.dataset.bound = '1';
+  }
+  if(loginBtn && !loginBtn.dataset.bound){
+    loginBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      doLogin();
+    });
+    loginBtn.dataset.bound = '1';
+  }
+  ['loginPass','loginEmail'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && !el.dataset.bound){
+      el.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+      el.dataset.bound = '1';
+    }
+  });
+}
+bindLoginEvents();
+document.addEventListener('DOMContentLoaded', bindLoginEvents);
 ['f-price','f-oldprice'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateDiscountBadgeFromInputs));
 
 // ════════════════════════════════════
@@ -2909,7 +2927,7 @@ function saveProduct(){
   })();
 
   if(images.some(isInlineImageData)){
-    aToast('⚠️ Görseller Base64 önizleme formatında. Önce GitHub'a yükleyin.','error');
+    aToast("⚠️ Görseller Base64 önizleme formatında. Önce GitHub'a yükleyin.",'error');
     return;
   }
 

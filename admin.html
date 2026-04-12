@@ -510,10 +510,10 @@ tbody tr:hover td{background:#fdfcf8}
     <div class="login-right">
       <h2>Giriş Yap</h2>
       <p>Admin hesabınızla devam edin</p>
-      <form id="adminLoginForm" onsubmit="event.preventDefault();doLogin()">
+      <form id="adminLoginForm">
         <input type="email" class="login-input" id="loginEmail" placeholder="E-posta adresinizi girin" autocomplete="username">
         <input type="password" class="login-input" id="loginPass" placeholder="Şifrenizi girin" autocomplete="current-password">
-        <button type="submit" class="login-btn"><i class="fas fa-lock"></i>&nbsp;&nbsp;Giriş Yap</button>
+        <button type="button" id="adminLoginBtn" class="login-btn"><i class="fas fa-lock"></i>&nbsp;&nbsp;Giriş Yap</button>
       </form>
       <p class="login-error" id="loginError"><i class="fas fa-exclamation-triangle"></i> &nbsp;E-posta veya şifre hatalı!</p>
     </div>
@@ -1474,7 +1474,7 @@ document.getElementById('adminLoginForm')?.addEventListener('submit', function(e
   e.preventDefault();
   doLogin();
 });
-document.querySelector('#adminLoginForm .login-btn')?.addEventListener('click', function(e){
+document.getElementById('adminLoginBtn')?.addEventListener('click', function(e){
   e.preventDefault();
   doLogin();
 });

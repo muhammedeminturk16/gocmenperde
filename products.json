@@ -377,9 +377,9 @@
     "id": "zebra-perde-bej-beyaz-cizgili-1774963152707-64",
     "name": "Zebra Perde Bej Beyaz Çizgili",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",
-    "image": "resimler/1774962808957-bulk-9b1f43ad-d410-4734-a47c-2e2a3c2f7e77-IMG_1792.jpeg",
+    "image": "/resimler/1774962808957-bulk-9b1f43ad-d410-4734-a47c-2e2a3c2f7e77-IMG_1792.jpeg",
     "images": [
-      "resimler/1774962808957-bulk-9b1f43ad-d410-4734-a47c-2e2a3c2f7e77-IMG_1792.jpeg"
+      "/resimler/1774962808957-bulk-9b1f43ad-d410-4734-a47c-2e2a3c2f7e77-IMG_1792.jpeg"
     ],
     "price": 650,
     "oldPrice": 850,
@@ -389,9 +389,9 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%24 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 85,
     "serialNumber": "Hayal V-03",
     "active": true,
     "specs": {

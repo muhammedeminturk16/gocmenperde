@@ -57,6 +57,18 @@ function pickClientIp(req) {
   return net.isIP(configuredFallback) === 4 ? configuredFallback : '127.0.0.1';
 }
 
+async function parsePaytrResponse(response) {
+  const rawBody = await response.text();
+  if (!rawBody) {
+    return { payload: null, parseError: 'empty_response', rawBody: '' };
+  }
+  try {
+    return { payload: JSON.parse(rawBody), parseError: null, rawBody };
+  } catch (error) {
+    return { payload: null, parseError: safeString(error.message, 'invalid_json'), rawBody };
+  }
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -143,7 +155,16 @@ module.exports = async function handler(req, res) {
       body: params.toString(),
     });
 
-    const result = await response.json();
+    const { payload: result, parseError, rawBody } = await parsePaytrResponse(response);
+    if (parseError) {
+      return res.status(502).json({
+        error: 'PayTR cevabı okunamadı. Lütfen mağaza yöneticisine bildirin.',
+        detail: parseError,
+        paytr_http_status: response.status,
+        paytr_raw_preview: safeString(rawBody).slice(0, 500),
+      });
+    }
+
     if (result?.status === 'success' && result?.token) {
       return res.status(200).json({
         success: true,
@@ -153,7 +174,11 @@ module.exports = async function handler(req, res) {
     }
 
     const reason = safeString(result?.reason || result?.err_msg || 'PayTR hata döndürdü.');
-    return res.status(400).json({ error: `PayTR Reddi: ${reason}`, paytr: result || null });
+    return res.status(response.ok ? 400 : 502).json({
+      error: `PayTR Reddi: ${reason}`,
+      paytr: result || null,
+      paytr_http_status: response.status,
+    });
   } catch (err) {
     console.error('create-paytr-token error:', err);
     return res.status(500).json({ error: `Ödeme altyapısı hatası: ${safeString(err.message, 'unknown_error')}` });

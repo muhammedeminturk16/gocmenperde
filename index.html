@@ -514,13 +514,14 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .contract-accept{display:flex;align-items:flex-start;gap:8px;font-size:0.84rem;color:var(--slate);margin-top:8px}
 .contract-accept input{margin-top:3px}
 @media(max-width:900px){.contracts-scroll-wrap{grid-template-columns:1fr}}
-.paytr-info-box{background:linear-gradient(135deg,#fff,#faf6ee);border:1px solid rgba(201,168,76,0.35);border-radius:14px;padding:18px}
+.paytr-info-box{position:relative;background:radial-gradient(circle at 10% 10%,rgba(201,168,76,0.16),transparent 38%),linear-gradient(135deg,#fff,#f8f0df);border:1px solid rgba(201,168,76,0.4);border-radius:18px;padding:18px;box-shadow:0 14px 30px rgba(25,21,16,0.08)}
+.paytr-info-box::after{content:'';position:absolute;inset:auto 18px 0 18px;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent)}
 .paytr-info-box h4{margin:0 0 10px;font-size:0.95rem;color:var(--ink)}
 .paytr-info-box p{margin:0;color:var(--slate);font-size:0.9rem;line-height:1.65}
-.paytr-notice{margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(201,168,76,0.12);font-size:0.83rem;color:var(--ink)}
+.paytr-notice{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(201,168,76,0.16);font-size:0.83rem;color:var(--ink);border:1px solid rgba(201,168,76,0.3)}
 .trust-badges{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
 .payment-logo-strip{margin-top:14px;display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}
-.payment-logo-img{height:30px;width:auto;max-width:none;display:block;border:1px solid rgba(201,168,76,.34);border-radius:999px;background:#fff;padding:4px 9px}
+.payment-logo-img{height:30px;width:auto;max-width:none;display:block;border:1px solid rgba(201,168,76,.34);border-radius:999px;background:#fff;padding:4px 9px;box-shadow:0 8px 16px rgba(34,28,20,0.08)}
 
 /* ── Contact ── */
 #contact{background:var(--ink)}
@@ -4422,6 +4423,16 @@ function saveOrderToLocalStorage(name,phone,email,method,addr,note,items,totalTL
   } catch(e){ return null; }
 }
 
+async function safeReadJson(response){
+  const raw = await response.text();
+  if(!raw) return null;
+  try{
+    return JSON.parse(raw);
+  }catch(_){
+    throw new Error(`Sunucudan geçersiz cevap alındı (HTTP ${response.status})`);
+  }
+}
+
 async function submitOrder(){
   if(!validateCheckoutForm()) return;
   const name=document.getElementById('f-name').value.trim();
@@ -4471,9 +4482,9 @@ async function submitOrder(){
           userName: name
         })
       });
-      const data = await response.json();
+      const data = await safeReadJson(response);
       if(!response.ok || !data?.checkout_url){
-        throw new Error(data?.error || 'PayTR ödeme oturumu oluşturulamadı.');
+        throw new Error(data?.error || `PayTR ödeme oturumu oluşturulamadı (HTTP ${response.status}).`);
       }
       window.location.href = data.checkout_url;
       return;

@@ -116,6 +116,10 @@ function parsePaytrTokenResponse(rawText) {
   };
 }
 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function buildPaytrBasket(items) {
   const basket = items.map((item) => {
     const name = String(item.name || 'Ürün').slice(0, 200);
@@ -242,21 +246,40 @@ module.exports = async function handler(req, res) {
     // non_3d=0 ile 3D Secure akışı zorunlu tutulur.
     params.set('non_3d', '0');
 
-    const paytrResponse = await fetch('https://www.paytr.com/odeme/api/get-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Accept: 'application/json,text/plain,*/*'
-      },
-      body: params.toString()
-    });
+    let paytrResponse = null;
+    let data = null;
+    let responseText = '';
 
-    const responseText = await paytrResponse.text();
-    const data = parsePaytrTokenResponse(responseText);
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      paytrResponse = await fetch('https://www.paytr.com/odeme/api/get-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Accept: 'application/json,text/plain,*/*'
+        },
+        body: params.toString()
+      });
+
+      responseText = await paytrResponse.text();
+      data = parsePaytrTokenResponse(responseText);
+
+      if (paytrResponse.ok && data?.status === 'success' && data?.token) {
+        break;
+      }
+
+      if (attempt === 1 && (data?.reason === 'EMPTY_PAYTR_RESPONSE' || !responseText.trim())) {
+        await delay(450);
+        continue;
+      }
+
+      break;
+    }
 
     if (!paytrResponse.ok || data?.status !== 'success' || !data?.token) {
       return res.status(502).json({
-        error: data?.reason || data?.err_msg || 'PayTR ödeme tokenı oluşturulamadı.',
+        error: data?.reason === 'EMPTY_PAYTR_RESPONSE'
+          ? 'PayTR anlık boş yanıt verdi. Lütfen tekrar deneyin.'
+          : (data?.reason || data?.err_msg || 'PayTR ödeme tokenı oluşturulamadı.'),
         paytr: data
       });
     }

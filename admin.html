@@ -972,6 +972,14 @@ Işık: Yarı Geçirgen"></textarea></div>
         <button class="btn btn-primary btn-sm" onclick="saveLiveFeedItem()"><i class="fas fa-plus"></i> Vitrine Ekle</button>
         <button class="btn btn-outline btn-sm" onclick="seedLiveFeedFromProducts()"><i class="fas fa-wand-magic-sparkles"></i> Ürünlerden Otomatik Doldur</button>
       </div>
+      <div class="form-row" style="margin-top:12px">
+        <div class="fg"><label>Canlı Vitrin Kaynağı</label><select id="liveFeedSourceMode"><option value="manual">Manuel kartlar</option><option value="category">Seçili kategori otomatik</option><option value="product">Seçili ürün otomatik</option></select></div>
+        <div class="fg"><label>Vitrin Kategorisi</label><select id="liveFeedSourceCategory"></select></div>
+        <div class="fg"><label>Vitrin Ürünü</label><select id="liveFeedSourceProduct"></select></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="saveLiveFeedSourceConfig()"><i class="fas fa-floppy-disk"></i> Vitrin Kaynağını Kaydet</button>
+      </div>
       <div id="liveFeedList" class="live-feed-admin-grid" style="margin-top:14px"></div>
     </div>
   </div>
@@ -1157,6 +1165,12 @@ Işık: Yarı Geçirgen"></textarea></div>
       </div>
       <div class="fg"><label>Başlık</label><input type="text" id="surpriseCampaignTitle" placeholder="Kampanyaya Hak Kazandınız!"></div>
       <div class="fg"><label>İçerik Metni</label><textarea id="surpriseCampaignContent" placeholder="Sitede geçirdiğiniz süreye özel avantajlar sizi bekliyor."></textarea></div>
+      <div class="form-row">
+        <div class="fg"><label>Tıklama Hedefi</label><select id="surpriseCampaignTargetMode"><option value="products">Tüm ürünler</option><option value="category">Seçili kategori</option><option value="product">Seçili ürün</option><option value="manual">Özel yol</option></select></div>
+        <div class="fg"><label>Hedef Kategori</label><select id="surpriseCampaignTargetCategory"></select></div>
+        <div class="fg"><label>Hedef Ürün</label><select id="surpriseCampaignTargetProduct"></select></div>
+      </div>
+      <div class="fg"><label>Özel Yol</label><input type="text" id="surpriseCampaignTargetPath" placeholder="#products"></div>
       <div class="fg"><label>Görsel</label><input type="text" id="surpriseCampaignImage" readonly placeholder="Yüklenen görsel yolu" style="background:#f7f7f7"></div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
         <label class="btn btn-outline btn-sm" style="cursor:pointer"><i class="fas fa-image"></i> PC/Mobilden Görsel Seç
@@ -1697,7 +1711,11 @@ const DEFAULT_SURPRISE_CAMPAIGN = {
   title:'Kampanyaya Hak Kazandınız!',
   content:'Sitede geçirdiğiniz süreye özel kampanyalı ürünleri şimdi keşfedin.',
   image:'resimler/foto8.jpg',
-  buttonText:'Kampanyayı İncele'
+  buttonText:'Kampanyayı İncele',
+  targetMode:'products',
+  targetCategory:'',
+  targetProduct:'',
+  targetPath:'#products'
 };
 const DEFAULT_FOOTER_PAYMENT_LOGOS = [
   {src:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Troy_logo.svg/320px-Troy_logo.svg.png',alt:'Troy'},
@@ -1922,6 +1940,32 @@ function getSurpriseCampaignSettings(){
   }catch(_){ }
   return {...DEFAULT_SURPRISE_CAMPAIGN};
 }
+function buildSurpriseTargetPath(mode, categoryKey, productId, manualPath=''){
+  if(mode === 'category' && categoryKey) return `#products?category=${encodeURIComponent(categoryKey)}`;
+  if(mode === 'product' && productId) return `#products?product=${encodeURIComponent(productId)}`;
+  if(mode === 'manual') return String(manualPath || '#products').trim();
+  return '#products';
+}
+function refreshSurpriseTargetPath(){
+  const mode = document.getElementById('surpriseCampaignTargetMode')?.value || 'products';
+  const categoryKey = document.getElementById('surpriseCampaignTargetCategory')?.value || '';
+  const productId = document.getElementById('surpriseCampaignTargetProduct')?.value || '';
+  const manualValue = document.getElementById('surpriseCampaignTargetPath')?.value || '';
+  const next = buildSurpriseTargetPath(mode, categoryKey, productId, manualValue);
+  if(mode !== 'manual' && document.getElementById('surpriseCampaignTargetPath')){
+    document.getElementById('surpriseCampaignTargetPath').value = next;
+  }
+}
+function renderSurpriseTargetOptions(){
+  const catEl = document.getElementById('surpriseCampaignTargetCategory');
+  const productEl = document.getElementById('surpriseCampaignTargetProduct');
+  if(catEl){
+    catEl.innerHTML = `<option value="">Kategori seçin</option>${CATEGORIES.map(c=>`<option value="${c.key}">${c.label}</option>`).join('')}`;
+  }
+  if(productEl){
+    productEl.innerHTML = `<option value="">Ürün seçin</option>${PRODUCTS.filter(p=>p?.active).map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}`;
+  }
+}
 function updateSurpriseCampaignPreview(){
   const src = (document.getElementById('surpriseCampaignImage')?.value || '').trim();
   const img = document.getElementById('surpriseCampaignPreview');
@@ -1930,6 +1974,7 @@ function updateSurpriseCampaignPreview(){
 }
 function renderSurpriseCampaignSettings(){
   const cfg = getSurpriseCampaignSettings();
+  renderSurpriseTargetOptions();
   if(document.getElementById('surpriseCampaignEnabled')) document.getElementById('surpriseCampaignEnabled').value = cfg.enabled ? '1' : '0';
   if(document.getElementById('surpriseCampaignMinute')) document.getElementById('surpriseCampaignMinute').value = Number(cfg.triggerMinute) || 0;
   if(document.getElementById('surpriseCampaignBadge')) document.getElementById('surpriseCampaignBadge').value = cfg.badge || '';
@@ -1937,6 +1982,11 @@ function renderSurpriseCampaignSettings(){
   if(document.getElementById('surpriseCampaignContent')) document.getElementById('surpriseCampaignContent').value = cfg.content || '';
   if(document.getElementById('surpriseCampaignImage')) document.getElementById('surpriseCampaignImage').value = cfg.image || '';
   if(document.getElementById('surpriseCampaignButton')) document.getElementById('surpriseCampaignButton').value = cfg.buttonText || '';
+  if(document.getElementById('surpriseCampaignTargetMode')) document.getElementById('surpriseCampaignTargetMode').value = cfg.targetMode || 'products';
+  if(document.getElementById('surpriseCampaignTargetCategory')) document.getElementById('surpriseCampaignTargetCategory').value = cfg.targetCategory || '';
+  if(document.getElementById('surpriseCampaignTargetProduct')) document.getElementById('surpriseCampaignTargetProduct').value = cfg.targetProduct || '';
+  if(document.getElementById('surpriseCampaignTargetPath')) document.getElementById('surpriseCampaignTargetPath').value = cfg.targetPath || '#products';
+  refreshSurpriseTargetPath();
   updateSurpriseCampaignPreview();
 }
 function handleSurpriseCampaignImageUpload(input){
@@ -1961,6 +2011,10 @@ function clearSurpriseCampaignImage(){
   updateSurpriseCampaignPreview();
 }
 function saveSurpriseCampaignSettings(){
+  const targetMode = document.getElementById('surpriseCampaignTargetMode')?.value || 'products';
+  const targetCategory = document.getElementById('surpriseCampaignTargetCategory')?.value || '';
+  const targetProduct = document.getElementById('surpriseCampaignTargetProduct')?.value || '';
+  const targetPathInput = document.getElementById('surpriseCampaignTargetPath')?.value || '';
   const cfg = {
     enabled: document.getElementById('surpriseCampaignEnabled')?.value !== '0',
     triggerMinute: Math.max(0, Number(document.getElementById('surpriseCampaignMinute')?.value) || 0),
@@ -1968,7 +2022,11 @@ function saveSurpriseCampaignSettings(){
     title: (document.getElementById('surpriseCampaignTitle')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.title,
     content: (document.getElementById('surpriseCampaignContent')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.content,
     image: (document.getElementById('surpriseCampaignImage')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.image,
-    buttonText: (document.getElementById('surpriseCampaignButton')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.buttonText
+    buttonText: (document.getElementById('surpriseCampaignButton')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.buttonText,
+    targetMode,
+    targetCategory,
+    targetProduct,
+    targetPath: buildSurpriseTargetPath(targetMode, targetCategory, targetProduct, targetPathInput)
   };
   localStorage.setItem(SURPRISE_CAMPAIGN_KEY, JSON.stringify(cfg));
   updateSurpriseCampaignPreview();
@@ -3905,6 +3963,8 @@ function getCatLabel(key){return(CATEGORIES.find(c=>c.key===key)||{label:key}).l
 // ════════════════════════════════════
 const CAMP_KEY='gp_campaigns';
 const LIVE_CAMPAIGN_STREAM_KEY='gp_live_campaign_stream_v1';
+const LIVE_CAMPAIGN_STREAM_CONFIG_KEY='gp_live_campaign_stream_config_v1';
+const DEFAULT_LIVE_CAMPAIGN_STREAM_CONFIG={sourceMode:'manual',categoryKey:'',productId:''};
 const DEFAULT_LIVE_CAMPAIGN_STREAM=[
   {id:'premium-zebra',productId:'zebra-premium-gri',title:'Premium Zebra Perde',label:'Yeni',price:2390,oldPrice:2790,image:'resimler/foto9.jpg',buttonText:'Ürüne Git',active:true},
   {id:'plise-kampanya',productId:'plise-krem-160x200',title:'Plise Perde Krem 160x200',label:'Kampanya',price:1450,oldPrice:1690,image:'resimler/foto7.jpg',buttonText:'İncele',active:true},
@@ -3957,6 +4017,42 @@ function getLiveCampaignStreamItems(){
 function saveLiveCampaignStreamItems(list){
   localStorage.setItem(LIVE_CAMPAIGN_STREAM_KEY, JSON.stringify(Array.isArray(list)?list:[]));
 }
+function getLiveFeedSourceConfig(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(LIVE_CAMPAIGN_STREAM_CONFIG_KEY) || 'null') || {};
+    return {
+      sourceMode: ['manual','category','product'].includes(parsed.sourceMode) ? parsed.sourceMode : 'manual',
+      categoryKey: String(parsed.categoryKey || '').trim(),
+      productId: String(parsed.productId || '').trim()
+    };
+  }catch(_){
+    return {...DEFAULT_LIVE_CAMPAIGN_STREAM_CONFIG};
+  }
+}
+function renderLiveFeedSourceForm(){
+  const cfg = getLiveFeedSourceConfig();
+  const modeEl = document.getElementById('liveFeedSourceMode');
+  const categoryEl = document.getElementById('liveFeedSourceCategory');
+  const productEl = document.getElementById('liveFeedSourceProduct');
+  if(modeEl) modeEl.value = cfg.sourceMode;
+  if(categoryEl){
+    categoryEl.innerHTML = `<option value="">Kategori seçin</option>${CATEGORIES.map(c=>`<option value="${c.key}">${c.label}</option>`).join('')}`;
+    categoryEl.value = cfg.categoryKey || '';
+  }
+  if(productEl){
+    productEl.innerHTML = `<option value="">Ürün seçin</option>${PRODUCTS.filter(p=>p?.active).map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}`;
+    productEl.value = cfg.productId || '';
+  }
+}
+function saveLiveFeedSourceConfig(){
+  const payload = {
+    sourceMode: document.getElementById('liveFeedSourceMode')?.value || 'manual',
+    categoryKey: document.getElementById('liveFeedSourceCategory')?.value || '',
+    productId: document.getElementById('liveFeedSourceProduct')?.value || ''
+  };
+  localStorage.setItem(LIVE_CAMPAIGN_STREAM_CONFIG_KEY, JSON.stringify(payload));
+  aToast('✓ Canlı vitrin kaynağı kaydedildi','success');
+}
 function defaultCampaigns(){
   return [
     {id:1,name:'Sezon Sonu %25 İndirim',desc:'Tüm ürünlerde geçerli sezon sonu kampanyası.',discount:25,discountType:'percent',code:'',start:'2025-01-01',end:'2025-12-31',active:true},
@@ -3973,6 +4069,7 @@ function renderCampaigns(){
       PRODUCTS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')
     }`;
   }
+  renderLiveFeedSourceForm();
   renderLiveFeedAdminList();
   document.getElementById('campaignList').innerHTML = list.map((c,i)=>`
     <div class="campaign-card">
@@ -5066,6 +5163,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   document.getElementById('homePromoImage')?.addEventListener('input', updateHomePromoPreview);
   document.getElementById('surpriseCampaignImage')?.addEventListener('input', updateSurpriseCampaignPreview);
+  document.getElementById('surpriseCampaignTargetMode')?.addEventListener('change', refreshSurpriseTargetPath);
+  document.getElementById('surpriseCampaignTargetCategory')?.addEventListener('change', refreshSurpriseTargetPath);
+  document.getElementById('surpriseCampaignTargetProduct')?.addEventListener('change', refreshSurpriseTargetPath);
   window.addEventListener('pageshow', (event) => {
     if (!event.persisted) return;
     document.body.style.opacity = '0.99';

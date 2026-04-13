@@ -6,7 +6,14 @@ function toComparable(value) {
   return String(value || '')
     .toLocaleLowerCase('tr-TR')
     .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ç/g, 'c')
+    .replace(/ğ/g, 'g')
     .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ş/g, 's')
+    .replace(/ü/g, 'u')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -20,8 +27,8 @@ function uniqTrimmedStrings(values) {
 
 function getStreetSortKey(name) {
   const normalized = toComparable(name);
-  if (/\bcadde\b/.test(normalized)) return `0-${normalized}`;
-  if (/\bsokak\b/.test(normalized)) return `1-${normalized}`;
+  if (/\bcadde(si)?\b|\bcd\b/.test(normalized)) return `0-${normalized}`;
+  if (/\bsokak\b|\bsokagi\b|\bsk\b/.test(normalized)) return `1-${normalized}`;
   if (/\bbulvar\b/.test(normalized)) return `2-${normalized}`;
   return `3-${normalized}`;
 }
@@ -68,13 +75,21 @@ out tags;
 
   return sortStreetValues(names.filter((name) => {
     const normalized = toComparable(name);
-    return normalized.includes('cadde') || normalized.includes('sokak') || normalized.includes('sk') || normalized.includes('cd');
+    return (
+      /\bcadde(si)?\b|\bcd\b/.test(normalized) ||
+      /\bsokak\b|\bsokagi\b|\bsk\b/.test(normalized) ||
+      /\bbulvar\b/.test(normalized)
+    );
   }));
 }
 
 function isStreetLikeName(value) {
   const normalized = toComparable(value);
-  return normalized.includes('cadde') || normalized.includes('sokak') || /\b(cd|sk)\b/.test(normalized);
+  return (
+    /\bcadde(si)?\b|\bcd\b/.test(normalized) ||
+    /\bsokak\b|\bsokagi\b|\bsk\b/.test(normalized) ||
+    /\bbulvar\b/.test(normalized)
+  );
 }
 
 function collectStreetLikeValuesDeep(source, collector, depth = 0) {
@@ -160,7 +175,10 @@ module.exports = async function handler(req, res) {
     });
 
     if (neighborhood) {
-      const directStreets = sortStreetValues(streetsByNeighborhood[neighborhood] || []);
+      const neighborhoodKey = Object.keys(streetsByNeighborhood).find(
+        (key) => toComparable(key) === toComparable(neighborhood)
+      );
+      const directStreets = sortStreetValues(streetsByNeighborhood[neighborhoodKey || neighborhood] || []);
       if (directStreets.length) {
         return res.status(200).json({
           success: true,

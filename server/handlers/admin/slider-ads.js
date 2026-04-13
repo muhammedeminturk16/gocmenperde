@@ -18,7 +18,8 @@ module.exports = async function handler(req, res) {
 
     if (req.method === 'GET') {
       const result = await pool.query(`
-        SELECT id, image_url AS "imageUrl", title, subtitle, target_path AS "targetPath", order_no AS "orderNo", is_active AS "isActive"
+        SELECT id, image_url AS "imageUrl", title, subtitle, target_path AS "targetPath", order_no AS "orderNo", is_active AS "isActive",
+               crop_x AS "cropX", crop_y AS "cropY", crop_zoom AS "cropZoom"
         FROM slider_ads
         ORDER BY order_no ASC, id DESC
       `);
@@ -29,10 +30,11 @@ module.exports = async function handler(req, res) {
       const parsed = normalizeSliderAdPayload(req.body || {});
       if (!parsed.ok) return res.status(400).json({ error: parsed.error });
       const result = await pool.query(
-        `INSERT INTO slider_ads (image_url, title, subtitle, target_path, order_no, is_active)
-         VALUES ($1, $2, $3, $4, $5, $6)
-         RETURNING id, image_url AS "imageUrl", title, subtitle, target_path AS "targetPath", order_no AS "orderNo", is_active AS "isActive"`,
-        [parsed.value.imageUrl, parsed.value.title, parsed.value.subtitle, parsed.value.targetPath, parsed.value.orderNo, parsed.value.isActive]
+        `INSERT INTO slider_ads (image_url, title, subtitle, target_path, order_no, is_active, crop_x, crop_y, crop_zoom)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         RETURNING id, image_url AS "imageUrl", title, subtitle, target_path AS "targetPath", order_no AS "orderNo", is_active AS "isActive",
+                   crop_x AS "cropX", crop_y AS "cropY", crop_zoom AS "cropZoom"`,
+        [parsed.value.imageUrl, parsed.value.title, parsed.value.subtitle, parsed.value.targetPath, parsed.value.orderNo, parsed.value.isActive, parsed.value.cropX, parsed.value.cropY, parsed.value.cropZoom]
       );
       return res.status(201).json({ success: true, item: result.rows[0] });
     }
@@ -46,10 +48,11 @@ module.exports = async function handler(req, res) {
 
       const result = await pool.query(
         `UPDATE slider_ads
-         SET image_url = $1, title = $2, subtitle = $3, target_path = $4, order_no = $5, is_active = $6
-         WHERE id = $7
-         RETURNING id, image_url AS "imageUrl", title, subtitle, target_path AS "targetPath", order_no AS "orderNo", is_active AS "isActive"`,
-        [parsed.value.imageUrl, parsed.value.title, parsed.value.subtitle, parsed.value.targetPath, parsed.value.orderNo, parsed.value.isActive, id]
+         SET image_url = $1, title = $2, subtitle = $3, target_path = $4, order_no = $5, is_active = $6, crop_x = $7, crop_y = $8, crop_zoom = $9
+         WHERE id = $10
+         RETURNING id, image_url AS "imageUrl", title, subtitle, target_path AS "targetPath", order_no AS "orderNo", is_active AS "isActive",
+                   crop_x AS "cropX", crop_y AS "cropY", crop_zoom AS "cropZoom"`,
+        [parsed.value.imageUrl, parsed.value.title, parsed.value.subtitle, parsed.value.targetPath, parsed.value.orderNo, parsed.value.isActive, parsed.value.cropX, parsed.value.cropY, parsed.value.cropZoom, id]
       );
 
       if (!result.rows.length) return res.status(404).json({ error: 'Kayıt bulunamadı.' });

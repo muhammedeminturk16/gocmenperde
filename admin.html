@@ -272,6 +272,20 @@ tbody tr:hover td{background:#fdfcf8}
 .fg textarea{resize:vertical;min-height:80px;line-height:1.6}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.crop-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.crop-field{border:1px solid var(--border);border-radius:10px;background:#fcfbf8;padding:10px}
+.crop-field label{display:flex;align-items:center;justify-content:space-between;font-size:0.66rem;letter-spacing:1px;text-transform:uppercase;color:var(--slate-light);margin-bottom:8px;font-weight:700}
+.crop-field output{font-size:0.72rem;color:var(--ink);font-weight:700}
+.crop-field input[type="range"]{width:100%}
+.slider-live-preview{margin-top:10px;border:1px solid var(--border);border-radius:12px;padding:10px;background:#f8f7f4}
+.slider-live-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--slate-light);margin-bottom:8px;font-weight:700}
+.slider-preview-stage{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#101522;border:1px solid rgba(0,0,0,0.18)}
+.slider-preview-stage img{width:100%;height:100%;object-fit:cover;object-position:var(--crop-x,50%) var(--crop-y,50%);transform:scale(var(--crop-zoom,1.08));display:block}
+.slider-preview-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,5,8,.7) 0%,rgba(4,5,8,.25) 44%,rgba(4,5,8,.08) 100%)}
+.slider-preview-copy{position:absolute;left:12px;right:12px;bottom:12px;color:#fff;z-index:2}
+.slider-preview-copy b{display:block;font-size:.95rem;line-height:1.2;margin-bottom:4px}
+.slider-preview-copy small{display:inline-flex;border:1px solid rgba(255,215,149,.6);padding:4px 8px;border-radius:999px;background:rgba(8,10,17,.44);font-size:0.62rem}
+@media(max-width:700px){.crop-grid{grid-template-columns:1fr}}
 .discount-helper{margin-top:8px;padding:10px 12px;border:1px dashed var(--border-2);border-radius:9px;background:#faf8f2;font-size:0.77rem;color:var(--slate);line-height:1.5}
 .template-builder{margin-top:10px;border:1px dashed var(--border-2);border-radius:10px;padding:10px;background:#fff}
 .template-builder .inline{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
@@ -1353,7 +1367,7 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
 
 <!-- ══ SLIDER MODAL ══ -->
 <div class="modal-bg" id="sliderModal" onclick="if(event.target===this)closeModal('sliderModal')">
-  <div class="form-modal" style="max-width:560px">
+  <div class="form-modal" style="max-width:760px">
     <div class="form-modal-header">
       <h3 id="sliderModalTitle">Yeni Slayt</h3>
       <button class="close-btn" onclick="closeModal('sliderModal')"><i class="fas fa-xmark"></i></button>
@@ -1371,9 +1385,37 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
           <span id="sliderImageUploadStatus" style="font-size:0.74rem;color:var(--slate-light)">Henüz yüklenmedi</span>
         </div>
       </div>
-      <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/... veya https://..."></div>
-      <div class="fg"><label>Slayt Başlığı</label><input type="text" id="sliderTitle" placeholder="Örn: Premium Zebra Koleksiyonu"></div>
-      <div class="fg"><label>Slayt Alt Metni</label><input type="text" id="sliderSubtitle" placeholder="Örn: Detayları görüntüle →"></div>
+      <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/... veya https://..." oninput="setSliderImagePreview(this.value)"></div>
+      <div class="fg"><label>Slayt Başlığı</label><input type="text" id="sliderTitle" placeholder="Örn: Premium Zebra Koleksiyonu" oninput="updateSliderCropPreview()"></div>
+      <div class="fg"><label>Slayt Alt Metni</label><input type="text" id="sliderSubtitle" placeholder="Örn: Detayları görüntüle →" oninput="updateSliderCropPreview()"></div>
+      <div class="fg">
+        <label>Kadraj (Canlı Önizleme)</label>
+        <div class="crop-grid">
+          <div class="crop-field">
+            <label>Yatay <output id="sliderCropXVal">50%</output></label>
+            <input type="range" id="sliderCropX" min="0" max="100" step="1" value="50" oninput="updateSliderCropPreview()">
+          </div>
+          <div class="crop-field">
+            <label>Dikey <output id="sliderCropYVal">50%</output></label>
+            <input type="range" id="sliderCropY" min="0" max="100" step="1" value="50" oninput="updateSliderCropPreview()">
+          </div>
+          <div class="crop-field">
+            <label>Zoom <output id="sliderCropZoomVal">1.08x</output></label>
+            <input type="range" id="sliderCropZoom" min="1" max="1.8" step="0.01" value="1.08" oninput="updateSliderCropPreview()">
+          </div>
+        </div>
+        <div class="slider-live-preview">
+          <div class="slider-live-label">Web Sitesi Görünümü</div>
+          <div class="slider-preview-stage">
+            <img id="sliderCropPreviewImage" src="" alt="Slider canlı önizleme">
+            <div class="slider-preview-overlay"></div>
+            <div class="slider-preview-copy">
+              <b id="sliderCropPreviewTitle">Premium Koleksiyon</b>
+              <small id="sliderCropPreviewSubtitle">Detayları görüntüle →</small>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="fg">
         <label>Hedef Tipi *</label>
         <select id="sliderTargetMode" onchange="handleSliderTargetModeChange()">
@@ -2292,27 +2334,64 @@ function handleSliderTargetProductChange(){
 function setSliderImagePreview(src=''){
   const wrap = document.getElementById('sliderImagePreviewWrap');
   const img = document.getElementById('sliderImagePreview');
+  const cropImg = document.getElementById('sliderCropPreviewImage');
   if(!wrap || !img) return;
   if(src){
     const safeSrc = resolveAssetUrl(src);
     img.src = safeSrc;
+    if(cropImg) cropImg.src = safeSrc;
     img.onerror = function(){
       if(this.dataset.fallbackApplied) return;
       const fallback = resolveAssetFallbackUrl(src);
       if(fallback){
         this.dataset.fallbackApplied = '1';
         this.src = fallback;
+        if(cropImg) cropImg.src = fallback;
         return;
       }
       this.onerror = null;
       this.src = IMAGE_PLACEHOLDER_DATA_URI;
+      if(cropImg) cropImg.src = IMAGE_PLACEHOLDER_DATA_URI;
     };
     delete img.dataset.fallbackApplied;
     wrap.style.display = 'block';
   }else{
     img.src = '';
     img.onerror = null;
+    if(cropImg) cropImg.src = '';
     wrap.style.display = 'none';
+  }
+  updateSliderCropPreview();
+}
+
+function updateSliderCropPreview(){
+  const cropXEl = document.getElementById('sliderCropX');
+  const cropYEl = document.getElementById('sliderCropY');
+  const cropZoomEl = document.getElementById('sliderCropZoom');
+  const cropX = Number(cropXEl?.value ?? 50);
+  const cropY = Number(cropYEl?.value ?? 50);
+  const cropZoom = Number(cropZoomEl?.value ?? 1.08);
+  const xVal = document.getElementById('sliderCropXVal');
+  const yVal = document.getElementById('sliderCropYVal');
+  const zoomVal = document.getElementById('sliderCropZoomVal');
+  const cropImg = document.getElementById('sliderCropPreviewImage');
+  const title = document.getElementById('sliderCropPreviewTitle');
+  const subtitle = document.getElementById('sliderCropPreviewSubtitle');
+  if(xVal) xVal.textContent = `${Math.round(cropX)}%`;
+  if(yVal) yVal.textContent = `${Math.round(cropY)}%`;
+  if(zoomVal) zoomVal.textContent = `${cropZoom.toFixed(2)}x`;
+  if(cropImg){
+    cropImg.style.setProperty('--crop-x', `${cropX}%`);
+    cropImg.style.setProperty('--crop-y', `${cropY}%`);
+    cropImg.style.setProperty('--crop-zoom', String(cropZoom));
+  }
+  if(title){
+    const text = (document.getElementById('sliderTitle')?.value || '').trim();
+    title.textContent = text || 'Premium Koleksiyon';
+  }
+  if(subtitle){
+    const text = (document.getElementById('sliderSubtitle')?.value || '').trim();
+    subtitle.textContent = text || 'Detayları görüntüle →';
   }
 }
 
@@ -2419,11 +2498,15 @@ function openSliderModal(){
   }
   document.getElementById('sliderOrder').value='0';
   document.getElementById('sliderActive').checked=true;
+  document.getElementById('sliderCropX').value='50';
+  document.getElementById('sliderCropY').value='50';
+  document.getElementById('sliderCropZoom').value='1.08';
   document.getElementById('sliderImageFile').value='';
   document.getElementById('sliderImageUploadStatus').textContent='Henüz yüklenmedi';
   sliderSelectedDataUrl='';
   sliderSelectedFileName='';
   setSliderImagePreview('');
+  updateSliderCropPreview();
   handleSliderTargetModeChange();
   document.getElementById('sliderModal').classList.add('open');
 }
@@ -2452,10 +2535,14 @@ function editSliderItem(id){
   }
   document.getElementById('sliderOrder').value=String(Number(item.orderNo)||0);
   document.getElementById('sliderActive').checked=item.isActive !== false;
+  document.getElementById('sliderCropX').value=String(Number.isFinite(Number(item.cropX)) ? Number(item.cropX) : 50);
+  document.getElementById('sliderCropY').value=String(Number.isFinite(Number(item.cropY)) ? Number(item.cropY) : 50);
+  document.getElementById('sliderCropZoom').value=String(Number.isFinite(Number(item.cropZoom)) ? Number(item.cropZoom) : 1.08);
   document.getElementById('sliderImageUploadStatus').textContent='Mevcut kayıt yüklü';
   sliderSelectedDataUrl='';
   sliderSelectedFileName='';
   setSliderImagePreview(item.imageUrl || '');
+  updateSliderCropPreview();
   handleSliderTargetModeChange();
   if(preset.mode===SLIDER_TARGET_MODE.MANUAL){
     document.getElementById('sliderTargetPath').value=item.targetPath || '';
@@ -2475,6 +2562,9 @@ async function saveSliderItem(){
     targetPath: document.getElementById('sliderTargetPath').value.trim(),
     orderNo: Number(document.getElementById('sliderOrder').value) || 0,
     isActive: document.getElementById('sliderActive').checked,
+    cropX: Number(document.getElementById('sliderCropX').value) || 50,
+    cropY: Number(document.getElementById('sliderCropY').value) || 50,
+    cropZoom: Number(document.getElementById('sliderCropZoom').value) || 1.08,
   };
   if(!payload.imageUrl || !payload.targetPath){ aToast('⚠️ Görsel ve hedef seçimi zorunlu','error'); return; }
   try{

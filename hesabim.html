@@ -1252,11 +1252,15 @@
                     <div class="form-row-2">
                         <div>
                             <label class="form-label">Mahalle</label>
-                            <input type="text" id="aMahalle" class="gp-input" placeholder="Mahalle adı">
+                            <select id="aMahalle" class="gp-input" onchange="onAddressNeighborhoodChanged(this.value)">
+                                <option value="">Mahalle seçin</option>
+                            </select>
                         </div>
                         <div>
                             <label class="form-label">Sokak / Cadde</label>
-                            <input type="text" id="aSokak" class="gp-input" placeholder="Sokak veya cadde">
+                            <select id="aSokak" class="gp-input">
+                                <option value="">Önce mahalle seçin</option>
+                            </select>
                         </div>
                         <div>
                             <label class="form-label">Kapı / Daire No</label>
@@ -1264,12 +1268,16 @@
                         </div>
                         <div>
                             <label class="form-label">İlçe</label>
-                            <input type="text" id="aIlce" class="gp-input" placeholder="Osmangazi">
+                            <select id="aIlce" class="gp-input" onchange="onAddressDistrictChanged(this.value)">
+                                <option value="">Önce il seçin</option>
+                            </select>
                         </div>
                     </div>
                     <div>
                         <label class="form-label">İl</label>
-                        <input type="text" id="aIl" class="gp-input" placeholder="Bursa">
+                        <select id="aIl" class="gp-input" onchange="onAddressCityChanged(this.value)">
+                            <option value="">İl seçin</option>
+                        </select>
                     </div>
                     <button class="gp-btn" onclick="addAddress()"><i class="fas fa-save"></i> Adresi Kaydet</button>
                 </div>
@@ -1912,6 +1920,102 @@ function closeOrderModal() {
 /* ═══════════════════════════════
    ADRESLER
 ═══════════════════════════════ */
+let addressCityDistrictMap = {};
+let addressStreetMap = {};
+
+function uniqAddressValues(values) {
+    return Array.from(new Set((Array.isArray(values) ? values : []).map(v => String(v || '').trim()).filter(Boolean)));
+}
+
+async function initAddressLocationData() {
+    const cityEl = document.getElementById('aIl');
+    if (!cityEl) return;
+    try {
+        const r = await fetch('https://turkiyeapi.dev/api/v1/provinces');
+        if (!r.ok) throw new Error('İller alınamadı');
+        const payload = await r.json();
+        const rows = Array.isArray(payload?.data) ? payload.data : [];
+        const nextMap = {};
+        rows.forEach((row) => {
+            const cityName = String(row?.name || '').trim();
+            if (!cityName) return;
+            const districts = uniqAddressValues((Array.isArray(row?.districts) ? row.districts : []).map((d) => d?.name || d));
+            if (districts.length) nextMap[cityName] = districts;
+        });
+        addressCityDistrictMap = nextMap;
+    } catch (_) {
+        addressCityDistrictMap = {};
+    }
+    const cityOptions = uniqAddressValues(Object.keys(addressCityDistrictMap));
+    cityEl.innerHTML = '<option value="">İl seçin</option>' + cityOptions.map((city) => `<option value="${city}">${city}</option>`).join('');
+}
+
+function resetAddressNeighborhoodAndStreet() {
+    const mahalleEl = document.getElementById('aMahalle');
+    const sokakEl = document.getElementById('aSokak');
+    if (mahalleEl) mahalleEl.innerHTML = '<option value="">Önce ilçe seçin</option>';
+    if (sokakEl) sokakEl.innerHTML = '<option value="">Önce mahalle seçin</option>';
+}
+
+function onAddressCityChanged(city) {
+    const ilceEl = document.getElementById('aIlce');
+    if (!ilceEl) return;
+    const districts = uniqAddressValues(addressCityDistrictMap[city] || []);
+    ilceEl.innerHTML = '<option value="">İlçe seçin</option>' + districts.map((d) => `<option value="${d}">${d}</option>`).join('');
+    resetAddressNeighborhoodAndStreet();
+}
+
+async function onAddressDistrictChanged(district) {
+    const city = document.getElementById('aIl')?.value?.trim() || '';
+    const mahalleEl = document.getElementById('aMahalle');
+    if (!city || !district || !mahalleEl) {
+        resetAddressNeighborhoodAndStreet();
+        return;
+    }
+    try {
+        const endpoint = `/api/address-data?city=${encodeURIComponent(city)}&district=${encodeURIComponent(district)}`;
+        const r = await fetch(endpoint);
+        if (!r.ok) throw new Error('Mahalleler alınamadı');
+        const payload = await r.json();
+        addressStreetMap = payload?.streetsByNeighborhood || {};
+        const neighborhoods = uniqAddressValues(payload?.neighborhoods || []);
+        mahalleEl.innerHTML = '<option value="">Mahalle seçin</option>' + neighborhoods.map((m) => `<option value="${m}">${m}</option>`).join('');
+        const sokakEl = document.getElementById('aSokak');
+        if (sokakEl) sokakEl.innerHTML = '<option value="">Önce mahalle seçin</option>';
+    } catch (_) {
+        addressStreetMap = {};
+        mahalleEl.innerHTML = '<option value="">Mahalle bulunamadı</option>';
+        const sokakEl = document.getElementById('aSokak');
+        if (sokakEl) sokakEl.innerHTML = '<option value="">Sokak/Cadde bulunamadı</option>';
+    }
+}
+
+async function onAddressNeighborhoodChanged(neighborhood) {
+    const sokakEl = document.getElementById('aSokak');
+    const city = document.getElementById('aIl')?.value?.trim() || '';
+    const district = document.getElementById('aIlce')?.value?.trim() || '';
+    if (!sokakEl || !neighborhood) {
+        if (sokakEl) sokakEl.innerHTML = '<option value="">Önce mahalle seçin</option>';
+        return;
+    }
+    const cachedValues = uniqAddressValues(addressStreetMap[neighborhood] || []);
+    if (cachedValues.length) {
+        sokakEl.innerHTML = '<option value="">Sokak/Cadde seçin</option>' + cachedValues.map((s) => `<option value="${s}">${s}</option>`).join('');
+        return;
+    }
+    try {
+        const endpoint = `/api/address-data?city=${encodeURIComponent(city)}&district=${encodeURIComponent(district)}&neighborhood=${encodeURIComponent(neighborhood)}`;
+        const r = await fetch(endpoint);
+        if (!r.ok) throw new Error('Sokaklar alınamadı');
+        const payload = await r.json();
+        const streets = uniqAddressValues(payload?.streets || []);
+        addressStreetMap[neighborhood] = streets;
+        sokakEl.innerHTML = '<option value="">Sokak/Cadde seçin</option>' + streets.map((s) => `<option value="${s}">${s}</option>`).join('');
+    } catch (_) {
+        sokakEl.innerHTML = '<option value="">Sokak/Cadde bulunamadı</option>';
+    }
+}
+
 async function loadAddresses() {
     const el = document.getElementById('addressList');
     el.innerHTML = '<div class="loading-state"><i class="fas fa-circle-notch"></i></div>';
@@ -1953,7 +2057,10 @@ async function addAddress() {
     const r = await apiFetch('/api/auth?action=add-address', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ baslik, adres }) });
     const data = await r.json();
     if (data.success) {
-        ['aBaslik','aMahalle','aSokak','aKapiNo','aIlce','aIl'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('aBaslik').value = '';
+        document.getElementById('aKapiNo').value = '';
+        document.getElementById('aIl').value = '';
+        onAddressCityChanged('');
         showToast('✓ Adres eklendi');
         loadAddresses();
     } else {
@@ -2153,6 +2260,7 @@ function trackAccountVisit(){
 
 /* ── INIT ── */
 trackAccountVisit();
+initAddressLocationData();
 loadOrders();
 loadProfile();
 activateTabFromQuery();

@@ -91,11 +91,16 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Geçersiz işlem.' });
   }
 
-  const { merchantId, merchantKey, merchantSalt, hasRequiredCredentials } = getPaytrCredentials();
+  const { merchantId, merchantKey, merchantSalt, hasRequiredCredentials, debugSources } = getPaytrCredentials();
 
   if (!hasRequiredCredentials) {
     return res.status(500).json({
-      error: 'PAYTR_MERCHANT_ID, PAYTR_MERCHANT_KEY ve PAYTR_MERCHANT_SALT ortam değişkenleri tanımlı değil.'
+      error: 'PayTR bilgileri eksik. PAYTR_MERCHANT_ID / PAYTR_MERCHANT_KEY / PAYTR_MERCHANT_SALT (veya NEXT_PUBLIC eşdeğerleri) tanımlı olmalı.',
+      details: {
+        idSource: debugSources?.id || null,
+        keySource: debugSources?.key || null,
+        saltSource: debugSources?.salt || null
+      }
     });
   }
 

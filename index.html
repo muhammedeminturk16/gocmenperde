@@ -3620,23 +3620,31 @@ function startVisitTracking(){
   }, 30000);
 }
 
+function runSafely(taskName, fn){
+  try{
+    fn();
+  }catch(err){
+    console.error(`[boot] ${taskName} failed:`, err);
+  }
+}
+
 window.addEventListener('load',()=>{
   const fromBackForward = sessionStorage.getItem('gp_fast_resume') === '1';
   if(fromBackForward) hideLoader(true);
   else setTimeout(()=>hideLoader(false),320);
-  renderHomeShowcaseSections();
-  renderFooterPaymentLogos();
-  renderLiveCampaignStream();
-  renderHomePromoPanel();
-  renderFromYouShowcase('fromYouPageGrid', 12);
-  loadFavoritesFromStorage();
-  loadFavoritesFromServer();
-  loadCartFromStorage();
-  loadProducts();
-  loadHomeSlider();
-  initUserSession();
-  startVisitTracking();
-  handlePaymentReturnState();
+  runSafely('renderHomeShowcaseSections', ()=>renderHomeShowcaseSections());
+  runSafely('renderFooterPaymentLogos', ()=>renderFooterPaymentLogos());
+  runSafely('renderLiveCampaignStream', ()=>renderLiveCampaignStream());
+  runSafely('renderHomePromoPanel', ()=>renderHomePromoPanel());
+  runSafely('renderFromYouShowcase', ()=>renderFromYouShowcase('fromYouPageGrid', 12));
+  runSafely('loadHomeSlider', ()=>loadHomeSlider());
+  runSafely('loadFavoritesFromStorage', ()=>loadFavoritesFromStorage());
+  runSafely('loadFavoritesFromServer', ()=>loadFavoritesFromServer());
+  runSafely('loadCartFromStorage', ()=>loadCartFromStorage());
+  runSafely('loadProducts', ()=>loadProducts());
+  runSafely('initUserSession', ()=>initUserSession());
+  runSafely('startVisitTracking', ()=>startVisitTracking());
+  runSafely('handlePaymentReturnState', ()=>handlePaymentReturnState());
 });
 window.addEventListener('pagehide',()=>{ sessionStorage.setItem('gp_fast_resume','1'); });
 window.addEventListener('pageshow',(ev)=>{

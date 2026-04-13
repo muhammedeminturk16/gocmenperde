@@ -3853,6 +3853,7 @@ let CITY_DISTRICTS = {...CITY_DISTRICTS_FALLBACK};
 let districtsApiLoaded = false;
 let districtsApiLoadingPromise = null;
 let STREET_MAP = {};
+let STREET_FETCH_CACHE = {};
 let neighborhoodStreetLoadingPromise = null;
 
 function toComparableCityName(value){
@@ -4387,6 +4388,7 @@ function onDistrictChanged(value){
 
 function resetNeighborhoodAndStreetSelectors(){
   STREET_MAP = {};
+  STREET_FETCH_CACHE = {};
   neighborhoodStreetLoadingPromise = null;
   const neighborhoodEl = document.getElementById('f-neighborhood');
   const neighborhoodOtherEl = document.getElementById('f-neighborhood-other');
@@ -4485,7 +4487,33 @@ async function loadNeighborhoodAndStreetData(){
 
 async function fetchLatestStreetsForNeighborhood(neighborhoodName){
   if(!neighborhoodName) return [];
-  return uniqTrimmedStrings(STREET_MAP[neighborhoodName] || []);
+  const cachedByDistrict = STREET_MAP[neighborhoodName] || [];
+  if(cachedByDistrict.length){
+    return uniqTrimmedStrings(cachedByDistrict);
+  }
+
+  const city = document.getElementById('f-city')?.value.trim() || '';
+  const district = getSelectedDistrictValue();
+  if(!city || !district) return [];
+
+  const cacheKey = `${city}::${district}::${neighborhoodName}`;
+  if(Array.isArray(STREET_FETCH_CACHE[cacheKey])){
+    return STREET_FETCH_CACHE[cacheKey];
+  }
+
+  try{
+    const endpoint = `/api/address-data?city=${encodeURIComponent(city)}&district=${encodeURIComponent(district)}&neighborhood=${encodeURIComponent(neighborhoodName)}`;
+    const res = await fetch(endpoint);
+    if(!res.ok) throw new Error('Mahalle cadde/sokak verisi alınamadı');
+    const payload = await res.json();
+    const streets = uniqTrimmedStrings(payload?.streets || []);
+    STREET_FETCH_CACHE[cacheKey] = streets;
+    STREET_MAP[neighborhoodName] = streets;
+    return streets;
+  }catch(_){
+    STREET_FETCH_CACHE[cacheKey] = [];
+    return [];
+  }
 }
 
 function sanitizePhoneInput(inputEl){

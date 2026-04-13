@@ -905,7 +905,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 
 
 .hero-ad-slider{margin:20px auto 12px;max-width:1180px;width:100%;display:none;animation:fadeUp 0.8s ease both 0.95s}
-.hero-ad-slider-shell{position:relative;width:100%;margin:0;overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.24);box-shadow:0 24px 55px rgba(0,0,0,.28);background:linear-gradient(135deg,rgba(10,14,24,.86),rgba(18,25,44,.68))}
+.hero-ad-slider-shell{position:relative;width:100%;margin:0;overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.24);box-shadow:0 24px 55px rgba(0,0,0,.28),inset 0 0 0 1px rgba(255,255,255,.06);background:linear-gradient(135deg,rgba(10,14,24,.86),rgba(18,25,44,.68))}
 .hero-ad-controls{position:absolute;inset:auto 14px 14px auto;display:flex;align-items:center;gap:8px;z-index:4}
 .hero-ad-btn{width:38px;height:38px;border-radius:999px;border:1px solid rgba(255,255,255,.65);background:rgba(14,20,36,.45);color:#fff;cursor:pointer;transition:.25s ease}
 .hero-ad-btn:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
@@ -914,7 +914,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .hero-ad-viewport::-webkit-scrollbar{height:8px}
 .hero-ad-viewport::-webkit-scrollbar-thumb{background:rgba(213,163,63,.38);border-radius:999px}
 .hero-ad-card{position:relative;scroll-snap-align:start;overflow:hidden;background:#111;text-decoration:none;color:#fff;display:block;min-width:0;min-height:340px;aspect-ratio:16/9}
-.hero-ad-card img{width:100%;height:100%;min-height:340px;object-fit:contain;display:block;transform:scale(1.01);transition:transform .55s ease;background:#0d111d}
+.hero-ad-card img{width:100%;height:100%;min-height:340px;object-fit:cover;object-position:var(--crop-x,50%) var(--crop-y,50%);display:block;transform:scale(var(--crop-zoom,1.08));transition:transform .55s ease;background:#0d111d}
 .hero-ad-card:hover img{transform:scale(1.06)}
 .hero-ad-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,16,.84) 6%,rgba(8,10,16,.2) 42%,rgba(8,10,16,.12) 100%)}
 .hero-ad-copy{position:absolute;left:18px;right:18px;bottom:18px;z-index:2}
@@ -2070,15 +2070,20 @@ function renderHomeSlider(){
     dots.innerHTML='';
     return;
   }
-  const cards = HOME_SLIDES.map((item, idx)=>`
+  const cards = HOME_SLIDES.map((item, idx)=>{
+    const cropX = Number.isFinite(Number(item.cropX)) ? Math.max(0, Math.min(100, Number(item.cropX))) : 50;
+    const cropY = Number.isFinite(Number(item.cropY)) ? Math.max(0, Math.min(100, Number(item.cropY))) : 50;
+    const cropZoom = Number.isFinite(Number(item.cropZoom)) ? Math.max(1, Math.min(1.8, Number(item.cropZoom))) : 1.08;
+    return `
     <a class="hero-ad-card" href="${item.targetPath || '#'}" target="_self" rel="noopener">
-      <img src="${resolveAssetUrl(item.imageUrl || '')}" ${imageFallbackAttr(item.imageUrl || '')} alt="Kampanya görseli" loading="lazy" decoding="async">
+      <img src="${resolveAssetUrl(item.imageUrl || '')}" ${imageFallbackAttr(item.imageUrl || '')} alt="Kampanya görseli" loading="lazy" decoding="async" style="--crop-x:${cropX}%;--crop-y:${cropY}%;--crop-zoom:${cropZoom}">
       <div class="hero-ad-copy">
         <h4>${item.title || `Kampanya ${idx+1}`}</h4>
         <span>${item.subtitle || 'Detayları görüntüle →'}</span>
       </div>
     </a>
-  `).join('');
+  `;
+  }).join('');
   track.innerHTML = cards;
   dots.innerHTML = HOME_SLIDES.map((_, idx)=>`<button type="button" class="hero-ad-dot${idx===0?' active':''}" aria-label="${idx+1}. slayta git" onclick="goHomeSlide(${idx})"></button>`).join('');
   wrap.style.display='block';

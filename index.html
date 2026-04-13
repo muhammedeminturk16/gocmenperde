@@ -879,6 +879,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 @media(max-width:640px){.address-parts{grid-template-columns:1fr}}
 .address-part-input{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;font-family:var(--ff-body);font-size:0.82rem;background:#fff}
 .address-street-row{display:flex;gap:8px;align-items:center}
+.address-street-row .address-part-input{flex:1}
 
 /* === 2026 Modern E-Ticaret Refresh === */
 :root{
@@ -1462,6 +1463,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
                 <option value="">Cadde / Sokak seçin</option>
                 <option value="diger">Diğeri</option>
               </select>
+              <input type="text" id="f-street-other" class="address-part-input hidden" placeholder="Cadde / Sokak yazın" oninput="syncAddressFromParts()">
             </div>
           </div>
           <textarea id="f-addr" class="form-input form-textarea" placeholder="Mahalle, Sokak, Bina No, Daire — Osmangazi / Bursa" oninput="syncPartsFromAddress(this.value)"></textarea>
@@ -4419,6 +4421,16 @@ async function onNeighborhoodChanged(value){
 }
 
 function onStreetChanged(value){
+  const streetOtherEl = document.getElementById('f-street-other');
+  if(streetOtherEl){
+    if(value === 'diger'){
+      streetOtherEl.classList.remove('hidden');
+      streetOtherEl.focus();
+    }else{
+      streetOtherEl.classList.add('hidden');
+      streetOtherEl.value = '';
+    }
+  }
   syncAddressFromParts();
 }
 
@@ -4534,7 +4546,8 @@ function syncAddressFromParts(){
   const neighborhoodOther = document.getElementById('f-neighborhood-other')?.value.trim() || '';
   const neighborhood = neighborhoodSelectValue === 'diger' ? neighborhoodOther : neighborhoodSelectValue;
   const streetSelectValue = document.getElementById('f-street')?.value.trim() || '';
-  const street = streetSelectValue === 'diger' ? '' : streetSelectValue;
+  const streetOther = document.getElementById('f-street-other')?.value.trim() || '';
+  const street = streetSelectValue === 'diger' ? streetOther : streetSelectValue;
   const addrEl = document.getElementById('f-addr');
   if(!addrEl) return;
   const firstLine = [neighborhood, street].filter(Boolean).join(', ');
@@ -4551,7 +4564,8 @@ async function syncPartsFromAddress(addressText=''){
   const neighborhoodEl = document.getElementById('f-neighborhood');
   const neighborhoodOtherEl = document.getElementById('f-neighborhood-other');
   const streetEl = document.getElementById('f-street');
-  if(!neighborhoodEl || !streetEl || !districtEl || !cityEl || !districtOtherEl || !neighborhoodOtherEl) return;
+  const streetOtherEl = document.getElementById('f-street-other');
+  if(!neighborhoodEl || !streetEl || !districtEl || !cityEl || !districtOtherEl || !neighborhoodOtherEl || !streetOtherEl) return;
 
   const labeledParts = {};
   const normalizeLabel = (text='') => String(text)
@@ -4602,10 +4616,16 @@ async function syncPartsFromAddress(addressText=''){
     }
     if(streetWithDoorNo && Array.from(streetEl.options).some((opt)=>opt.value === streetWithDoorNo)){
       streetEl.value = streetWithDoorNo;
+      streetOtherEl.value = '';
+      streetOtherEl.classList.add('hidden');
     }else if(streetWithDoorNo){
       streetEl.value = 'diger';
+      streetOtherEl.classList.remove('hidden');
+      streetOtherEl.value = streetWithDoorNo;
     }else{
       streetEl.value = '';
+      streetOtherEl.value = '';
+      streetOtherEl.classList.add('hidden');
     }
     return;
   }
@@ -4653,10 +4673,16 @@ async function syncPartsFromAddress(addressText=''){
   }
   if(street && Array.from(streetEl.options).some((opt)=>opt.value === street)){
     streetEl.value = street;
+    streetOtherEl.value = '';
+    streetOtherEl.classList.add('hidden');
   }else if(street){
     streetEl.value = 'diger';
+    streetOtherEl.classList.remove('hidden');
+    streetOtherEl.value = street;
   }else{
     streetEl.value = '';
+    streetOtherEl.value = '';
+    streetOtherEl.classList.add('hidden');
   }
   cityEl.value = CITY_OPTIONS.includes(districtCity[1] || '') ? districtCity[1] : '';
   onCityChanged(cityEl.value);

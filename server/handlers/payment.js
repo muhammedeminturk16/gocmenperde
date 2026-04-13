@@ -1,6 +1,8 @@
-const crypto = require('crypto');
+
+Const crypto = require('crypto');
 const { getPaytrCredentials } = require('../lib/_paytr-config');
 
+// PayTR IP adresi konusunda çok hassastır, boş veya yanlış formatı reddeder
 function getClientIp(req) {
   let ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '1.1.1.1';
   if (ip.includes(',')) ip = ip.split(',')[0];
@@ -9,9 +11,9 @@ function getClientIp(req) {
 
 function buildPaytrBasket(items) {
   const basket = items.map((item) => [
-    String(item.name || 'Ürün').slice(0, 50), 
-    String(item.price), 
-    Number(item.qty || 1)
+    String(item.name || 'Ürün').slice(0, 50), // İsim çok uzun olmamalı
+    String(item.price), // Fiyat string olmalı
+    Number(item.qty || 1) // Adet sayı olmalı
   ]);
   return Buffer.from(JSON.stringify(basket), 'utf8').toString('base64');
 }
@@ -29,6 +31,7 @@ module.exports = async function handler(req, res) {
   try {
     const { items = [], customer = {}, successUrl, cancelUrl, currency = 'TL' } = req.body || {};
 
+    // 1. Tutar hesaplama (1500 TL ise tam olarak 150000 kuruş gitmeli)
     const totalAmount = items.reduce((sum, item) => sum + (Number(item.price) * Number(item.qty)), 0);
     const paymentAmount = Math.round(totalAmount * 100);
 
@@ -37,13 +40,15 @@ module.exports = async function handler(req, res) {
     const userIp = getClientIp(req);
     const userEmail = customer.email || 'bilgi@gocmenperde.com.tr';
     
-    const testMode = "0"; 
+    // PayTR Standart Ayarları
+    const testMode = "0"; // Canlıda olduğun için 0
     const debugOn = "1";
     const noInstallment = "0";
     const maxInstallment = "0";
     const timeoutLimit = "30";
 
-    // PAYTR v2 iFrame Token Sıralaması
+    // --- EN KRİTİK NOKTA: TOKEN SIRALAMASI ---
+    // Bu sıra yanlışsa PayTR "geçersiz token" hatası verir.
     const hashString = merchantId + userIp + merchantOid + userEmail + paymentAmount + userBasket + noInstallment + maxInstallment + currency + testMode + merchantSalt;
     
     const paytrToken = crypto
@@ -85,6 +90,7 @@ module.exports = async function handler(req, res) {
         checkout_url: `https://www.paytr.com/odeme/guvenli/${result.token}`
       });
     } else {
+      // Hata varsa sebebini direkt kullanıcıya gösterelim
       return res.status(400).json({ error: 'PayTR Reddi: ' + (result.reason || JSON.stringify(result)) });
     }
 

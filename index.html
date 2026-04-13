@@ -878,7 +878,7 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 .address-parts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:10px}
 @media(max-width:640px){.address-parts{grid-template-columns:1fr}}
 .address-part-input{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;font-family:var(--ff-body);font-size:0.82rem;background:#fff}
-.address-street-row{display:flex;gap:8px;align-items:center}
+.address-street-row{display:flex;gap:8px;align-items:center;grid-column:1 / -1}
 .address-street-row .address-part-input{flex:1}
 
 /* === 2026 Modern E-Ticaret Refresh === */
@@ -4594,8 +4594,14 @@ function showNoStreetOptions(){
   const streetEl = document.getElementById('f-street');
   const avenueOtherEl = document.getElementById('f-avenue-other');
   const streetOtherEl = document.getElementById('f-street-other');
-  if(avenueEl) avenueEl.innerHTML = '<option value="">Cadde bulunamadı</option><option value="diger">Diğeri</option>';
-  if(streetEl) streetEl.innerHTML = '<option value="">Sokak bulunamadı</option><option value="diger">Diğeri</option>';
+  if(avenueEl){
+    avenueEl.innerHTML = '<option value="">Cadde seçin</option><option value="diger">Diğeri</option>';
+    avenueEl.value = 'diger';
+  }
+  if(streetEl){
+    streetEl.innerHTML = '<option value="">Sokak seçin</option><option value="diger">Diğeri</option>';
+    streetEl.value = 'diger';
+  }
   if(avenueOtherEl) avenueOtherEl.classList.remove('hidden');
   if(streetOtherEl) streetOtherEl.classList.remove('hidden');
 }

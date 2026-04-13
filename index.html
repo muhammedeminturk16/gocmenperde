@@ -878,6 +878,9 @@ body.product-modal-open .mobile-bottom-nav{opacity:0;pointer-events:none;transfo
 .address-parts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:10px}
 @media(max-width:640px){.address-parts{grid-template-columns:1fr}}
 .address-part-input{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;font-family:var(--ff-body);font-size:0.82rem;background:#fff}
+.address-street-row{display:flex;gap:8px;align-items:center}
+.street-other-btn{height:40px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:0.78rem;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap}
+.street-other-btn:hover{border-color:var(--gold);color:var(--gold-dark)}
 
 /* === 2026 Modern E-Ticaret Refresh === */
 :root{
@@ -1456,10 +1459,13 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
               <option value="diger">Diğeri</option>
             </select>
             <input type="text" id="f-neighborhood-other" class="address-part-input hidden" placeholder="Mahalleyi yazın" oninput="syncAddressFromParts()">
-            <select id="f-street" class="address-part-input" onchange="onStreetChanged(this.value)">
-              <option value="">Cadde / Sokak seçin</option>
-              <option value="diger">Diğeri</option>
-            </select>
+            <div class="address-street-row">
+              <select id="f-street" class="address-part-input" onchange="onStreetChanged(this.value)">
+                <option value="">Cadde / Sokak seçin</option>
+                <option value="diger">Diğeri</option>
+              </select>
+              <button type="button" class="street-other-btn" onclick="setStreetManualMode()">Diğeri</button>
+            </div>
             <input type="text" id="f-street-other" class="address-part-input hidden" placeholder="Cadde / Sokak / Apartman No yazın" oninput="syncAddressFromParts()">
           </div>
           <textarea id="f-addr" class="form-input form-textarea" placeholder="Mahalle, Sokak, Bina No, Daire — Osmangazi / Bursa" oninput="syncPartsFromAddress(this.value)"></textarea>
@@ -4383,6 +4389,13 @@ function onDistrictChanged(value){
   syncAddressFromParts();
 }
 
+function setStreetManualMode(){
+  const streetEl = document.getElementById('f-street');
+  if(!streetEl) return;
+  streetEl.value = 'diger';
+  onStreetChanged('diger');
+}
+
 function resetNeighborhoodAndStreetSelectors(){
   STREET_MAP = {};
   neighborhoodStreetLoadingPromise = null;
@@ -4396,7 +4409,7 @@ function resetNeighborhoodAndStreetSelectors(){
   if(streetOtherEl){ streetOtherEl.classList.add('hidden'); streetOtherEl.value = ''; }
 }
 
-function onNeighborhoodChanged(value){
+async function onNeighborhoodChanged(value){
   const neighborhoodOtherEl = document.getElementById('f-neighborhood-other');
   if(neighborhoodOtherEl){
     if(value === 'diger'){
@@ -4407,7 +4420,15 @@ function onNeighborhoodChanged(value){
       neighborhoodOtherEl.value = '';
     }
   }
-  populateStreetOptions(value && value !== 'diger' ? (STREET_MAP[value] || []) : []);
+  if(value && value !== 'diger'){
+    const latestStreets = await fetchLatestStreetsForNeighborhood(value);
+    populateStreetOptions(latestStreets);
+    if(!latestStreets.length){
+      setStreetManualMode();
+    }
+  }else{
+    populateStreetOptions([]);
+  }
   syncAddressFromParts();
 }
 
@@ -4426,6 +4447,18 @@ function onStreetChanged(value){
 
 function uniqTrimmedStrings(values){
   return Array.from(new Set((Array.isArray(values) ? values : []).map((v)=>String(v || '').trim()).filter(Boolean)));
+}
+
+function normalizeStreetValues(entry){
+  return uniqTrimmedStrings([
+    ...(Array.isArray(entry?.streets) ? entry.streets : []),
+    ...(Array.isArray(entry?.roads) ? entry.roads : []),
+    ...(Array.isArray(entry?.avenues) ? entry.avenues : []),
+    ...(Array.isArray(entry?.bulvards) ? entry.bulvards : []),
+    ...(Array.isArray(entry?.boulevards) ? entry.boulevards : []),
+    ...(Array.isArray(entry?.streets_and_roads) ? entry.streets_and_roads : []),
+    ...(Array.isArray(entry?.caddeSokaklar) ? entry.caddeSokaklar : [])
+  ]);
 }
 
 function populateNeighborhoodOptions(neighborhoods = []){
@@ -4470,7 +4503,7 @@ async function loadNeighborhoodAndStreetData(){
       neighborhoodsRaw.forEach((entry)=>{
         const neighborhoodName = String(entry?.name || entry || '').trim();
         if(!neighborhoodName) return;
-        STREET_MAP[neighborhoodName] = uniqTrimmedStrings(entry?.streets || entry?.roads || []);
+        STREET_MAP[neighborhoodName] = normalizeStreetValues(entry);
       });
       const neighborhoods = uniqTrimmedStrings(neighborhoodsRaw.map((entry)=>entry?.name || entry));
       populateNeighborhoodOptions(neighborhoods);
@@ -4482,6 +4515,27 @@ async function loadNeighborhoodAndStreetData(){
     }
   })();
   await neighborhoodStreetLoadingPromise;
+}
+
+async function fetchLatestStreetsForNeighborhood(neighborhoodName){
+  const city = document.getElementById('f-city')?.value.trim() || '';
+  const district = getSelectedDistrictValue();
+  if(!city || !district || !neighborhoodName) return [];
+  try{
+    const endpoint = `https://turkiyeapi.dev/api/v1/districts?name=${encodeURIComponent(district)}&province=${encodeURIComponent(city)}`;
+    const res = await fetch(endpoint);
+    if(!res.ok) throw new Error('Cadde/sokak verisi alınamadı');
+    const payload = await res.json();
+    const rows = Array.isArray(payload?.data) ? payload.data : [];
+    const matchedDistrict = rows.find((row)=>toComparableCityName(row?.name || '') === toComparableCityName(district)) || rows[0] || {};
+    const neighborhoodsRaw = Array.isArray(matchedDistrict?.neighborhoods) ? matchedDistrict.neighborhoods : [];
+    const matchedNeighborhood = neighborhoodsRaw.find((entry)=>toComparableCityName(entry?.name || entry || '') === toComparableCityName(neighborhoodName));
+    const normalized = normalizeStreetValues(matchedNeighborhood || {});
+    STREET_MAP[neighborhoodName] = normalized;
+    return normalized;
+  }catch(_){
+    return STREET_MAP[neighborhoodName] || [];
+  }
 }
 
 function sanitizePhoneInput(inputEl){

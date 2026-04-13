@@ -914,7 +914,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .hero-ad-viewport::-webkit-scrollbar{height:8px}
 .hero-ad-viewport::-webkit-scrollbar-thumb{background:rgba(213,163,63,.38);border-radius:999px}
 .hero-ad-card{position:relative;scroll-snap-align:start;overflow:hidden;background:#111;text-decoration:none;color:#fff;display:block;min-width:0;min-height:340px;aspect-ratio:16/9}
-.hero-ad-card img{width:100%;height:100%;min-height:340px;object-fit:cover;display:block;transform:scale(1.01);transition:transform .55s ease}
+.hero-ad-card img{width:100%;height:100%;min-height:340px;object-fit:contain;display:block;transform:scale(1.01);transition:transform .55s ease;background:#0d111d}
 .hero-ad-card:hover img{transform:scale(1.06)}
 .hero-ad-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,10,16,.84) 6%,rgba(8,10,16,.2) 42%,rgba(8,10,16,.12) 100%)}
 .hero-ad-copy{position:absolute;left:18px;right:18px;bottom:18px;z-index:2}
@@ -2194,12 +2194,16 @@ const GITHUB_RAW_CATEGORIES_URL = 'https://raw.githubusercontent.com/gocmenperde
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/gocmenperde/gocmenperde/main';
 const IMAGE_PLACEHOLDER_DATA_URI = `data:image/svg+xml,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='420' height='280'><rect width='100%' height='100%' fill='#f1eee7'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#8a8480' font-family='Outfit,Arial' font-size='16'>Görsel yüklenemedi</text></svg>")}`;
 function resolveAssetUrl(path){
-  const raw = String(path || '').trim();
+  const raw=String(path||'').trim();
   if(!raw) return '';
   if(raw.startsWith('data:')) return raw;
+  if(raw.startsWith('blob:')) return raw;
   if(/^https?:\/\//i.test(raw)) return raw;
-  const normalized = raw.replace(/^\/+/, '');
+  const normalized=raw.replace(/^\/+/, '');
   if(normalized.startsWith('resimler/')){
+    // GitHub API ile yüklenen yeni görseller deploy beklerken yerel /resimler yolunda 404 verebilir.
+    // Timestamp ile başlayan dosyaları doğrudan raw URL'den okuyarak "?" görsel sorununu kökten çözeriz.
+    if(/^resimler\/\d{13}-/i.test(normalized)) return `${GITHUB_RAW_BASE}/${normalized}`;
     return `/${normalized}`;
   }
   return raw;

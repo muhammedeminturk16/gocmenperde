@@ -4309,6 +4309,9 @@ function resolveAssetUrl(path){
   if(/^https?:\/\//i.test(raw)) return raw;
   const normalized=raw.replace(/^\/+/, '');
   if(normalized.startsWith('resimler/')){
+    // GitHub API ile yüklenen yeni görseller deploy beklerken yerel /resimler yolunda 404 verebilir.
+    // Timestamp ile başlayan dosyaları doğrudan raw URL'den okuyarak "?" görsel sorununu kökten çözeriz.
+    if(/^resimler\/\d{13}-/i.test(normalized)) return `${GITHUB_RAW_BASE}/${normalized}`;
     return `/${normalized}`;
   }
   return raw;

@@ -204,7 +204,35 @@ function normalizeStreetValues(entry) {
       if (namedValue) values.push(namedValue);
     }
   });
-  return uniqTrimmedStrings(values);
+  const normalizedValues = uniqTrimmedStrings(values);
+  if (normalizedValues.length) return normalizedValues;
+
+  const fallbackValues = [];
+  collectLikelyStreetValues(entry, fallbackValues);
+  return sortStreetValues(fallbackValues);
+}
+
+function collectLikelyStreetValues(source, collector, parentKey = '', depth = 0) {
+  if (depth > 6 || source == null) return;
+  if (typeof source === 'string') {
+    const value = source.trim();
+    if (!value) return;
+    const looksLikeStreet = isStreetLikeName(value);
+    const looksLikeStreetField = isStreetFieldKey(parentKey);
+    const hasStreetNumber = /\d/.test(value) && /\s/.test(value);
+    if (looksLikeStreet || looksLikeStreetField || hasStreetNumber) {
+      collector.push(value);
+    }
+    return;
+  }
+  if (Array.isArray(source)) {
+    source.forEach((item) => collectLikelyStreetValues(item, collector, parentKey, depth + 1));
+    return;
+  }
+  if (typeof source !== 'object') return;
+  Object.entries(source).forEach(([key, value]) => {
+    collectLikelyStreetValues(value, collector, key, depth + 1);
+  });
 }
 
 module.exports = async function handler(req, res) {

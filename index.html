@@ -4487,7 +4487,11 @@ async function onNeighborhoodChanged(value){
   }
   if(value && value !== 'diger'){
     const latestStreets = await fetchLatestStreetsForNeighborhood(value);
-    populateStreetOptions(latestStreets);
+    if(latestStreets.length){
+      populateStreetOptions(latestStreets);
+    }else{
+      showNoStreetOptions();
+    }
   }else{
     populateStreetOptions([]);
   }
@@ -4578,6 +4582,17 @@ function populateStreetOptions(streets = []){
     '<option value="diger">Diğeri</option>';
   setAddressPartManualFallback('f-avenue', avenueOptions.length > 0);
   setAddressPartManualFallback('f-street', streetOptions.length > 0);
+}
+
+function showNoStreetOptions(){
+  const avenueEl = document.getElementById('f-avenue');
+  const streetEl = document.getElementById('f-street');
+  const avenueOtherEl = document.getElementById('f-avenue-other');
+  const streetOtherEl = document.getElementById('f-street-other');
+  if(avenueEl) avenueEl.innerHTML = '<option value="">Cadde bulunamadı</option><option value="diger">Diğeri</option>';
+  if(streetEl) streetEl.innerHTML = '<option value="">Sokak bulunamadı</option><option value="diger">Diğeri</option>';
+  if(avenueOtherEl) avenueOtherEl.classList.remove('hidden');
+  if(streetOtherEl) streetOtherEl.classList.remove('hidden');
 }
 
 function getSelectedDistrictValue(){

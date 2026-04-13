@@ -2010,6 +2010,10 @@ async function onAddressNeighborhoodChanged(neighborhood) {
         const payload = await r.json();
         const streets = uniqAddressValues(payload?.streets || []);
         addressStreetMap[neighborhood] = streets;
+        if (!streets.length) {
+            sokakEl.innerHTML = '<option value="">Sokak/Cadde bulunamadı</option>';
+            return;
+        }
         sokakEl.innerHTML = '<option value="">Sokak/Cadde seçin</option>' + streets.map((s) => `<option value="${s}">${s}</option>`).join('');
     } catch (_) {
         sokakEl.innerHTML = '<option value="">Sokak/Cadde bulunamadı</option>';

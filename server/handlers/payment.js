@@ -6,6 +6,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 const IPV4_PATTERN = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+const IPV6_PATTERN = /^(?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}$/i;
 
 function normalizeIp(value) {
   const candidate = String(value || '').trim();
@@ -25,6 +26,11 @@ function normalizeIp(value) {
     if (parts.every((part) => part >= 0 && part <= 255)) {
       return candidate;
     }
+  }
+
+  const normalizedIpv6 = candidate.replace(/^\[|\]$/g, '');
+  if (IPV6_PATTERN.test(normalizedIpv6)) {
+    return normalizedIpv6;
   }
 
   return '';
@@ -189,9 +195,10 @@ module.exports = async function handler(req, res) {
     const paytrResponse = await fetch('https://www.paytr.com/odeme/api/get-token', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json,text/plain,*/*'
       },
-      body: params
+      body: params.toString()
     });
 
     const responseText = await paytrResponse.text();
@@ -199,7 +206,20 @@ module.exports = async function handler(req, res) {
     try {
       data = JSON.parse(responseText);
     } catch {
-      data = { status: 'failed', reason: responseText || 'INVALID_PAYTR_RESPONSE' };
+      try {
+        const qs = new URLSearchParams(responseText);
+        if (qs.get('status')) {
+          data = {
+            status: qs.get('status'),
+            reason: qs.get('reason') || qs.get('err_msg') || '',
+            token: qs.get('token') || ''
+          };
+        } else {
+          data = { status: 'failed', reason: responseText || 'INVALID_PAYTR_RESPONSE' };
+        }
+      } catch {
+        data = { status: 'failed', reason: responseText || 'INVALID_PAYTR_RESPONSE' };
+      }
     }
 
     if (!paytrResponse.ok || data?.status !== 'success' || !data?.token) {

@@ -11,7 +11,7 @@ module.exports = async function handler(req, res) {
   try {
     await ensureSliderAdsSchema();
     const result = await pool.query(`
-      SELECT id, image_url AS "imageUrl", target_path AS "targetPath", order_no AS "orderNo"
+      SELECT id, image_url AS "imageUrl", title, subtitle, target_path AS "targetPath", order_no AS "orderNo"
       FROM slider_ads
       WHERE is_active = TRUE
       ORDER BY order_no ASC, id DESC

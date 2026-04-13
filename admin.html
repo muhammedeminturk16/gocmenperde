@@ -972,8 +972,8 @@ Işık: Yarı Geçirgen"></textarea></div>
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#</th><th>Durum</th><th>Görsel</th><th>Hedef Yol</th><th>Sıra</th><th>İşlem</th></tr></thead>
-      <tbody id="sliderTableBody"><tr><td colspan="6" style="text-align:center;padding:30px">Yükleniyor...</td></tr></tbody>
+      <thead><tr><th>#</th><th>Durum</th><th>Görsel</th><th>Başlık</th><th>Hedef Yol</th><th>Sıra</th><th>İşlem</th></tr></thead>
+      <tbody id="sliderTableBody"><tr><td colspan="7" style="text-align:center;padding:30px">Yükleniyor...</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -1372,6 +1372,8 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
         </div>
       </div>
       <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/... veya https://..."></div>
+      <div class="fg"><label>Slayt Başlığı</label><input type="text" id="sliderTitle" placeholder="Örn: Premium Zebra Koleksiyonu"></div>
+      <div class="fg"><label>Slayt Alt Metni</label><input type="text" id="sliderSubtitle" placeholder="Örn: Detayları görüntüle →"></div>
       <div class="fg">
         <label>Hedef Tipi *</label>
         <select id="sliderTargetMode" onchange="handleSliderTargetModeChange()">
@@ -2370,7 +2372,7 @@ async function uploadSliderImage(){
 
 async function loadSliderItems(){
   const body = document.getElementById('sliderTableBody');
-  if(body) body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px">Yükleniyor...</td></tr>';
+  if(body) body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px">Yükleniyor...</td></tr>';
   try{
     const res = await apiFetch('/api/admin/slider-ads', { headers:{ 'x-admin-key':'gocmen1993' } });
     const payload = await res.json();
@@ -2378,7 +2380,7 @@ async function loadSliderItems(){
     SLIDER_ITEMS = Array.isArray(payload?.items) ? payload.items : [];
     renderSliderTable();
   }catch(err){
-    if(body) body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--red)">${err.message}</td></tr>`;
+    if(body) body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--red)">${err.message}</td></tr>`;
   }
 }
 
@@ -2386,13 +2388,14 @@ function renderSliderTable(){
   const body = document.getElementById('sliderTableBody');
   if(!body) return;
   if(!SLIDER_ITEMS.length){
-    body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px">Kayıt bulunamadı.</td></tr>';
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px">Kayıt bulunamadı.</td></tr>';
     return;
   }
   body.innerHTML = SLIDER_ITEMS.map((item,idx)=>`<tr>
     <td>${idx+1}</td>
     <td>${item.isActive===false ? 'Pasif' : 'Aktif'}</td>
     <td><img src="${resolveAssetUrl(item.imageUrl || '')}" ${withImageFallback(item.imageUrl || '')} alt="slide" class="product-thumb"></td>
+    <td style="max-width:220px">${item.title || '<span style="opacity:.55">—</span>'}</td>
     <td style="max-width:260px;word-break:break-all">${item.targetPath || '-'}</td>
     <td>${Number(item.orderNo)||0}</td>
     <td><div class="action-btns"><button class="icon-btn edit" onclick="editSliderItem(${item.id})"><i class="fas fa-pen"></i></button><button class="icon-btn del" onclick="deleteSliderItem(${item.id})"><i class="fas fa-trash"></i></button></div></td>
@@ -2404,6 +2407,8 @@ function openSliderModal(){
   document.getElementById('sliderModalTitle').textContent='Yeni Slayt';
   document.getElementById('sliderEditId').value='';
   document.getElementById('sliderImage').value='';
+  document.getElementById('sliderTitle').value='';
+  document.getElementById('sliderSubtitle').value='';
   document.getElementById('sliderTargetPath').value='';
   document.getElementById('sliderTargetMode').value = SLIDER_TARGET_MODE.CATEGORY;
   if(document.getElementById('sliderTargetCategory')?.options?.length){
@@ -2430,6 +2435,8 @@ function editSliderItem(id){
   document.getElementById('sliderModalTitle').textContent='Slayt Düzenle';
   document.getElementById('sliderEditId').value=String(item.id);
   document.getElementById('sliderImage').value=item.imageUrl || '';
+  document.getElementById('sliderTitle').value=item.title || '';
+  document.getElementById('sliderSubtitle').value=item.subtitle || '';
   document.getElementById('sliderTargetPath').value=item.targetPath || '';
   const preset = resolveSliderTargetPresetFromPath(item.targetPath || '');
   document.getElementById('sliderTargetMode').value = preset.mode;
@@ -2463,6 +2470,8 @@ async function saveSliderItem(){
   syncSliderTargetPathFromSelection();
   const payload = {
     imageUrl: document.getElementById('sliderImage').value.trim(),
+    title: document.getElementById('sliderTitle').value.trim(),
+    subtitle: document.getElementById('sliderSubtitle').value.trim(),
     targetPath: document.getElementById('sliderTargetPath').value.trim(),
     orderNo: Number(document.getElementById('sliderOrder').value) || 0,
     isActive: document.getElementById('sliderActive').checked,

@@ -414,6 +414,15 @@ function paymentLabel(payment) {
 function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items, total, note, extra = '' }) {
   const siteUrl = resolveSiteUrl();
   const customerOrdersUrl = `${siteUrl}/hesabim.html?tab=orders`;
+  const accentColor = String(accent || '#1f4f7a').trim() || '#1f4f7a';
+  const accentSoft = accentColor === '#0f0e0d' ? '#2d2b29' : '#8c6d1f';
+  const accentGlow = accentColor === '#0f0e0d' ? '#5a544f' : '#e0bf64';
+  const isDarkAccent = accentColor === '#0f0e0d';
+  const headerGradient = isDarkAccent
+    ? 'linear-gradient(135deg,#111111 0%,#2f2c29 45%,#4b433e 100%)'
+    : `linear-gradient(135deg,${accentColor} 0%,${accentSoft} 46%,${accentGlow} 100%)`;
+  const headerText = isDarkAccent ? '#f8efe4' : '#ffffff';
+  const chipBg = isDarkAccent ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.19)';
   const itemsSafe = Array.isArray(items) ? items : [];
   const itemCards = itemsSafe
     .map((item) => {
@@ -430,17 +439,17 @@ function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items
       const qtyLabel = qty > 1 ? `${qty} adet` : '1 adet';
 
       return `
-        <a href="${escapeHtml(productUrl)}" style="display:block;text-decoration:none;color:inherit;margin:0 0 12px;border:1px solid #dbe9f6;border-radius:16px;overflow:hidden;background:linear-gradient(145deg,#ffffff,#f3f9ff);">
+        <a href="${escapeHtml(productUrl)}" style="display:block;text-decoration:none;color:inherit;margin:0 0 12px;border:1px solid #d8d7e5;border-radius:18px;overflow:hidden;background:linear-gradient(145deg,#ffffff,#f7f6ff);box-shadow:0 10px 24px rgba(38,38,56,.06);">
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
             <tr>
               <td width="92" style="padding:12px;vertical-align:top;">
-                <img src="${escapeHtml(imageUrl)}" alt="${productName}" width="92" height="92" style="display:block;width:92px;height:92px;object-fit:cover;border-radius:12px;border:1px solid #dce8f3;background:#f4f8fc" />
+                <img src="${escapeHtml(imageUrl)}" alt="${productName}" width="92" height="92" style="display:block;width:92px;height:92px;object-fit:cover;border-radius:14px;border:1px solid #d8d7e5;background:#f8f8fd" />
               </td>
               <td style="padding:12px 12px 12px 0;vertical-align:top;">
-                <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#1b2a3b">${productName}</p>
-                <p style="margin:0 0 4px;font-size:12px;color:#5b6d82">${escapeHtml(qtyLabel)} · ${formatCurrency(price)} / birim</p>
-                <p style="margin:0;font-size:14px;font-weight:700;color:#16314d">Ara Toplam: ${formatCurrency(subtotal)}</p>
-                <p style="margin:8px 0 0;font-size:12px;color:#4e86ba;font-weight:700">Ürünü görüntülemek için tıklayın →</p>
+                <p style="margin:0 0 6px;font-size:15px;font-weight:700;color:#1e1b31">${productName}</p>
+                <p style="margin:0 0 4px;font-size:12px;color:#6c678a">${escapeHtml(qtyLabel)} · ${formatCurrency(price)} / birim</p>
+                <p style="margin:0;font-size:14px;font-weight:700;color:#2c2454">Ara Toplam: ${formatCurrency(subtotal)}</p>
+                <p style="margin:8px 0 0;font-size:12px;color:${escapeHtml(accentSoft)};font-weight:700">Ürünü görüntülemek için tıklayın →</p>
               </td>
             </tr>
           </table>
@@ -451,36 +460,37 @@ function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items
   const noteText = String(note || '').trim() || '-';
 
   return `
-  <div style="margin:0;padding:24px;background:linear-gradient(170deg,#eef6ff,#f5fbff);font-family:'Segoe UI',Arial,sans-serif;color:#1e1c1a">
-    <div style="max-width:760px;margin:0 auto;background:rgba(255,255,255,0.9);border:1px solid #d7e7f8;border-radius:22px;overflow:hidden;box-shadow:0 14px 34px rgba(68,110,158,0.14)">
-      <div style="padding:26px 24px;background:linear-gradient(135deg,#6da9df,#75cdd0);color:#fff">
-        <h1 style="margin:0 0 8px;font-size:26px;letter-spacing:.2px">${escapeHtml(title)}</h1>
+  <div style="margin:0;padding:24px;background:radial-gradient(circle at top right,#f7f4ff 0%,#f2f7ff 42%,#f6fbff 100%);font-family:'Segoe UI',Arial,sans-serif;color:#1e1c1a">
+    <div style="max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #dfddee;border-radius:24px;overflow:hidden;box-shadow:0 18px 42px rgba(52,46,92,0.14)">
+      <div style="padding:28px 24px 24px;background:${headerGradient};color:${headerText}">
+        <p style="margin:0 0 10px;display:inline-block;padding:7px 12px;border-radius:999px;background:${chipBg};font-size:11px;letter-spacing:.9px;font-weight:700;text-transform:uppercase">Göçmen Perde Premium</p>
+        <h1 style="margin:0 0 8px;font-size:27px;letter-spacing:.25px">${escapeHtml(title)}</h1>
         <p style="margin:0;font-size:14px;opacity:.95">${escapeHtml(subtitle)}</p>
       </div>
       <div style="padding:24px 24px 18px;">
-        <div style="margin:0 0 16px;padding:16px;border-radius:16px;background:linear-gradient(145deg,#ffffff,#f0f8ff);border:1px solid #d8e8f6">
-          <p style="margin:0 0 10px;font-size:14px;color:#45607d">Merhaba ${escapeHtml(customer?.name || 'Değerli müşterimiz')}, sipariş detaylarınızı aşağıda görebilirsiniz.</p>
-          <a href="${escapeHtml(customerOrdersUrl)}" style="display:inline-block;padding:10px 16px;border-radius:999px;background:linear-gradient(135deg,#6ea9df,#73c7ce);color:#fff;font-size:12px;font-weight:700;letter-spacing:.3px;text-decoration:none">Müşteri paneline git</a>
+        <div style="margin:0 0 16px;padding:16px;border-radius:18px;background:linear-gradient(145deg,#ffffff,#f7f4ff);border:1px solid #ddd6f3">
+          <p style="margin:0 0 10px;font-size:14px;color:#4f476f">Merhaba ${escapeHtml(customer?.name || 'Değerli müşterimiz')}, sipariş detaylarınızı aşağıda görebilirsiniz.</p>
+          <a href="${escapeHtml(customerOrdersUrl)}" style="display:inline-block;padding:10px 16px;border-radius:999px;background:${headerGradient};color:${headerText};font-size:12px;font-weight:700;letter-spacing:.3px;text-decoration:none">Müşteri paneline git</a>
         </div>
 
-        <h2 style="margin:0 0 10px;font-size:18px;color:#213d5b">Müşteri Bilgileri</h2>
+        <h2 style="margin:0 0 10px;font-size:18px;color:#2c2454">Müşteri Bilgileri</h2>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:0 8px;margin-bottom:14px">
-          <tr><td style="width:130px;color:#5f7489;font-size:13px">Ad Soyad</td><td style="font-size:14px;font-weight:600;color:#1f344d">${escapeHtml(customer?.name || '-')}</td></tr>
-          <tr><td style="color:#5f7489;font-size:13px">Telefon</td><td style="font-size:14px;color:#2a405a">${escapeHtml(customer?.phone || '-')}</td></tr>
-          <tr><td style="color:#5f7489;font-size:13px">E-posta</td><td style="font-size:14px;color:#2a405a">${escapeHtml(customer?.email || '-')}</td></tr>
-          <tr><td style="color:#5f7489;font-size:13px">Ödeme</td><td style="font-size:14px;color:#2a405a">${escapeHtml(paymentLabel(payment))}</td></tr>
-          <tr><td style="color:#5f7489;font-size:13px;vertical-align:top">Adres</td><td style="font-size:14px;line-height:1.6;color:#2a405a">${escapeHtml(customer?.address || '-')}</td></tr>
-          <tr><td style="color:#5f7489;font-size:13px;vertical-align:top">Sipariş Notu</td><td style="font-size:14px;line-height:1.6;color:#2a405a">${escapeHtml(noteText)}</td></tr>
+          <tr><td style="width:130px;color:#6c678a;font-size:13px">Ad Soyad</td><td style="font-size:14px;font-weight:600;color:#342a63">${escapeHtml(customer?.name || '-')}</td></tr>
+          <tr><td style="color:#6c678a;font-size:13px">Telefon</td><td style="font-size:14px;color:#41376f">${escapeHtml(customer?.phone || '-')}</td></tr>
+          <tr><td style="color:#6c678a;font-size:13px">E-posta</td><td style="font-size:14px;color:#41376f">${escapeHtml(customer?.email || '-')}</td></tr>
+          <tr><td style="color:#6c678a;font-size:13px">Ödeme</td><td style="font-size:14px;color:#41376f">${escapeHtml(paymentLabel(payment))}</td></tr>
+          <tr><td style="color:#6c678a;font-size:13px;vertical-align:top">Adres</td><td style="font-size:14px;line-height:1.6;color:#41376f">${escapeHtml(customer?.address || '-')}</td></tr>
+          <tr><td style="color:#6c678a;font-size:13px;vertical-align:top">Sipariş Notu</td><td style="font-size:14px;line-height:1.6;color:#41376f">${escapeHtml(noteText)}</td></tr>
         </table>
 
         ${extra}
 
-        <div style="margin:20px 0 10px;padding:18px;border:1px solid #d8e7f5;border-radius:18px;background:linear-gradient(180deg,#ffffff 0%,#f2f8ff 100%)">
-          <h2 style="margin:0 0 12px;font-size:19px;color:#213d5b;letter-spacing:.2px">Sipariş Özetiniz</h2>
-          ${itemCards || '<p style="margin:0;color:#5f7489;font-size:14px">Ürün bilgisi bulunamadı.</p>'}
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px dashed #c8dcec;margin-top:10px;flex-wrap:wrap">
-            <p style="margin:0;font-size:13px;color:#5f7489">Ürün kartlarına dokunarak detay sayfasına geçebilirsiniz.</p>
-            <p style="margin:0;font-size:20px;font-weight:800;color:#1e4366">Toplam: ${formatCurrency(total)}</p>
+        <div style="margin:20px 0 10px;padding:18px;border:1px solid #ddd6f3;border-radius:20px;background:linear-gradient(180deg,#ffffff 0%,#f8f4ff 100%)">
+          <h2 style="margin:0 0 12px;font-size:19px;color:#2c2454;letter-spacing:.2px">Sipariş Özetiniz</h2>
+          ${itemCards || '<p style="margin:0;color:#6c678a;font-size:14px">Ürün bilgisi bulunamadı.</p>'}
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px dashed #cdc5ea;margin-top:10px;flex-wrap:wrap">
+            <p style="margin:0;font-size:13px;color:#6c678a">Ürün kartlarına dokunarak detay sayfasına geçebilirsiniz.</p>
+            <p style="margin:0;font-size:20px;font-weight:800;color:#2c2454">Toplam: ${formatCurrency(total)}</p>
           </div>
         </div>
       </div>

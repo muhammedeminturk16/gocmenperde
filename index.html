@@ -1459,11 +1459,16 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
             </select>
             <input type="text" id="f-neighborhood-other" class="address-part-input hidden" placeholder="Mahalleyi yazın" oninput="syncAddressFromParts()">
             <div class="address-street-row">
-              <select id="f-street" class="address-part-input" onchange="onStreetChanged(this.value)">
-                <option value="">Cadde / Sokak seçin</option>
+              <select id="f-avenue" class="address-part-input" onchange="onAvenueChanged(this.value)">
+                <option value="">Cadde seçin</option>
                 <option value="diger">Diğeri</option>
               </select>
-              <input type="text" id="f-street-other" class="address-part-input hidden" placeholder="Cadde / Sokak yazın" oninput="syncAddressFromParts()">
+              <input type="text" id="f-avenue-other" class="address-part-input hidden" placeholder="Cadde yazın" oninput="syncAddressFromParts()">
+              <select id="f-street" class="address-part-input" onchange="onStreetChanged(this.value)">
+                <option value="">Sokak seçin</option>
+                <option value="diger">Diğeri</option>
+              </select>
+              <input type="text" id="f-street-other" class="address-part-input hidden" placeholder="Sokak yazın" oninput="syncAddressFromParts()">
             </div>
           </div>
           <textarea id="f-addr" class="form-input form-textarea" placeholder="Mahalle, Sokak, Bina No, Daire — Osmangazi / Bursa" oninput="syncPartsFromAddress(this.value)"></textarea>
@@ -4394,10 +4399,14 @@ function resetNeighborhoodAndStreetSelectors(){
   neighborhoodStreetLoadingPromise = null;
   const neighborhoodEl = document.getElementById('f-neighborhood');
   const neighborhoodOtherEl = document.getElementById('f-neighborhood-other');
+  const avenueEl = document.getElementById('f-avenue');
+  const avenueOtherEl = document.getElementById('f-avenue-other');
   const streetEl = document.getElementById('f-street');
   if(neighborhoodEl) neighborhoodEl.innerHTML = '<option value="">Mahalle seçin</option><option value="diger">Diğeri</option>';
   if(neighborhoodOtherEl){ neighborhoodOtherEl.classList.add('hidden'); neighborhoodOtherEl.value = ''; }
-  if(streetEl) streetEl.innerHTML = '<option value="">Cadde / Sokak seçin</option><option value="diger">Diğeri</option>';
+  if(avenueEl) avenueEl.innerHTML = '<option value="">Cadde seçin</option><option value="diger">Diğeri</option>';
+  if(avenueOtherEl){ avenueOtherEl.classList.add('hidden'); avenueOtherEl.value = ''; }
+  if(streetEl) streetEl.innerHTML = '<option value="">Sokak seçin</option><option value="diger">Diğeri</option>';
 }
 
 async function onNeighborhoodChanged(value){
@@ -4416,6 +4425,20 @@ async function onNeighborhoodChanged(value){
     populateStreetOptions(latestStreets);
   }else{
     populateStreetOptions([]);
+  }
+  syncAddressFromParts();
+}
+
+function onAvenueChanged(value){
+  const avenueOtherEl = document.getElementById('f-avenue-other');
+  if(avenueOtherEl){
+    if(value === 'diger'){
+      avenueOtherEl.classList.remove('hidden');
+      avenueOtherEl.focus();
+    }else{
+      avenueOtherEl.classList.add('hidden');
+      avenueOtherEl.value = '';
+    }
   }
   syncAddressFromParts();
 }
@@ -4459,10 +4482,17 @@ function populateNeighborhoodOptions(neighborhoods = []){
 }
 
 function populateStreetOptions(streets = []){
+  const avenueEl = document.getElementById('f-avenue');
   const streetEl = document.getElementById('f-street');
-  if(!streetEl) return;
-  streetEl.innerHTML = '<option value="">Cadde / Sokak seçin</option>' +
-    uniqTrimmedStrings(streets).map((item)=>`<option value="${item}">${item}</option>`).join('') +
+  if(!avenueEl || !streetEl) return;
+  const allStreets = uniqTrimmedStrings(streets);
+  const avenues = allStreets.filter((item)=>/\bcadde\b|\bcd\b/i.test(item));
+  const onlyStreets = allStreets.filter((item)=>/\bsokak\b|\bsk\b/i.test(item));
+  avenueEl.innerHTML = '<option value="">Cadde seçin</option>' +
+    avenues.map((item)=>`<option value="${item}">${item}</option>`).join('') +
+    '<option value="diger">Diğeri</option>';
+  streetEl.innerHTML = '<option value="">Sokak seçin</option>' +
+    onlyStreets.map((item)=>`<option value="${item}">${item}</option>`).join('') +
     '<option value="diger">Diğeri</option>';
 }
 
@@ -4545,12 +4575,15 @@ function syncAddressFromParts(){
   const neighborhoodSelectValue = document.getElementById('f-neighborhood')?.value.trim() || '';
   const neighborhoodOther = document.getElementById('f-neighborhood-other')?.value.trim() || '';
   const neighborhood = neighborhoodSelectValue === 'diger' ? neighborhoodOther : neighborhoodSelectValue;
+  const avenueSelectValue = document.getElementById('f-avenue')?.value.trim() || '';
+  const avenueOther = document.getElementById('f-avenue-other')?.value.trim() || '';
+  const avenue = avenueSelectValue === 'diger' ? avenueOther : avenueSelectValue;
   const streetSelectValue = document.getElementById('f-street')?.value.trim() || '';
   const streetOther = document.getElementById('f-street-other')?.value.trim() || '';
   const street = streetSelectValue === 'diger' ? streetOther : streetSelectValue;
   const addrEl = document.getElementById('f-addr');
   if(!addrEl) return;
-  const firstLine = [neighborhood, street].filter(Boolean).join(', ');
+  const firstLine = [neighborhood, avenue, street].filter(Boolean).join(', ');
   const secondLine = [district, city].filter(Boolean).join(' / ');
   const fullAddress = [firstLine, secondLine].filter(Boolean).join(' — ');
   if(fullAddress) addrEl.value = fullAddress;
@@ -4563,9 +4596,11 @@ async function syncPartsFromAddress(addressText=''){
   const cityEl = document.getElementById('f-city');
   const neighborhoodEl = document.getElementById('f-neighborhood');
   const neighborhoodOtherEl = document.getElementById('f-neighborhood-other');
+  const avenueEl = document.getElementById('f-avenue');
+  const avenueOtherEl = document.getElementById('f-avenue-other');
   const streetEl = document.getElementById('f-street');
   const streetOtherEl = document.getElementById('f-street-other');
-  if(!neighborhoodEl || !streetEl || !districtEl || !cityEl || !districtOtherEl || !neighborhoodOtherEl || !streetOtherEl) return;
+  if(!neighborhoodEl || !avenueEl || !streetEl || !districtEl || !cityEl || !districtOtherEl || !neighborhoodOtherEl || !avenueOtherEl || !streetOtherEl) return;
 
   const labeledParts = {};
   const normalizeLabel = (text='') => String(text)
@@ -4582,7 +4617,8 @@ async function syncPartsFromAddress(addressText=''){
     const value = m[2].trim();
     if(!value) return;
     if(label.includes('mahalle')) labeledParts.neighborhood = value;
-    else if(label.includes('sokak') || label.includes('cadde')) labeledParts.street = value;
+    else if(label.includes('cadde')) labeledParts.avenue = value;
+    else if(label.includes('sokak')) labeledParts.street = value;
     else if((label.includes('kapi') || label.includes('kapı')) && label.includes('no')) labeledParts.doorNo = value;
     else if(label.includes('ilce') || label.includes('ilçe')) labeledParts.district = value;
     else if(label === 'il') labeledParts.city = value;
@@ -4614,6 +4650,19 @@ async function syncPartsFromAddress(addressText=''){
     }else{
       neighborhoodEl.value = '';
     }
+    if((labeledParts.avenue || '') && Array.from(avenueEl.options).some((opt)=>opt.value === labeledParts.avenue)){
+      avenueEl.value = labeledParts.avenue || '';
+      avenueOtherEl.value = '';
+      avenueOtherEl.classList.add('hidden');
+    }else if(labeledParts.avenue){
+      avenueEl.value = 'diger';
+      avenueOtherEl.classList.remove('hidden');
+      avenueOtherEl.value = labeledParts.avenue;
+    }else{
+      avenueEl.value = '';
+      avenueOtherEl.value = '';
+      avenueOtherEl.classList.add('hidden');
+    }
     if(streetWithDoorNo && Array.from(streetEl.options).some((opt)=>opt.value === streetWithDoorNo)){
       streetEl.value = streetWithDoorNo;
       streetOtherEl.value = '';
@@ -4641,6 +4690,7 @@ async function syncPartsFromAddress(addressText=''){
   const cityLine = lines.find(l=>l.includes('/') && !/(sokak|cadde|apartman|bina)/i.test(l)) || lines.find((l,idx)=>idx>0 && l.includes('/')) || '';
 
   let neighborhood = '';
+  let avenue = '';
   let street = '';
   if(firstLine){
     const mh = firstLine.match(/([a-zçğıöşü0-9\s.'-]+\smahalle(?:si)?)/i);
@@ -4656,6 +4706,10 @@ async function syncPartsFromAddress(addressText=''){
       if(!neighborhood) neighborhood = segments[0] || '';
       if(!street) street = segments.slice(1).join(', ');
     }
+    const segments = firstLine.split(',').map(x=>x.trim()).filter(Boolean);
+    avenue = segments.find((part)=>/\bcadde\b|\bcd\b/i.test(part)) || '';
+    const sokakSegment = segments.find((part)=>/\bsokak\b|\bsk\b/i.test(part)) || '';
+    if(sokakSegment) street = sokakSegment;
   }
 
   const districtCity = cityLine.split('/').map(s=>s.trim()).filter(Boolean);
@@ -4670,6 +4724,19 @@ async function syncPartsFromAddress(addressText=''){
     neighborhoodOtherEl.value = neighborhood;
   }else{
     neighborhoodEl.value = '';
+  }
+  if(avenue && Array.from(avenueEl.options).some((opt)=>opt.value === avenue)){
+    avenueEl.value = avenue;
+    avenueOtherEl.value = '';
+    avenueOtherEl.classList.add('hidden');
+  }else if(avenue){
+    avenueEl.value = 'diger';
+    avenueOtherEl.classList.remove('hidden');
+    avenueOtherEl.value = avenue;
+  }else{
+    avenueEl.value = '';
+    avenueOtherEl.value = '';
+    avenueOtherEl.classList.add('hidden');
   }
   if(street && Array.from(streetEl.options).some((opt)=>opt.value === street)){
     streetEl.value = street;
@@ -5050,7 +5117,8 @@ function validateCheckoutForm(){
     { id:'f-city', label:'İl' },
     { id:'f-district', label:'İlçe' },
     { id:'f-neighborhood', label:'Mahalle' },
-    { id:'f-street', label:'Cadde / Sokak / Apartman No' },
+    { id:'f-avenue', label:'Cadde' },
+    { id:'f-street', label:'Sokak / Apartman No' },
     { id:'f-addr', label:'Teslimat Adresi' }
   ];
   for(const field of requiredFields){

@@ -1470,6 +1470,10 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
               </select>
               <input type="text" id="f-street-other" class="address-part-input hidden" placeholder="Sokak yazın" oninput="syncAddressFromParts()">
             </div>
+            <div class="address-street-row" style="margin-top:8px">
+              <input type="text" id="f-door-no" class="address-part-input" placeholder="Kapı No" oninput="syncAddressFromParts()">
+              <input type="text" id="f-floor" class="address-part-input" placeholder="Kat" oninput="syncAddressFromParts()">
+            </div>
           </div>
           <textarea id="f-addr" class="form-input form-textarea" placeholder="Mahalle, Sokak, Bina No, Daire — Osmangazi / Bursa" oninput="syncPartsFromAddress(this.value)"></textarea>
         </div>
@@ -4681,9 +4685,17 @@ function syncAddressFromParts(){
   const streetSelectValue = document.getElementById('f-street')?.value.trim() || '';
   const streetOther = document.getElementById('f-street-other')?.value.trim() || '';
   const street = streetSelectValue === 'diger' ? streetOther : streetSelectValue;
+  const doorNo = document.getElementById('f-door-no')?.value.trim() || '';
+  const floor = document.getElementById('f-floor')?.value.trim() || '';
   const addrEl = document.getElementById('f-addr');
   if(!addrEl) return;
-  const firstLine = [neighborhood, avenue, street].filter(Boolean).join(', ');
+  const firstLine = [
+    neighborhood,
+    avenue,
+    street,
+    doorNo ? `Kapı No: ${doorNo}` : '',
+    floor ? `Kat: ${floor}` : ''
+  ].filter(Boolean).join(', ');
   const secondLine = [district, city].filter(Boolean).join(' / ');
   const fullAddress = [firstLine, secondLine].filter(Boolean).join(' — ');
   if(fullAddress) addrEl.value = fullAddress;
@@ -4700,7 +4712,9 @@ async function syncPartsFromAddress(addressText=''){
   const avenueOtherEl = document.getElementById('f-avenue-other');
   const streetEl = document.getElementById('f-street');
   const streetOtherEl = document.getElementById('f-street-other');
-  if(!neighborhoodEl || !avenueEl || !streetEl || !districtEl || !cityEl || !districtOtherEl || !neighborhoodOtherEl || !avenueOtherEl || !streetOtherEl) return;
+  const doorNoEl = document.getElementById('f-door-no');
+  const floorEl = document.getElementById('f-floor');
+  if(!neighborhoodEl || !avenueEl || !streetEl || !districtEl || !cityEl || !districtOtherEl || !neighborhoodOtherEl || !avenueOtherEl || !streetOtherEl || !doorNoEl || !floorEl) return;
 
   const labeledParts = {};
   const normalizeLabel = (text='') => String(text)
@@ -4720,12 +4734,17 @@ async function syncPartsFromAddress(addressText=''){
     else if(label.includes('cadde')) labeledParts.avenue = value;
     else if(label.includes('sokak')) labeledParts.street = value;
     else if((label.includes('kapi') || label.includes('kapı')) && label.includes('no')) labeledParts.doorNo = value;
+    else if(label.includes('kat')) labeledParts.floor = value;
     else if(label.includes('ilce') || label.includes('ilçe')) labeledParts.district = value;
     else if(label === 'il') labeledParts.city = value;
   });
 
   if(Object.keys(labeledParts).length){
-    const streetWithDoorNo = [labeledParts.street, labeledParts.doorNo ? `Kapı No: ${labeledParts.doorNo}` : ''].filter(Boolean).join(', ');
+    const streetWithBuilding = [
+      labeledParts.street,
+      labeledParts.doorNo ? `Kapı No: ${labeledParts.doorNo}` : '',
+      labeledParts.floor ? `Kat: ${labeledParts.floor}` : ''
+    ].filter(Boolean).join(', ');
     cityEl.value = CITY_OPTIONS.includes(labeledParts.city || '') ? labeledParts.city : '';
     onCityChanged(cityEl.value);
     if((labeledParts.district || '') && Array.from(districtEl.options).some((opt)=>opt.value === labeledParts.district)){
@@ -4763,19 +4782,21 @@ async function syncPartsFromAddress(addressText=''){
       avenueOtherEl.value = '';
       avenueOtherEl.classList.add('hidden');
     }
-    if(streetWithDoorNo && Array.from(streetEl.options).some((opt)=>opt.value === streetWithDoorNo)){
-      streetEl.value = streetWithDoorNo;
+    if(streetWithBuilding && Array.from(streetEl.options).some((opt)=>opt.value === streetWithBuilding)){
+      streetEl.value = streetWithBuilding;
       streetOtherEl.value = '';
       streetOtherEl.classList.add('hidden');
-    }else if(streetWithDoorNo){
+    }else if(streetWithBuilding){
       streetEl.value = 'diger';
       streetOtherEl.classList.remove('hidden');
-      streetOtherEl.value = streetWithDoorNo;
+      streetOtherEl.value = streetWithBuilding;
     }else{
       streetEl.value = '';
       streetOtherEl.value = '';
       streetOtherEl.classList.add('hidden');
     }
+    doorNoEl.value = labeledParts.doorNo || '';
+    floorEl.value = labeledParts.floor || '';
     return;
   }
 
@@ -4792,6 +4813,8 @@ async function syncPartsFromAddress(addressText=''){
   let neighborhood = '';
   let avenue = '';
   let street = '';
+  let doorNo = '';
+  let floor = '';
   if(firstLine){
     const mh = firstLine.match(/([a-zçğıöşü0-9\s.'-]+\smahalle(?:si)?)/i);
     const streetAfterLabel = firstLine.match(/(?:sokak\s*\/\s*cadde|cadde\s*\/\s*sokak|sokak|cadde)\s*:?\s*(.+)$/i);
@@ -4810,6 +4833,10 @@ async function syncPartsFromAddress(addressText=''){
     avenue = segments.find((part)=>/\bcadde\b|\bcd\b/i.test(part)) || '';
     const sokakSegment = segments.find((part)=>/\bsokak\b|\bsk\b/i.test(part)) || '';
     if(sokakSegment) street = sokakSegment;
+    const doorNoMatch = firstLine.match(/kap[ıi]\s*no\s*:?\s*([a-z0-9/-]+)/i) || firstLine.match(/\bno\s*:?\s*([a-z0-9/-]+)/i);
+    const floorMatch = firstLine.match(/\bkat\s*:?\s*([a-z0-9/-]+)/i);
+    if(doorNoMatch) doorNo = doorNoMatch[1].trim();
+    if(floorMatch) floor = floorMatch[1].trim();
   }
 
   const districtCity = cityLine.split('/').map(s=>s.trim()).filter(Boolean);
@@ -4851,6 +4878,8 @@ async function syncPartsFromAddress(addressText=''){
     streetOtherEl.value = '';
     streetOtherEl.classList.add('hidden');
   }
+  doorNoEl.value = doorNo;
+  floorEl.value = floor;
   cityEl.value = CITY_OPTIONS.includes(districtCity[1] || '') ? districtCity[1] : '';
   onCityChanged(cityEl.value);
   const pickedDistrict = districtCity[0] || '';
@@ -5217,8 +5246,6 @@ function validateCheckoutForm(){
     { id:'f-city', label:'İl' },
     { id:'f-district', label:'İlçe' },
     { id:'f-neighborhood', label:'Mahalle' },
-    { id:'f-avenue', label:'Cadde' },
-    { id:'f-street', label:'Sokak / Apartman No' },
     { id:'f-addr', label:'Teslimat Adresi' }
   ];
   for(const field of requiredFields){
@@ -5238,6 +5265,24 @@ function validateCheckoutForm(){
   const districtOther = document.getElementById('f-district-other')?.value.trim() || '';
   if(district === 'diger' && !districtOther){
     showRequiredFieldWarning('İlçe (Diğeri)');
+    return false;
+  }
+  const avenue = (() => {
+    const selected = document.getElementById('f-avenue')?.value.trim() || '';
+    const manual = document.getElementById('f-avenue-other')?.value.trim() || '';
+    return selected === 'diger' ? manual : (selected || manual);
+  })();
+  if(!avenue){
+    showRequiredFieldWarning('Cadde');
+    return false;
+  }
+  const street = (() => {
+    const selected = document.getElementById('f-street')?.value.trim() || '';
+    const manual = document.getElementById('f-street-other')?.value.trim() || '';
+    return selected === 'diger' ? manual : (selected || manual);
+  })();
+  if(!street){
+    showRequiredFieldWarning('Sokak');
     return false;
   }
   const address = document.getElementById('f-addr')?.value.trim() || '';

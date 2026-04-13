@@ -461,16 +461,17 @@ function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items
 
   return `
   <div style="margin:0;padding:24px;background:radial-gradient(circle at top right,#f7f4ff 0%,#f2f7ff 42%,#f6fbff 100%);font-family:'Segoe UI',Arial,sans-serif;color:#1e1c1a">
-    <div style="max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #dfddee;border-radius:24px;overflow:hidden;box-shadow:0 18px 42px rgba(52,46,92,0.14)">
-      <div style="padding:28px 24px 24px;background:${headerGradient};color:${headerText}">
-        <p style="margin:0 0 10px;display:inline-block;padding:7px 12px;border-radius:999px;background:${chipBg};font-size:11px;letter-spacing:.9px;font-weight:700;text-transform:uppercase">Göçmen Perde Premium</p>
-        <h1 style="margin:0 0 8px;font-size:27px;letter-spacing:.25px">${escapeHtml(title)}</h1>
-        <p style="margin:0;font-size:14px;opacity:.95">${escapeHtml(subtitle)}</p>
+    <div style="max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #dfddee;border-radius:28px;overflow:hidden;box-shadow:0 18px 42px rgba(52,46,92,0.14)">
+      <div style="padding:30px 24px 26px;background:${headerGradient};color:${headerText};position:relative;isolation:isolate">
+        <div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(0,0,0,.28),rgba(0,0,0,.12) 45%,rgba(0,0,0,.24));z-index:-1"></div>
+        <p style="margin:0 0 10px;display:inline-block;padding:7px 12px;border-radius:999px;background:${chipBg};font-size:11px;letter-spacing:.9px;font-weight:700;text-transform:uppercase;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25),0 8px 20px rgba(0,0,0,.16);text-shadow:0 1px 1px rgba(0,0,0,.25)">Göçmen Perde Premium</p>
+        <h1 style="margin:0 0 8px;font-size:29px;letter-spacing:.25px;text-shadow:0 2px 10px rgba(0,0,0,.42),0 1px 0 rgba(0,0,0,.35)">${escapeHtml(title)}</h1>
+        <p style="margin:0;font-size:14px;opacity:.97;text-shadow:0 1px 8px rgba(0,0,0,.38)">${escapeHtml(subtitle)}</p>
       </div>
       <div style="padding:24px 24px 18px;">
-        <div style="margin:0 0 16px;padding:16px;border-radius:18px;background:linear-gradient(145deg,#ffffff,#f7f4ff);border:1px solid #ddd6f3">
+        <div style="margin:0 0 16px;padding:18px;border-radius:20px;background:linear-gradient(145deg,#ffffff,#f7f4ff);border:1px solid #ddd6f3;box-shadow:0 10px 20px rgba(39,31,75,.06)">
           <p style="margin:0 0 10px;font-size:14px;color:#4f476f">Merhaba ${escapeHtml(customer?.name || 'Değerli müşterimiz')}, sipariş detaylarınızı aşağıda görebilirsiniz.</p>
-          <a href="${escapeHtml(customerOrdersUrl)}" style="display:inline-block;padding:10px 16px;border-radius:999px;background:${headerGradient};color:${headerText};font-size:12px;font-weight:700;letter-spacing:.3px;text-decoration:none">Müşteri paneline git</a>
+          <a href="${escapeHtml(customerOrdersUrl)}" style="display:inline-block;padding:10px 16px;border-radius:999px;background:${headerGradient};color:${headerText};font-size:12px;font-weight:700;letter-spacing:.3px;text-decoration:none;box-shadow:0 10px 20px rgba(22,18,43,.24);text-shadow:0 1px 4px rgba(0,0,0,.45)">Müşteri paneline git</a>
         </div>
 
         <h2 style="margin:0 0 10px;font-size:18px;color:#2c2454">Müşteri Bilgileri</h2>
@@ -485,7 +486,7 @@ function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items
 
         ${extra}
 
-        <div style="margin:20px 0 10px;padding:18px;border:1px solid #ddd6f3;border-radius:20px;background:linear-gradient(180deg,#ffffff 0%,#f8f4ff 100%)">
+        <div style="margin:20px 0 10px;padding:18px;border:1px solid #ddd6f3;border-radius:22px;background:linear-gradient(180deg,#ffffff 0%,#f8f4ff 100%);box-shadow:0 14px 28px rgba(34,26,62,.08)">
           <h2 style="margin:0 0 12px;font-size:19px;color:#2c2454;letter-spacing:.2px">Sipariş Özetiniz</h2>
           ${itemCards || '<p style="margin:0;color:#6c678a;font-size:14px">Ürün bilgisi bulunamadı.</p>'}
           <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:12px;border-top:1px dashed #cdc5ea;margin-top:10px;flex-wrap:wrap">

@@ -92,17 +92,35 @@ function isStreetLikeName(value) {
   );
 }
 
-function collectStreetLikeValuesDeep(source, collector, depth = 0) {
+function isStreetFieldKey(key) {
+  const normalized = toComparable(key);
+  return (
+    normalized.includes('sokak') ||
+    normalized.includes('cadde') ||
+    normalized.includes('bulvar') ||
+    normalized.includes('street') ||
+    normalized.includes('road') ||
+    normalized.includes('avenue') ||
+    normalized.includes('boulevard') ||
+    normalized.includes('way')
+  );
+}
+
+function collectStreetLikeValuesDeep(source, collector, parentKey = '', depth = 0) {
   if (depth > 5 || source == null) return;
+  const cameFromStreetField = isStreetFieldKey(parentKey);
 
   if (typeof source === 'string') {
     const value = source.trim();
-    if (value && isStreetLikeName(value)) collector.push(value);
+    if (!value) return;
+    if (cameFromStreetField || isStreetLikeName(value)) {
+      collector.push(value);
+    }
     return;
   }
 
   if (Array.isArray(source)) {
-    source.forEach((item) => collectStreetLikeValuesDeep(item, collector, depth + 1));
+    source.forEach((item) => collectStreetLikeValuesDeep(item, collector, parentKey, depth + 1));
     return;
   }
 
@@ -123,17 +141,20 @@ function collectStreetLikeValuesDeep(source, collector, depth = 0) {
   ];
 
   keys.forEach((key) => {
-    if (source[key] != null) collectStreetLikeValuesDeep(source[key], collector, depth + 1);
+    if (source[key] != null) collectStreetLikeValuesDeep(source[key], collector, key, depth + 1);
   });
 
-  Object.values(source).forEach((value) => {
+  Object.entries(source).forEach(([key, value]) => {
     if (typeof value === 'string') {
       const normalized = value.trim();
-      if (normalized && isStreetLikeName(normalized)) collector.push(normalized);
+      if (!normalized) return;
+      if (isStreetFieldKey(key) || isStreetLikeName(normalized)) {
+        collector.push(normalized);
+      }
       return;
     }
     if (Array.isArray(value) || (value && typeof value === 'object')) {
-      collectStreetLikeValuesDeep(value, collector, depth + 1);
+      collectStreetLikeValuesDeep(value, collector, key, depth + 1);
     }
   });
 }
@@ -143,23 +164,44 @@ function normalizeStreetValues(entry) {
   collectStreetLikeValuesDeep(entry, values);
   const directKeys = [
     'streets',
+    'street',
     'roads',
+    'road',
     'avenues',
+    'avenue',
     'bulvards',
     'boulevards',
+    'boulevard',
     'streets_and_roads',
     'caddeSokaklar',
     'sokaklar',
+    'sokak',
     'caddeler',
+    'cadde',
+    'bulvarlar',
+    'bulvar',
     'ways',
+    'way',
     'items',
   ];
   directKeys.forEach((key) => {
     const value = entry?.[key];
     if (Array.isArray(value)) {
       value.forEach((item) => {
-        if (typeof item === 'string' && item.trim()) values.push(item.trim());
+        if (typeof item === 'string' && item.trim()) {
+          values.push(item.trim());
+          return;
+        }
+        if (item && typeof item === 'object') {
+          const namedValue = String(item?.name || item?.value || item?.label || '').trim();
+          if (namedValue) values.push(namedValue);
+        }
       });
+      return;
+    }
+    if (value && typeof value === 'object') {
+      const namedValue = String(value?.name || value?.value || value?.label || '').trim();
+      if (namedValue) values.push(namedValue);
     }
   });
   return uniqTrimmedStrings(values);

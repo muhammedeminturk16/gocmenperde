@@ -242,7 +242,24 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .hero-proof-pill{background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.22);border-radius:12px;padding:10px 12px;color:#fff}
 .hero-proof-pill b{display:block;font-family:var(--ff-display);font-size:1.15rem;color:#ffe9b0}
 .hero-proof-pill span{font-size:0.67rem;letter-spacing:1px;text-transform:uppercase;opacity:.85}
-@media(max-width:640px){.hero-proof-strip{grid-template-columns:1fr 1fr}.hero-proof-pill:last-child{grid-column:1/-1}}
+.hero-luxury-bar{margin-top:18px;display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);box-shadow:0 14px 28px rgba(0,0,0,0.18)}
+.hero-luxury-item{padding:10px 8px;border-radius:10px;background:rgba(9,9,9,0.28);border:1px solid rgba(255,255,255,0.16);display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left}
+.hero-luxury-item b{font-size:.72rem;letter-spacing:1.3px;text-transform:uppercase;color:#f6d98f}
+.hero-luxury-item span{font-size:.75rem;line-height:1.45;color:rgba(255,255,255,0.9)}
+.signature-banner{margin:42px auto 0;width:min(1100px,94%);display:grid;grid-template-columns:1.3fr .7fr;gap:16px;padding:20px;border-radius:20px;background:linear-gradient(135deg,#fffdf8,#f8f1e0 45%,#fff);border:1px solid rgba(201,168,76,0.28);box-shadow:0 18px 40px rgba(15,14,13,0.12)}
+.signature-copy{display:flex;flex-direction:column;gap:8px}
+.signature-copy small{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold-dark);font-weight:700}
+.signature-copy h3{font-family:var(--ff-display);font-size:clamp(1.5rem,2.5vw,2rem);line-height:1.1;color:#1f1d1a}
+.signature-copy p{font-size:.88rem;color:#4d4a45;line-height:1.6;max-width:62ch}
+.signature-benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.signature-benefit{background:#fff;border:1px solid rgba(201,168,76,0.28);padding:10px;border-radius:10px;font-size:.74rem;color:#55514b}
+.signature-benefit b{display:block;color:#1c1916;font-size:.8rem;margin-bottom:2px}
+.signature-cta{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(15,14,13,0.95);border-radius:16px;padding:16px;text-align:center;color:#fff}
+.signature-cta strong{font-size:1.05rem;font-family:var(--ff-display);letter-spacing:.4px}
+.signature-cta p{font-size:.8rem;line-height:1.55;opacity:.86}
+.signature-cta button{border:none;background:linear-gradient(135deg,#f3cb76,#ddb05a);color:#2f2209;padding:12px 18px;border-radius:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+@media(max-width:860px){.signature-banner{grid-template-columns:1fr}.signature-benefits{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.hero-proof-strip{grid-template-columns:1fr 1fr}.hero-proof-pill:last-child{grid-column:1/-1}.hero-luxury-bar{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){
   .hero{padding:105px 0 56px}
   .hero-content{padding:28px 18px}
@@ -1171,8 +1188,31 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
         <div class="hero-proof-pill"><b>5★</b><span>Google Memnuniyet</span></div>
         <div class="hero-proof-pill"><b>Hızlı</b><span>Keşif &amp; Montaj</span></div>
       </div>
+      <div class="hero-luxury-bar" aria-label="Premium hizmet detayları">
+        <div class="hero-luxury-item"><b>Signature Kumaş</b><span>Yüksek gramajlı, dokulu ve uzun ömürlü kumaş koleksiyonu.</span></div>
+        <div class="hero-luxury-item"><b>Mimari Uyum</b><span>Mobilya tonlarına göre özel renk eşleştirme danışmanlığı.</span></div>
+        <div class="hero-luxury-item"><b>Temiz Montaj</b><span>Koruyucu ekipman ve detaylı son kontrol ile pürüzsüz teslim.</span></div>
+        <div class="hero-luxury-item"><b>VIP Planlama</b><span>Randevudan montaja kadar tek danışman ile uçtan uca süreç.</span></div>
+      </div>
     </div>
     <div class="hero-scroll"><span>Aşağı Kaydır</span><div class="scroll-line"></div></div>
+  </div>
+  <div class="signature-banner">
+    <div class="signature-copy">
+      <small>Premium Koleksiyon Deneyimi</small>
+      <h3>Standart perde değil, evinizin değerini yükselten özel tasarım atmosfer.</h3>
+      <p>Göçmen Perde’de her proje; yaşam tarzı, ışık akışı ve mekan estetiği analiz edilerek tasarlanır. Böylece ortaya sadece şık değil, uzun yıllar ilk günkü etkisini koruyan bir sonuç çıkar.</p>
+      <div class="signature-benefits">
+        <div class="signature-benefit"><b>Keşif + Stil Danışmanlığı</b>Alanınıza uygun model ve doku önerileri.</div>
+        <div class="signature-benefit"><b>Atölye Kalitesi Dikim</b>İnce işçilik ve premium bitiş detayları.</div>
+        <div class="signature-benefit"><b>Zamanında Teslim</b>Planlı üretim, randevulu montaj, net süreç yönetimi.</div>
+      </div>
+    </div>
+    <div class="signature-cta">
+      <strong>Eviniz için VIP perde planı oluşturun</strong>
+      <p>Uzman ekibimizle 15 dakikalık ön görüşme yapın, en doğru perde kombinasyonunu birlikte belirleyelim.</p>
+      <button onclick="go('contact')">Hemen Randevu Al</button>
+    </div>
   </div>
   <div class="features-strip">
     <div class="features-inner">

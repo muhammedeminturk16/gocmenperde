@@ -132,7 +132,9 @@ function collectStreetLikeValuesDeep(source, collector, depth = 0) {
       if (normalized && isStreetLikeName(normalized)) collector.push(normalized);
       return;
     }
-    if (Array.isArray(value)) collectStreetLikeValuesDeep(value, collector, depth + 1);
+    if (Array.isArray(value) || (value && typeof value === 'object')) {
+      collectStreetLikeValuesDeep(value, collector, depth + 1);
+    }
   });
 }
 

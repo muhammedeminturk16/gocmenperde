@@ -2359,6 +2359,7 @@ async function fetchGithubContentsJSON(filePath){
 
 function renderProductState(list, {withObserver=true} = {}){
   PRODUCTS = (Array.isArray(list) ? list : []).map(normalizeProductCatalog);
+  processRestockNotifications(PRODUCTS);
   hydrateProductSocialData();
   syncCategoriesFromAdmin();
   renderProducts(PRODUCTS);
@@ -2847,6 +2848,64 @@ function formatDimension(value){
   return (Number(value) || 0).toLocaleString('tr-TR', { minimumFractionDigits:0, maximumFractionDigits:2 });
 }
 
+function getNormalizedStockCount(product){
+  const stock = Number(product?.stock);
+  if(!Number.isFinite(stock)) return Infinity;
+  return Math.max(0, Math.floor(stock));
+}
+
+function isOutOfStock(product){
+  return getNormalizedStockCount(product) <= 0;
+}
+
+function buildOutOfStockActions(productId, productName){
+  const safeName = String(productName || '').replace(/'/g, "\\'");
+  return `<div class="qty-wrap"><button class="add-btn" style="background:#6b7280" disabled>Tükendi</button><button class="add-btn" onclick="event.stopPropagation();subscribeStockAlert('${productId}','${safeName}')">Gelince Haber Ver</button></div>`;
+}
+
+async function subscribeStockAlert(productId, productName){
+  const email = (prompt('Stok gelince haber verebilmemiz için e-posta adresinizi girin:') || '').trim().toLowerCase();
+  if(!email) return;
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    showToast('Geçerli bir e-posta adresi girin');
+    return;
+  }
+  try{
+    const res = await fetch('/api/stock-alerts', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'subscribe', productId, productName, email })
+    });
+    if(!res.ok) throw new Error('Abonelik kaydı başarısız');
+    showToast('Stok gelince size e-posta göndereceğiz.');
+  }catch(_){
+    showToast('Bildirim kaydı alınamadı. Lütfen tekrar deneyin.');
+  }
+}
+
+function processRestockNotifications(products){
+  try{
+    const key = 'gp_stock_snapshot_v1';
+    const prev = JSON.parse(localStorage.getItem(key) || '{}');
+    const next = {};
+    (Array.isArray(products) ? products : []).forEach((p)=>{
+      const pid = String(p?.id || '').trim();
+      if(!pid) return;
+      const stock = getNormalizedStockCount(p);
+      next[pid] = stock;
+      const previousStock = Number(prev[pid] ?? stock);
+      if(previousStock <= 0 && stock > 0){
+        fetch('/api/stock-alerts', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ action:'notify', productId: pid, productName: p?.name || 'Ürün', stock })
+        }).catch(()=>{});
+      }
+    });
+    localStorage.setItem(key, JSON.stringify(next));
+  }catch(_){ }
+}
+
 function buildCard(p, index=0){
   const qid = 'q-' + p.id;
   const wid = 'w-' + p.id;
@@ -2861,18 +2920,19 @@ function buildCard(p, index=0){
   const requireSize = needsDimensions(p);
   const requireHeight = squareProduct || pleatedMeterProduct;
   const social = getProductSocial(p.id);
-  const stockCount = Number(p.stock);
-  const stockLabel = Number.isFinite(stockCount)
-    ? (stockCount <= 5 ? `Son ${stockCount} stok` : `Stokta: ${stockCount}`)
-    : 'Stokta';
-  const stockClass = Number.isFinite(stockCount) && stockCount <= 5 ? 'stock-low' : 'stock-ok';
+  const stockCount = getNormalizedStockCount(p);
+  const outOfStock = isOutOfStock(p);
+  const stockLabel = outOfStock ? 'Tükendi' : (stockCount <= 5 ? `Son ${stockCount} stok` : `Stokta: ${stockCount}`);
+  const stockClass = outOfStock || stockCount <= 5 ? 'stock-low' : 'stock-ok';
   const variantLabel = String(p.serialNumber || p.variant || '').trim();
   const priceHTML = p.oldPrice
     ? `<span class="old-price">${p.oldPrice.toLocaleString('tr-TR')} TL</span>
        <span class="current-price">${p.price.toLocaleString('tr-TR')} TL <span class="price-unit">/ ${p.unit}</span></span>`
     : `<span class="current-price">${p.price.toLocaleString('tr-TR')} TL <span class="price-unit">/ ${p.unit}</span></span>`;
 
-  const addBtn = `<div class="qty-wrap">
+  const addBtn = outOfStock
+    ? buildOutOfStockActions(p.id, p.name)
+    : `<div class="qty-wrap">
     ${squareProduct || pleatedMeterProduct ? `<input type="text" class="qty-input" id="${qid}" value="0" readonly>` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="qty-input" id="${qid}" value="1" ${meterProduct ? `title="Virgüllü değer girebilirsiniz"` : ''}>`}
     ${requireSize ? `<input type="text" inputmode="decimal" class="qty-input dimension-input" id="${wid}" placeholder="En (m)">` : ''}
     ${requireHeight ? `<input type="text" inputmode="decimal" class="qty-input dimension-input" id="${hid}" placeholder="Boy (m)">` : ''}
@@ -3369,10 +3429,11 @@ function openModalFromProduct(id){
   }
 
   document.getElementById('mDesc').innerText = p.desc||'';
-  const normalizedStock = Number(p.stock);
-  const stockText = Number.isFinite(normalizedStock)
-    ? (normalizedStock <= 5 ? `Son ${normalizedStock} adet` : `${normalizedStock} adet stokta`)
-    : 'Stokta';
+  const normalizedStock = getNormalizedStockCount(p);
+  const outOfStock = isOutOfStock(p);
+  const stockText = outOfStock
+    ? 'Tükendi'
+    : (normalizedStock <= 5 ? `Son ${normalizedStock} adet` : `${normalizedStock} adet stokta`);
   const variantText = String(p.serialNumber || p.variant || 'Standart').trim();
   const specsNode = document.getElementById('mSpecs');
   specsNode.innerHTML = `
@@ -3414,9 +3475,9 @@ function openModalFromProduct(id){
     ${pleatedMeterProduct ? `<select class="modal-qty-input pile-select" id="modal-pile-${p.id}"><option value="seyrek">Seyrek Pile (1m→2m)</option><option value="orta" selected>Orta Pile (1m→2.5m)</option><option value="sik">Sık Pile (1m→3m)</option></select>` : ''}
     ${squareProduct ? `<span id="${pid}" class="modal-inline-help">En ve boy girildiğinde m² ve fiyat otomatik hesaplanır</span>` : ''}
     ${pleatedMeterProduct ? `<span id="${pid}" class="modal-inline-help">Fon perdede en bir panel için minimum 1 metredir. Çift kanat için toplam en en az 2 metre olmalıdır.</span><span class="modal-inline-help">En/boy ve pile seçimine göre (1:2 / 1:2.5 / 1:3) metre ve fiyat otomatik hesaplanır</span>` : ''}
-    <button class="modal-add-btn" onclick="addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','modal-pile-${p.id}')">
-      <i class="fas fa-bag-shopping" style="margin-right:8px"></i>Sepete Ekle
-    </button>
+    ${outOfStock
+      ? `<button class="modal-add-btn" style="background:#6b7280" disabled>Tükendi</button><button class="modal-add-btn" onclick="subscribeStockAlert('${p.id}','${String(p.name||'').replace(/'/g, "\\'")}')">Gelince Haber Ver</button>`
+      : `<button class="modal-add-btn" onclick="addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','modal-pile-${p.id}')"><i class="fas fa-bag-shopping" style="margin-right:8px"></i>Sepete Ekle</button>`}
     <button onclick="toggleFavoriteById('${p.id}')" id="modal-fav-btn" style="width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:${isFav?'#fff0f0':'white'};cursor:pointer;color:${isFav?'#c0392b':'var(--slate)'};display:flex;align-items:center;justify-content:center;font-size:1rem;transition:0.2s;flex-shrink:0">
       <i class="${isFav?'fas':'far'} fa-heart"></i>
     </button>`;
@@ -4063,6 +4124,10 @@ function closeCartSheet(){
 function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId, pileSelectId){
   const product = PRODUCTS.find(x => x.id === productId);
   if(!product) return;
+  if(isOutOfStock(product)){
+    showToast('Bu ürün tükendi. Stok gelince haber ver seçeneğini kullanabilirsiniz.');
+    return;
+  }
   const meterProduct = isMeterProduct(product);
   const squareProduct = isSquareMeterProduct(product);
   const pleatedMeterProduct = isPleatedMeterProduct(product);

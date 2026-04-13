@@ -17,7 +17,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 100,
+    "stock": 147,
     "serialNumber": "Düz V-01",
     "active": true,
     "specs": {
@@ -51,7 +51,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 100,
+    "stock": 81,
     "serialNumber": "Düz V-02",
     "active": true,
     "specs": {
@@ -85,7 +85,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 100,
+    "stock": 138,
     "serialNumber": "Düz V-03",
     "active": true,
     "specs": {
@@ -119,7 +119,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 87,
+    "stock": 82,
     "serialNumber": "Düz V-04",
     "active": true,
     "specs": {
@@ -153,7 +153,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 74,
+    "stock": 115,
     "serialNumber": "Düz V-05",
     "active": true,
     "specs": {
@@ -187,7 +187,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 74,
+    "stock": 81,
     "serialNumber": "Sarmaşık V-01",
     "active": true,
     "specs": {
@@ -221,7 +221,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 80,
+    "stock": 139,
     "serialNumber": "Sarmaşık V-02",
     "active": true,
     "specs": {
@@ -255,7 +255,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 80,
+    "stock": 149,
     "serialNumber": "Sarmaşık V-03",
     "active": true,
     "specs": {
@@ -289,7 +289,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 82,
+    "stock": 120,
     "serialNumber": "Sarmaşık V-04",
     "active": true,
     "specs": {
@@ -323,7 +323,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 81,
+    "stock": 120,
     "serialNumber": "Hayal V-01",
     "active": true,
     "specs": {
@@ -357,7 +357,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 83,
+    "stock": 135,
     "serialNumber": "Hayal V-02",
     "active": true,
     "specs": {
@@ -391,7 +391,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 85,
+    "stock": 134,
     "serialNumber": "Hayal V-03",
     "active": true,
     "specs": {
@@ -425,7 +425,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 85,
+    "stock": 91,
     "serialNumber": "Hayal V-03",
     "active": true,
     "specs": {
@@ -459,7 +459,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 76,
+    "stock": 89,
     "serialNumber": "Hayal V-04",
     "active": true,
     "specs": {
@@ -494,7 +494,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 73,
+    "stock": 101,
     "serialNumber": "Hayal V-06",
     "active": true,
     "specs": {
@@ -529,7 +529,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 76,
+    "stock": 119,
     "serialNumber": "Gölge V-05",
     "active": true,
     "specs": {
@@ -564,7 +564,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 81,
+    "stock": 99,
     "serialNumber": "Gölge V-06",
     "active": true,
     "specs": {
@@ -599,7 +599,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 98,
+    "stock": 137,
     "serialNumber": "Meri V-01",
     "active": true,
     "specs": {
@@ -634,7 +634,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 96,
+    "stock": 132,
     "serialNumber": "Meri V-02",
     "active": true,
     "specs": {
@@ -669,7 +669,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 95,
+    "stock": 149,
     "serialNumber": "Meri V-03",
     "active": true,
     "specs": {
@@ -704,7 +704,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 86,
+    "stock": 94,
     "serialNumber": "Meri V-04",
     "active": true,
     "specs": {
@@ -739,7 +739,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": 88,
+    "stock": 101,
     "serialNumber": "Meri V-05",
     "active": true,
     "specs": {
@@ -774,7 +774,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 123,
     "serialNumber": "Gölge V-04",
     "active": true,
     "specs": {
@@ -809,7 +809,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 88,
     "serialNumber": "Gölge V-02",
     "active": true,
     "specs": {
@@ -844,7 +844,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 142,
     "serialNumber": "Gölge V-01",
     "active": true,
     "specs": {
@@ -879,7 +879,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 103,
     "serialNumber": "Adidas V-07",
     "active": true,
     "specs": {
@@ -914,7 +914,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 116,
     "serialNumber": "Adidas V-04",
     "active": true,
     "specs": {
@@ -949,7 +949,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "percent",
     "discountValue": null,
-    "stock": null,
+    "stock": 129,
     "serialNumber": "Adidas V-03",
     "active": true,
     "specs": {
@@ -983,7 +983,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "percent",
     "discountValue": null,
-    "stock": null,
+    "stock": 138,
     "serialNumber": "Adidas V-02",
     "active": true,
     "specs": {
@@ -1017,7 +1017,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "percent",
     "discountValue": null,
-    "stock": null,
+    "stock": 85,
     "serialNumber": null,
     "active": true,
     "specs": {
@@ -1050,7 +1050,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "percent",
     "discountValue": null,
-    "stock": null,
+    "stock": 120,
     "serialNumber": null,
     "active": true,
     "specs": {
@@ -1084,7 +1084,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 131,
     "serialNumber": "Adidas V-01",
     "active": true,
     "specs": {
@@ -1118,7 +1118,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 109,
     "serialNumber": "Classic-07",
     "active": true,
     "specs": {
@@ -1152,7 +1152,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 128,
     "serialNumber": "Classic-06",
     "active": true,
     "specs": {
@@ -1186,7 +1186,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 102,
     "serialNumber": "Classic-05",
     "active": true,
     "specs": {
@@ -1220,7 +1220,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 101,
     "serialNumber": "Classic-04",
     "active": true,
     "specs": {
@@ -1254,7 +1254,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 90,
     "serialNumber": "Classic-03",
     "active": true,
     "specs": {
@@ -1289,7 +1289,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 84,
     "serialNumber": "Classic-02",
     "active": true,
     "specs": {
@@ -1324,7 +1324,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 143,
     "serialNumber": "Classic-01",
     "active": true,
     "specs": {
@@ -1359,7 +1359,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 120,
     "serialNumber": "Chico V-08",
     "active": true,
     "specs": {
@@ -1394,7 +1394,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "percent",
     "discountValue": null,
-    "stock": null,
+    "stock": 137,
     "serialNumber": "Chico V-07",
     "active": true,
     "specs": {
@@ -1429,7 +1429,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 84,
     "serialNumber": "Chico V-06",
     "active": true,
     "specs": {
@@ -1464,7 +1464,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 143,
     "serialNumber": "Chico V-05",
     "active": true,
     "specs": {
@@ -1499,7 +1499,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 82,
     "serialNumber": "Chico V-04",
     "active": true,
     "specs": {
@@ -1534,7 +1534,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 121,
     "serialNumber": "Chico V-03",
     "active": true,
     "specs": {
@@ -1569,7 +1569,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 141,
     "serialNumber": "Chico V-02",
     "active": true,
     "specs": {
@@ -1604,7 +1604,7 @@
     "badge": "%24 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 97,
     "serialNumber": "Chico V-01",
     "active": true,
     "specs": {
@@ -1638,7 +1638,7 @@
     "badge": "%25 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 110,
     "serialNumber": null,
     "active": true,
     "specs": {
@@ -1673,7 +1673,7 @@
     "badge": "%25 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 132,
     "serialNumber": null,
     "active": true,
     "specs": {
@@ -1707,7 +1707,7 @@
     "badge": "250 TL İNDİRİM",
     "discountType": "amount",
     "discountValue": null,
-    "stock": null,
+    "stock": 121,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -1741,7 +1741,7 @@
     "badge": "250 TL İNDİRİM",
     "discountType": "amount",
     "discountValue": null,
-    "stock": null,
+    "stock": 147,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -1775,7 +1775,7 @@
     "badge": "250 TL İNDİRİM",
     "discountType": "amount",
     "discountValue": null,
-    "stock": null,
+    "stock": 124,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -1809,7 +1809,7 @@
     "badge": "250 TL İNDİRİM",
     "discountType": "amount",
     "discountValue": null,
-    "stock": null,
+    "stock": 118,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -1843,7 +1843,7 @@
     "badge": "250 TL İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 85,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -1875,7 +1875,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
-    "stock": null,
+    "stock": 111,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -1907,7 +1907,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
-    "stock": null,
+    "stock": 116,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -1939,7 +1939,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
-    "stock": null,
+    "stock": 135,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -1971,7 +1971,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
-    "stock": null,
+    "stock": 87,
     "active": true,
     "specs": {
       "• Kumaş Yapısı": "Genellikle %100 polyesterden üretilir. 1,5 - 2 cm genişliğindeki pileli yapısı sayesinde katlandığında çok az yer kaplar.",
@@ -2004,7 +2004,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "250 TL İNDİRİM",
-    "stock": null,
+    "stock": 145,
     "active": true,
     "specs": {
       "Madde 1": "İstediğiniz ölçüde yapılır"
@@ -2037,7 +2037,7 @@
     "isMeter": true,
     "features": "Ütü istemez",
     "badge": "200 TL İNDİRİM",
-    "stock": null,
+    "stock": 113,
     "active": true,
     "specs": {
       "En": "150-300 cm",
@@ -2065,7 +2065,7 @@
     "isMeter": false,
     "features": "Premium Kalite",
     "badge": "500 TL İNDİRİM",
-    "stock": null,
+    "stock": 131,
     "active": true,
     "specs": {
       "En": "160 cm",
@@ -2102,7 +2102,8 @@
       "Ütü": "Düşük ısıda",
       "Kuru Temizleme": "Önerilmez"
     },
-    "isSquareMeter": true
+    "isSquareMeter": true,
+    "stock": 85
   },
   {
     "id": "stor-perde-1774593801587",
@@ -2128,7 +2129,8 @@
       "Kurutma": "Gölgede kurutun",
       "Temizleme": "Nemli bezle silinebilir, yıkama gerektirmez"
     },
-    "isSquareMeter": true
+    "isSquareMeter": true,
+    "stock": 124
   },
   {
     "id": "izgili-tl-perde-1774588078918",
@@ -2148,7 +2150,7 @@
     "badge": "%50 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 82,
     "active": true,
     "specs": {
       "En-Boy": "Ölçüye Göre",
@@ -2183,7 +2185,7 @@
     "badge": "%50 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 94,
     "active": true,
     "specs": {
       "En": "150-300 cm",
@@ -2218,7 +2220,7 @@
     "badge": "%50 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 125,
     "active": true,
     "specs": {
       "En": "150-300 cm",
@@ -2261,7 +2263,8 @@
       "Kurutma": "Gölgede kurutun",
       "Ütü": "Düşük ısıda ütüleyin",
       "Kuru Temizleme": "Önerilmez"
-    }
+    },
+    "stock": 118
   },
   {
     "id": "tl-perde-1774552678382",
@@ -2289,7 +2292,8 @@
       "Kurutma": "Gölgede kurutun",
       "Ütü": "Düşük ısıda ütüleyin",
       "Kuru Temizleme": "Önerilmez"
-    }
+    },
+    "stock": 99
   },
   {
     "id": "fon-perde-1774540697343",
@@ -2309,7 +2313,7 @@
     "badge": "1250 TL İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 101,
     "active": true,
     "specs": {
       "En": "150-300 cm",
@@ -2351,7 +2355,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 116
   },
   {
     "id": "carsaf-pembe",
@@ -2378,7 +2383,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 84
   },
   {
     "id": "carsaf-kahve",
@@ -2405,7 +2411,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 84
   },
   {
     "id": "carsaf-mor",
@@ -2432,7 +2439,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 91
   },
   {
     "id": "carsaf-gri",
@@ -2459,7 +2467,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 89
   },
   {
     "id": "carsaf-mavi",
@@ -2486,7 +2495,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 141
   },
   {
     "id": "carsaf-sari",
@@ -2513,7 +2523,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 84
   },
   {
     "id": "carsaf-standart",
@@ -2540,7 +2551,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 89
   },
   {
     "id": "carsaf-cift",
@@ -2567,7 +2579,8 @@
       "Kurutma": "Doğal kurumaya bırakın",
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
-    }
+    },
+    "stock": 103
   },
   {
     "id": "saray-tul",
@@ -2594,7 +2607,8 @@
       "Kurutma": "Doğal, sarkmadan kuruyun",
       "Ütü": "Gerekmez",
       "Ağartıcı": "Kullanmayın"
-    }
+    },
+    "stock": 115
   },
   {
     "id": "ekonomik-fon",
@@ -2614,7 +2628,7 @@
     "badge": "%25 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 125,
     "active": true,
     "specs": {
       "Malzeme": "Polyester-Pamuk Karışım",
@@ -2648,7 +2662,7 @@
     "badge": "%25 İNDİRİM",
     "discountType": "manual",
     "discountValue": null,
-    "stock": null,
+    "stock": 98,
     "active": true,
     "specs": {
       "Malzeme": "Kadife Dokulu Blackout",
@@ -2689,7 +2703,8 @@
       "Kurutma": "Koltuk üzerinde sererek kuruyun",
       "Ütü": "Orta ısı — hafif nemli iken",
       "Çekme": "İlk yıkamada hafif çekme normal"
-    }
+    },
+    "stock": 108
   },
   {
     "id": "koltuk-set-2li",
@@ -2716,6 +2731,7 @@
       "Kurutma": "Koltuk üzerinde sererek kuruyun",
       "Ütü": "Orta ısı — hafif nemli iken",
       "Çekme": "İlk yıkamada hafif çekme normal"
-    }
+    },
+    "stock": 113
   }
 ]

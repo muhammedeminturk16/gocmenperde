@@ -1,5 +1,12 @@
 // server/lib/_paytr-config.js
 
+
+const PAYTR_FALLBACK_CREDENTIALS = {
+  id: '690414',
+  key: 'qiyTzuAETF2mB8pk',
+  salt: '403qjuMhFhc7DpQH'
+};
+
 const PAYTR_ENV_ALIASES = {
   id: [
     'PAYTR_MERCHANT_ID',
@@ -43,11 +50,20 @@ function pickFirstEnvValue(keys = []) {
   return { value: '', source: '' };
 }
 
+function pickCredentialWithFallback(keys = [], fallback = '') {
+  const picked = pickFirstEnvValue(keys);
+  if (picked.value) return picked;
+  if (String(fallback || '').trim()) {
+    return { value: String(fallback).trim(), source: 'fallback_defaults' };
+  }
+  return picked;
+}
+
 module.exports = {
   getPaytrCredentials: () => {
-    const id = pickFirstEnvValue(PAYTR_ENV_ALIASES.id);
-    const key = pickFirstEnvValue(PAYTR_ENV_ALIASES.key);
-    const salt = pickFirstEnvValue(PAYTR_ENV_ALIASES.salt);
+    const id = pickCredentialWithFallback(PAYTR_ENV_ALIASES.id, PAYTR_FALLBACK_CREDENTIALS.id);
+    const key = pickCredentialWithFallback(PAYTR_ENV_ALIASES.key, PAYTR_FALLBACK_CREDENTIALS.key);
+    const salt = pickCredentialWithFallback(PAYTR_ENV_ALIASES.salt, PAYTR_FALLBACK_CREDENTIALS.salt);
 
     return {
       merchantId: id.value,

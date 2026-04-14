@@ -2630,16 +2630,35 @@ let productRequestInFlight = null;
 let categoryRequestInFlight = null;
 
 function readProductsFromCache(){
+  return readProductsFromCacheWithMode({ allowStale:false });
+}
+
+function readProductsFromCacheWithMode({allowStale=false} = {}){
   try{
     const raw = localStorage.getItem(PRODUCTS_CACHE_KEY);
     if(!raw) return [];
     const parsed = JSON.parse(raw);
     if(!Array.isArray(parsed?.products) || !parsed.products.length) return [];
-    if(Date.now() - Number(parsed?.savedAt || 0) > PRODUCTS_CACHE_TTL_MS) return [];
+    if(!allowStale && Date.now() - Number(parsed?.savedAt || 0) > PRODUCTS_CACHE_TTL_MS) return [];
     return parsed.products.map(normalizeProductCatalog);
   } catch(e){
     return [];
   }
+}
+
+function readLegacyProductsFallback(){
+  const storageKeys = ['gp_admin_products_cache_v1'];
+  for(const key of storageKeys){
+    try{
+      const raw = localStorage.getItem(key);
+      if(!raw) continue;
+      const parsed = JSON.parse(raw);
+      if(Array.isArray(parsed) && parsed.length){
+        return parsed.map(normalizeProductCatalog);
+      }
+    }catch(_){ }
+  }
+  return [];
 }
 
 function writeProductsToCache(products){
@@ -2687,7 +2706,7 @@ function renderProductState(list, {withObserver=true} = {}){
 async function loadProducts({forceRefresh=false} = {}){
   const shouldUseCache = !forceRefresh;
   if(shouldUseCache && !productsLoadedOnce){
-    const cached = readProductsFromCache();
+    const cached = readProductsFromCacheWithMode({allowStale:false});
     if(cached.length){
       renderProductState(cached, {withObserver:false});
       productsLoadedOnce = true;
@@ -2718,8 +2737,18 @@ async function loadProducts({forceRefresh=false} = {}){
       productsLoadedOnce = true;
       handleInitialProductDeepLink();
     } catch(e){
-      if(!productsLoadedOnce){
+      const staleCache = readProductsFromCacheWithMode({allowStale:true});
+      const legacyCache = readLegacyProductsFallback();
+      const fallbackProducts = staleCache.length ? staleCache : legacyCache;
+      if(fallbackProducts.length){
+        renderProductState(fallbackProducts, {withObserver:true});
+        productsLoadedOnce = true;
+      } else if(!productsLoadedOnce){
         document.getElementById('productsGrid').innerHTML = '<div class="products-loading">Ürünler yüklenemedi. Sayfayı yenileyin.</div>';
+        const homeFeaturedRail = document.getElementById('homeFeaturedRail');
+        if(homeFeaturedRail){
+          homeFeaturedRail.innerHTML = '<div class="campaign-stream-empty">Ürünler alınamadı. Lütfen sayfayı yenileyin.</div>';
+        }
       }
     } finally {
       productRequestInFlight = null;

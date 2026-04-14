@@ -22,9 +22,10 @@ async function ensureHomeFeaturedProductsSchema() {
 }
 
 function normalizeFeaturedProductIds(payload = {}, fallback = DEFAULT_HOME_FEATURED_PRODUCTS) {
-  const source = Array.isArray(payload)
-    ? payload
-    : (Array.isArray(payload.productIds) ? payload.productIds : fallback);
+  const safePayload = normalizeFeaturedPayload(payload);
+  const source = Array.isArray(safePayload)
+    ? safePayload
+    : (Array.isArray(safePayload.productIds) ? safePayload.productIds : fallback);
 
   if (!Array.isArray(source) || source.length === 0) {
     return [];
@@ -36,6 +37,23 @@ function normalizeFeaturedProductIds(payload = {}, fallback = DEFAULT_HOME_FEATU
     .slice(0, 20);
 
   return [...new Set(normalized)];
+}
+
+function normalizeFeaturedPayload(payload) {
+  if (typeof payload === 'string') {
+    try {
+      return JSON.parse(payload);
+    } catch (_) {
+      return {};
+    }
+  }
+  if (payload && typeof payload === 'object') {
+    if (Array.isArray(payload.product_ids)) {
+      return { ...payload, productIds: payload.product_ids };
+    }
+    return payload;
+  }
+  return {};
 }
 
 function extractFeaturedProductId(value) {

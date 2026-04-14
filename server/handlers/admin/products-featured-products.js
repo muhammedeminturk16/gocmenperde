@@ -23,7 +23,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'PUT') {
-      const productIds = normalizeProductsFeaturedProductIds(req.body || {});
+      const productIds = normalizeProductsFeaturedProductIds(req.body || {}, []);
       await pool.query(
         `INSERT INTO products_featured_products_config (id, product_ids, updated_at)
          VALUES (1, $1::jsonb, NOW())

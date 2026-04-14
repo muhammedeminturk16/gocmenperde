@@ -1,5 +1,24 @@
 const { pool } = require('../lib/_db');
 const { ensureHomeFeaturedProductsSchema, normalizeFeaturedProductIds } = require('../lib/_home_featured_products');
+const fs = require('fs/promises');
+const path = require('path');
+
+async function buildCatalogFallbackIds(limit = 12) {
+  try {
+    const filePath = path.join(process.cwd(), 'products.json');
+    const raw = await fs.readFile(filePath, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || !parsed.length) return [];
+    const ids = parsed
+      .filter((item) => item && item.active !== false)
+      .map((item) => String(item.id || '').trim())
+      .filter(Boolean)
+      .slice(0, limit);
+    return [...new Set(ids)];
+  } catch (_) {
+    return [];
+  }
+}
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,10 +30,19 @@ module.exports = async function handler(req, res) {
   try {
     await ensureHomeFeaturedProductsSchema();
     const result = await pool.query('SELECT product_ids AS "productIds", updated_at AS "updatedAt" FROM home_featured_products_config WHERE id = 1');
-    const productIds = normalizeFeaturedProductIds(result.rows[0]?.productIds || []);
+    let productIds = normalizeFeaturedProductIds(result.rows[0]?.productIds || []);
+    if (!productIds.length) {
+      productIds = await buildCatalogFallbackIds(12);
+    }
     return res.status(200).json({ success: true, productIds, updatedAt: result.rows[0]?.updatedAt || null });
   } catch (err) {
     console.error('home-featured-products public error:', err.message);
-    return res.status(500).json({ error: 'Sunucu hatası: ' + err.message });
+    const productIds = await buildCatalogFallbackIds(12);
+    return res.status(200).json({
+      success: false,
+      productIds,
+      updatedAt: null,
+      warning: 'Konfigürasyon okunamadı, katalog varsayılanları döndürüldü.',
+    });
   }
 };

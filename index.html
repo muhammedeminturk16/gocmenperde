@@ -1055,6 +1055,14 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .home-live-item span{font-size:.73rem;color:#54607b;display:block;margin-top:4px}
 .home-live-item em{font-style:normal;font-size:.7rem;color:#8a93a7;text-transform:uppercase;letter-spacing:.8px;display:block;margin-top:5px}
 @media(max-width:760px){.home-featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-featured-card img{height:132px}.home-live-shell{padding:12px}}
+.products-featured-banner{margin-bottom:16px;padding:14px;border-radius:16px;background:linear-gradient(130deg,#141b2d,#2c3e66);border:1px solid rgba(214,168,73,.45);box-shadow:0 12px 28px rgba(0,0,0,.22)}
+.products-featured-banner h3{color:#fff;font-size:1.05rem;margin-bottom:10px}
+.products-featured-track{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.products-featured-item{min-width:220px;background:rgba(255,255,255,.96);border-radius:12px;padding:8px;display:flex;gap:8px;align-items:center;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.products-featured-item:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(5,10,20,.28)}
+.products-featured-item img{width:58px;height:58px;object-fit:cover;border-radius:10px;border:1px solid rgba(35,44,70,.18)}
+.products-featured-item b{font-size:.8rem;color:#1a243d;display:block}
+.products-featured-item small{font-size:.72rem;color:#5e6880}
 @keyframes liveCategoryFlow{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 6px))}}
 .gallery-section{background:#fbfbfa}
 .gallery-section .section-header{padding:28px;border-radius:20px;background:#fff;border:1px solid rgba(34,45,78,.1);box-shadow:0 10px 26px rgba(17,28,58,.06)}
@@ -1474,6 +1482,10 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
       </div>
     </div>
     <div class="products-content">
+      <section class="products-featured-banner" id="productsFeaturedBanner" style="display:none">
+        <h3><i class="fas fa-gem"></i> Öne Çıkan Ürünler</h3>
+        <div class="products-featured-track" id="productsFeaturedTrack"></div>
+      </section>
       <section class="campaign-stream" id="homeCampaignSection" style="margin-bottom:18px;display:none">
         <div class="campaign-stream-header">
           <div>
@@ -2414,6 +2426,42 @@ function getCatalogCategoryLabel(catKey=''){
   const found = CATEGORIES.find(c=>String(c?.key||'')===key);
   return found?.label || 'Koleksiyon';
 }
+
+async function loadPremiumShowcaseFromApi(){
+  try{
+    const [liveRes, featuredRes] = await Promise.all([
+      fetch('/api/premium-showcase?type=live', { cache:'no-store' }),
+      fetch('/api/premium-showcase?type=featured', { cache:'no-store' })
+    ]);
+    if(liveRes.ok){
+      const data = await liveRes.json();
+      PREMIUM_LIVE_PRODUCTS = (Array.isArray(data?.items) ? data.items : []).map(normalizeProductCatalog);
+    }
+    if(featuredRes.ok){
+      const data = await featuredRes.json();
+      PREMIUM_FEATURED_PRODUCTS = (Array.isArray(data?.items) ? data.items : []).map(normalizeProductCatalog);
+    }
+  }catch(err){
+    console.warn('[premium-showcase] api fallback:', err?.message || err);
+  }
+}
+
+function renderProductsFeaturedBanner(){
+  const wrap = document.getElementById('productsFeaturedBanner');
+  const track = document.getElementById('productsFeaturedTrack');
+  if(!wrap || !track) return;
+  const list = (PREMIUM_FEATURED_PRODUCTS.length ? PREMIUM_FEATURED_PRODUCTS : PRODUCTS.filter((p)=>p.isFeatured)).slice(0,10);
+  if(!list.length){
+    wrap.style.display='none';
+    return;
+  }
+  wrap.style.display='block';
+  track.innerHTML = list.map((item)=>`<article class="products-featured-item" role="button" tabindex="0" onclick="openModalFromProduct('${escapeInline(item.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModalFromProduct('${escapeInline(item.id)}')}">
+      <img src="${resolveAssetUrl(getPrimaryImage(item)||'')}" alt="${item.name}">
+      <span><b>${item.name}</b><small>${Number(item.price||0).toLocaleString('tr-TR')} ₺</small></span>
+    </article>`).join('');
+}
+
 function getRenderableProductsByIds(ids=[]){
   const list = normalizeSelectedProductIds(ids, 12)
     .map((id)=>PRODUCTS.find((p)=>String(p.id)===String(id)))
@@ -2432,7 +2480,8 @@ function renderHomeFeaturedProducts(){
   if(titleEl) titleEl.textContent = featuredCfg.title;
   if(subtitleEl) subtitleEl.textContent = featuredCfg.subtitle;
 
-  const featuredProducts = getRenderableProductsByIds(featuredCfg.productIds).slice(0,8);
+  const fallbackFeatured = getRenderableProductsByIds(featuredCfg.productIds).slice(0,8);
+  const featuredProducts = (PREMIUM_FEATURED_PRODUCTS.length ? PREMIUM_FEATURED_PRODUCTS : fallbackFeatured).slice(0,8);
   if(!featuredProducts.length){
     featuredGrid.innerHTML = '<div class="home-featured-empty">Henüz öne çıkan ürün seçilmedi.</div>';
   }else{
@@ -2455,7 +2504,9 @@ function renderHomeFeaturedProducts(){
   if(liveTitleEl) liveTitleEl.textContent = liveCfg.title;
   if(liveSubtitleEl) liveSubtitleEl.textContent = liveCfg.subtitle;
 
-  const liveProducts = getRenderableProductsByIds(liveCfg.productIds).slice(0,12);
+  const fallbackLive = getRenderableProductsByIds(liveCfg.productIds).slice(0,12);
+  const dbLive = PRODUCTS.filter((p)=>p.isLiveShowcase);
+  const liveProducts = (PREMIUM_LIVE_PRODUCTS.length ? PREMIUM_LIVE_PRODUCTS : (dbLive.length ? dbLive : fallbackLive)).slice(0,12);
   if(!liveProducts.length){
     liveTrack.innerHTML = '<div class="home-featured-empty" style="color:#4d5870;border-color:rgba(34,45,78,.24)">Canlı vitrin için ürün seçimi bekleniyor.</div>';
   }else{
@@ -2473,9 +2524,11 @@ function renderHomeFeaturedProducts(){
 }
 function loadHomeFeaturedProductIds(){
   renderHomeFeaturedProducts();
+  renderProductsFeaturedBanner();
 }
 function loadProductsFeaturedProductIds(){
   renderHomeFeaturedProducts();
+  renderProductsFeaturedBanner();
 }
 
 async function loadHomeSlider(){
@@ -2671,6 +2724,8 @@ function imageFallbackAttr(path){
 const GITHUB_CONTENTS_BASE_URL = 'https://api.github.com/repos/gocmenperde/gocmenperde/contents';
 let productsLoadedOnce = false;
 let productRequestInFlight = null;
+let PREMIUM_LIVE_PRODUCTS = [];
+let PREMIUM_FEATURED_PRODUCTS = [];
 let categoryRequestInFlight = null;
 
 function readProductsFromCache(){
@@ -2736,6 +2791,7 @@ function renderProductState(list, {withObserver=true} = {}){
   syncCategoriesFromAdmin();
   renderProducts(PRODUCTS);
   renderHomeFeaturedProducts();
+  renderProductsFeaturedBanner();
   renderHomePromoPanel();
   renderRecentlyViewed();
   if(withObserver) initObserver();
@@ -2777,6 +2833,7 @@ async function loadProducts({forceRefresh=false} = {}){
         }
       }
       writeProductsToCache(fresh);
+      await loadPremiumShowcaseFromApi();
       renderProductState(fresh, {withObserver:true});
       productsLoadedOnce = true;
       handleInitialProductDeepLink();
@@ -4194,6 +4251,7 @@ window.addEventListener('storage',(event)=>{
   if(event.key===SURPRISE_CAMPAIGN_KEY) scheduleSurpriseCampaignModal();
   if(event.key===HOME_FEATURED_PRODUCTS_KEY || event.key===HOME_LIVE_PRODUCT_SHOWCASE_KEY){
     renderHomeFeaturedProducts();
+  renderProductsFeaturedBanner();
   }
 });
 

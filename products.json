@@ -32,7 +32,9 @@
       "• Sıkma": "Hafif sıkma yapılması veya sıkılmadan asılması tavsiye edilir.",
       "• Ütüleme": "Gerekirse düşük sıcaklıkta tersten ütülenebilir.",
       "• Kurulama": "Güneş ışığına maruz bırakmadan, gölgede kurutulması daha uygundur."
-    }
+    },
+    "isLiveShowcase": true,
+    "isFeatured": true
   },
   {
     "id": "tul-perde-1776118956932-199",
@@ -66,7 +68,9 @@
       "• Sıkma": "Hafif sıkma yapılması veya sıkılmadan asılması tavsiye edilir.",
       "• Ütüleme": "Gerekirse düşük sıcaklıkta tersten ütülenebilir.",
       "• Kurulama": "Güneş ışığına maruz bırakmadan, gölgede kurutulması daha uygundur."
-    }
+    },
+    "isLiveShowcase": true,
+    "isFeatured": true
   },
   {
     "id": "zebra-perde-beyaz-1774990805411-347",
@@ -100,7 +104,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": true,
+    "isFeatured": true
   },
   {
     "id": "zebra-perde-bej-1774990805411-953",
@@ -134,7 +140,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": true,
+    "isFeatured": true
   },
   {
     "id": "zebra-perde-krem-1774990805411-490",
@@ -168,7 +176,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": true,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gri-1774990805411-745",
@@ -202,7 +212,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": true,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-siyah-1774990805411-411",
@@ -236,7 +248,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gumus-sarmasik-1774963152707-983",
@@ -270,7 +284,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-bej-sarmasik-1774963152707-654",
@@ -304,7 +320,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-antrasit-sarmasik-1774963152707-791",
@@ -338,7 +356,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-siyah-sarmasik-1774963152707-862",
@@ -372,7 +392,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-bej-cizgili-1774963152707-99",
@@ -406,7 +428,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-kahverengi-cizgili-1774963152707-985",
@@ -440,7 +464,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-bej-beyaz-cizgili-1774963152707-64",
@@ -474,7 +500,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-pembe-beyaz-cizgili-1774963152707-161",
@@ -508,7 +536,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-cizgili-1774963152707-579",
@@ -542,7 +572,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gri-beyaz-cizgili-1774963152707-620",
@@ -577,7 +609,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gri-beyaz-golgeli-1774957913388-563",
@@ -612,7 +646,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-siyah-beyaz-golgeli-1774957913388-1",
@@ -647,7 +683,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-beyaz-gumus-desenli-1774957913388-760",
@@ -682,7 +720,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-bej-gumus-desenli-1774957913388-89",
@@ -717,7 +757,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-pembe-gumus-desenli-1774957913388-503",
@@ -752,7 +794,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-siyah-gumus-desenli-1774957913388-739",
@@ -787,7 +831,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-yesil-gumus-desenli-1774957913388-696",
@@ -822,7 +868,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-mavi-bej-golgeli-1774902386360-483",
@@ -857,7 +905,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-kahverengi-bej-golgeli-1774901585620-69",
@@ -892,7 +942,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-beyaz-bej-golgeli-1774901437610-318",
@@ -927,7 +979,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-antrasit-gri-gecisli-1774899975522-561",
@@ -962,7 +1016,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-lila-mor-gecisli-1774899632707-132",
@@ -997,7 +1053,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-mor-pembe-gecisli-1774893507393-282",
@@ -1031,7 +1089,9 @@
       "Temizlik": "Kuru/nemli bez",
       "Ütü": "Uygulanmaz",
       "Bakım": "Mekanizmayı zorlamayın"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-bej-kahverengi-gecisli-1774893507393-23",
@@ -1065,7 +1125,9 @@
       "Temizlik": "Kuru/nemli bez",
       "Ütü": "Uygulanmaz",
       "Bakım": "Mekanizmayı zorlamayın"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-beyaz-yesil-gecisli-1774893507393-177",
@@ -1099,7 +1161,9 @@
       "Temizlik": "Kuru/nemli bez",
       "Ütü": "Uygulanmaz",
       "Bakım": "Mekanizmayı zorlamayın"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-mavi-mor-gecisli-1774893507393-97",
@@ -1132,7 +1196,9 @@
       "Temizlik": "Kuru/nemli bez",
       "Ütü": "Uygulanmaz",
       "Bakım": "Mekanizmayı zorlamayın"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-beyaz-bej-gecisli-1774892324844-482",
@@ -1167,7 +1233,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-lacivert-1774891080220-517",
@@ -1201,7 +1269,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-koyu-gri-1774891080220-467",
@@ -1235,7 +1305,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-acik-mavi-1774891080220-889",
@@ -1269,7 +1341,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-acik-siyah-1774891080220-890",
@@ -1303,7 +1377,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-koyu-siyah-1774891080220-757",
@@ -1337,7 +1413,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-antrasit-1774890439325-437",
@@ -1372,7 +1450,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-siyah-1774890314822-147",
@@ -1407,7 +1487,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gumus-antrasit-gecisli-1774888873604-844",
@@ -1442,7 +1524,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gumus-lacivert-gecisli-1774888678192-247",
@@ -1477,7 +1561,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gumus-gri-gecisli-1774888513068-307",
@@ -1512,7 +1598,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gumus-yesil-gecisli-1774888350093-777",
@@ -1547,7 +1635,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gumus-pembe-gecisli-1774887486300",
@@ -1582,7 +1672,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gumus-bej-kahve-gecisli-1774887198350",
@@ -1617,7 +1709,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-krem---kahve-1774886500388",
@@ -1652,7 +1746,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-gumus-1774886246465",
@@ -1687,7 +1783,9 @@
       "• Kurutma Yöntemi": "Sildikten sonra perdenizi tamamen aşağıya indirin ve nemi geçene kadar açık konumda kurumasını bekleyin.",
       "• Mekanizma Bakımı": "Zincir ve ray sisteminin rahat çalışması için mekanizma kısımlarına aşırı güç uygulamaktan kaçının.",
       "• Yıkama Uyarısı": "Kumaşın sert yapısının ve mekanizmanın bozulmaması için zebra perdeleri kesinlikle çamaşır makinesinde yıkamayın."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "orme-tul-perde-sarmasik-desen-1774881564791",
@@ -1721,7 +1819,9 @@
       "• Sıkma": "Hafif sıkma yapılması veya sıkılmadan asılması tavsiye edilir.",
       "• Ütüleme": "Gerekirse düşük sıcaklıkta tersten ütülenebilir.",
       "• Kurulama": "Güneş ışığına maruz bırakmadan, gölgede kurutulması daha uygundur."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "orme-tul-perde-cam-kirigi-desen-1774817208064",
@@ -1756,7 +1856,9 @@
       "• Sıkma": "Hafif sıkma yapılması veya sıkılmadan asılması tavsiye edilir.",
       "• Ütüleme": "Gerekirse düşük sıcaklıkta tersten ütülenebilir.",
       "• Kurulama": "Güneş ışığına maruz bırakmadan, gölgede kurutulması daha uygundur."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-gok-mavisi---opak-1774732878586",
@@ -1790,7 +1892,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-yari-saydam-kirmizi-1774732790927",
@@ -1824,7 +1928,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-hardal-sarisi---opak-1774732688190",
@@ -1858,7 +1964,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-vizyon-taupe---opak-1774732585223",
@@ -1892,7 +2000,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-kum-beji-1774732440461",
@@ -1926,7 +2036,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-antrasit---siyah---opak-1774730481031",
@@ -1958,7 +2070,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-kirik-beyaz-1774729148305",
@@ -1990,7 +2104,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-acik-sari-1774728002720",
@@ -2022,7 +2138,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-gri-1774722059483",
@@ -2054,7 +2172,9 @@
       "2. Yıkama": "Kumaşın cinsine göre, perdeyi mekanizmasından ayırıp ılık su (30^{\\circ}C civarı) ve çok az miktarda aşındırıcı olmayan deterjan (sabun tozu veya bebek şampuanı gibi) ile dolu bir kapta 15-20 dakika bekletebilirsiniz.",
       "3. Durulama": "Kimyasal kalıntı kalmaması için bol soğuk suyla durulayın.",
       "4. Kurutma": "Perdeyi ıslakken yerine takın ve tamamen kapalı (toplanmış) konumda yaklaşık 12 saat kurumaya bırakın. Bu, pileli yapısının formunu korumasını sağlar."
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "plise-perde-1774714176524",
@@ -2080,7 +2200,9 @@
     },
     "care": {
       "Madde 1": "Silinebilir"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "kursunlu-desensiz-modern-duz-perde-1774694118154",
@@ -2120,7 +2242,9 @@
       "Kurutma": "Gölgede kurutun",
       "Ütü": "Düşük ısı",
       "Kuru Temizleme": "Önerilmez"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-1774687629565",
@@ -2143,7 +2267,9 @@
       "Stil": "Modern"
     },
     "care": {},
-    "isSquareMeter": true
+    "isSquareMeter": true,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "zebra-perde-1774657341307",
@@ -2172,7 +2298,9 @@
       "Kuru Temizleme": "Önerilmez"
     },
     "isSquareMeter": true,
-    "stock": 85
+    "stock": 85,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "stor-perde-1774593801587",
@@ -2199,7 +2327,9 @@
       "Temizleme": "Nemli bezle silinebilir, yıkama gerektirmez"
     },
     "isSquareMeter": true,
-    "stock": 124
+    "stock": 124,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "izgili-tl-perde-1774588078918",
@@ -2234,7 +2364,9 @@
       "Kurutma": "Gölgede kurutun",
       "Ütü": "Düşük ısıda ütüleyin",
       "Kuru Temizleme": "Önerilmez"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "gnelik-beyaz-1774557732197",
@@ -2269,7 +2401,9 @@
       "Kurutma": "Gölgede kurutun",
       "Ütü": "Düşük ısıda ütüleyin",
       "Kuru Temizleme": "Önerilmez"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "gnelik-krem-1774557060153",
@@ -2304,7 +2438,9 @@
       "Kurutma": "Gölgede kurutun",
       "Ütü": "Düşük ısıda ütüleyin",
       "Kuru Temizleme": "Önerilmez"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "tl-perde-bambu-1774553191711",
@@ -2333,7 +2469,9 @@
       "Ütü": "Düşük ısıda ütüleyin",
       "Kuru Temizleme": "Önerilmez"
     },
-    "stock": 118
+    "stock": 118,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "tl-perde-1774552678382",
@@ -2362,7 +2500,9 @@
       "Ütü": "Düşük ısıda ütüleyin",
       "Kuru Temizleme": "Önerilmez"
     },
-    "stock": 99
+    "stock": 99,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "fon-perde-1774540697343",
@@ -2397,7 +2537,9 @@
       "Kurutma": "Gölgede kurutun",
       "Ütü": "Düşük ısıda ütüleyin",
       "Kuru Temizleme": "Önerilmez"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-beyaz",
@@ -2425,7 +2567,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 116
+    "stock": 116,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-pembe",
@@ -2453,7 +2597,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 84
+    "stock": 84,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-kahve",
@@ -2481,7 +2627,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 84
+    "stock": 84,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-mor",
@@ -2509,7 +2657,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 91
+    "stock": 91,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-gri",
@@ -2537,7 +2687,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 89
+    "stock": 89,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-mavi",
@@ -2565,7 +2717,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 141
+    "stock": 141,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-sari",
@@ -2593,7 +2747,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 84
+    "stock": 84,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-standart",
@@ -2621,7 +2777,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 89
+    "stock": 89,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "carsaf-cift",
@@ -2649,7 +2807,9 @@
       "Ütü": "Gerekmez",
       "Beyazlatıcı": "Kullanmayın"
     },
-    "stock": 103
+    "stock": 103,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "saray-tul",
@@ -2677,7 +2837,9 @@
       "Ütü": "Gerekmez",
       "Ağartıcı": "Kullanmayın"
     },
-    "stock": 115
+    "stock": 115,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "ekonomik-fon",
@@ -2711,7 +2873,9 @@
       "Kurutma": "Doğal, direkt güneş olmadan",
       "Ütü": "Orta ısı — ters çevirin",
       "Yıkama Sıklığı": "6 ayda bir önerilir"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "vip-premium-fon",
@@ -2745,7 +2909,9 @@
       "Ev Yıkama": "30°C çok narin, yalnız",
       "Ütü": "Ters çevirin, düşük ısı",
       "Toz Alma": "Hafif vakum ile"
-    }
+    },
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "koltuk-set-4li",
@@ -2773,7 +2939,9 @@
       "Ütü": "Orta ısı — hafif nemli iken",
       "Çekme": "İlk yıkamada hafif çekme normal"
     },
-    "stock": 108
+    "stock": 108,
+    "isLiveShowcase": false,
+    "isFeatured": false
   },
   {
     "id": "koltuk-set-2li",
@@ -2801,6 +2969,8 @@
       "Ütü": "Orta ısı — hafif nemli iken",
       "Çekme": "İlk yıkamada hafif çekme normal"
     },
-    "stock": 113
+    "stock": 113,
+    "isLiveShowcase": false,
+    "isFeatured": false
   }
 ]

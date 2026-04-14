@@ -24,6 +24,7 @@ const addressData = require('../server/handlers/address-data');
 const stockAlerts = require('../server/handlers/stock-alerts');
 const campaigns = require('../server/handlers/campaigns');
 const adminCampaigns = require('../server/handlers/admin/campaigns');
+const premiumShowcase = require('../server/handlers/premium-showcase');
 
 const ROUTES = {
   'auth': auth,
@@ -45,6 +46,7 @@ const ROUTES = {
   'stock-alerts': stockAlerts,
   'campaigns': campaigns,
   'admin/campaigns': adminCampaigns,
+  'premium-showcase': premiumShowcase,
 };
 
 module.exports = async function handler(req, res) {

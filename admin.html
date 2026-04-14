@@ -230,6 +230,13 @@ select.filter-sel:focus{border-color:var(--gold)}
 .home-merch-preview-item img{width:100%;height:78px;object-fit:cover;border-radius:8px;margin-bottom:6px}
 .home-merch-preview-item b{display:block;font-size:.69rem;line-height:1.35;color:#20283f}
 .home-merch-empty{font-size:.74rem;color:var(--slate-light);padding:10px;border:1px dashed var(--border-2);border-radius:8px;background:#fff}
+.premium-tabs{display:flex;gap:8px;margin:8px 0 12px}
+.premium-tab{border:1px solid var(--border);background:#fff;padding:8px 12px;border-radius:999px;font-size:.78rem;font-weight:600;cursor:pointer}
+.premium-tab.active{background:linear-gradient(135deg,#1f2740,#2f3d63);color:#fff;border-color:#1f2740}
+.premium-list{display:grid;gap:8px;max-height:320px;overflow:auto;padding-right:4px}
+.premium-item{display:flex;align-items:center;gap:10px;border:1px solid var(--border);padding:8px;border-radius:10px;background:#fff}
+.premium-item img{width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+.premium-chip{padding:3px 7px;border-radius:999px;font-size:.68rem;font-weight:700;background:#fff7e0;color:#7a5d00;border:1px solid #f4d88f}
 
 /* ──────────── TABLE ──────────── */
 .table-wrap{background:white;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;overflow-x:auto;box-shadow:var(--shadow-sm)}
@@ -895,31 +902,19 @@ Işık: Yarı Geçirgen"></textarea></div>
   <div class="home-merch-editor" id="homeMerchEditor">
     <div class="home-merch-editor-head">
       <div>
-        <h3><i class="fas fa-wand-magic-sparkles"></i> Ana Sayfa Vitrin Yönetimi</h3>
-        <p>Öne çıkan ürünler ve canlı ürün vitrini alanlarını buradan seçip düzenleyin. Kaydettiğiniz anda ana sayfa tasarımı premium görünümle güncellenir.</p>
+        <h3><i class="fas fa-crown"></i> Vitrin Yönetimi</h3>
+        <p>Premium alanları sadece admin olarak buradan yönetin. Ürünler anında isLiveShowcase / isFeatured bayraklarıyla güncellenir.</p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" type="button" onclick="resetHomepageMerchSettings()"><i class="fas fa-rotate-left"></i> Varsayılan</button>
-        <button class="btn btn-success btn-sm" type="button" onclick="saveHomepageMerchSettings()"><i class="fas fa-save"></i> Vitrin Ayarlarını Kaydet</button>
+        <button class="btn btn-success btn-sm" type="button" onclick="savePremiumFlags()"><i class="fas fa-save"></i> Vitrin Değişikliklerini Kaydet</button>
       </div>
     </div>
-    <div class="home-merch-grid">
-      <article class="home-merch-card">
-        <h4>Öne Çıkan Ürünler</h4>
-        <div class="fg"><label>Başlık</label><input type="text" id="homeFeaturedTitleInput" placeholder="Editörün premium seçimleri"></div>
-        <div class="fg"><label>Alt Başlık</label><textarea id="homeFeaturedSubtitleInput" placeholder="Kısa açıklama"></textarea></div>
-        <div class="fg"><label>Ürün Seçimi (en fazla 8)</label><div class="home-merch-picklist" id="homeFeaturedProductPicker"></div></div>
-        <div class="home-merch-preview" id="homeFeaturedPreview"></div>
-      </article>
-      <article class="home-merch-card">
-        <h4>Ana Sayfa Canlı Ürün Vitrini</h4>
-        <div class="fg"><label>Etiket</label><input type="text" id="homeLiveLabelInput" placeholder="Ana Sayfa Canlı Ürün Vitrini"></div>
-        <div class="fg"><label>Başlık</label><input type="text" id="homeLiveTitleInput" placeholder="Trend ürünler sürekli güncellenen bir akışta"></div>
-        <div class="fg"><label>Alt Başlık</label><textarea id="homeLiveSubtitleInput" placeholder="Kısa açıklama"></textarea></div>
-        <div class="fg"><label>Ürün Seçimi (en fazla 12)</label><div class="home-merch-picklist" id="homeLiveProductPicker"></div></div>
-        <div class="home-merch-preview" id="homeLivePreview"></div>
-      </article>
+    <div class="premium-tabs">
+      <button class="premium-tab active" id="premiumTabLive" onclick="switchPremiumTab('live')">Canlı Vitrin</button>
+      <button class="premium-tab" id="premiumTabFeatured" onclick="switchPremiumTab('featured')">Öne Çıkanlar</button>
     </div>
+    <div class="premium-list" id="premiumLiveList"></div>
+    <div class="premium-list" id="premiumFeaturedList" style="display:none"></div>
   </div>
   <div class="toolbar">
     <input type="text" class="search-box" placeholder="🔍 Ürün ara..." id="adminSearch" oninput="filterTable()">
@@ -1305,6 +1300,10 @@ Işık: Yarı Geçirgen"></textarea></div>
       <div class="form-row">
         <div class="fg"><label>Stok Miktarı</label><input type="number" id="f-stock" placeholder="Sınırsız = boş bırak"></div>
         <div class="fg"><label>Seri Numarası (opsiyonel)</label><input type="text" id="f-serial" placeholder="Örn: GP-2026-001"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label><input type="checkbox" id="f-isLiveShowcase"> Canlı Ürün Vitrininde göster</label></div>
+        <div class="fg"><label><input type="checkbox" id="f-isFeatured"> Öne Çıkan Ürünlerde göster</label></div>
       </div>
       <div class="form-row">
         <div class="fg">
@@ -2413,6 +2412,8 @@ function normalizeProductCatalog(product){
     next.isSquareMeter = true;
     next.isMeter = false;
   }
+  next.isLiveShowcase = Boolean(next.isLiveShowcase);
+  next.isFeatured = Boolean(next.isFeatured);
   return next;
 }
 function getPileMeta(pileType){
@@ -3284,7 +3285,7 @@ function renderTable(list){
       </div></td>
       <td><span class="badge badge-cat">${getCatLabel(p.cat)}</span></td>
       <td class="price-cell">${Number(p.price).toLocaleString('tr-TR')} ₺${p.unit&&p.unit!=='adet'?'<span class="price-old" style="text-decoration:none;font-size:0.72rem">/ '+p.unit+'</span>':''}${p.oldPrice?`<span class="price-old">${Number(p.oldPrice).toLocaleString('tr-TR')} ₺</span>`:''}</td>
-      <td><span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'Aktif':'Pasif'}</span></td>
+      <td><span class="badge ${p.active?'badge-active':'badge-inactive'}">${p.active?'Aktif':'Pasif'}</span> ${p.isLiveShowcase?'<span class="premium-chip">Canlı</span>':''} ${p.isFeatured?'<span class="premium-chip">Öne Çıkan</span>':''}</td>
       <td>${stockLabel}</td>
       <td><div class="action-btns">
         <button class="icon-btn edit" onclick="editProduct(${realIdx})" title="Düzenle"><i class="fas fa-pen"></i></button>
@@ -3325,6 +3326,8 @@ function openAddModal(){
   document.getElementById('formModalTitle').innerText='Yeni Ürün Ekle';
   document.getElementById('editIndex').value='';
   ['f-name','f-desc','f-price','f-oldprice','f-image','f-images','f-badge','f-features','f-specs','f-care','f-stock','f-serial','f-discountValue'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-isLiveShowcase').checked=false;
+  document.getElementById('f-isFeatured').checked=false;
   document.getElementById('f-discountType').value='manual';
   updateDiscountBadgeFromInputs();
   document.getElementById('f-cat').value=CATEGORIES[0]?.key||'carsaf';
@@ -3362,6 +3365,8 @@ function editProduct(idx){
   document.getElementById('f-features').value=p.features||'';
   document.getElementById('f-stock').value=p.stock!=null?p.stock:'';
   document.getElementById('f-serial').value=p.serialNumber||'';
+  document.getElementById('f-isLiveShowcase').checked=!!p.isLiveShowcase;
+  document.getElementById('f-isFeatured').checked=!!p.isFeatured;
   document.getElementById('f-specs').value=p.specs&&Object.keys(p.specs).length?objectToLinePairs(p.specs):'';
   document.getElementById('f-care').value=p.care&&Object.keys(p.care).length?objectToLinePairs(p.care):'';
   validateStructuredField('f-specs','specs-valid');
@@ -3655,6 +3660,7 @@ function saveBulkProducts(){
       features:sharedFeatures,badge,discountType:sharedDiscountType,discountValue:Number.isFinite(sharedDiscountValue)?sharedDiscountValue:null,
       stock:sharedStock!==''?parseInt(sharedStock):null,
       serialNumber,
+      isLiveShowcase:false,isFeatured:false,
       active:sharedActive,specs:sharedSpecs,care:sharedCare
     });
   }
@@ -3666,7 +3672,7 @@ function saveBulkProducts(){
   if(getGithubToken()) saveProductsJSON({silent:true});
 }
 
-function saveProduct(){
+async function saveProduct(){
   const getVal = (id) => document.getElementById(id)?.value ?? '';
   const name = String(getVal('f-name')).trim();
   const price = Number.parseFloat(getVal('f-price'));
@@ -3692,6 +3698,7 @@ function saveProduct(){
   const editIndexRaw = getVal('editIndex');
   const editIndex = editIndexRaw === '' ? -1 : Number.parseInt(editIndexRaw, 10);
   const existing = Number.isInteger(editIndex) && editIndex >= 0 ? PRODUCTS[editIndex] : null;
+  const premiumRequested = (document.getElementById('f-isLiveShowcase')?.checked || document.getElementById('f-isFeatured')?.checked);
 
   const obj = {
     id: existing?.id || createProductId(name),
@@ -3711,10 +3718,21 @@ function saveProduct(){
     discountValue: getVal('f-discountValue') ? Number.parseFloat(getVal('f-discountValue')) : null,
     stock: stockVal !== '' ? Number.parseInt(stockVal, 10) : null,
     serialNumber: String(getVal('f-serial')).trim() || null,
+    isLiveShowcase: document.getElementById('f-isLiveShowcase')?.checked || false,
+    isFeatured: document.getElementById('f-isFeatured')?.checked || false,
     active: activeSwitchState,
     specs: parseStructuredField('f-specs'),
     care: parseStructuredField('f-care')
   };
+
+
+  if(premiumRequested){
+    const quality = await validatePremiumImageQuality(obj);
+    if(!quality.ok){
+      aToast('⚠️ ' + quality.reason, 'error');
+      return;
+    }
+  }
 
   if(existing){
     PRODUCTS[editIndex] = obj;
@@ -4292,133 +4310,87 @@ function updateCampaignSwitch(){
   lbl.style.color=campaignSwState?'var(--green)':'var(--red)';
 }
 
-function getDefaultMerchProductIds(limit=8){
-  return PRODUCTS.filter(p=>p?.active).slice(0,limit).map(p=>String(p.id));
+function switchPremiumTab(tab='live'){
+  const isLive = tab==='live';
+  document.getElementById('premiumTabLive')?.classList.toggle('active', isLive);
+  document.getElementById('premiumTabFeatured')?.classList.toggle('active', !isLive);
+  const liveList = document.getElementById('premiumLiveList');
+  const featuredList = document.getElementById('premiumFeaturedList');
+  if(liveList) liveList.style.display = isLive ? 'grid' : 'none';
+  if(featuredList) featuredList.style.display = isLive ? 'none' : 'grid';
 }
-function normalizeMerchProductIds(ids=[], limit=12){
-  const list=[];
-  (Array.isArray(ids)?ids:[]).forEach((id)=>{
-    const key=String(id||'').trim();
-    if(!key || list.includes(key)) return;
-    list.push(key);
+
+async function validatePremiumImageQuality(product){
+  const src = resolveAssetUrl((product?.images?.[0]) || product?.image || '');
+  const isWebp = /\.webp(\?|$)/i.test(src);
+  if(!isWebp){
+    return { ok:false, reason:'Premium alanlar için görsel formatı WebP olmalıdır.' };
+  }
+  return new Promise((resolve)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const ok = Number(img.naturalWidth||0) >= 1920 && Number(img.naturalHeight||0) >= 1080;
+      resolve(ok ? { ok:true } : { ok:false, reason:'Premium görseller en az 1920x1080 (1080p+) olmalıdır.' });
+    };
+    img.onerror = ()=>resolve({ ok:false, reason:'Görsel çözünürlüğü doğrulanamadı.' });
+    img.src = src;
   });
-  if(list.length) return list.slice(0,limit);
-  return getDefaultMerchProductIds(limit);
 }
-function getHomeFeaturedProductsConfig(){
-  try{
-    const parsed=JSON.parse(localStorage.getItem(HOME_FEATURED_PRODUCTS_KEY)||'null')||{};
-    return {
-      title:String(parsed.title||DEFAULT_HOME_FEATURED_PRODUCTS.title).trim(),
-      subtitle:String(parsed.subtitle||DEFAULT_HOME_FEATURED_PRODUCTS.subtitle).trim(),
-      productIds:normalizeMerchProductIds(parsed.productIds,8)
-    };
-  }catch(_){
-    return {...DEFAULT_HOME_FEATURED_PRODUCTS,productIds:getDefaultMerchProductIds(8)};
-  }
+
+function buildPremiumItemCard(p, mode){
+  const checked = mode==='live' ? !!p.isLiveShowcase : !!p.isFeatured;
+  const key = mode==='live' ? 'isLiveShowcase' : 'isFeatured';
+  return `<label class="premium-item">
+    <input type="checkbox" ${checked?'checked':''} onchange="togglePremiumFlag('${String(p.id).replace(/'/g,"\'")}', '${key}', this.checked)">
+    <img src="${resolveAssetUrl((p.images&&p.images[0])||p.image||'')}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22><rect fill=%22%23f1f5f9%22 width=%2252%22 height=%2252%22/></svg>'">
+    <span style="display:grid;gap:2px;flex:1"><b style="font-size:.78rem">${p.name}</b><small>${Number(p.price||0).toLocaleString('tr-TR')} ₺</small></span>
+    ${checked?'<span class="premium-chip">Premium</span>':''}
+  </label>`;
 }
-function getHomeLiveProductsConfig(){
-  try{
-    const parsed=JSON.parse(localStorage.getItem(HOME_LIVE_PRODUCT_SHOWCASE_KEY)||'null')||{};
-    return {
-      label:String(parsed.label||DEFAULT_HOME_LIVE_PRODUCT_SHOWCASE.label).trim(),
-      title:String(parsed.title||DEFAULT_HOME_LIVE_PRODUCT_SHOWCASE.title).trim(),
-      subtitle:String(parsed.subtitle||DEFAULT_HOME_LIVE_PRODUCT_SHOWCASE.subtitle).trim(),
-      productIds:normalizeMerchProductIds(parsed.productIds,12)
-    };
-  }catch(_){
-    return {...DEFAULT_HOME_LIVE_PRODUCT_SHOWCASE,productIds:getDefaultMerchProductIds(12)};
-  }
-}
-function renderMerchPickList(targetId, selectedIds, inputName){
-  const wrap=document.getElementById(targetId);
-  if(!wrap) return;
-  const activeProducts=PRODUCTS.filter(p=>p?.active);
-  if(!activeProducts.length){
-    wrap.innerHTML='<div class="home-merch-empty">Aktif ürün bulunamadı.</div>';
-    return;
-  }
-  wrap.innerHTML=activeProducts.map((p)=>{
-    const checked=selectedIds.includes(String(p.id));
-    return `<label class="home-merch-option"><input type="checkbox" name="${inputName}" value="${p.id}" ${checked?'checked':''} onchange="renderHomepageMerchPreview()"><img src="${resolveAssetUrl(p.image||'')}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22><rect fill=%22%23f0f0f0%22 width=%2238%22 height=%2238%22/></svg>'"><span><b style="font-size:.75rem">${p.name}</b><small>${Number(p.price||0).toLocaleString('tr-TR')} ₺</small></span></label>`;
-  }).join('');
-}
-function collectCheckedValues(name, limit){
-  return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(el=>String(el.value)).slice(0,limit);
-}
-function renderHomepageMerchPreview(){
-  const featuredIds=collectCheckedValues('homeFeaturedProduct',8);
-  const liveIds=collectCheckedValues('homeLiveProduct',12);
-  const featuredWrap=document.getElementById('homeFeaturedPreview');
-  const liveWrap=document.getElementById('homeLivePreview');
-  const render=(wrap, ids)=>{
-    if(!wrap) return;
-    const products=ids.map(id=>PRODUCTS.find(p=>String(p.id)===String(id))).filter(Boolean);
-    if(!products.length){ wrap.innerHTML='<div class="home-merch-empty">Henüz ürün seçilmedi.</div>'; return; }
-    wrap.innerHTML=products.map((p)=>`<div class="home-merch-preview-item"><img src="${resolveAssetUrl(p.image||'')}" alt="${p.name}"><b>${p.name}</b></div>`).join('');
-  };
-  render(featuredWrap,featuredIds);
-  render(liveWrap,liveIds);
-}
+
 function renderHomepageMerchEditor(){
-  const featured=getHomeFeaturedProductsConfig();
-  const live=getHomeLiveProductsConfig();
-  if(document.getElementById('homeFeaturedTitleInput')) document.getElementById('homeFeaturedTitleInput').value=featured.title;
-  if(document.getElementById('homeFeaturedSubtitleInput')) document.getElementById('homeFeaturedSubtitleInput').value=featured.subtitle;
-  if(document.getElementById('homeLiveLabelInput')) document.getElementById('homeLiveLabelInput').value=live.label;
-  if(document.getElementById('homeLiveTitleInput')) document.getElementById('homeLiveTitleInput').value=live.title;
-  if(document.getElementById('homeLiveSubtitleInput')) document.getElementById('homeLiveSubtitleInput').value=live.subtitle;
-  renderMerchPickList('homeFeaturedProductPicker', featured.productIds, 'homeFeaturedProduct');
-  renderMerchPickList('homeLiveProductPicker', live.productIds, 'homeLiveProduct');
-  renderHomepageMerchPreview();
-}
-function saveHomepageMerchSettings(){
-  const featured={
-    title:(document.getElementById('homeFeaturedTitleInput')?.value||'').trim()||DEFAULT_HOME_FEATURED_PRODUCTS.title,
-    subtitle:(document.getElementById('homeFeaturedSubtitleInput')?.value||'').trim()||DEFAULT_HOME_FEATURED_PRODUCTS.subtitle,
-    productIds:collectCheckedValues('homeFeaturedProduct',8)
-  };
-  const live={
-    label:(document.getElementById('homeLiveLabelInput')?.value||'').trim()||DEFAULT_HOME_LIVE_PRODUCT_SHOWCASE.label,
-    title:(document.getElementById('homeLiveTitleInput')?.value||'').trim()||DEFAULT_HOME_LIVE_PRODUCT_SHOWCASE.title,
-    subtitle:(document.getElementById('homeLiveSubtitleInput')?.value||'').trim()||DEFAULT_HOME_LIVE_PRODUCT_SHOWCASE.subtitle,
-    productIds:collectCheckedValues('homeLiveProduct',12)
-  };
-  if(!featured.productIds.length || !live.productIds.length){
-    aToast('⚠️ Her iki vitrin için en az bir ürün seçin','error');
+  const liveWrap = document.getElementById('premiumLiveList');
+  const featuredWrap = document.getElementById('premiumFeaturedList');
+  if(!liveWrap || !featuredWrap) return;
+  const activeProducts = PRODUCTS.filter(p=>p?.active);
+  if(!activeProducts.length){
+    liveWrap.innerHTML = '<div class="home-merch-empty">Aktif ürün bulunamadı.</div>';
+    featuredWrap.innerHTML = '<div class="home-merch-empty">Aktif ürün bulunamadı.</div>';
     return;
   }
-  localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(featured));
-  localStorage.setItem(HOME_LIVE_PRODUCT_SHOWCASE_KEY, JSON.stringify(live));
-  renderHomepageMerchEditor();
-  aToast('✓ Ana sayfa vitrin ayarları kaydedildi','success');
+  liveWrap.innerHTML = activeProducts.map((p)=>buildPremiumItemCard(p, 'live')).join('');
+  featuredWrap.innerHTML = activeProducts.map((p)=>buildPremiumItemCard(p, 'featured')).join('');
+  switchPremiumTab(document.getElementById('premiumTabFeatured')?.classList.contains('active') ? 'featured' : 'live');
 }
-function resetHomepageMerchSettings(){
-  localStorage.removeItem(HOME_FEATURED_PRODUCTS_KEY);
-  localStorage.removeItem(HOME_LIVE_PRODUCT_SHOWCASE_KEY);
-  renderHomepageMerchEditor();
-  aToast('✓ Vitrin ayarları varsayılana döndürüldü','success');
-}
-async function syncHomeFeaturedProductsFromApi(){
-  renderHomepageMerchEditor();
-}
-async function syncProductsFeaturedProductsFromApi(){
-  renderHomepageMerchEditor();
-}
-async function cleanupMissingHomeFeaturedProducts(){
-  const cfg=getHomeFeaturedProductsConfig();
-  const valid=cfg.productIds.filter(id=>PRODUCTS.some(p=>String(p.id)===String(id)));
-  if(valid.length!==cfg.productIds.length){
-    localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify({...cfg,productIds:valid}));
+
+async function togglePremiumFlag(productId, key, checked){
+  const idx = PRODUCTS.findIndex(p=>String(p.id)===String(productId));
+  if(idx < 0) return;
+  const product = PRODUCTS[idx];
+  if(checked){
+    const result = await validatePremiumImageQuality(product);
+    if(!result.ok){
+      aToast('⚠️ ' + result.reason, 'error');
+      renderHomepageMerchEditor();
+      return;
+    }
   }
+  PRODUCTS[idx][key] = checked;
+  renderHomepageMerchEditor();
+  renderTable();
 }
-async function cleanupMissingProductsFeaturedProducts(){
-  const cfg=getHomeLiveProductsConfig();
-  const valid=cfg.productIds.filter(id=>PRODUCTS.some(p=>String(p.id)===String(id)));
-  if(valid.length!==cfg.productIds.length){
-    localStorage.setItem(HOME_LIVE_PRODUCT_SHOWCASE_KEY, JSON.stringify({...cfg,productIds:valid}));
-  }
+
+function savePremiumFlags(){
+  aToast('✓ Premium vitrin bayrakları güncellendi', 'success');
+  if(getGithubToken()) saveProductsJSON({silent:true});
 }
+
+function saveHomepageMerchSettings(){ savePremiumFlags(); }
+function resetHomepageMerchSettings(){ renderHomepageMerchEditor(); }
+async function syncHomeFeaturedProductsFromApi(){ renderHomepageMerchEditor(); }
+async function syncProductsFeaturedProductsFromApi(){ renderHomepageMerchEditor(); }
+async function cleanupMissingHomeFeaturedProducts(){}
+async function cleanupMissingProductsFeaturedProducts(){}
 
 // ════════════════════════════════════
 //  DASHBOARD

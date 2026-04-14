@@ -581,8 +581,6 @@ tbody tr:hover td{background:#fdfcf8}
         <div class="nav-item" onclick="showPage('products')"><i class="fas fa-boxes-stacked"></i> Ürün Yönetimi</div>
         <div class="nav-item" onclick="showPage('categories');renderCatTable()"><i class="fas fa-folder-open"></i> Kategoriler</div>
         <div class="nav-item" onclick="showPage('campaigns')"><i class="fas fa-tag"></i> Kampanyalar</div>
-        <div class="nav-item" onclick="showPage('homefeatured');renderHomeFeaturedAdminPage()"><i class="fas fa-tv"></i> Canlı Ürün Vitrini</div>
-        <div class="nav-item" onclick="showPage('productsfeatured');renderProductsFeaturedAdminPage()"><i class="fas fa-star"></i> Öne Çıkan Ürünler</div>
         <div class="nav-item" onclick="showPage('entrypanel');renderEntryPanelPage()"><i class="fas fa-door-open"></i> Giriş Paneli</div>
         <div class="nav-item" onclick="showPage('slider');loadSliderItems()"><i class="fas fa-rectangle-ad"></i> Reklam Yönetimi</div>
         <div class="nav-item" onclick="showPage('showcase');renderShowcaseAdminPage()"><i class="fas fa-images"></i> Montaj & Yorum Alanı</div>
@@ -925,58 +923,6 @@ Işık: Yarı Geçirgen"></textarea></div>
     <button class="btn btn-primary" onclick="openAddCampaignModal()"><i class="fas fa-plus"></i> Yeni Kampanya</button>
   </div>
   <div id="campaignList"></div>
-</div>
-
-<!-- ══ CANLI ÜRÜN VİTRİNİ ══ -->
-<div class="page" id="page-homefeatured">
-  <div class="breadcrumb"><i class="fas fa-home"></i> <span>Canlı Ürün Vitrini</span></div>
-  <div class="page-header">
-    <div><h1>Canlı Ürün <em>Vitrini</em></h1><p>Anasayfadaki kaydırmalı vitrin ürünlerini yönetin</p></div>
-    <button class="btn btn-outline btn-sm" onclick="renderHomeFeaturedAdminPage()"><i class="fas fa-rotate"></i> Yenile</button>
-  </div>
-  <div class="settings-section" style="margin-bottom:16px">
-    <div class="settings-section-header"><i class="fas fa-tv"></i> Ana Sayfa Kaydırmalı Ürün Vitrini</div>
-    <div class="settings-body" style="padding:16px 22px;display:grid;gap:12px">
-      <div class="form-row">
-        <div class="fg">
-          <label>Ürün Seç</label>
-          <select id="featuredProductSelect"></select>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="addFeaturedProduct()"><i class="fas fa-plus"></i> Kaydırmalı Alana Ekle</button>
-        <button class="btn btn-outline btn-sm" onclick="resetFeaturedProducts()"><i class="fas fa-rotate-left"></i> Varsayılanı Yükle</button>
-        <button class="btn btn-success btn-sm" onclick="forceSaveHomeFeaturedProducts()"><i class="fas fa-cloud-upload-alt"></i> GitHub'a Kaydet</button>
-      </div>
-      <div id="featuredProductsList" class="live-feed-admin-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ ÖNE ÇIKAN ÜRÜNLER ══ -->
-<div class="page" id="page-productsfeatured">
-  <div class="breadcrumb"><i class="fas fa-home"></i> <span>Öne Çıkan Ürünler</span></div>
-  <div class="page-header">
-    <div><h1>Öne Çıkan <em>Ürünler</em></h1><p>Ürünler sayfasındaki öne çıkan ürün listesini yönetin</p></div>
-    <button class="btn btn-outline btn-sm" onclick="renderProductsFeaturedAdminPage()"><i class="fas fa-rotate"></i> Yenile</button>
-  </div>
-  <div class="settings-section" style="margin-bottom:16px">
-    <div class="settings-section-header"><i class="fas fa-star"></i> Ürünler Sayfası “Öne Çıkan Ürünler” Alanı</div>
-    <div class="settings-body" style="padding:16px 22px;display:grid;gap:12px">
-      <div class="form-row">
-        <div class="fg">
-          <label>Ürün Seç</label>
-          <select id="productsFeaturedProductSelect"></select>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="addProductsFeaturedProduct()"><i class="fas fa-plus"></i> Öne Çıkanlara Ekle</button>
-        <button class="btn btn-outline btn-sm" onclick="resetProductsFeaturedProducts()"><i class="fas fa-rotate-left"></i> Varsayılanı Yükle</button>
-        <button class="btn btn-success btn-sm" onclick="forceSaveProductsFeaturedProducts()"><i class="fas fa-cloud-upload-alt"></i> GitHub'a Kaydet</button>
-      </div>
-      <div id="productsFeaturedProductsList" class="live-feed-admin-list"></div>
-    </div>
-  </div>
 </div>
 
 <!-- ══ SLIDER PANELİ ══ -->
@@ -1689,14 +1635,13 @@ document.addEventListener('DOMContentLoaded', bindLoginEvents);
 //  NAVIGATION
 // ════════════════════════════════════
 let currentPage = 'dashboard';
-const pageTitles = {dashboard:'Dashboard',orders:'Siparişler',customers:'Müşteriler',favorites:'Favoriler',products:'Ürün Yönetimi',categories:'Kategoriler',campaigns:'Kampanyalar',homefeatured:'Canlı Ürün Vitrini',productsfeatured:'Öne Çıkan Ürünler',entrypanel:'Giriş Paneli',showcase:'Montaj & Yorum Alanı',fromyou:'Sizden Gelenler',notifications:'Bildirimler',settings:'Ayarlar'};
+const pageTitles = {dashboard:'Dashboard',orders:'Siparişler',customers:'Müşteriler',favorites:'Favoriler',products:'Ürün Yönetimi',categories:'Kategoriler',campaigns:'Kampanyalar',entrypanel:'Giriş Paneli',showcase:'Montaj & Yorum Alanı',fromyou:'Sizden Gelenler',notifications:'Bildirimler',settings:'Ayarlar'};
 const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
 const FROM_YOU_SHOWCASE_KEY = 'gp_from_you_showcase_v1';
 const FOOTER_PAYMENT_LOGOS_KEY = 'gp_footer_payment_logos_v1';
 const HOME_PROMO_PANEL_KEY = 'gp_home_promo_panel_v1';
 const SURPRISE_CAMPAIGN_KEY = 'gp_surprise_campaign_popup_v1';
-const HOME_FEATURED_PRODUCTS_KEY = 'gp_home_featured_products_v1';
 const DEFAULT_HOME_PROMO_PANEL = {
   enabled:true,
   delayMs:1400,
@@ -2321,8 +2266,6 @@ function showPage(id){
   closeSidebar();
   if(id==='favorites') renderFavorites();
   if(id==='campaigns') renderCampaigns();
-  if(id==='homefeatured') renderHomeFeaturedAdminPage();
-  if(id==='productsfeatured') renderProductsFeaturedAdminPage();
   if(id==='entrypanel') renderEntryPanelPage();
   if(id==='slider') loadSliderItems();
   if(id==='showcase') renderShowcaseAdminPage();
@@ -3995,359 +3938,6 @@ function getCatLabel(key){return(CATEGORIES.find(c=>c.key===key)||{label:key}).l
 // ════════════════════════════════════
 //  CAMPAIGNS
 // ════════════════════════════════════
-const DEFAULT_HOME_FEATURED_PRODUCTS=['zebra-premium-gri','plise-krem-160x200','stor-salon-antrasit'];
-const DEFAULT_PRODUCTS_FEATURED_PRODUCTS=['zebra-premium-gri','plise-krem-160x200','stor-salon-antrasit'];
-const HOME_FEATURED_PRODUCTS_META_KEY = 'gp_home_featured_products_meta_v1';
-const PRODUCTS_FEATURED_PRODUCTS_KEY = 'gp_products_featured_products_v1';
-const PRODUCTS_FEATURED_PRODUCTS_META_KEY = 'gp_products_featured_products_meta_v1';
-let homeFeaturedProductIdsCache = [...DEFAULT_HOME_FEATURED_PRODUCTS];
-let productsFeaturedProductIdsCache = [...DEFAULT_PRODUCTS_FEATURED_PRODUCTS];
-
-function normalizeFeaturedIds(ids){
-  const source = Array.isArray(ids) ? ids : [];
-  if(!source.length) return [];
-  const normalized = source.map((id)=>extractFeaturedProductId(id)).filter(Boolean).slice(0,20);
-  return [...new Set(normalized)];
-}
-function extractFeaturedProductId(value){
-  if(value && typeof value === 'object'){
-    const objectId = value.id ?? value.productId ?? value.product_id ?? value.slug ?? value.value ?? value.path ?? value.targetPath;
-    return extractFeaturedProductId(objectId);
-  }
-  const raw = String(value || '').trim();
-  if(!raw) return '';
-  let decoded = raw;
-  try{
-    decoded = decodeURIComponent(raw);
-  }catch(_){}
-  const queryMatch = decoded.match(/(?:^|[?&])product=([^#&]+)/i);
-  if(queryMatch && queryMatch[1]){
-    return extractFeaturedProductId(queryMatch[1]);
-  }
-  const productPathMatch = decoded.match(/\/product(?:s)?\/([^/?#]+)/i);
-  if(productPathMatch && productPathMatch[1]){
-    return extractFeaturedProductId(productPathMatch[1]);
-  }
-  return decoded.replace(/^\/+|\/+$/g,'');
-}
-function decodeFeaturedLookupValue(value){
-  const raw = String(value || '').trim();
-  if(!raw) return '';
-  try{
-    return decodeURIComponent(raw);
-  }catch(_){
-    return raw;
-  }
-}
-function normalizeFeaturedLookup(value){
-  return decodeFeaturedLookupValue(value)
-    .toLocaleLowerCase('tr')
-    .replace(/[ç]/g,'c')
-    .replace(/[ğ]/g,'g')
-    .replace(/[ı]/g,'i')
-    .replace(/[ö]/g,'o')
-    .replace(/[ş]/g,'s')
-    .replace(/[ü]/g,'u')
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g,'')
-    .trim()
-    .replace(/&/g,'-')
-    .replace(/[^a-z0-9_-]+/g,'-')
-    .replace(/-+/g,'-')
-    .replace(/^-|-$/g,'');
-}
-function stripFeaturedIdSuffix(value){
-  return String(value || '').trim().replace(/-\d{8,}(?:-\d+)?$/,'');
-}
-function findFeaturedProductRecord(id){
-  const normalizedId = extractFeaturedProductId(id);
-  if(!normalizedId) return null;
-  const normalizedSlug = normalizeFeaturedLookup(normalizedId);
-  const compactId = normalizeFeaturedLookup(stripFeaturedIdSuffix(normalizedId));
-  return PRODUCTS.find((item)=>{
-    if(!item) return false;
-    const productId = String(item.id || '').trim();
-    const normalizedProductId = normalizeFeaturedLookup(productId);
-    const compactProductId = normalizeFeaturedLookup(stripFeaturedIdSuffix(productId));
-    const normalizedName = normalizeFeaturedLookup(item.name);
-    if(productId === normalizedId) return true;
-    if(normalizedProductId === normalizedSlug) return true;
-    if(normalizedName === normalizedSlug) return true;
-    if(compactId && (compactProductId === compactId || normalizedName === compactId)) return true;
-    if(compactId && compactProductId && (compactProductId.startsWith(compactId) || compactId.startsWith(compactProductId))) return true;
-    return false;
-  }) || null;
-}
-function removeMissingFeaturedIds(ids = []){
-  const list = Array.isArray(ids) ? ids : [];
-  return list.filter((id)=>!!findFeaturedProductRecord(id));
-}
-function getHomeFeaturedProductIds(){
-  if(Array.isArray(homeFeaturedProductIdsCache) && homeFeaturedProductIdsCache.length) return [...homeFeaturedProductIdsCache];
-  try{
-    const parsed = JSON.parse(localStorage.getItem(HOME_FEATURED_PRODUCTS_KEY)||'null');
-    homeFeaturedProductIdsCache = normalizeFeaturedIds(parsed);
-  }catch(_){
-    homeFeaturedProductIdsCache = [...DEFAULT_HOME_FEATURED_PRODUCTS];
-  }
-  return [...homeFeaturedProductIdsCache];
-}
-function readHomeFeaturedMeta(){
-  try{
-    const parsed = JSON.parse(localStorage.getItem(HOME_FEATURED_PRODUCTS_META_KEY) || 'null');
-    return Number(parsed?.updatedAt || 0) || 0;
-  }catch(_){
-    return 0;
-  }
-}
-function saveHomeFeaturedMeta(updatedAt = Date.now()){
-  const safeTs = Number(updatedAt || 0) || Date.now();
-  localStorage.setItem(HOME_FEATURED_PRODUCTS_META_KEY, JSON.stringify({ updatedAt: safeTs }));
-}
-async function syncHomeFeaturedProductsFromApi(){
-  try{
-    const res = await apiFetch('/api/admin/home-featured-products', { headers:{'x-admin-key':getAdminApiKey()} });
-    if(!res.ok) throw new Error('API alınamadı');
-    const payload = await res.json();
-    const apiIds = normalizeFeaturedIds(payload?.productIds);
-    const apiUpdatedAt = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : 0;
-    homeFeaturedProductIdsCache = apiIds;
-    localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(homeFeaturedProductIdsCache));
-    saveHomeFeaturedMeta(apiUpdatedAt || Date.now());
-  }catch(_){
-    homeFeaturedProductIdsCache = getHomeFeaturedProductIds();
-  }
-}
-async function saveHomeFeaturedProductIds(list){
-  const normalized = normalizeFeaturedIds(list);
-  homeFeaturedProductIdsCache = normalized;
-  localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(normalized));
-  saveHomeFeaturedMeta(Date.now());
-  try{
-    const res = await apiFetch('/api/admin/home-featured-products', {
-      method:'PUT',
-      headers:{'Content-Type':'application/json','x-admin-key':getAdminApiKey()},
-      body: JSON.stringify({ productIds: normalized })
-    });
-    if(!res.ok) throw new Error('API kaydetme hatası');
-    const payload = await res.json();
-    if(payload?.updatedAt){
-      saveHomeFeaturedMeta(new Date(payload.updatedAt).getTime() || Date.now());
-    }
-    return true;
-  }catch(_){
-    aToast('⚠️ Sunucuya kaydedilemedi. Değişiklik bu tarayıcıda görünecek.','error');
-    return false;
-  }
-}
-function fillFeaturedProductSelect(){
-  const select = document.getElementById('featuredProductSelect');
-  if(!select) return;
-  if(!Array.isArray(PRODUCTS) || !PRODUCTS.length){
-    select.innerHTML = `<option value="">Ürün bulunamadı</option>`;
-    return;
-  }
-  select.innerHTML = `<option value="">Ürün seçin</option>${PRODUCTS.map(p=>`<option value="${p.id}">${p.name}${p?.active===false?' (pasif)':''}</option>`).join('')}`;
-}
-function renderFeaturedProductsAdminList(){
-  const box = document.getElementById('featuredProductsList');
-  if(!box) return;
-  const ids = getHomeFeaturedProductIds();
-  const rows = ids.map((id, originalIndex)=>({ id, originalIndex, item: findFeaturedProductRecord(id) }));
-  const resolvedRows = rows.filter((row)=>row.item);
-  if(!resolvedRows.length){
-    box.innerHTML = `<div class="campaign-card" style="padding:14px">Henüz kaydırmalı vitrine ürün eklenmedi.</div>`;
-    return;
-  }
-  box.innerHTML = resolvedRows.map(({ item, originalIndex })=>`
-    <div class="live-feed-admin-card">
-      <img src="${item.image || item.images?.[0] || 'resimler/foto6.jpg'}" alt="${item.name}" loading="lazy">
-      <h4>${item.name}</h4>
-      <div class="live-feed-admin-meta"><span>${Number(item.price||0).toLocaleString('tr-TR')} TL</span><span>${item.badge || 'Öne Çıkan'}</span></div>
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <button class="btn btn-sm btn-danger" onclick="removeFeaturedProduct(${originalIndex})"><i class="fas fa-trash"></i></button>
-      </div>
-    </div>
-  `).join('');
-  const missingCount = rows.length - resolvedRows.length;
-  if(missingCount > 0){
-    box.insertAdjacentHTML('beforeend', `<div class="campaign-card" style="padding:14px">⚠️ ${missingCount} ürün katalogda bulunamadı. Ürünü yeniden seçip ekleyin veya kaldırın.</div>`);
-  }
-}
-async function cleanupMissingHomeFeaturedProducts(){
-  const ids = getHomeFeaturedProductIds();
-  if(!ids.length) return false;
-  const nextIds = removeMissingFeaturedIds(ids);
-  if(nextIds.length === ids.length) return false;
-  await saveHomeFeaturedProductIds(nextIds);
-  return true;
-}
-async function addFeaturedProduct(){
-  const id = String(document.getElementById('featuredProductSelect')?.value || '').trim();
-  if(!id){ aToast('⚠️ Ürün seçin','error'); return; }
-  const product = PRODUCTS.find((p)=>String(p.id)===id);
-  if(!product){ aToast('⚠️ Ürün bulunamadı','error'); return; }
-  const ids = getHomeFeaturedProductIds();
-  if(ids.includes(id)){ aToast('⚠️ Bu ürün zaten ekli','error'); return; }
-  ids.unshift(id);
-  const saved = await saveHomeFeaturedProductIds(ids.slice(0,12));
-  renderFeaturedProductsAdminList();
-  aToast(saved ? '✓ Ürün kaydırmalı vitrine eklendi' : '⚠️ Ürün yalnızca bu cihazda eklendi (sunucuya yazılamadı)','success');
-}
-async function removeFeaturedProduct(idx){
-  const ids = getHomeFeaturedProductIds();
-  ids.splice(idx,1);
-  const saved = await saveHomeFeaturedProductIds(ids);
-  renderFeaturedProductsAdminList();
-  aToast(saved ? '✓ Ürün vitrinden kaldırıldı' : '⚠️ Kaldırma yalnızca bu cihazda uygulandı (sunucuya yazılamadı)','success');
-}
-async function resetFeaturedProducts(){
-  const saved = await saveHomeFeaturedProductIds(DEFAULT_HOME_FEATURED_PRODUCTS);
-  renderFeaturedProductsAdminList();
-  aToast(saved ? '✓ Varsayılan kaydırmalı vitrin yüklendi' : '⚠️ Varsayılanlar yalnızca bu cihazda yüklendi (sunucuya yazılamadı)','success');
-}
-async function forceSaveHomeFeaturedProducts(){
-  const saved = await saveHomeFeaturedProductIds(getHomeFeaturedProductIds());
-  renderFeaturedProductsAdminList();
-  aToast(saved ? '✓ Canlı ürün vitrini sunucuya kaydedildi' : '⚠️ Sunucuya kaydetme başarısız. API/logları kontrol edin.','error');
-}
-function renderHomeFeaturedAdminPage(){
-  fillFeaturedProductSelect();
-  renderFeaturedProductsAdminList();
-}
-function getProductsFeaturedProductIds(){
-  if(Array.isArray(productsFeaturedProductIdsCache) && productsFeaturedProductIdsCache.length) return [...productsFeaturedProductIdsCache];
-  try{
-    const parsed = JSON.parse(localStorage.getItem(PRODUCTS_FEATURED_PRODUCTS_KEY)||'null');
-    productsFeaturedProductIdsCache = normalizeFeaturedIds(parsed);
-  }catch(_){
-    productsFeaturedProductIdsCache = [...DEFAULT_PRODUCTS_FEATURED_PRODUCTS];
-  }
-  return [...productsFeaturedProductIdsCache];
-}
-function readProductsFeaturedMeta(){
-  try{
-    const parsed = JSON.parse(localStorage.getItem(PRODUCTS_FEATURED_PRODUCTS_META_KEY) || 'null');
-    return Number(parsed?.updatedAt || 0) || 0;
-  }catch(_){
-    return 0;
-  }
-}
-function saveProductsFeaturedMeta(updatedAt = Date.now()){
-  const safeTs = Number(updatedAt || 0) || Date.now();
-  localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_META_KEY, JSON.stringify({ updatedAt: safeTs }));
-}
-async function syncProductsFeaturedProductsFromApi(){
-  try{
-    const res = await apiFetch('/api/admin/products-featured-products', { headers:{'x-admin-key':getAdminApiKey()} });
-    if(!res.ok) throw new Error('API alınamadı');
-    const payload = await res.json();
-    const apiIds = normalizeFeaturedIds(payload?.productIds);
-    const apiUpdatedAt = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : 0;
-    productsFeaturedProductIdsCache = apiIds;
-    localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(productsFeaturedProductIdsCache));
-    saveProductsFeaturedMeta(apiUpdatedAt || Date.now());
-  }catch(_){
-    productsFeaturedProductIdsCache = getProductsFeaturedProductIds();
-  }
-}
-async function saveProductsFeaturedProductIds(list){
-  const normalized = normalizeFeaturedIds(list);
-  productsFeaturedProductIdsCache = normalized;
-  localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(normalized));
-  saveProductsFeaturedMeta(Date.now());
-  try{
-    const res = await apiFetch('/api/admin/products-featured-products', {
-      method:'PUT',
-      headers:{'Content-Type':'application/json','x-admin-key':getAdminApiKey()},
-      body: JSON.stringify({ productIds: normalized })
-    });
-    if(!res.ok) throw new Error('API kaydetme hatası');
-    const payload = await res.json();
-    if(payload?.updatedAt){
-      saveProductsFeaturedMeta(new Date(payload.updatedAt).getTime() || Date.now());
-    }
-    return true;
-  }catch(_){
-    aToast('⚠️ Sunucuya kaydedilemedi. Değişiklik bu tarayıcıda görünecek.','error');
-    return false;
-  }
-}
-function fillProductsFeaturedProductSelect(){
-  const select = document.getElementById('productsFeaturedProductSelect');
-  if(!select) return;
-  if(!Array.isArray(PRODUCTS) || !PRODUCTS.length){
-    select.innerHTML = `<option value="">Ürün bulunamadı</option>`;
-    return;
-  }
-  select.innerHTML = `<option value="">Ürün seçin</option>${PRODUCTS.map(p=>`<option value="${p.id}">${p.name}${p?.active===false?' (pasif)':''}</option>`).join('')}`;
-}
-function renderProductsFeaturedProductsAdminList(){
-  const box = document.getElementById('productsFeaturedProductsList');
-  if(!box) return;
-  const ids = getProductsFeaturedProductIds();
-  const rows = ids.map((id, originalIndex)=>({ id, originalIndex, item: findFeaturedProductRecord(id) }));
-  const resolvedRows = rows.filter((row)=>row.item);
-  if(!resolvedRows.length){
-    box.innerHTML = `<div class="campaign-card" style="padding:14px">Henüz ürünler sayfası öne çıkan alanına ürün eklenmedi.</div>`;
-    return;
-  }
-  box.innerHTML = resolvedRows.map(({ item, originalIndex })=>`
-    <div class="live-feed-admin-card">
-      <img src="${item.image || item.images?.[0] || 'resimler/foto6.jpg'}" alt="${item.name}" loading="lazy">
-      <h4>${item.name}</h4>
-      <div class="live-feed-admin-meta"><span>${Number(item.price||0).toLocaleString('tr-TR')} TL</span><span>${item.badge || 'Öne Çıkan'}</span></div>
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <button class="btn btn-sm btn-danger" onclick="removeProductsFeaturedProduct(${originalIndex})"><i class="fas fa-trash"></i></button>
-      </div>
-    </div>
-  `).join('');
-  const missingCount = rows.length - resolvedRows.length;
-  if(missingCount > 0){
-    box.insertAdjacentHTML('beforeend', `<div class="campaign-card" style="padding:14px">⚠️ ${missingCount} ürün katalogda bulunamadı. Ürünü yeniden seçip ekleyin veya kaldırın.</div>`);
-  }
-}
-async function cleanupMissingProductsFeaturedProducts(){
-  const ids = getProductsFeaturedProductIds();
-  if(!ids.length) return false;
-  const nextIds = removeMissingFeaturedIds(ids);
-  if(nextIds.length === ids.length) return false;
-  await saveProductsFeaturedProductIds(nextIds);
-  return true;
-}
-async function addProductsFeaturedProduct(){
-  const id = String(document.getElementById('productsFeaturedProductSelect')?.value || '').trim();
-  if(!id){ aToast('⚠️ Ürün seçin','error'); return; }
-  const product = PRODUCTS.find((p)=>String(p.id)===id);
-  if(!product){ aToast('⚠️ Ürün bulunamadı','error'); return; }
-  const ids = getProductsFeaturedProductIds();
-  if(ids.includes(id)){ aToast('⚠️ Bu ürün zaten ekli','error'); return; }
-  ids.unshift(id);
-  const saved = await saveProductsFeaturedProductIds(ids.slice(0,12));
-  renderProductsFeaturedProductsAdminList();
-  aToast(saved ? '✓ Ürün öne çıkanlar alanına eklendi' : '⚠️ Ürün yalnızca bu cihazda eklendi (sunucuya yazılamadı)','success');
-}
-async function removeProductsFeaturedProduct(idx){
-  const ids = getProductsFeaturedProductIds();
-  ids.splice(idx,1);
-  const saved = await saveProductsFeaturedProductIds(ids);
-  renderProductsFeaturedProductsAdminList();
-  aToast(saved ? '✓ Ürün öne çıkanlar alanından kaldırıldı' : '⚠️ Kaldırma yalnızca bu cihazda uygulandı (sunucuya yazılamadı)','success');
-}
-async function resetProductsFeaturedProducts(){
-  const saved = await saveProductsFeaturedProductIds(DEFAULT_PRODUCTS_FEATURED_PRODUCTS);
-  renderProductsFeaturedProductsAdminList();
-  aToast(saved ? '✓ Ürünler sayfası için varsayılan liste yüklendi' : '⚠️ Varsayılanlar yalnızca bu cihazda yüklendi (sunucuya yazılamadı)','success');
-}
-async function forceSaveProductsFeaturedProducts(){
-  const saved = await saveProductsFeaturedProductIds(getProductsFeaturedProductIds());
-  renderProductsFeaturedProductsAdminList();
-  aToast(saved ? '✓ Öne çıkan ürünler sunucuya kaydedildi' : '⚠️ Sunucuya kaydetme başarısız. API/logları kontrol edin.','error');
-}
-function renderProductsFeaturedAdminPage(){
-  fillProductsFeaturedProductSelect();
-  renderProductsFeaturedProductsAdminList();
-}
 function defaultCampaigns(){
   return [
     {id:1,name:'Sezon Sonu %25 İndirim',description:'Tüm ürünlerde geçerli sezon sonu kampanyası.',imageUrl:'resimler/foto8.jpg',discountValue:25,discountType:'percent',couponCode:'',startDate:'2026-01-01',endDate:'2026-12-31',targetPath:'#products',buttonLabel:'Kampanyayı İncele',sortOrder:0,isActive:true},
@@ -5533,8 +5123,6 @@ async function initAdmin(){
   await syncProductsFeaturedProductsFromApi();
   await cleanupMissingHomeFeaturedProducts();
   await cleanupMissingProductsFeaturedProducts();
-  renderHomeFeaturedAdminPage();
-  renderProductsFeaturedAdminPage();
   await renderCampaigns();
   loadSliderItems();
   renderShowcaseAdminPage();

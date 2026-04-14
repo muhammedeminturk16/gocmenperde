@@ -1008,28 +1008,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .hero-premium-btn{border:none;border-radius:14px;padding:13px 18px;background:linear-gradient(120deg,#1f2941,#2f3f64);color:#fff;font-weight:800;letter-spacing:.4px;cursor:pointer;box-shadow:0 14px 26px rgba(18,26,46,.28);transition:.25s ease;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
 .hero-premium-btn.secondary{background:linear-gradient(120deg,#d6a343,#b8842d);color:#1f1a11}
 .hero-premium-btn:hover{transform:translateY(-2px);box-shadow:0 18px 30px rgba(18,26,46,.35)}
-.home-featured-shell{display:grid;gap:14px;padding:20px;border-radius:22px;border:1px solid rgba(212,169,84,.42);background:radial-gradient(circle at top right,rgba(245,208,125,.2),transparent 44%),linear-gradient(138deg,#0e1220 0%,#1a2339 62%,#2d1e12 100%);box-shadow:0 24px 36px rgba(7,11,20,.34)}
-.home-featured-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.home-featured-shell h3{color:#fff}
-.home-featured-shell p{color:rgba(240,244,255,.84)}
-.home-featured-shell .premium-commerce-pill{background:rgba(12,14,22,.58);border-color:rgba(234,194,108,.7);color:#f3d99b}
-.home-featured-shell .campaign-stream-controls{display:flex;align-items:center;gap:8px}
-.home-featured-shell .campaign-stream-btn{
-  min-width:44px;
-  width:44px;
-  height:44px;
-  padding:0;
-  border-radius:12px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  margin-top:0;
-  font-size:.95rem;
-}
-#homeFeaturedRail{scroll-snap-type:x mandatory;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x;cursor:grab}
-#homeFeaturedRail.dragging{cursor:grabbing}
-#homeFeaturedRail .home-featured-card{scroll-snap-align:start;border:1px solid rgba(219,185,112,.45);background:linear-gradient(155deg,rgba(255,255,255,.97),rgba(248,241,228,.96));box-shadow:0 14px 24px rgba(12,15,26,.3)}
-#homeFeaturedRail .home-featured-card .top-product-badge{background:#121b2f;color:#f7dc9d;border-color:rgba(214,173,84,.65)}
 .live-categories{padding:26px 5% 14px;background:linear-gradient(180deg,#fbfbfa,transparent);overflow:hidden}
 .live-categories-shell{max-width:1300px;margin:0 auto;border:1px solid rgba(34,45,78,.12);border-radius:18px;background:linear-gradient(120deg,#ffffff,#f9fafc);box-shadow:0 16px 30px rgba(17,28,58,.08);padding:14px 16px}
 .live-categories-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
@@ -1053,8 +1031,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .gallery-grid{margin-top:28px}
 @media(max-width:760px){
   .pulse-announcement{padding:14px}
-  .home-featured-shell{padding:14px;border-radius:18px}
-  .home-featured-shell .campaign-stream-btn{min-width:42px;width:42px;height:42px}
   .campaign-stream-media{height:180px}
   .gallery-section .section-header{padding:20px;border-radius:16px}
   .live-categories-shell{padding:12px}
@@ -1316,24 +1292,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
       </div>
     </div>
   </div>
-  <div class="premium-commerce-band" aria-label="Anasayfa canlı ürün vitrini">
-    <div class="premium-commerce-shell">
-      <div class="home-featured-shell">
-        <div class="home-featured-head">
-          <div>
-            <div class="premium-commerce-pill"><i class="fas fa-bolt"></i> Canlı Ürün Vitrini</div>
-            <h3>Anasayfa Öne Çıkan Ürünler</h3>
-            <p>Sizin için seçtiklerimiz</p>
-          </div>
-          <div class="campaign-stream-controls">
-            <button type="button" class="campaign-stream-btn" onclick="scrollHomeFeaturedRail(-1)" aria-label="Öne çıkan ürünlerde geri git"><i class="fas fa-chevron-left"></i></button>
-            <button type="button" class="campaign-stream-btn" onclick="scrollHomeFeaturedRail(1)" aria-label="Öne çıkan ürünlerde ileri git"><i class="fas fa-chevron-right"></i></button>
-          </div>
-        </div>
-        <div class="top-product-slider-track" id="homeFeaturedRail" aria-live="polite"></div>
-      </div>
-    </div>
-  </div>
   <div class="local-seo-section">
     <div class="local-seo-box">
       <h2>Bursa Perdeci Aramalarında Güvenilen Adres</h2>
@@ -1468,20 +1426,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
         </div>
         <div class="campaign-stream-grid" id="homeCampaignGrid"></div>
       </section>
-      <div class="top-product-slider" id="topProductSlider">
-        <div class="top-product-slider-head">
-          <div>
-            <span class="first-order-banner-eyebrow" style="color:#6d7486;margin-bottom:4px">Öne Çıkan Ürünler</span>
-            <h3>Sağa sola kaydırarak ürünleri inceleyin</h3>
-            <p>Panel, filtreye göre güncellenir ve ürünlere hızlı geçiş sağlar.</p>
-          </div>
-          <div class="top-product-slider-controls">
-            <button type="button" class="top-product-slider-btn" id="topProductPrev" aria-label="Önceki ürünler" onclick="scrollTopProductRail(-1)"><i class="fas fa-chevron-left"></i></button>
-            <button type="button" class="top-product-slider-btn" id="topProductNext" aria-label="Sonraki ürünler" onclick="scrollTopProductRail(1)"><i class="fas fa-chevron-right"></i></button>
-          </div>
-        </div>
-        <div class="top-product-slider-track" id="topProductRail"></div>
-      </div>
       <div class="sort-bar">
         <input type="text" id="searchInput" placeholder="🔍 Ürün ara..." oninput="applyFilters()">
         <select id="sortSelect" onchange="applyFilters()">
@@ -1912,10 +1856,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 
 <script>
 const WA_NUMBER = '905012110958';
-const HOME_FEATURED_PRODUCTS_KEY = 'gp_home_featured_products_v1';
-const HOME_FEATURED_PRODUCTS_META_KEY = 'gp_home_featured_products_meta_v1';
-const PRODUCTS_FEATURED_PRODUCTS_KEY = 'gp_products_featured_products_v1';
-const PRODUCTS_FEATURED_PRODUCTS_META_KEY = 'gp_products_featured_products_meta_v1';
 const SURPRISE_CAMPAIGN_KEY = 'gp_surprise_campaign_popup_v1';
 const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
@@ -1943,7 +1883,6 @@ const DEFAULT_FROM_YOU_SHOWCASE = [
   {src:'resimler/foto8.jpg',images:['resimler/foto8.jpg','resimler/foto9.jpg'],title:'Nilüfer Zebra + Fon',location:'Nilüfer',comment:'Model önerisi çok başarılıydı, salon şimdi çok daha modern görünüyor.'},
   {src:'resimler/foto11.jpg',images:['resimler/foto11.jpg','resimler/foto10.jpg'],title:'Yatak Odası Dönüşümü',location:'Yıldırım',comment:'Işık dengesi harika oldu, işçilik gerçekten çok özenliydi.'}
 ];
-const DEFAULT_HOME_FEATURED_PRODUCTS = ['zebra-premium-gri','plise-krem-160x200','stor-salon-antrasit'];
 const DEFAULT_SURPRISE_CAMPAIGN = {
   enabled:true,
   triggerMinute:1.5,
@@ -2321,226 +2260,7 @@ function renderHomeShowcaseSections(){
   renderCustomerShowcaseReviews();
   renderFromYouShowcase('fromYouPreviewGrid', Number.POSITIVE_INFINITY);
 }
-let homeFeaturedTouchBound = false;
 
-function normalizeHomeFeaturedIds(ids){
-  const list = Array.isArray(ids) ? ids : [];
-  if(!list.length) return [];
-  const normalized = list.map((id)=>extractFeaturedProductId(id)).filter(Boolean).slice(0,20);
-  return [...new Set(normalized)];
-}
-function extractFeaturedProductId(value){
-  if(value && typeof value === 'object'){
-    const objectId = value.id ?? value.productId ?? value.product_id ?? value.slug ?? value.value ?? value.path ?? value.targetPath;
-    return extractFeaturedProductId(objectId);
-  }
-  const raw = String(value || '').trim();
-  if(!raw) return '';
-  let decoded = raw;
-  try{
-    decoded = decodeURIComponent(raw);
-  }catch(_){}
-  const queryMatch = decoded.match(/(?:^|[?&])product=([^#&]+)/i);
-  if(queryMatch && queryMatch[1]){
-    return extractFeaturedProductId(queryMatch[1]);
-  }
-  const productPathMatch = decoded.match(/\/product(?:s)?\/([^/?#]+)/i);
-  if(productPathMatch && productPathMatch[1]){
-    return extractFeaturedProductId(productPathMatch[1]);
-  }
-  return decoded.replace(/^\/+|\/+$/g,'');
-}
-function getHomeFeaturedProductIds(){
-  try{
-    const parsed = JSON.parse(localStorage.getItem(HOME_FEATURED_PRODUCTS_KEY) || 'null');
-    return normalizeHomeFeaturedIds(parsed);
-  }catch(_){ }
-  return [...DEFAULT_HOME_FEATURED_PRODUCTS];
-}
-function getHomeFeaturedUpdatedAt(){
-  try{
-    const parsed = JSON.parse(localStorage.getItem(HOME_FEATURED_PRODUCTS_META_KEY) || 'null');
-    return Number(parsed?.updatedAt || 0) || 0;
-  }catch(_){
-    return 0;
-  }
-}
-function setHomeFeaturedUpdatedAt(updatedAt = Date.now()){
-  const safeTs = Number(updatedAt || 0) || Date.now();
-  localStorage.setItem(HOME_FEATURED_PRODUCTS_META_KEY, JSON.stringify({ updatedAt: safeTs }));
-}
-async function loadHomeFeaturedProductIds(){
-  const localIds = getHomeFeaturedProductIds();
-  try{
-    const res = await fetchWithApiFallback('/api/home-featured-products', { cache:'no-store' });
-    if(!res.ok) throw new Error('Öne çıkan ürün listesi alınamadı');
-    const payload = await res.json();
-    const apiIds = normalizeHomeFeaturedIds(payload?.productIds);
-    const apiUpdatedAt = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : 0;
-    localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(apiIds));
-    setHomeFeaturedUpdatedAt(apiUpdatedAt || Date.now());
-    renderHomeFeaturedProducts();
-  }catch(_){
-    localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(localIds));
-    renderHomeFeaturedProducts();
-  }
-}
-function getProductsFeaturedProductIds(){
-  try{
-    const parsed = JSON.parse(localStorage.getItem(PRODUCTS_FEATURED_PRODUCTS_KEY) || 'null');
-    return normalizeHomeFeaturedIds(parsed);
-  }catch(_){ }
-  return [...DEFAULT_HOME_FEATURED_PRODUCTS];
-}
-function getProductsFeaturedUpdatedAt(){
-  try{
-    const parsed = JSON.parse(localStorage.getItem(PRODUCTS_FEATURED_PRODUCTS_META_KEY) || 'null');
-    return Number(parsed?.updatedAt || 0) || 0;
-  }catch(_){
-    return 0;
-  }
-}
-function setProductsFeaturedUpdatedAt(updatedAt = Date.now()){
-  const safeTs = Number(updatedAt || 0) || Date.now();
-  localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_META_KEY, JSON.stringify({ updatedAt: safeTs }));
-}
-async function loadProductsFeaturedProductIds(){
-  const localIds = getProductsFeaturedProductIds();
-  try{
-    const res = await fetchWithApiFallback('/api/products-featured-products', { cache:'no-store' });
-    if(!res.ok) throw new Error('Öne çıkan ürün listesi alınamadı');
-    const payload = await res.json();
-    const apiIds = normalizeHomeFeaturedIds(payload?.productIds);
-    const apiUpdatedAt = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : 0;
-    localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(apiIds));
-    setProductsFeaturedUpdatedAt(apiUpdatedAt || Date.now());
-    updateTopProductRail(PRODUCTS);
-  }catch(_){
-    localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(localIds));
-    updateTopProductRail(PRODUCTS);
-  }
-}
-function getHomeFeaturedProducts(){
-  let sourceProducts = Array.isArray(PRODUCTS) ? PRODUCTS : [];
-  if(!sourceProducts.length){
-    const staleCache = readProductsFromCacheWithMode({allowStale:true});
-    const legacyCache = readLegacyProductsFallback();
-    sourceProducts = staleCache.length ? staleCache : legacyCache;
-  }
-  if(!sourceProducts.length) return [];
-  const selectedIds = cleanupMissingFeaturedIds(getHomeFeaturedProductIds(), sourceProducts);
-  localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(selectedIds));
-  const selectedProducts = selectedIds
-    .map((id)=>findFeaturedProductById(id, sourceProducts))
-    .filter(isRenderableCatalogProduct);
-  if(selectedProducts.length) return selectedProducts.slice(0, 12);
-  const defaultProducts = cleanupMissingFeaturedIds(DEFAULT_HOME_FEATURED_PRODUCTS, sourceProducts)
-    .map((id)=>findFeaturedProductById(id, sourceProducts))
-    .filter(isRenderableCatalogProduct);
-  if(defaultProducts.length) return defaultProducts.slice(0, 12);
-  return sourceProducts.filter(isRenderableCatalogProduct).slice(0, 12);
-}
-function decodeFeaturedLookupValue(value){
-  const raw = String(value || '').trim();
-  if(!raw) return '';
-  try{
-    return decodeURIComponent(raw);
-  }catch(_){
-    return raw;
-  }
-}
-function normalizeFeaturedLookupKey(value){
-  return decodeFeaturedLookupValue(value)
-    .toLocaleLowerCase('tr')
-    .replace(/[ç]/g,'c')
-    .replace(/[ğ]/g,'g')
-    .replace(/[ı]/g,'i')
-    .replace(/[ö]/g,'o')
-    .replace(/[ş]/g,'s')
-    .replace(/[ü]/g,'u')
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g,'')
-    .trim()
-    .replace(/&/g,'-')
-    .replace(/[^a-z0-9_-]+/g,'-')
-    .replace(/-+/g,'-')
-    .replace(/^-|-$/g,'');
-}
-function stripFeaturedIdSuffix(value){
-  return String(value || '').trim().replace(/-\d{8,}(?:-\d+)?$/,'');
-}
-function findFeaturedProductById(id, productList = PRODUCTS){
-  const normalizedId = extractFeaturedProductId(id);
-  if(!normalizedId) return null;
-  const normalizedSlug = normalizeFeaturedLookupKey(normalizedId);
-  const compactId = normalizeFeaturedLookupKey(stripFeaturedIdSuffix(normalizedId));
-  return (Array.isArray(productList) ? productList : []).find((item)=>{
-    if(!item) return false;
-    const productId = String(item.id || '').trim();
-    const normalizedProductId = normalizeFeaturedLookupKey(productId);
-    const compactProductId = normalizeFeaturedLookupKey(stripFeaturedIdSuffix(productId));
-    const normalizedName = normalizeFeaturedLookupKey(item.name);
-    if(productId === normalizedId) return true;
-    if(normalizedProductId === normalizedSlug) return true;
-    if(normalizedName === normalizedSlug) return true;
-    if(compactId && (compactProductId === compactId || normalizedName === compactId)) return true;
-    if(compactId && compactProductId && (compactProductId.startsWith(compactId) || compactId.startsWith(compactProductId))) return true;
-    return false;
-  }) || null;
-}
-function cleanupMissingFeaturedIds(ids = [], productList = PRODUCTS){
-  const list = Array.isArray(ids) ? ids : [];
-  if(!list.length) return [];
-  const source = Array.isArray(productList) ? productList : [];
-  return list.filter((id)=>!!findFeaturedProductById(id, source));
-}
-function isRenderableCatalogProduct(product){
-  if(!product || product.active === false) return false;
-  const hasName = String(product.name || '').trim().length > 0;
-  const hasVisual = !!(product.image || (Array.isArray(product.images) && product.images[0]));
-  return hasName && hasVisual;
-}
-function bindHomeFeaturedSwipe(){
-  if(homeFeaturedTouchBound) return;
-  const rail = document.getElementById('homeFeaturedRail');
-  if(!rail) return;
-  rail.addEventListener('pointerdown', ()=>rail.classList.add('dragging'));
-  rail.addEventListener('pointerup', ()=>rail.classList.remove('dragging'));
-  rail.addEventListener('pointercancel', ()=>rail.classList.remove('dragging'));
-  rail.addEventListener('pointerleave', ()=>rail.classList.remove('dragging'));
-  homeFeaturedTouchBound = true;
-}
-function renderHomeFeaturedProducts(){
-  const rail = document.getElementById('homeFeaturedRail');
-  if(!rail) return;
-  if((!Array.isArray(PRODUCTS) || !PRODUCTS.length) && !productRequestInFlight){
-    loadProducts().catch(()=>{});
-  }
-  const list = getHomeFeaturedProducts();
-  if(!list.length){
-    rail.innerHTML = PRODUCTS.length
-      ? '<div class="campaign-stream-empty">Gösterilecek ürün bulunamadı.</div>'
-      : '<div class="campaign-stream-empty">Ürünler yükleniyor...</div>';
-    return;
-  }
-  rail.innerHTML = list.map((product)=>`
-    <article class="top-product-card home-featured-card" onclick="openModalFromProduct('${escapeInline(product.id)}')">
-      <div class="top-product-thumb"><img src="${resolveAssetUrl(product.image || product.images?.[0] || 'resimler/foto6.jpg')}" ${imageFallbackAttr(product.image || product.images?.[0] || 'resimler/foto6.jpg')} alt="${product.name}" loading="lazy" decoding="async"></div>
-      <span class="top-product-badge">${product.badge || 'Öne Çıkan'}</span>
-      <h4>${product.name}</h4>
-      <p>${(product.desc || 'Premium kumaş kalitesi ve profesyonel montaj ile uygulanır.').slice(0,90)}</p>
-      <div class="top-product-price-row"><strong>${formatPrice(product.price)}</strong>${product.oldPrice>product.price?`<span>${formatPrice(product.oldPrice)}</span>`:''}</div>
-      <button type="button">Ürünü İncele <i class="fas fa-arrow-right"></i></button>
-    </article>
-  `).join('');
-  bindHomeFeaturedSwipe();
-}
-function scrollHomeFeaturedRail(direction=1){
-  const rail = document.getElementById('homeFeaturedRail');
-  if(!rail) return;
-  const amount = Math.max(220, Math.floor(rail.clientWidth * 0.75));
-  rail.scrollBy({ left: amount * direction, behavior:'smooth' });
-}
 
 function renderFromYouShowcase(targetId='fromYouPageGrid', limit=12){
   const grid = document.getElementById(targetId);
@@ -2840,14 +2560,7 @@ function renderProductState(list, {withObserver=true} = {}){
   hydrateProductSocialData();
   syncCategoriesFromAdmin();
   renderProducts(PRODUCTS);
-  updateTopProductRail(PRODUCTS);
-  renderHomeFeaturedProducts();
   renderHomePromoPanel();
-  const topRail = document.getElementById('topProductRail');
-  if(topRail && !topRail.dataset.boundScroll){
-    topRail.addEventListener('scroll', toggleTopProductRailButtons, {passive:true});
-    topRail.dataset.boundScroll = '1';
-  }
   renderRecentlyViewed();
   if(withObserver) initObserver();
 }
@@ -2900,14 +2613,6 @@ async function loadProducts({forceRefresh=false} = {}){
         productsLoadedOnce = true;
       } else if(!productsLoadedOnce){
         document.getElementById('productsGrid').innerHTML = '<div class="products-loading">Ürünler yüklenemedi. Sayfayı yenileyin.</div>';
-        const homeFeaturedRail = document.getElementById('homeFeaturedRail');
-        if(homeFeaturedRail){
-          homeFeaturedRail.innerHTML = '<div class="campaign-stream-empty">Ürünler alınamadı. Lütfen sayfayı yenileyin.</div>';
-        }
-        const topProductRail = document.getElementById('topProductRail');
-        if(topProductRail){
-          topProductRail.innerHTML = '<div class="campaign-stream-empty">Öne çıkan ürünler şu an yüklenemiyor.</div>';
-        }
       }
     } finally {
       productRequestInFlight = null;
@@ -3569,74 +3274,6 @@ function openModalSearchResult(productId){
   trackRecentlyViewed(productId);
 }
 
-let topProductScrollStep = 260;
-function getProductsFeaturedProducts(){
-  let sourceProducts = Array.isArray(PRODUCTS) ? PRODUCTS : [];
-  if(!sourceProducts.length){
-    const staleCache = readProductsFromCacheWithMode({allowStale:true});
-    const legacyCache = readLegacyProductsFallback();
-    sourceProducts = staleCache.length ? staleCache : legacyCache;
-  }
-  if(!sourceProducts.length) return [];
-  const selectedIds = cleanupMissingFeaturedIds(getProductsFeaturedProductIds(), sourceProducts);
-  localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(selectedIds));
-  const selectedProducts = selectedIds
-    .map((id)=>findFeaturedProductById(id, sourceProducts))
-    .filter(isRenderableCatalogProduct);
-  if(selectedProducts.length) return selectedProducts.slice(0, 12);
-  const defaultProducts = cleanupMissingFeaturedIds(DEFAULT_HOME_FEATURED_PRODUCTS, sourceProducts)
-    .map((id)=>findFeaturedProductById(id, sourceProducts))
-    .filter(isRenderableCatalogProduct);
-  if(defaultProducts.length) return defaultProducts.slice(0, 12);
-  return sourceProducts.filter(isRenderableCatalogProduct).slice(0, 12);
-}
-
-function updateTopProductRail(list){
-  const rail = document.getElementById('topProductRail');
-  const slider = document.getElementById('topProductSlider');
-  if(!rail || !slider) return;
-  const entries = getProductsFeaturedProducts();
-  if(!entries.length){
-    rail.innerHTML = '<div class="campaign-stream-empty">Gösterilecek ürün bulunamadı.</div>';
-    toggleTopProductRailButtons();
-    return;
-  }
-  rail.innerHTML = entries.map((p, idx)=>{
-    const oldPrice = Number(p.oldPrice)||0;
-    const price = Number(p.price)||0;
-    return `<article class="top-product-card">
-      <img src="${getPrimaryImage(p)}" ${imageFallbackAttr(getPrimaryImage(p))} alt="${p.name || 'Ürün'}" loading="${idx<2?'eager':'lazy'}" decoding="async">
-      <div class="top-product-card-body">
-        <div class="top-product-card-name">${p.name || 'Ürün'}</div>
-        <div class="top-product-card-price">
-          <span class="new">${formatTl(price)}</span>
-          ${oldPrice>price?`<span class="old">${formatTl(oldPrice)}</span>`:''}
-        </div>
-        <button type="button" onclick="openModalFromProduct('${escapeInline(p.id)}')">Ürünü İncele</button>
-      </div>
-    </article>`;
-  }).join('');
-  requestAnimationFrame(()=>{
-    const firstCard = rail.querySelector('.top-product-card');
-    topProductScrollStep = firstCard ? firstCard.offsetWidth + 12 : 260;
-    toggleTopProductRailButtons();
-  });
-}
-
-function scrollTopProductRail(direction=1){
-  const rail = document.getElementById('topProductRail');
-  if(!rail) return;
-  rail.scrollBy({ left: direction * topProductScrollStep, behavior: 'smooth' });
-}
-
-function toggleTopProductRailButtons(){
-  const rail = document.getElementById('topProductRail');
-  const prev = document.getElementById('topProductPrev');
-  const next = document.getElementById('topProductNext');
-  if(!rail || !prev || !next) return;
-  prev.disabled = rail.scrollLeft <= 2;
-  next.disabled = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2;
-}
 
 // ── Filtreler ──
 function applyFilters(){
@@ -4378,8 +4015,6 @@ window.addEventListener('storage',(event)=>{
     renderFromYouShowcase('fromYouPageGrid', 12);
     initObserver();
   }
-  if(event.key===HOME_FEATURED_PRODUCTS_KEY) renderHomeFeaturedProducts();
-  if(event.key===PRODUCTS_FEATURED_PRODUCTS_KEY) updateTopProductRail(PRODUCTS);
   if(event.key===SURPRISE_CAMPAIGN_KEY) scheduleSurpriseCampaignModal();
 });
 

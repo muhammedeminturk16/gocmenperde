@@ -1706,7 +1706,7 @@ const DEFAULT_HOME_PROMO_PANEL = {
 };
 const DEFAULT_HOME_FEATURED_PRODUCTS = {
   title:'Editörün premium seçimleri',
-  subtitle:'Yönetim panelinden belirlenen ürünler burada canlı olarak gösterilir.',
+  subtitle:'Evinize şıklık katacak en özel ürünleri hemen keşfedin.',
   productIds:[]
 };
 const DEFAULT_HOME_LIVE_PRODUCT_SHOWCASE = {
@@ -4322,10 +4322,6 @@ function switchPremiumTab(tab='live'){
 
 async function validatePremiumImageQuality(product){
   const src = resolveAssetUrl((product?.images?.[0]) || product?.image || '');
-  const isWebp = /\.webp(\?|$)/i.test(src);
-  if(!isWebp){
-    return { ok:false, reason:'Premium alanlar için görsel formatı WebP olmalıdır.' };
-  }
   return new Promise((resolve)=>{
     const img = new Image();
     img.onload = ()=>{

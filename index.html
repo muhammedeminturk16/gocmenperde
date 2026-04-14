@@ -692,8 +692,8 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .modal-spec-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem}
 .modal-spec-row:last-child{border-bottom:none}
 .modal-spec-key{color:var(--slate)}.modal-spec-val{color:var(--ink);font-weight:600;text-align:right}
-.modal-add-wrap{margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.modal-qty-input{width:58px;height:42px;text-align:center;border:1px solid var(--border);border-radius:8px;font-size:1rem;font-family:var(--ff-body);background:var(--cream)}
+.modal-add-wrap{margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px;border-radius:16px;background:linear-gradient(135deg,#ffffff,#faf7f1);border:1px solid rgba(201,168,76,0.2);box-shadow:0 10px 24px rgba(15,14,13,0.06)}
+.modal-qty-input{width:58px;height:44px;text-align:center;border:1px solid #e3dfd6;border-radius:10px;font-size:1rem;font-family:var(--ff-body);background:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.8)}
 .modal-qty-input.dimension-input{width:95px}
 .modal-qty-input.pile-select{width:auto;min-width:190px;padding:0 10px;font-size:0.8rem}
 .modal-inline-help{font-size:0.72rem;color:var(--slate);display:block;flex:1 1 100%}
@@ -721,14 +721,14 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
   .modal-overlay{padding:0;background:#fff;backdrop-filter:none}
   .modal-box{max-width:none;width:100%;min-height:100dvh;border-radius:0;max-height:none;box-shadow:none;background:#fff;display:flex;flex-direction:column;padding-top:calc(env(safe-area-inset-top) + 64px)}
   .modal-close{display:none}
-  .modal-mobile-header{display:flex;position:fixed;left:0;right:0;top:0;z-index:30;padding:calc(env(safe-area-inset-top) + 10px) 10px 10px;justify-content:space-between;align-items:center;gap:8px;max-width:100%;overflow-x:hidden;background:linear-gradient(180deg,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.2) 68%,rgba(0,0,0,0) 100%);backdrop-filter:blur(6px)}
+  .modal-mobile-header{display:flex;position:fixed;left:0;right:0;top:0;z-index:90;padding:calc(env(safe-area-inset-top) + 10px) 10px 10px;justify-content:space-between;align-items:center;gap:8px;max-width:100%;overflow-x:hidden;background:linear-gradient(180deg,rgba(15,14,13,0.72) 0%,rgba(15,14,13,0.42) 72%,rgba(15,14,13,0.08) 100%);backdrop-filter:blur(8px)}
   .modal-mobile-header .mh-left,.modal-mobile-header .mh-right{display:flex;align-items:center;gap:7px}
   .modal-mobile-header .mh-left,.modal-mobile-header .mh-right{flex-shrink:0}
   .mh-search{min-width:0}
   .modal-search-input{min-width:0}
   .modal-img-stage{height:38dvh;min-height:250px;max-height:340px}
   .modal-info-col{flex:1;overflow-y:auto;padding:16px 14px calc(190px + env(safe-area-inset-bottom))}
-  .modal-add-wrap{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--border);box-shadow:0 -8px 30px rgba(0,0,0,0.08)}
+  .modal-add-wrap{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(135deg,#fff,#fbf8f2);border-top:1px solid rgba(201,168,76,0.25);box-shadow:0 -10px 28px rgba(0,0,0,0.1)}
   .modal-add-wrap .modal-add-btn{font-size:0.78rem}
   .modal-review-form{grid-template-columns:1fr}
   .modal-reviews-wrap{margin-bottom:16px}
@@ -1781,7 +1781,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
     <button class="modal-close" onclick="closeProductModal()"><i class="fas fa-xmark"></i></button>
     <div class="modal-mobile-header">
       <div class="mh-left">
-        <button class="mh-btn" type="button" onclick="go('products');closeProductModal()" title="Geri"><i class="fas fa-chevron-left"></i></button>
+        <button class="mh-btn" type="button" onclick="handleProductModalBack()" title="Geri"><i class="fas fa-chevron-left"></i></button>
       </div>
       <label class="mh-search" for="modalSearchInput">
         <i class="fas fa-search"></i>
@@ -3212,7 +3212,7 @@ function isGuneslikProduct(product){
   const cat = String(product?.cat || '').toLocaleLowerCase('tr');
   return cat === 'guneslik' || name.includes('güneşlik') || name.includes('guneslik');
 }
-function isOrmeTulProduct(product){
+function isTulPerdeProduct(product){
   if(!isMeterProduct(product)) return false;
   const cat = String(product?.cat || '').toLocaleLowerCase('tr');
   const haystack = [
@@ -3222,17 +3222,36 @@ function isOrmeTulProduct(product){
     product?.serialNumber
   ].map((v)=>String(v || '').toLocaleLowerCase('tr')).join(' ');
   const hasTul = haystack.includes('tül') || haystack.includes('tul');
+  return cat === 'tul-perde' || hasTul;
+}
+function isOrmeTulProduct(product){
+  if(!isTulPerdeProduct(product)) return false;
+  const cat = String(product?.cat || '').toLocaleLowerCase('tr');
+  const haystack = [
+    product?.name,
+    product?.desc,
+    product?.id,
+    product?.serialNumber
+  ].map((v)=>String(v || '').toLocaleLowerCase('tr')).join(' ');
+  const hasTul = haystack.includes('tül') || haystack.includes('tul');
   const hasOrme = haystack.includes('örme') || haystack.includes('orme');
-  return cat === 'tul-perde' && hasTul && hasOrme;
+  return (cat === 'tul-perde' || hasTul) && hasOrme;
+}
+function requiresWidthMeasurement(product){
+  if(isSquareMeterProduct(product)) return true;
+  if(isPleatedMeterProduct(product)) return true;
+  if(isMeterProduct(product) && !isFonPerdeProduct(product)) return true;
+  return isFonPerdeProduct(product) && isMeterProduct(product);
 }
 function needsDimensions(product){
-  return isMeterProduct(product) || isSquareMeterProduct(product) || isFonPerdeProduct(product);
+  return requiresWidthMeasurement(product) || requiresHeightMeasurement(product);
 }
 function isPleatedMeterProduct(product){
-  return isOrmeTulProduct(product) && !isSquareMeterProduct(product);
+  return (isTulPerdeProduct(product) || isFonPerdeProduct(product)) && isMeterProduct(product) && !isSquareMeterProduct(product);
 }
 function requiresHeightMeasurement(product){
-  return isSquareMeterProduct(product) || isMeterProduct(product) || isFonPerdeProduct(product) || isGuneslikProduct(product);
+  if(isFonPerdeProduct(product) && !isMeterProduct(product)) return true;
+  return isSquareMeterProduct(product) || isMeterProduct(product) || isGuneslikProduct(product);
 }
 function getPileMultiplier(pileType){
   if(pileType === 'seyrek') return 2;
@@ -3286,20 +3305,19 @@ function bindTulPerdeAutoCalc(product, qtyInputId, widthInputId, heightInputId, 
   if(!qtyEl || !wEl || !hEl || !pileEl || !infoEl) return;
   const recalc = ()=>{
     const w = parseLocaleNumber(wEl.value);
-    const h = parseLocaleNumber(hEl.value);
     const pile = pileEl.value || 'orta';
     const mult = getPileMultiplier(pile);
-    if(Number.isFinite(w) && w > 0 && Number.isFinite(h) && h > 0){
+    if(Number.isFinite(w) && w > 0){
       const billedWidth = getBilledWidth(w);
-      const fabricMeter = roundTo2(billedWidth * h * mult);
+      const fabricMeter = roundTo2(billedWidth * mult);
       const total = roundTo2(fabricMeter * (Number(product?.price) || 0));
       qtyEl.value = String(fabricMeter).replace('.', ',');
       const pileText = pile === 'sik' ? 'Sık Pile' : pile === 'seyrek' ? 'Seyrek Pile' : 'Orta Pile';
       const minWidthNote = billedWidth !== w ? ' • En minimum 1 m alındı' : '';
-      infoEl.textContent = `${pileText} (${mult}x) • ${fabricMeter.toLocaleString('tr-TR')} m • ${total.toLocaleString('tr-TR')} TL${minWidthNote}`;
+      infoEl.textContent = `${pileText} (${mult}x) • ${fabricMeter.toLocaleString('tr-TR')} m • ${total.toLocaleString('tr-TR')} TL${minWidthNote} • Boy yalnızca dikim bilgisi için alınır`;
     } else {
       qtyEl.value = '0';
-      infoEl.textContent = 'En ve boy girip pile seçtiğinizde metre ve fiyat otomatik hesaplanır';
+      infoEl.textContent = 'En ve pile seçimiyle fiyat hesaplanır (boy fiyatı etkilemez)';
     }
   };
   wEl.addEventListener('input', recalc);
@@ -3412,6 +3430,7 @@ function buildCard(p, index=0){
   const pleatedMeterProduct = isPleatedMeterProduct(p);
   const meterDimensionsProduct = meterProduct && !pleatedMeterProduct && !squareProduct && requiresHeightMeasurement(p);
   const requireSize = needsDimensions(p);
+  const requireWidth = requiresWidthMeasurement(p);
   const requireHeight = requiresHeightMeasurement(p);
   const social = getProductSocial(p.id);
   const stockCount = getNormalizedStockCount(p);
@@ -3428,11 +3447,11 @@ function buildCard(p, index=0){
     ? buildOutOfStockActions(p.id, p.name)
     : `<div class="qty-wrap">
     ${squareProduct || pleatedMeterProduct || meterDimensionsProduct ? `<input type="text" class="qty-input" id="${qid}" value="0" readonly>` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="qty-input" id="${qid}" value="1" ${meterProduct ? `title="Virgüllü değer girebilirsiniz"` : ''}>`}
-    ${requireSize ? `<input type="text" inputmode="decimal" class="qty-input dimension-input" id="${wid}" placeholder="En (m)">` : ''}
+    ${requireWidth ? `<input type="text" inputmode="decimal" class="qty-input dimension-input" id="${wid}" placeholder="En (m)">` : ''}
     ${requireHeight ? `<input type="text" inputmode="decimal" class="qty-input dimension-input" id="${hid}" placeholder="Boy (m)">` : ''}
     ${pleatedMeterProduct ? `<select class="qty-input pile-select" id="pile-${p.id}"><option value="seyrek">Seyrek Pile (1m→2m)</option><option value="orta" selected>Orta Pile (1m→2.5m)</option><option value="sik">Sık Pile (1m→3m)</option></select>` : ''}
     ${squareProduct ? `<span id="${pid}" class="qty-help-text">En ve boy çarpılarak m² hesaplanır (en 1 m altındaysa 1 m alınır)</span>` : ''}
-    ${pleatedMeterProduct ? `<span id="${pid}" class="qty-help-text">En/boy ve pile seçimine göre (1:2 / 1:2.5 / 1:3) metre hesaplanır (en 1 m altındaysa 1 m alınır)</span>` : ''}
+    ${pleatedMeterProduct ? `<span id="${pid}" class="qty-help-text">Pileye göre en ölçüsü hesaplanır: 1:2 / 1:2.5 / 1:3 (boy fiyatı etkilemez)</span>` : ''}
     ${meterDimensionsProduct ? `<span id="${pid}" class="qty-help-text">En ve boy çarpılarak metre hesaplanır (en 1 m altındaysa 1 m alınır)</span>` : ''}
     <button class="add-btn" onclick="event.stopPropagation();addToCartFromProduct('${p.id}','${qid}','${wid}','${hid}','pile-${p.id}')">Sepete Ekle</button>
   </div>`;
@@ -3923,16 +3942,17 @@ function openModalFromProduct(id){
   const meterProduct = isMeterProduct(p);
   const squareProduct = isSquareMeterProduct(p);
   const requireSize = needsDimensions(p);
+  const requireWidth = requiresWidthMeasurement(p);
   const pleatedMeterProduct = isPleatedMeterProduct(p);
   const meterDimensionsProduct = meterProduct && !pleatedMeterProduct && !squareProduct && requiresHeightMeasurement(p);
   const requireHeight = requiresHeightMeasurement(p);
   document.getElementById('mAddWrap').innerHTML = `
     ${squareProduct || pleatedMeterProduct || meterDimensionsProduct ? `<input type="text" class="modal-qty-input" id="${qid}" value="0" readonly>` : `<input ${meterProduct ? `type="text" inputmode="decimal" placeholder="1,5"` : `type="number" min="1" step="1"`} class="modal-qty-input" id="${qid}" value="1">`}
-    ${requireSize ? `<input type="text" inputmode="decimal" class="modal-qty-input dimension-input" id="${wid}" placeholder="En (m)">` : ''}
+    ${requireWidth ? `<input type="text" inputmode="decimal" class="modal-qty-input dimension-input" id="${wid}" placeholder="En (m)">` : ''}
     ${requireHeight ? `<input type="text" inputmode="decimal" class="modal-qty-input dimension-input" id="${hid}" placeholder="Boy (m)">` : ''}
     ${pleatedMeterProduct ? `<select class="modal-qty-input pile-select" id="modal-pile-${p.id}"><option value="seyrek">Seyrek Pile (1m→2m)</option><option value="orta" selected>Orta Pile (1m→2.5m)</option><option value="sik">Sık Pile (1m→3m)</option></select>` : ''}
     ${squareProduct ? `<span id="${pid}" class="modal-inline-help">En ve boy çarpılarak m² hesaplanır (en 1 m altındaysa 1 m alınır)</span>` : ''}
-    ${pleatedMeterProduct ? `<span id="${pid}" class="modal-inline-help">En/boy ve pile seçimine göre (1:2 / 1:2.5 / 1:3) metre hesaplanır (en 1 m altındaysa 1 m alınır)</span>` : ''}
+    ${pleatedMeterProduct ? `<span id="${pid}" class="modal-inline-help">Pileye göre en ölçüsü hesaplanır: 1:2 / 1:2.5 / 1:3 (boy fiyatı etkilemez)</span>` : ''}
     ${meterDimensionsProduct ? `<span id="${pid}" class="modal-inline-help">En ve boy çarpılarak metre hesaplanır (en 1 m altındaysa 1 m alınır)</span>` : ''}
     ${outOfStock
       ? `<button class="modal-add-btn" style="background:#6b7280" disabled>Tükendi</button><button class="modal-add-btn" onclick="subscribeStockAlert('${p.id}','${String(p.name||'').replace(/'/g, "\\'")}')">Gelince Haber Ver</button>`
@@ -4090,6 +4110,15 @@ function clearProductDeepLink(){
   url.searchParams.delete('product');
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
   if(lastHandledEntryDeepLink.startsWith('product:')) lastHandledEntryDeepLink = '';
+}
+function handleProductModalBack(){
+  const hasProductParam = new URLSearchParams(window.location.search).has('product');
+  if(hasProductParam && window.history.length > 1){
+    window.history.back();
+    return;
+  }
+  closeProductModal();
+  go('products');
 }
 
 window.addEventListener('popstate', ()=>{
@@ -4752,6 +4781,7 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
   const pleatedMeterProduct = isPleatedMeterProduct(product);
   const meterDimensionsProduct = meterProduct && !pleatedMeterProduct && !squareProduct && requiresHeightMeasurement(product);
   const requireSize = needsDimensions(product);
+  const requireWidth = requiresWidthMeasurement(product);
   const requireHeight = requiresHeightMeasurement(product);
   const qtyRaw = document.getElementById(qtyInputId)?.value ?? '1';
   const widthRaw = document.getElementById(widthInputId)?.value ?? '';
@@ -4764,17 +4794,27 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
     showToast('Lütfen en ve boy ölçülerini metre cinsinden girin');
     return;
   }
-  if(pleatedMeterProduct && (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0)){
-    showToast('Lütfen perde için en ve boy ölçülerini metre cinsinden girin');
+  if(pleatedMeterProduct && (!Number.isFinite(width) || width <= 0)){
+    showToast('Lütfen en ölçüsünü ve pile seçimini yapın');
+    return;
+  }
+  if(pleatedMeterProduct && requireHeight && (!Number.isFinite(height) || height <= 0)){
+    showToast('Lütfen boy ölçüsünü metre cinsinden girin');
     return;
   }
   if(meterDimensionsProduct && (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0)){
     showToast('Lütfen en ve boy ölçülerini metre cinsinden girin');
     return;
   }
-  if(requireSize && requireHeight && !squareProduct && !pleatedMeterProduct && !meterDimensionsProduct && (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0)){
-    showToast('Lütfen en ve boy ölçülerini metre cinsinden girin');
-    return;
+  if(requireSize && !squareProduct && !pleatedMeterProduct && !meterDimensionsProduct){
+    if(requireWidth && (!Number.isFinite(width) || width <= 0)){
+      showToast('Lütfen en ölçüsünü metre cinsinden girin');
+      return;
+    }
+    if(requireHeight && (!Number.isFinite(height) || height <= 0)){
+      showToast('Lütfen boy ölçüsünü metre cinsinden girin');
+      return;
+    }
   }
 
   let qty = meterProduct ? parseLocaleNumber(qtyRaw) : parseInt(qtyRaw, 10);
@@ -4785,7 +4825,7 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
   }
   if(pleatedMeterProduct){
     const mult = getPileMultiplier(pileType);
-    qty = roundTo2(getBilledWidth(width) * height * mult);
+    qty = roundTo2(getBilledWidth(width) * mult);
     const qtyEl = document.getElementById(qtyInputId);
     if(qtyEl) qtyEl.value = String(qty).replace('.', ',');
   }
@@ -4808,7 +4848,7 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
     image: getPrimaryImage(product),
     unitLabel: product.unit || 'adet',
     isMeter: meterProduct,
-    width: requireSize && Number.isFinite(width) && width > 0 ? roundTo2(width) : null,
+    width: requireWidth && Number.isFinite(width) && width > 0 ? roundTo2(width) : null,
     height: requireHeight && Number.isFinite(height) && height > 0 ? roundTo2(height) : null,
     area: requireHeight && Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0 ? roundTo2(getBilledWidth(width) * height) : null,
     pileType: pleatedMeterProduct ? pileType : null,

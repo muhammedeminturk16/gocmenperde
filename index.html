@@ -719,9 +719,9 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 }
 @media(max-width:700px){
   .modal-overlay{padding:0;background:#fff;backdrop-filter:none}
-  .modal-box{max-width:none;width:100%;min-height:100dvh;border-radius:0;max-height:none;box-shadow:none;background:#fff;display:flex;flex-direction:column}
+  .modal-box{max-width:none;width:100%;min-height:100dvh;border-radius:0;max-height:none;box-shadow:none;background:#fff;display:flex;flex-direction:column;padding-top:calc(env(safe-area-inset-top) + 64px)}
   .modal-close{display:none}
-  .modal-mobile-header{display:flex;position:sticky;left:0;right:0;top:0;z-index:30;padding:calc(env(safe-area-inset-top) + 10px) 10px 10px;justify-content:space-between;align-items:center;gap:8px;max-width:100%;overflow-x:hidden;background:linear-gradient(180deg,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.2) 68%,rgba(0,0,0,0) 100%);backdrop-filter:blur(6px)}
+  .modal-mobile-header{display:flex;position:fixed;left:0;right:0;top:0;z-index:30;padding:calc(env(safe-area-inset-top) + 10px) 10px 10px;justify-content:space-between;align-items:center;gap:8px;max-width:100%;overflow-x:hidden;background:linear-gradient(180deg,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.2) 68%,rgba(0,0,0,0) 100%);backdrop-filter:blur(6px)}
   .modal-mobile-header .mh-left,.modal-mobile-header .mh-right{display:flex;align-items:center;gap:7px}
   .modal-mobile-header .mh-left,.modal-mobile-header .mh-right{flex-shrink:0}
   .mh-search{min-width:0}
@@ -767,7 +767,7 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .mh-search i{font-size:0.9rem;color:var(--gold)}
 .modal-search-input{flex:1;height:100%;border:none;background:transparent;padding:0;font-family:var(--ff-body);font-size:0.84rem;color:var(--ink);outline:none}
 .modal-search-input::placeholder{color:#8f8f8f}
-.modal-search-inline-results{position:absolute;top:calc(env(safe-area-inset-top) + 60px);left:10px;right:10px;max-height:min(45dvh,360px);overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:14px;padding:8px 12px 12px;box-shadow:0 20px 42px rgba(0,0,0,0.18);z-index:45;display:none}
+.modal-search-inline-results{position:fixed;top:calc(env(safe-area-inset-top) + 60px);left:10px;right:10px;max-height:min(45dvh,360px);overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:14px;padding:8px 12px 12px;box-shadow:0 20px 42px rgba(0,0,0,0.18);z-index:45;display:none}
 .modal-search-inline-results.open{display:flex;flex-direction:column;gap:8px}
 .modal-search-item{display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:8px;cursor:pointer}
 .modal-search-item img{width:52px;height:52px;border-radius:8px;object-fit:cover}
@@ -2723,6 +2723,7 @@ function imageFallbackAttr(path){
 }
 const GITHUB_CONTENTS_BASE_URL = 'https://api.github.com/repos/gocmenperde/gocmenperde/contents';
 let productsLoadedOnce = false;
+let lastHandledEntryDeepLink = '';
 let productRequestInFlight = null;
 let PREMIUM_LIVE_PRODUCTS = [];
 let PREMIUM_FEATURED_PRODUCTS = [];
@@ -2875,16 +2876,32 @@ function applyCategoryDeepLink(categoryKey=''){
 
 function handleInitialProductDeepLink(){
   const params = new URLSearchParams(window.location.search);
-  const productId = params.get('product');
+  const productId = String(params.get('product') || '').trim();
+  const categoryKey = String(params.get('category') || '').trim();
+  const deepLinkSignature = productId ? `product:${productId}` : (categoryKey ? `category:${categoryKey}` : '');
+  if(!deepLinkSignature){
+    lastHandledEntryDeepLink = '';
+    return;
+  }
+  if(lastHandledEntryDeepLink === deepLinkSignature) return;
+
   if(productId){
-    const target = PRODUCTS.find(p=>String(p.id) === String(productId));
+    const target = PRODUCTS.find(p=>String(p.id) === productId);
     if(!target) return;
+    const modalOpen = document.getElementById('productModal')?.classList.contains('open');
+    if(modalOpen && String(currentModalProductId) === String(target.id)){
+      lastHandledEntryDeepLink = deepLinkSignature;
+      return;
+    }
+    lastHandledEntryDeepLink = deepLinkSignature;
     go('products');
     setTimeout(()=>openModalFromProduct(target.id), 120);
     return;
   }
-  const categoryKey = params.get('category');
-  if(categoryKey) applyCategoryDeepLink(categoryKey);
+
+  if(categoryKey && applyCategoryDeepLink(categoryKey)){
+    lastHandledEntryDeepLink = deepLinkSignature;
+  }
 }
 
 function createSeededRandom(seedStr){
@@ -4060,12 +4077,14 @@ function setProductDeepLink(productId){
   url.searchParams.set('product', id);
   if(!url.hash || url.hash === '#home') url.hash = '#products';
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  lastHandledEntryDeepLink = `product:${id}`;
 }
 function clearProductDeepLink(){
   const url = new URL(window.location.href);
   if(!url.searchParams.has('product')) return;
   url.searchParams.delete('product');
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  if(lastHandledEntryDeepLink.startsWith('product:')) lastHandledEntryDeepLink = '';
 }
 
 function ensureReviewFormVisibleOnMobile(){

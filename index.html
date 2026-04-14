@@ -4033,7 +4033,7 @@ function updateViewerImage(){
   document.getElementById('imageViewerTitle').innerText = `Fotoğraf ${currentModalImageIndex+1} / ${currentModalImages.length}`;
   resetViewerScale();
 }
-function closeProductModal(){
+function closeProductModal({syncUrl=true} = {}){
   document.getElementById('productModal').classList.remove('open');
   setModalStageLoading(false);
   clearModalSearch();
@@ -4044,7 +4044,7 @@ function closeProductModal(){
   currentModalProductId = null;
   modalThumbsCacheKey = '';
   resetImgZoom();
-  clearProductDeepLink();
+  if(syncUrl) clearProductDeepLink();
 }
 function closeModalOverlay(e){ if(e.target===document.getElementById('productModal')) closeProductModal(); }
 function handleModalImageLoadError(){
@@ -4074,9 +4074,14 @@ function setProductDeepLink(productId){
   const id = String(productId || '').trim();
   if(!id) return;
   const url = new URL(window.location.href);
+  const currentId = String(url.searchParams.get('product') || '').trim();
+  if(currentId === id && url.hash === '#products'){
+    lastHandledEntryDeepLink = `product:${id}`;
+    return;
+  }
   url.searchParams.set('product', id);
   if(!url.hash || url.hash === '#home') url.hash = '#products';
-  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  window.history.pushState({ product:id }, '', `${url.pathname}${url.search}${url.hash}`);
   lastHandledEntryDeepLink = `product:${id}`;
 }
 function clearProductDeepLink(){
@@ -4086,6 +4091,22 @@ function clearProductDeepLink(){
   window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
   if(lastHandledEntryDeepLink.startsWith('product:')) lastHandledEntryDeepLink = '';
 }
+
+window.addEventListener('popstate', ()=>{
+  const targetId = getSectionFromLocation();
+  applySectionState(targetId, {scroll:false});
+  const hasProductParam = new URLSearchParams(window.location.search).has('product');
+  const modalOpen = document.getElementById('productModal')?.classList.contains('open');
+  if(!hasProductParam && modalOpen){
+    closeProductModal({syncUrl:false});
+  }
+  if(hasProductParam){
+    if(targetId !== 'products') go('products');
+    handleInitialProductDeepLink();
+  } else if(lastHandledEntryDeepLink.startsWith('product:')){
+    lastHandledEntryDeepLink = '';
+  }
+});
 
 function ensureReviewFormVisibleOnMobile(){
   if(window.innerWidth > 700) return;

@@ -1005,7 +1005,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 @keyframes pulseShift{0%{background-position:0 0}100%{background-position:200% 0}}
 
 .premium-hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-.hero-premium-btn{border:none;border-radius:14px;padding:13px 18px;background:linear-gradient(120deg,#1f2941,#2f3f64);color:#fff;font-weight:800;letter-spacing:.4px;cursor:pointer;box-shadow:0 14px 26px rgba(18,26,46,.28);transition:.25s ease;display:inline-flex;align-items:center;gap:8px}
+.hero-premium-btn{border:none;border-radius:14px;padding:13px 18px;background:linear-gradient(120deg,#1f2941,#2f3f64);color:#fff;font-weight:800;letter-spacing:.4px;cursor:pointer;box-shadow:0 14px 26px rgba(18,26,46,.28);transition:.25s ease;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
 .hero-premium-btn.secondary{background:linear-gradient(120deg,#d6a343,#b8842d);color:#1f1a11}
 .hero-premium-btn:hover{transform:translateY(-2px);box-shadow:0 18px 30px rgba(18,26,46,.35)}
 .home-featured-shell{display:grid;gap:14px;padding:20px;border-radius:22px;border:1px solid rgba(212,169,84,.42);background:radial-gradient(circle at top right,rgba(245,208,125,.2),transparent 44%),linear-gradient(138deg,#0e1220 0%,#1a2339 62%,#2d1e12 100%);box-shadow:0 24px 36px rgba(7,11,20,.34)}
@@ -2308,7 +2308,7 @@ function getHomeFeaturedProducts(){
     .map((id)=>findFeaturedProductById(id))
     .filter(Boolean);
   if(selectedProducts.length) return selectedProducts.slice(0, 12);
-  return PRODUCTS.filter((item)=>item?.active).slice(0, 12);
+  return PRODUCTS.filter((item)=>item && item.active !== false).slice(0, 12);
 }
 function normalizeFeaturedLookupKey(value){
   return String(value || '')
@@ -2324,7 +2324,7 @@ function findFeaturedProductById(id){
   if(!normalizedId) return null;
   const normalizedSlug = normalizeFeaturedLookupKey(normalizedId);
   return PRODUCTS.find((item)=>{
-    if(!item?.active) return false;
+    if(!item) return false;
     const productId = String(item.id || '').trim();
     if(productId === normalizedId) return true;
     if(normalizeFeaturedLookupKey(productId) === normalizedSlug) return true;

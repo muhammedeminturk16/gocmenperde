@@ -18,6 +18,8 @@ const sliderAds = require('../server/handlers/slider-ads');
 const adminSliderAds = require('../server/handlers/admin/slider-ads');
 const fromYouShowcase = require('../server/handlers/from-you-showcase');
 const adminFromYouShowcase = require('../server/handlers/admin/from-you-showcase');
+const homeFeaturedProducts = require('../server/handlers/home-featured-products');
+const adminHomeFeaturedProducts = require('../server/handlers/admin/home-featured-products');
 const slider = require('../server/handlers/slider');
 const visits = require('../server/handlers/visits');
 const addressData = require('../server/handlers/address-data');
@@ -37,6 +39,8 @@ const ROUTES = {
   'admin/slider-ads': adminSliderAds,
   'from-you-showcase': fromYouShowcase,
   'admin/from-you-showcase': adminFromYouShowcase,
+  'home-featured-products': homeFeaturedProducts,
+  'admin/home-featured-products': adminHomeFeaturedProducts,
   'slider': slider,
   'visits': visits,
   'address-data': addressData,

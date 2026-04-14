@@ -2326,8 +2326,29 @@ let homeFeaturedTouchBound = false;
 function normalizeHomeFeaturedIds(ids){
   const list = Array.isArray(ids) ? ids : [];
   if(!list.length) return [];
-  const normalized = list.map((id)=>String(id || '').trim()).filter(Boolean).slice(0,20);
+  const normalized = list.map((id)=>extractFeaturedProductId(id)).filter(Boolean).slice(0,20);
   return [...new Set(normalized)];
+}
+function extractFeaturedProductId(value){
+  if(value && typeof value === 'object'){
+    const objectId = value.id ?? value.productId ?? value.product_id ?? value.slug ?? value.value ?? value.path ?? value.targetPath;
+    return extractFeaturedProductId(objectId);
+  }
+  const raw = String(value || '').trim();
+  if(!raw) return '';
+  let decoded = raw;
+  try{
+    decoded = decodeURIComponent(raw);
+  }catch(_){}
+  const queryMatch = decoded.match(/(?:^|[?&])product=([^#&]+)/i);
+  if(queryMatch && queryMatch[1]){
+    return extractFeaturedProductId(queryMatch[1]);
+  }
+  const productPathMatch = decoded.match(/\/product(?:s)?\/([^/?#]+)/i);
+  if(productPathMatch && productPathMatch[1]){
+    return extractFeaturedProductId(productPathMatch[1]);
+  }
+  return decoded.replace(/^\/+|\/+$/g,'');
 }
 function getHomeFeaturedProductIds(){
   try{
@@ -2449,7 +2470,7 @@ function stripFeaturedIdSuffix(value){
   return String(value || '').trim().replace(/-\d{8,}(?:-\d+)?$/,'');
 }
 function findFeaturedProductById(id, productList = PRODUCTS){
-  const normalizedId = String(id || '').trim();
+  const normalizedId = extractFeaturedProductId(id);
   if(!normalizedId) return null;
   const normalizedSlug = normalizeFeaturedLookupKey(normalizedId);
   const compactId = normalizeFeaturedLookupKey(stripFeaturedIdSuffix(normalizedId));

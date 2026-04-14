@@ -2324,13 +2324,19 @@ async function loadHomeFeaturedProductIds(){
   }
 }
 function getHomeFeaturedProducts(){
-  if(!Array.isArray(PRODUCTS) || !PRODUCTS.length) return [];
+  let sourceProducts = Array.isArray(PRODUCTS) ? PRODUCTS : [];
+  if(!sourceProducts.length){
+    const staleCache = readProductsFromCacheWithMode({allowStale:true});
+    const legacyCache = readLegacyProductsFallback();
+    sourceProducts = staleCache.length ? staleCache : legacyCache;
+  }
+  if(!sourceProducts.length) return [];
   const selectedIds = getHomeFeaturedProductIds();
   const selectedProducts = selectedIds
-    .map((id)=>findFeaturedProductById(id))
+    .map((id)=>findFeaturedProductById(id, sourceProducts))
     .filter(Boolean);
   if(selectedProducts.length) return selectedProducts.slice(0, 12);
-  return PRODUCTS.filter((item)=>item && item.active !== false).slice(0, 12);
+  return sourceProducts.filter((item)=>item && item.active !== false).slice(0, 12);
 }
 function normalizeFeaturedLookupKey(value){
   return String(value || '')
@@ -2341,16 +2347,25 @@ function normalizeFeaturedLookupKey(value){
     .replace(/-+/g,'-')
     .replace(/^-|-$/g,'');
 }
-function findFeaturedProductById(id){
+function stripFeaturedIdSuffix(value){
+  return String(value || '').trim().replace(/-\d{8,}(?:-\d+)?$/,'');
+}
+function findFeaturedProductById(id, productList = PRODUCTS){
   const normalizedId = String(id || '').trim();
   if(!normalizedId) return null;
   const normalizedSlug = normalizeFeaturedLookupKey(normalizedId);
-  return PRODUCTS.find((item)=>{
+  const compactId = normalizeFeaturedLookupKey(stripFeaturedIdSuffix(normalizedId));
+  return (Array.isArray(productList) ? productList : []).find((item)=>{
     if(!item) return false;
     const productId = String(item.id || '').trim();
+    const normalizedProductId = normalizeFeaturedLookupKey(productId);
+    const compactProductId = normalizeFeaturedLookupKey(stripFeaturedIdSuffix(productId));
+    const normalizedName = normalizeFeaturedLookupKey(item.name);
     if(productId === normalizedId) return true;
-    if(normalizeFeaturedLookupKey(productId) === normalizedSlug) return true;
-    if(normalizeFeaturedLookupKey(item.name) === normalizedSlug) return true;
+    if(normalizedProductId === normalizedSlug) return true;
+    if(normalizedName === normalizedSlug) return true;
+    if(compactId && (compactProductId === compactId || normalizedName === compactId)) return true;
+    if(compactId && compactProductId && (compactProductId.startsWith(compactId) || compactId.startsWith(compactProductId))) return true;
     return false;
   }) || null;
 }
@@ -2367,6 +2382,9 @@ function bindHomeFeaturedSwipe(){
 function renderHomeFeaturedProducts(){
   const rail = document.getElementById('homeFeaturedRail');
   if(!rail) return;
+  if((!Array.isArray(PRODUCTS) || !PRODUCTS.length) && !productRequestInFlight){
+    loadProducts().catch(()=>{});
+  }
   const list = getHomeFeaturedProducts();
   if(!list.length){
     rail.innerHTML = PRODUCTS.length

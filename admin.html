@@ -3937,6 +3937,37 @@ function normalizeFeaturedIds(ids){
   const unique = [...new Set(normalized)];
   return unique.length ? unique : [...DEFAULT_HOME_FEATURED_PRODUCTS];
 }
+function normalizeFeaturedLookup(value){
+  return String(value || '')
+    .trim()
+    .toLocaleLowerCase('tr')
+    .replace(/\s+/g,'-')
+    .replace(/[^a-z0-9çğıöşü_-]/g,'')
+    .replace(/-+/g,'-')
+    .replace(/^-|-$/g,'');
+}
+function stripFeaturedIdSuffix(value){
+  return String(value || '').trim().replace(/-\d{8,}(?:-\d+)?$/,'');
+}
+function findFeaturedProductRecord(id){
+  const normalizedId = String(id || '').trim();
+  if(!normalizedId) return null;
+  const normalizedSlug = normalizeFeaturedLookup(normalizedId);
+  const compactId = normalizeFeaturedLookup(stripFeaturedIdSuffix(normalizedId));
+  return PRODUCTS.find((item)=>{
+    if(!item) return false;
+    const productId = String(item.id || '').trim();
+    const normalizedProductId = normalizeFeaturedLookup(productId);
+    const compactProductId = normalizeFeaturedLookup(stripFeaturedIdSuffix(productId));
+    const normalizedName = normalizeFeaturedLookup(item.name);
+    if(productId === normalizedId) return true;
+    if(normalizedProductId === normalizedSlug) return true;
+    if(normalizedName === normalizedSlug) return true;
+    if(compactId && (compactProductId === compactId || normalizedName === compactId)) return true;
+    if(compactId && compactProductId && (compactProductId.startsWith(compactId) || compactId.startsWith(compactProductId))) return true;
+    return false;
+  }) || null;
+}
 function getHomeFeaturedProductIds(){
   if(Array.isArray(homeFeaturedProductIdsCache) && homeFeaturedProductIdsCache.length) return [...homeFeaturedProductIdsCache];
   try{
@@ -4011,24 +4042,29 @@ function renderFeaturedProductsAdminList(){
   const box = document.getElementById('featuredProductsList');
   if(!box) return;
   const ids = getHomeFeaturedProductIds();
-  const items = ids.map((id)=>PRODUCTS.find((p)=>String(p.id)===id)).filter(Boolean);
-  if(!items.length){
+  const rows = ids.map((id, originalIndex)=>({ id, originalIndex, item: findFeaturedProductRecord(id) }));
+  const resolvedRows = rows.filter((row)=>row.item);
+  if(!resolvedRows.length){
     box.innerHTML = `<div class="campaign-card" style="padding:14px">Henüz kaydırmalı vitrine ürün eklenmedi.</div>`;
     return;
   }
-  box.innerHTML = items.map((item,idx)=>`
+  box.innerHTML = resolvedRows.map(({ item, originalIndex })=>`
     <div class="live-feed-admin-card">
       <img src="${item.image || item.images?.[0] || 'resimler/foto6.jpg'}" alt="${item.name}" loading="lazy">
       <h4>${item.name}</h4>
       <div class="live-feed-admin-meta"><span>${Number(item.price||0).toLocaleString('tr-TR')} TL</span><span>${item.badge || 'Öne Çıkan'}</span></div>
       <div style="display:flex;gap:6px;margin-top:8px">
-        <button class="btn btn-sm btn-danger" onclick="removeFeaturedProduct(${idx})"><i class="fas fa-trash"></i></button>
+        <button class="btn btn-sm btn-danger" onclick="removeFeaturedProduct(${originalIndex})"><i class="fas fa-trash"></i></button>
       </div>
     </div>
   `).join('');
+  const missingCount = rows.length - resolvedRows.length;
+  if(missingCount > 0){
+    box.insertAdjacentHTML('beforeend', `<div class="campaign-card" style="padding:14px">⚠️ ${missingCount} ürün katalogda bulunamadı. Ürünü yeniden seçip ekleyin veya kaldırın.</div>`);
+  }
 }
 async function addFeaturedProduct(){
-  const id = document.getElementById('featuredProductSelect')?.value || '';
+  const id = String(document.getElementById('featuredProductSelect')?.value || '').trim();
   if(!id){ aToast('⚠️ Ürün seçin','error'); return; }
   const product = PRODUCTS.find((p)=>String(p.id)===id);
   if(!product){ aToast('⚠️ Ürün bulunamadı','error'); return; }

@@ -10,6 +10,7 @@ async function ensureSliderAdsSchema() {
       image_url TEXT NOT NULL,
       title TEXT NOT NULL DEFAULT '',
       subtitle TEXT NOT NULL DEFAULT '',
+      button_label TEXT NOT NULL DEFAULT '',
       target_path TEXT NOT NULL,
       order_no INTEGER NOT NULL DEFAULT 0,
       is_active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -20,6 +21,7 @@ async function ensureSliderAdsSchema() {
   `);
   await pool.query(`ALTER TABLE slider_ads ADD COLUMN IF NOT EXISTS title TEXT NOT NULL DEFAULT ''`);
   await pool.query(`ALTER TABLE slider_ads ADD COLUMN IF NOT EXISTS subtitle TEXT NOT NULL DEFAULT ''`);
+  await pool.query(`ALTER TABLE slider_ads ADD COLUMN IF NOT EXISTS button_label TEXT NOT NULL DEFAULT ''`);
   await pool.query(`ALTER TABLE slider_ads ADD COLUMN IF NOT EXISTS crop_x NUMERIC(5,2) NOT NULL DEFAULT 50`);
   await pool.query(`ALTER TABLE slider_ads ADD COLUMN IF NOT EXISTS crop_y NUMERIC(5,2) NOT NULL DEFAULT 50`);
   await pool.query(`ALTER TABLE slider_ads ADD COLUMN IF NOT EXISTS crop_zoom NUMERIC(4,2) NOT NULL DEFAULT 1`);
@@ -31,6 +33,7 @@ function normalizeSliderAdPayload(body = {}) {
   const imageUrl = String(body.imageUrl || body.image_url || '').trim();
   const title = String(body.title || '').trim();
   const subtitle = String(body.subtitle || '').trim();
+  const buttonLabel = String(body.buttonLabel || body.button_label || '').trim();
   const targetPath = String(body.targetPath || body.target_path || '').trim();
   const orderNo = Number.isFinite(Number(body.orderNo ?? body.order_no)) ? Number(body.orderNo ?? body.order_no) : 0;
   const isActive = body.isActive !== false && body.is_active !== false;
@@ -50,6 +53,7 @@ function normalizeSliderAdPayload(body = {}) {
       imageUrl: imageUrl.slice(0, 1000),
       title: title.slice(0, 120),
       subtitle: subtitle.slice(0, 220),
+      buttonLabel: buttonLabel.slice(0, 80),
       targetPath: targetPath.slice(0, 500),
       orderNo,
       isActive,

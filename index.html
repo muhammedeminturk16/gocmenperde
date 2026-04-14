@@ -951,7 +951,11 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .hero-ad-card{position:relative;scroll-snap-align:start;overflow:hidden;background:#f4f6fb;text-decoration:none;color:#fff;display:block;min-width:0;min-height:340px;aspect-ratio:16/9}
 .hero-ad-card img{width:100%;height:100%;min-height:340px;object-fit:cover;object-position:var(--crop-x,50%) var(--crop-y,50%);display:block;transform:scale(var(--crop-zoom,1.08));transition:transform .55s ease;background:#0d111d}
 .hero-ad-card:hover img{transform:scale(1.06)}
-.hero-ad-card::after{content:none}
+.hero-ad-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,9,18,.08) 18%,rgba(6,9,18,.66) 100%);z-index:1;pointer-events:none}
+.hero-ad-copy{position:absolute;left:20px;right:88px;bottom:18px;z-index:3;display:grid;gap:8px}
+.hero-ad-title{font-family:var(--ff-display);font-size:clamp(1.45rem,2.4vw,2.4rem);line-height:1.06;font-weight:700;text-shadow:0 10px 24px rgba(0,0,0,.42)}
+.hero-ad-subtitle{font-size:.9rem;color:rgba(255,255,255,.94);max-width:56ch;line-height:1.45;text-shadow:0 6px 18px rgba(0,0,0,.44)}
+.hero-ad-cta{display:inline-flex;align-items:center;justify-content:center;width:fit-content;padding:11px 22px;border-radius:999px;border:1px solid rgba(220,178,88,.7);background:rgba(14,18,28,.5);color:#fff8e9;font-size:1.02rem;font-weight:600;letter-spacing:.2px;backdrop-filter:blur(2px)}
 .hero-ad-dots{display:flex;justify-content:center;gap:6px;margin:10px 0 4px}
 .hero-ad-dot{width:8px;height:8px;border:none;border-radius:999px;background:rgba(255,255,255,.35);cursor:pointer}
 .hero-ad-dot.active{background:#f0cf84;transform:scale(1.15)}
@@ -966,6 +970,10 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 }
 @media(max-width:700px){
   .hero-ad-card,.hero-ad-card img{min-height:230px}
+  .hero-ad-copy{left:14px;right:84px;bottom:14px;gap:5px}
+  .hero-ad-title{font-size:clamp(1.05rem,5.5vw,1.65rem)}
+  .hero-ad-subtitle{font-size:.78rem;line-height:1.35}
+  .hero-ad-cta{padding:9px 16px;font-size:.82rem}
   .hero-promo-cta-wrap{flex-direction:column;gap:10px;width:min(460px,100%)}
   .hero-promo-cta{width:100%}
   .hero-promo-cta.secondary{background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(245,238,225,.9));color:#1c2540;border:1px solid rgba(255,255,255,.95)}
@@ -2152,6 +2160,15 @@ function starsFromRating(rating){
 function escapeInline(str){
   return String(str || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
 }
+function escapeHtml(str){
+  return String(str || '').replace(/[&<>"']/g, (ch)=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[ch]));
+}
 function sanitizeCustomerText(str){
   return String(str || '').replace(/\bbilmem\s*be\b/gi,'').replace(/\s{2,}/g,' ').trim();
 }
@@ -2337,9 +2354,17 @@ function renderHomeSlider(){
     const cropX = Number.isFinite(Number(item.cropX)) ? Math.max(0, Math.min(100, Number(item.cropX))) : 50;
     const cropY = Number.isFinite(Number(item.cropY)) ? Math.max(0, Math.min(100, Number(item.cropY))) : 50;
     const cropZoom = Number.isFinite(Number(item.cropZoom)) ? Math.max(1, Math.min(1.8, Number(item.cropZoom))) : 1.08;
+    const title = escapeHtml(item.title || 'Fon Perde Çeşitlerimiz');
+    const subtitle = escapeHtml(item.subtitle || 'Yaşam alanınıza özgün bir dokunuş.');
+    const buttonLabel = escapeHtml(item.buttonLabel || 'Kampanyadan Faydalan');
     return `
     <a class="hero-ad-card" href="${item.targetPath || '#'}" target="_self" rel="noopener">
       <img src="${resolveAssetUrl(item.imageUrl || '')}" ${imageFallbackAttr(item.imageUrl || '')} alt="Kampanya görseli" loading="${idx===0?'eager':'lazy'}" fetchpriority="${idx===0?'high':'auto'}" decoding="async" style="--crop-x:${cropX}%;--crop-y:${cropY}%;--crop-zoom:${cropZoom}">
+      <div class="hero-ad-copy">
+        <strong class="hero-ad-title">${title}</strong>
+        <span class="hero-ad-subtitle">${subtitle}</span>
+        <span class="hero-ad-cta">${buttonLabel}</span>
+      </div>
     </a>
   `;
   }).join('');
@@ -2419,9 +2444,9 @@ let homeSlideIndex = 0;
 let HOME_SLIDER_AUTOPLAY = null;
 let HOME_SLIDER_EVENTS_BOUND = false;
 const HOME_SLIDES_FALLBACK = [
-  { imageUrl:'resimler/foto1.jpg', targetPath:'#contact' },
-  { imageUrl:'resimler/1774687325299-IMG_1471.jpeg', targetPath:'#products' },
-  { imageUrl:'resimler/1774694045163-IMG_9907.jpeg', targetPath:'#products' }
+  { imageUrl:'resimler/foto1.jpg', targetPath:'#contact', title:'Fon Perde Çeşitlerimiz', subtitle:'Yaşam alanınızda özgün bir dokunuş için premium koleksiyon.', buttonLabel:'Kampanyadan Faydalan' },
+  { imageUrl:'resimler/1774687325299-IMG_1471.jpeg', targetPath:'#products', title:'Zebra Perde Koleksiyonu', subtitle:'Işık kontrolünü şıklıkla buluşturan modern modeller.', buttonLabel:'Ürünleri İncele' },
+  { imageUrl:'resimler/1774694045163-IMG_9907.jpeg', targetPath:'#products', title:'Stor Perde Serisi', subtitle:'Sade çizgiler, uzun ömürlü mekanik, kusursuz görünüm.', buttonLabel:'Hemen Keşfet' }
 ];
 let currentModalProductId = null;
 // Kategoriler (admin'den senkronize edilir)

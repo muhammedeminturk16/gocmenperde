@@ -285,6 +285,7 @@ tbody tr:hover td{background:#fdfcf8}
 .slider-preview-copy{position:absolute;left:12px;right:12px;bottom:12px;color:#fff;z-index:2}
 .slider-preview-copy b{display:block;font-size:.95rem;line-height:1.2;margin-bottom:4px}
 .slider-preview-copy small{display:inline-flex;border:1px solid rgba(255,215,149,.6);padding:4px 8px;border-radius:999px;background:rgba(8,10,17,.44);font-size:0.62rem}
+#sliderCropPreviewButton{display:inline-flex;margin-top:8px;padding:6px 11px;font-size:0.6rem;font-weight:700;letter-spacing:.2px;background:rgba(5,8,15,.58);border-color:rgba(247,210,128,.85)}
 @media(max-width:700px){.crop-grid{grid-template-columns:1fr}}
 .discount-helper{margin-top:8px;padding:10px 12px;border:1px dashed var(--border-2);border-radius:9px;background:#faf8f2;font-size:0.77rem;color:var(--slate);line-height:1.5}
 .template-builder{margin-top:10px;border:1px dashed var(--border-2);border-radius:10px;padding:10px;background:#fff}
@@ -1392,6 +1393,7 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
       <div class="fg"><label>Görsel URL *</label><input type="text" id="sliderImage" placeholder="/resimler/... veya https://..." oninput="setSliderImagePreview(this.value)"></div>
       <div class="fg"><label>Slayt Başlığı</label><input type="text" id="sliderTitle" placeholder="Örn: Premium Zebra Koleksiyonu" oninput="updateSliderCropPreview()"></div>
       <div class="fg"><label>Slayt Alt Metni</label><input type="text" id="sliderSubtitle" placeholder="Örn: Detayları görüntüle →" oninput="updateSliderCropPreview()"></div>
+      <div class="fg"><label>Buton Metni</label><input type="text" id="sliderButtonLabel" placeholder="Örn: Kampanyadan Faydalan" oninput="updateSliderCropPreview()"></div>
       <div class="fg">
         <label>Kadraj (Canlı Önizleme)</label>
         <div class="crop-grid">
@@ -1416,6 +1418,7 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
             <div class="slider-preview-copy">
               <b id="sliderCropPreviewTitle">Premium Koleksiyon</b>
               <small id="sliderCropPreviewSubtitle">Detayları görüntüle →</small>
+              <small id="sliderCropPreviewButton">Kampanyadan Faydalan</small>
             </div>
           </div>
         </div>
@@ -2542,6 +2545,7 @@ function updateSliderCropPreview(){
   const cropImg = document.getElementById('sliderCropPreviewImage');
   const title = document.getElementById('sliderCropPreviewTitle');
   const subtitle = document.getElementById('sliderCropPreviewSubtitle');
+  const button = document.getElementById('sliderCropPreviewButton');
   if(xVal) xVal.textContent = `${Math.round(cropX)}%`;
   if(yVal) yVal.textContent = `${Math.round(cropY)}%`;
   if(zoomVal) zoomVal.textContent = `${cropZoom.toFixed(2)}x`;
@@ -2557,6 +2561,10 @@ function updateSliderCropPreview(){
   if(subtitle){
     const text = (document.getElementById('sliderSubtitle')?.value || '').trim();
     subtitle.textContent = text || 'Detayları görüntüle →';
+  }
+  if(button){
+    const text = (document.getElementById('sliderButtonLabel')?.value || '').trim();
+    button.textContent = text || 'Kampanyadan Faydalan';
   }
 }
 
@@ -2653,6 +2661,7 @@ function openSliderModal(){
   document.getElementById('sliderImage').value='';
   document.getElementById('sliderTitle').value='';
   document.getElementById('sliderSubtitle').value='';
+  document.getElementById('sliderButtonLabel').value='';
   document.getElementById('sliderTargetPath').value='';
   document.getElementById('sliderTargetMode').value = SLIDER_TARGET_MODE.CATEGORY;
   if(document.getElementById('sliderTargetCategory')?.options?.length){
@@ -2685,6 +2694,7 @@ function editSliderItem(id){
   document.getElementById('sliderImage').value=item.imageUrl || '';
   document.getElementById('sliderTitle').value=item.title || '';
   document.getElementById('sliderSubtitle').value=item.subtitle || '';
+  document.getElementById('sliderButtonLabel').value=item.buttonLabel || '';
   document.getElementById('sliderTargetPath').value=item.targetPath || '';
   const preset = resolveSliderTargetPresetFromPath(item.targetPath || '');
   document.getElementById('sliderTargetMode').value = preset.mode;
@@ -2724,6 +2734,7 @@ async function saveSliderItem(){
     imageUrl: document.getElementById('sliderImage').value.trim(),
     title: document.getElementById('sliderTitle').value.trim(),
     subtitle: document.getElementById('sliderSubtitle').value.trim(),
+    buttonLabel: document.getElementById('sliderButtonLabel').value.trim(),
     targetPath: document.getElementById('sliderTargetPath').value.trim(),
     orderNo: Number(document.getElementById('sliderOrder').value) || 0,
     isActive: document.getElementById('sliderActive').checked,

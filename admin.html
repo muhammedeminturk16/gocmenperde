@@ -4028,6 +4028,19 @@ function defaultCampaigns(){
     {id:2,name:'İlk Sipariş Kuponu',desc:'Yeni müşterilere %10 indirim.',discount:10,discountType:'percent',code:'ILKSIPARIS10',start:'2025-01-01',end:'2025-12-31',active:false}
   ];
 }
+function getCampaigns(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(CAMP_KEY) || 'null');
+    if(Array.isArray(parsed)) return parsed;
+  }catch(_){ }
+  const defaults = defaultCampaigns();
+  localStorage.setItem(CAMP_KEY, JSON.stringify(defaults));
+  return defaults;
+}
+function saveCampaignsList(list){
+  const next = Array.isArray(list) ? list : [];
+  localStorage.setItem(CAMP_KEY, JSON.stringify(next));
+}
 
 async function renderCampaigns(){
   if(!Array.isArray(PRODUCTS) || !PRODUCTS.length){

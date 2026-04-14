@@ -1,5 +1,40 @@
 [
   {
+    "id": "fon-perde-1776162796837-391",
+    "name": "Fon Perde",
+    "desc": "Şık tasarımı ve kaliteli kumaşıyla yaşam alanınıza uyum sağlar. Ölçü ve kullanım ihtiyacınıza göre güvenle tercih edebilirsiniz.",
+    "image": "resimler/1776162764458-product-1-937d7019-450f-4199-83ea-6a7b15e7e9de-IMG_9919.jpeg",
+    "images": [
+      "resimler/1776162764458-product-1-937d7019-450f-4199-83ea-6a7b15e7e9de-IMG_9919.jpeg",
+      "resimler/1776162769760-product-2-3ca6705e-ae00-41f7-80fd-b9509e8345df-IMG_9918.jpeg"
+    ],
+    "price": 4999,
+    "oldPrice": 5999,
+    "cat": "fonperdeler",
+    "unit": "adet",
+    "isMeter": false,
+    "isSquareMeter": false,
+    "features": "",
+    "badge": "%17 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": 56,
+    "serialNumber": "Fon-1",
+    "active": true,
+    "specs": {
+      "• Malzeme": "%100 Polyester ipliklerden dokunmuştur. Bu sayede buruşmaz, leke tutmaz ve uzun ömürlüdür.",
+      "• Tasarım": "Modern ve şık deseniyle her türlü dekorasyona uyum sağlar.",
+      "• Ölçüler": "Standart ölçülerde veya isteğe göre özel ölçülerde üretilebilir.",
+      "• Işık Geçirgenliği": "Odanın aydınlık kalmasını sağlarken, güneş ışığını süzerek rahat bir ortam oluşturur."
+    },
+    "care": {
+      "• Yıkama": "Maksimum 30 derecede, hassas programda veya elde yıkanması önerilir. Ağartıcı kullanılmamalıdır.",
+      "• Sıkma": "Hafif sıkma yapılması veya sıkılmadan asılması tavsiye edilir.",
+      "• Ütüleme": "Gerekirse düşük sıcaklıkta tersten ütülenebilir.",
+      "• Kurulama": "Güneş ışığına maruz bırakmadan, gölgede kurutulması daha uygundur."
+    }
+  },
+  {
     "id": "tul-perde-1776118956932-199",
     "name": "Tül Perde",
     "desc": "Şık tasarımı ve kaliteli kumaşıyla yaşam alanınıza uyum sağlar. Ölçü ve kullanım ihtiyacınıza göre güvenle tercih edebilirsiniz.",

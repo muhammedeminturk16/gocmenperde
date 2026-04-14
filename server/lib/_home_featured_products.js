@@ -31,11 +31,33 @@ function normalizeFeaturedProductIds(payload = {}, fallback = DEFAULT_HOME_FEATU
   }
 
   const normalized = source
-    .map((id) => String(id || '').trim())
+    .map((id) => extractFeaturedProductId(id))
     .filter(Boolean)
     .slice(0, 20);
 
   return [...new Set(normalized)];
+}
+
+function extractFeaturedProductId(value) {
+  if (value && typeof value === 'object') {
+    const objectId = value.id ?? value.productId ?? value.product_id ?? value.slug ?? value.value ?? value.path ?? value.targetPath;
+    return extractFeaturedProductId(objectId);
+  }
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  let decoded = raw;
+  try {
+    decoded = decodeURIComponent(raw);
+  } catch (_) {}
+  const queryMatch = decoded.match(/(?:^|[?&])product=([^#&]+)/i);
+  if (queryMatch && queryMatch[1]) {
+    return extractFeaturedProductId(queryMatch[1]);
+  }
+  const productPathMatch = decoded.match(/\/product(?:s)?\/([^/?#]+)/i);
+  if (productPathMatch && productPathMatch[1]) {
+    return extractFeaturedProductId(productPathMatch[1]);
+  }
+  return decoded.replace(/^\/+|\/+$/g, '');
 }
 
 module.exports = {

@@ -3931,11 +3931,20 @@ const DEFAULT_HOME_FEATURED_PRODUCTS=['zebra-premium-gri','plise-krem-160x200','
 const HOME_FEATURED_PRODUCTS_META_KEY = 'gp_home_featured_products_meta_v1';
 let homeFeaturedProductIdsCache = [...DEFAULT_HOME_FEATURED_PRODUCTS];
 
-function normalizeFeaturedIds(ids){
+function getFeaturedFallbackIds(limit = 3){
+  const activeIds = (Array.isArray(PRODUCTS) ? PRODUCTS : [])
+    .filter((item)=>item && item.active !== false && item.id)
+    .map((item)=>String(item.id).trim())
+    .filter(Boolean);
+  const source = activeIds.length ? activeIds : DEFAULT_HOME_FEATURED_PRODUCTS;
+  return [...new Set(source)].slice(0, Math.max(1, Number(limit) || 3));
+}
+function normalizeFeaturedIds(ids, { fallback=true } = {}){
   const source = Array.isArray(ids) ? ids : [];
   const normalized = source.map((id)=>String(id||'').trim()).filter(Boolean).slice(0,20);
   const unique = [...new Set(normalized)];
-  return unique.length ? unique : [...DEFAULT_HOME_FEATURED_PRODUCTS];
+  if(unique.length) return unique;
+  return fallback ? getFeaturedFallbackIds() : [];
 }
 function normalizeFeaturedLookup(value){
   return String(value || '')
@@ -3968,14 +3977,31 @@ function findFeaturedProductRecord(id){
     return false;
   }) || null;
 }
+function sanitizeFeaturedProductIds(ids, { fallback=true } = {}){
+  const normalized = normalizeFeaturedIds(ids, { fallback:false });
+  const resolved = [];
+  normalized.forEach((rawId)=>{
+    const item = findFeaturedProductRecord(rawId);
+    const resolvedId = String(item?.id || '').trim();
+    if(resolvedId && !resolved.includes(resolvedId)){
+      resolved.push(resolvedId);
+    }
+  });
+  if(resolved.length) return resolved.slice(0,12);
+  return fallback ? normalizeFeaturedIds(getFeaturedFallbackIds(), { fallback:false }).slice(0,12) : [];
+}
 function getHomeFeaturedProductIds(){
-  if(Array.isArray(homeFeaturedProductIdsCache) && homeFeaturedProductIdsCache.length) return [...homeFeaturedProductIdsCache];
+  if(Array.isArray(homeFeaturedProductIdsCache) && homeFeaturedProductIdsCache.length){
+    homeFeaturedProductIdsCache = sanitizeFeaturedProductIds(homeFeaturedProductIdsCache, { fallback:true });
+    return [...homeFeaturedProductIdsCache];
+  }
   try{
     const parsed = JSON.parse(localStorage.getItem(HOME_FEATURED_PRODUCTS_KEY)||'null');
-    homeFeaturedProductIdsCache = normalizeFeaturedIds(parsed);
+    homeFeaturedProductIdsCache = sanitizeFeaturedProductIds(parsed, { fallback:true });
   }catch(_){
-    homeFeaturedProductIdsCache = [...DEFAULT_HOME_FEATURED_PRODUCTS];
+    homeFeaturedProductIdsCache = getFeaturedFallbackIds();
   }
+  localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(homeFeaturedProductIdsCache));
   return [...homeFeaturedProductIdsCache];
 }
 function readHomeFeaturedMeta(){
@@ -3995,7 +4021,7 @@ async function syncHomeFeaturedProductsFromApi(){
     const res = await apiFetch('/api/admin/home-featured-products', { headers:{'x-admin-key':'gocmen1993'} });
     if(!res.ok) throw new Error('API alınamadı');
     const payload = await res.json();
-    const apiIds = normalizeFeaturedIds(payload?.productIds);
+    const apiIds = sanitizeFeaturedProductIds(payload?.productIds, { fallback:true });
     const apiUpdatedAt = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : 0;
     const localUpdatedAt = readHomeFeaturedMeta();
     if(localUpdatedAt > apiUpdatedAt && localUpdatedAt > 0){
@@ -4010,7 +4036,7 @@ async function syncHomeFeaturedProductsFromApi(){
   }
 }
 async function saveHomeFeaturedProductIds(list){
-  const normalized = normalizeFeaturedIds(list);
+  const normalized = sanitizeFeaturedProductIds(list, { fallback:true });
   homeFeaturedProductIdsCache = normalized;
   localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(normalized));
   saveHomeFeaturedMeta(Date.now());
@@ -4083,7 +4109,7 @@ async function removeFeaturedProduct(idx){
   aToast('✓ Ürün vitrinden kaldırıldı','success');
 }
 async function resetFeaturedProducts(){
-  await saveHomeFeaturedProductIds(DEFAULT_HOME_FEATURED_PRODUCTS);
+  await saveHomeFeaturedProductIds(getFeaturedFallbackIds());
   renderFeaturedProductsAdminList();
   aToast('✓ Varsayılan kaydırmalı vitrin yüklendi','success');
 }

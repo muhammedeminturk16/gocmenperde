@@ -2283,14 +2283,24 @@ function normalizeHomeFeaturedIds(ids){
   const list = Array.isArray(ids) ? ids : [];
   const normalized = list.map((id)=>String(id || '').trim()).filter(Boolean).slice(0,20);
   const unique = [...new Set(normalized)];
-  return unique.length ? unique : [...DEFAULT_HOME_FEATURED_PRODUCTS];
+  return unique;
+}
+function getHomeFeaturedFallbackIds(limit=12){
+  const sourceProducts = Array.isArray(PRODUCTS) ? PRODUCTS : [];
+  const activeIds = sourceProducts
+    .filter((item)=>item && item.active !== false && item.id)
+    .map((item)=>String(item.id).trim())
+    .filter(Boolean);
+  const source = activeIds.length ? activeIds : DEFAULT_HOME_FEATURED_PRODUCTS;
+  return [...new Set(source)].slice(0, Math.max(1, Number(limit) || 12));
 }
 function getHomeFeaturedProductIds(){
   try{
     const parsed = JSON.parse(localStorage.getItem(HOME_FEATURED_PRODUCTS_KEY) || 'null');
-    return normalizeHomeFeaturedIds(parsed);
+    const normalized = normalizeHomeFeaturedIds(parsed);
+    return normalized.length ? normalized : getHomeFeaturedFallbackIds(12);
   }catch(_){ }
-  return [...DEFAULT_HOME_FEATURED_PRODUCTS];
+  return getHomeFeaturedFallbackIds(12);
 }
 function getHomeFeaturedUpdatedAt(){
   try{
@@ -2311,15 +2321,15 @@ async function loadHomeFeaturedProductIds(){
     const res = await fetch('/api/home-featured-products', { cache:'no-store' });
     if(!res.ok) throw new Error('Öne çıkan ürün listesi alınamadı');
     const payload = await res.json();
-    const apiIds = normalizeHomeFeaturedIds(payload?.productIds);
+    const apiIds = sanitizeHomeFeaturedIds(payload?.productIds, PRODUCTS);
     const apiUpdatedAt = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : 0;
     const useLocal = localUpdatedAt > apiUpdatedAt && localUpdatedAt > 0;
-    const ids = useLocal ? localIds : apiIds;
+    const ids = sanitizeHomeFeaturedIds(useLocal ? localIds : apiIds, PRODUCTS);
     localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(ids));
     setHomeFeaturedUpdatedAt(useLocal ? localUpdatedAt : (apiUpdatedAt || Date.now()));
     renderHomeFeaturedProducts();
   }catch(_){
-    localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(localIds));
+    localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(sanitizeHomeFeaturedIds(localIds, PRODUCTS)));
     renderHomeFeaturedProducts();
   }
 }
@@ -2331,7 +2341,8 @@ function getHomeFeaturedProducts(){
     sourceProducts = staleCache.length ? staleCache : legacyCache;
   }
   if(!sourceProducts.length) return [];
-  const selectedIds = getHomeFeaturedProductIds();
+  const selectedIds = sanitizeHomeFeaturedIds(getHomeFeaturedProductIds(), sourceProducts);
+  localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(selectedIds));
   const selectedProducts = selectedIds
     .map((id)=>findFeaturedProductById(id, sourceProducts))
     .filter(Boolean);
@@ -2368,6 +2379,19 @@ function findFeaturedProductById(id, productList = PRODUCTS){
     if(compactId && compactProductId && (compactProductId.startsWith(compactId) || compactId.startsWith(compactProductId))) return true;
     return false;
   }) || null;
+}
+function sanitizeHomeFeaturedIds(ids, productList = PRODUCTS){
+  const normalized = normalizeHomeFeaturedIds(ids);
+  const resolved = [];
+  normalized.forEach((rawId)=>{
+    const item = findFeaturedProductById(rawId, productList);
+    const resolvedId = String(item?.id || '').trim();
+    if(resolvedId && !resolved.includes(resolvedId)){
+      resolved.push(resolvedId);
+    }
+  });
+  if(resolved.length) return resolved.slice(0,12);
+  return getHomeFeaturedFallbackIds(12);
 }
 function bindHomeFeaturedSwipe(){
   if(homeFeaturedTouchBound) return;

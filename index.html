@@ -1882,6 +1882,8 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 const WA_NUMBER = '905012110958';
 const HOME_FEATURED_PRODUCTS_KEY = 'gp_home_featured_products_v1';
 const HOME_FEATURED_PRODUCTS_META_KEY = 'gp_home_featured_products_meta_v1';
+const PRODUCTS_FEATURED_PRODUCTS_KEY = 'gp_products_featured_products_v1';
+const PRODUCTS_FEATURED_PRODUCTS_META_KEY = 'gp_products_featured_products_meta_v1';
 const SURPRISE_CAMPAIGN_KEY = 'gp_surprise_campaign_popup_v1';
 const INSTALLATION_SHOWCASE_KEY = 'gp_installation_showcase_v1';
 const CUSTOMER_SHOWCASE_REVIEWS_KEY = 'gp_customer_showcase_reviews_v1';
@@ -2317,6 +2319,44 @@ async function loadHomeFeaturedProductIds(){
   }catch(_){
     localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(localIds));
     renderHomeFeaturedProducts();
+  }
+}
+function getProductsFeaturedProductIds(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(PRODUCTS_FEATURED_PRODUCTS_KEY) || 'null');
+    return normalizeHomeFeaturedIds(parsed);
+  }catch(_){ }
+  return [...DEFAULT_HOME_FEATURED_PRODUCTS];
+}
+function getProductsFeaturedUpdatedAt(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(PRODUCTS_FEATURED_PRODUCTS_META_KEY) || 'null');
+    return Number(parsed?.updatedAt || 0) || 0;
+  }catch(_){
+    return 0;
+  }
+}
+function setProductsFeaturedUpdatedAt(updatedAt = Date.now()){
+  const safeTs = Number(updatedAt || 0) || Date.now();
+  localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_META_KEY, JSON.stringify({ updatedAt: safeTs }));
+}
+async function loadProductsFeaturedProductIds(){
+  const localIds = getProductsFeaturedProductIds();
+  const localUpdatedAt = getProductsFeaturedUpdatedAt();
+  try{
+    const res = await fetch('/api/products-featured-products', { cache:'no-store' });
+    if(!res.ok) throw new Error('Öne çıkan ürün listesi alınamadı');
+    const payload = await res.json();
+    const apiIds = normalizeHomeFeaturedIds(payload?.productIds);
+    const apiUpdatedAt = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : 0;
+    const useLocal = localUpdatedAt > apiUpdatedAt && localUpdatedAt > 0;
+    const ids = useLocal ? localIds : apiIds;
+    localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(ids));
+    setProductsFeaturedUpdatedAt(useLocal ? localUpdatedAt : (apiUpdatedAt || Date.now()));
+    updateTopProductRail(PRODUCTS);
+  }catch(_){
+    localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(localIds));
+    updateTopProductRail(PRODUCTS);
   }
 }
 function getHomeFeaturedProducts(){
@@ -3435,14 +3475,27 @@ function openModalSearchResult(productId){
 }
 
 let topProductScrollStep = 260;
+function getProductsFeaturedProducts(){
+  let sourceProducts = Array.isArray(PRODUCTS) ? PRODUCTS : [];
+  if(!sourceProducts.length){
+    const staleCache = readProductsFromCacheWithMode({allowStale:true});
+    const legacyCache = readLegacyProductsFallback();
+    sourceProducts = staleCache.length ? staleCache : legacyCache;
+  }
+  if(!sourceProducts.length) return [];
+  const selectedIds = getProductsFeaturedProductIds();
+  const selectedProducts = selectedIds
+    .map((id)=>findFeaturedProductById(id, sourceProducts))
+    .filter((item)=>item && item.active !== false);
+  if(selectedProducts.length) return selectedProducts.slice(0, 12);
+  return sourceProducts.filter((item)=>item && item.active !== false).slice(0, 12);
+}
 
 function updateTopProductRail(list){
   const rail = document.getElementById('topProductRail');
   const slider = document.getElementById('topProductSlider');
   if(!rail || !slider) return;
-  const entries = (Array.isArray(list) ? list : [])
-    .filter(p=>p?.active)
-    .slice(0, 12);
+  const entries = getProductsFeaturedProducts();
   if(!entries.length){
     rail.innerHTML = '<div class="campaign-stream-empty">Gösterilecek ürün bulunamadı.</div>';
     toggleTopProductRailButtons();
@@ -4168,6 +4221,7 @@ window.addEventListener('load',()=>{
   runSafely('renderFooterPaymentLogos', ()=>renderFooterPaymentLogos());
   runSafely('renderHomeFeaturedProducts', ()=>renderHomeFeaturedProducts());
   runSafely('loadHomeFeaturedProductIds', ()=>loadHomeFeaturedProductIds());
+  runSafely('loadProductsFeaturedProductIds', ()=>loadProductsFeaturedProductIds());
   runSafely('loadActiveCampaigns', ()=>loadActiveCampaigns());
   runSafely('renderHomePromoPanel', ()=>renderHomePromoPanel());
   runSafely('renderSurpriseCampaign', ()=>renderSurpriseCampaign());
@@ -4196,6 +4250,7 @@ document.addEventListener('visibilitychange',()=>{
     recoverUIAfterResume();
     loadProducts();
     loadHomeFeaturedProductIds();
+    loadProductsFeaturedProductIds();
     loadActiveCampaigns();
     sendVisitEvent({heartbeat:true});
   }
@@ -4207,6 +4262,7 @@ window.addEventListener('storage',(event)=>{
     initObserver();
   }
   if(event.key===HOME_FEATURED_PRODUCTS_KEY) renderHomeFeaturedProducts();
+  if(event.key===PRODUCTS_FEATURED_PRODUCTS_KEY) updateTopProductRail(PRODUCTS);
   if(event.key===SURPRISE_CAMPAIGN_KEY) scheduleSurpriseCampaignModal();
 });
 

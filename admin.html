@@ -922,6 +922,38 @@ Işık: Yarı Geçirgen"></textarea></div>
     <div><h1>Kampanya <em>Yönetimi</em></h1><p>İndirimler ve promosyonlar</p></div>
     <button class="btn btn-primary" onclick="openAddCampaignModal()"><i class="fas fa-plus"></i> Yeni Kampanya</button>
   </div>
+  <div class="settings-section" style="margin-bottom:16px">
+    <div class="settings-section-header"><i class="fas fa-tv"></i> Ana Sayfa Kaydırmalı Ürün Vitrini</div>
+    <div class="settings-body" style="padding:16px 22px;display:grid;gap:12px">
+      <div class="form-row">
+        <div class="fg">
+          <label>Ürün Seç</label>
+          <select id="featuredProductSelect"></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="addFeaturedProduct()"><i class="fas fa-plus"></i> Kaydırmalı Alana Ekle</button>
+        <button class="btn btn-outline btn-sm" onclick="resetFeaturedProducts()"><i class="fas fa-rotate-left"></i> Varsayılanı Yükle</button>
+      </div>
+      <div id="featuredProductsList" class="live-feed-admin-list"></div>
+    </div>
+  </div>
+  <div class="settings-section" style="margin-bottom:16px">
+    <div class="settings-section-header"><i class="fas fa-star"></i> Ürünler Sayfası “Öne Çıkan Ürünler” Alanı</div>
+    <div class="settings-body" style="padding:16px 22px;display:grid;gap:12px">
+      <div class="form-row">
+        <div class="fg">
+          <label>Ürün Seç</label>
+          <select id="productsFeaturedProductSelect"></select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="addProductsFeaturedProduct()"><i class="fas fa-plus"></i> Öne Çıkanlara Ekle</button>
+        <button class="btn btn-outline btn-sm" onclick="resetProductsFeaturedProducts()"><i class="fas fa-rotate-left"></i> Varsayılanı Yükle</button>
+      </div>
+      <div id="productsFeaturedProductsList" class="live-feed-admin-list"></div>
+    </div>
+  </div>
   <div id="campaignList"></div>
 </div>
 
@@ -1515,7 +1547,12 @@ Işık Geçirgenliği: %0" style="min-height:90px;font-family:monospace;font-siz
         <div class="fg"><label>Buton Metni</label><input type="text" id="cm-buttonLabel" placeholder="Kampanyayı İncele"></div>
         <div class="fg"><label>Sıra</label><input type="number" id="cm-sortOrder" value="0"></div>
       </div>
-      <div class="fg"><label>Hedef Yol</label><input type="text" id="cm-targetPath" placeholder="#products"></div>
+      <div class="form-row">
+        <div class="fg"><label>Hedef Türü</label><select id="cm-targetMode" onchange="handleCampaignTargetModeChange()"><option value="products">Tüm ürünler</option><option value="category">Kategori</option><option value="product">Ürün</option><option value="manual">Özel yol (manuel)</option></select></div>
+        <div class="fg" id="campaignTargetCategoryWrap"><label>Hedef Kategori</label><select id="cm-targetCategory" onchange="handleCampaignTargetCategoryChange()"></select></div>
+        <div class="fg" id="campaignTargetProductWrap" style="display:none"><label>Hedef Ürün</label><select id="cm-targetProduct" onchange="handleCampaignTargetProductChange()"></select></div>
+      </div>
+      <div class="fg"><label>Hedef Yol</label><input type="text" id="cm-targetPath" placeholder="#products"><p id="campaignTargetHint" style="margin-top:6px;font-size:0.75rem;color:var(--slate-light)">Seçime göre hedef yol otomatik oluşur.</p></div>
       <div class="form-row">
         <div class="fg"><label>Başlangıç</label><input type="date" id="cm-start"></div>
         <div class="fg"><label>Bitiş</label><input type="date" id="cm-end"></div>
@@ -3923,8 +3960,12 @@ function getCatLabel(key){return(CATEGORIES.find(c=>c.key===key)||{label:key}).l
 //  CAMPAIGNS
 // ════════════════════════════════════
 const DEFAULT_HOME_FEATURED_PRODUCTS=['zebra-premium-gri','plise-krem-160x200','stor-salon-antrasit'];
+const DEFAULT_PRODUCTS_FEATURED_PRODUCTS=['zebra-premium-gri','plise-krem-160x200','stor-salon-antrasit'];
 const HOME_FEATURED_PRODUCTS_META_KEY = 'gp_home_featured_products_meta_v1';
+const PRODUCTS_FEATURED_PRODUCTS_KEY = 'gp_products_featured_products_v1';
+const PRODUCTS_FEATURED_PRODUCTS_META_KEY = 'gp_products_featured_products_meta_v1';
 let homeFeaturedProductIdsCache = [...DEFAULT_HOME_FEATURED_PRODUCTS];
+let productsFeaturedProductIdsCache = [...DEFAULT_PRODUCTS_FEATURED_PRODUCTS];
 
 function normalizeFeaturedIds(ids){
   const source = Array.isArray(ids) ? ids : [];
@@ -4082,6 +4123,125 @@ async function resetFeaturedProducts(){
   renderFeaturedProductsAdminList();
   aToast('✓ Varsayılan kaydırmalı vitrin yüklendi','success');
 }
+function getProductsFeaturedProductIds(){
+  if(Array.isArray(productsFeaturedProductIdsCache) && productsFeaturedProductIdsCache.length) return [...productsFeaturedProductIdsCache];
+  try{
+    const parsed = JSON.parse(localStorage.getItem(PRODUCTS_FEATURED_PRODUCTS_KEY)||'null');
+    productsFeaturedProductIdsCache = normalizeFeaturedIds(parsed);
+  }catch(_){
+    productsFeaturedProductIdsCache = [...DEFAULT_PRODUCTS_FEATURED_PRODUCTS];
+  }
+  return [...productsFeaturedProductIdsCache];
+}
+function readProductsFeaturedMeta(){
+  try{
+    const parsed = JSON.parse(localStorage.getItem(PRODUCTS_FEATURED_PRODUCTS_META_KEY) || 'null');
+    return Number(parsed?.updatedAt || 0) || 0;
+  }catch(_){
+    return 0;
+  }
+}
+function saveProductsFeaturedMeta(updatedAt = Date.now()){
+  const safeTs = Number(updatedAt || 0) || Date.now();
+  localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_META_KEY, JSON.stringify({ updatedAt: safeTs }));
+}
+async function syncProductsFeaturedProductsFromApi(){
+  try{
+    const res = await apiFetch('/api/admin/products-featured-products', { headers:{'x-admin-key':'gocmen1993'} });
+    if(!res.ok) throw new Error('API alınamadı');
+    const payload = await res.json();
+    const apiIds = normalizeFeaturedIds(payload?.productIds);
+    const apiUpdatedAt = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : 0;
+    const localUpdatedAt = readProductsFeaturedMeta();
+    if(localUpdatedAt > apiUpdatedAt && localUpdatedAt > 0){
+      productsFeaturedProductIdsCache = getProductsFeaturedProductIds();
+      return;
+    }
+    productsFeaturedProductIdsCache = apiIds;
+    localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(productsFeaturedProductIdsCache));
+    saveProductsFeaturedMeta(apiUpdatedAt || Date.now());
+  }catch(_){
+    productsFeaturedProductIdsCache = getProductsFeaturedProductIds();
+  }
+}
+async function saveProductsFeaturedProductIds(list){
+  const normalized = normalizeFeaturedIds(list);
+  productsFeaturedProductIdsCache = normalized;
+  localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(normalized));
+  saveProductsFeaturedMeta(Date.now());
+  try{
+    const res = await apiFetch('/api/admin/products-featured-products', {
+      method:'PUT',
+      headers:{'Content-Type':'application/json','x-admin-key':'gocmen1993'},
+      body: JSON.stringify({ productIds: normalized })
+    });
+    if(!res.ok) throw new Error('API kaydetme hatası');
+    const payload = await res.json();
+    if(payload?.updatedAt){
+      saveProductsFeaturedMeta(new Date(payload.updatedAt).getTime() || Date.now());
+    }
+  }catch(_){
+    aToast('⚠️ Sunucuya kaydedilemedi. Değişiklik bu tarayıcıda görünecek.','error');
+  }
+}
+function fillProductsFeaturedProductSelect(){
+  const select = document.getElementById('productsFeaturedProductSelect');
+  if(!select) return;
+  if(!Array.isArray(PRODUCTS) || !PRODUCTS.length){
+    select.innerHTML = `<option value="">Ürün bulunamadı</option>`;
+    return;
+  }
+  select.innerHTML = `<option value="">Ürün seçin</option>${PRODUCTS.map(p=>`<option value="${p.id}">${p.name}${p?.active===false?' (pasif)':''}</option>`).join('')}`;
+}
+function renderProductsFeaturedProductsAdminList(){
+  const box = document.getElementById('productsFeaturedProductsList');
+  if(!box) return;
+  const ids = getProductsFeaturedProductIds();
+  const rows = ids.map((id, originalIndex)=>({ id, originalIndex, item: findFeaturedProductRecord(id) }));
+  const resolvedRows = rows.filter((row)=>row.item);
+  if(!resolvedRows.length){
+    box.innerHTML = `<div class="campaign-card" style="padding:14px">Henüz ürünler sayfası öne çıkan alanına ürün eklenmedi.</div>`;
+    return;
+  }
+  box.innerHTML = resolvedRows.map(({ item, originalIndex })=>`
+    <div class="live-feed-admin-card">
+      <img src="${item.image || item.images?.[0] || 'resimler/foto6.jpg'}" alt="${item.name}" loading="lazy">
+      <h4>${item.name}</h4>
+      <div class="live-feed-admin-meta"><span>${Number(item.price||0).toLocaleString('tr-TR')} TL</span><span>${item.badge || 'Öne Çıkan'}</span></div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button class="btn btn-sm btn-danger" onclick="removeProductsFeaturedProduct(${originalIndex})"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  `).join('');
+  const missingCount = rows.length - resolvedRows.length;
+  if(missingCount > 0){
+    box.insertAdjacentHTML('beforeend', `<div class="campaign-card" style="padding:14px">⚠️ ${missingCount} ürün katalogda bulunamadı. Ürünü yeniden seçip ekleyin veya kaldırın.</div>`);
+  }
+}
+async function addProductsFeaturedProduct(){
+  const id = String(document.getElementById('productsFeaturedProductSelect')?.value || '').trim();
+  if(!id){ aToast('⚠️ Ürün seçin','error'); return; }
+  const product = PRODUCTS.find((p)=>String(p.id)===id);
+  if(!product){ aToast('⚠️ Ürün bulunamadı','error'); return; }
+  const ids = getProductsFeaturedProductIds();
+  if(ids.includes(id)){ aToast('⚠️ Bu ürün zaten ekli','error'); return; }
+  ids.unshift(id);
+  await saveProductsFeaturedProductIds(ids.slice(0,12));
+  renderProductsFeaturedProductsAdminList();
+  aToast('✓ Ürün öne çıkanlar alanına eklendi','success');
+}
+async function removeProductsFeaturedProduct(idx){
+  const ids = getProductsFeaturedProductIds();
+  ids.splice(idx,1);
+  await saveProductsFeaturedProductIds(ids);
+  renderProductsFeaturedProductsAdminList();
+  aToast('✓ Ürün öne çıkanlar alanından kaldırıldı','success');
+}
+async function resetProductsFeaturedProducts(){
+  await saveProductsFeaturedProductIds(DEFAULT_PRODUCTS_FEATURED_PRODUCTS);
+  renderProductsFeaturedProductsAdminList();
+  aToast('✓ Ürünler sayfası için varsayılan liste yüklendi','success');
+}
 function defaultCampaigns(){
   return [
     {id:1,name:'Sezon Sonu %25 İndirim',description:'Tüm ürünlerde geçerli sezon sonu kampanyası.',imageUrl:'resimler/foto8.jpg',discountValue:25,discountType:'percent',couponCode:'',startDate:'2026-01-01',endDate:'2026-12-31',targetPath:'#products',buttonLabel:'Kampanyayı İncele',sortOrder:0,isActive:true},
@@ -4104,6 +4264,84 @@ function normalizeCampaignRecord(item={}, idx=0){
     sortOrder: Number(item.sortOrder ?? item.sort_order ?? item.orderNo ?? idx) || 0,
     isActive: item.isActive !== false && item.active !== false,
   };
+}
+function buildCampaignCategoryTargetPath(catKey=''){
+  const clean = String(catKey || '').trim();
+  if(!clean) return '#products';
+  return `/?category=${encodeURIComponent(clean)}#products`;
+}
+function buildCampaignProductTargetPath(productId=''){
+  const clean = String(productId || '').trim();
+  if(!clean) return '#products';
+  return `/?product=${encodeURIComponent(clean)}#products`;
+}
+function resolveCampaignTargetPresetFromPath(rawPath=''){
+  const path = String(rawPath || '').trim();
+  if(!path || path==='#products') return { mode:'products', categoryKey:'', productId:'' };
+  try{
+    const parsed = new URL(path, window.location.origin);
+    const productId = parsed.searchParams.get('product');
+    if(productId) return { mode:'product', categoryKey:'', productId:String(productId).trim() };
+    const categoryKey = parsed.searchParams.get('category');
+    if(categoryKey) return { mode:'category', categoryKey:String(categoryKey).trim(), productId:'' };
+  }catch(_){}
+  return { mode:'manual', categoryKey:'', productId:'' };
+}
+function refreshCampaignTargetPresetOptions(){
+  const categorySelect = document.getElementById('cm-targetCategory');
+  const productSelect = document.getElementById('cm-targetProduct');
+  if(categorySelect){
+    categorySelect.innerHTML = CATEGORIES.map(c=>`<option value="${c.key}">${c.label}</option>`).join('') || '<option value="">Kategori bulunamadı</option>';
+  }
+  if(productSelect){
+    productSelect.innerHTML = PRODUCTS
+      .filter(p=>p?.id && p?.name)
+      .map(p=>`<option value="${String(p.id).replace(/"/g,'&quot;')}">${p.name}</option>`)
+      .join('') || '<option value="">Ürün bulunamadı</option>';
+  }
+}
+function syncCampaignTargetPathFromSelection({ force=false } = {}){
+  const mode = document.getElementById('cm-targetMode')?.value || 'products';
+  const input = document.getElementById('cm-targetPath');
+  if(!input) return;
+  if(mode==='manual' && !force) return;
+  if(mode==='products'){ input.value = '#products'; return; }
+  if(mode==='category'){
+    input.value = buildCampaignCategoryTargetPath(document.getElementById('cm-targetCategory')?.value || '');
+    return;
+  }
+  if(mode==='product'){
+    input.value = buildCampaignProductTargetPath(document.getElementById('cm-targetProduct')?.value || '');
+    return;
+  }
+}
+function handleCampaignTargetModeChange(){
+  const mode = document.getElementById('cm-targetMode')?.value || 'products';
+  const categoryWrap = document.getElementById('campaignTargetCategoryWrap');
+  const productWrap = document.getElementById('campaignTargetProductWrap');
+  const input = document.getElementById('cm-targetPath');
+  const hint = document.getElementById('campaignTargetHint');
+  if(categoryWrap) categoryWrap.style.display = mode==='category' ? 'block' : 'none';
+  if(productWrap) productWrap.style.display = mode==='product' ? 'block' : 'none';
+  if(input) input.readOnly = mode!=='manual';
+  if(hint){
+    hint.textContent = mode==='manual'
+      ? 'Manuel modda hedef yolu siz düzenleyebilirsiniz.'
+      : 'Seçime göre hedef yol otomatik oluşur.';
+  }
+  syncCampaignTargetPathFromSelection();
+}
+function handleCampaignTargetCategoryChange(){
+  syncCampaignTargetPathFromSelection();
+}
+function handleCampaignTargetProductChange(){
+  const selectedProductId = document.getElementById('cm-targetProduct')?.value || '';
+  const product = PRODUCTS.find((p)=>String(p.id)===String(selectedProductId));
+  const categorySelect = document.getElementById('cm-targetCategory');
+  if(product?.cat && categorySelect && CATEGORIES.some(c=>c.key===product.cat)){
+    categorySelect.value = product.cat;
+  }
+  syncCampaignTargetPathFromSelection();
 }
 async function getCampaigns(){
   try{
@@ -4173,6 +4411,11 @@ function openAddCampaignModal(){
   document.getElementById('campaignModalTitle').innerText='Yeni Kampanya';
   document.getElementById('editCampaignIdx').value='';
   ['cm-name','cm-desc','cm-discount','cm-code','cm-start','cm-end','cm-image','cm-buttonLabel','cm-targetPath','cm-sortOrder'].forEach(id=>document.getElementById(id).value='');
+  refreshCampaignTargetPresetOptions();
+  document.getElementById('cm-targetMode').value='products';
+  if(document.getElementById('cm-targetCategory')?.options?.length) document.getElementById('cm-targetCategory').selectedIndex = 0;
+  if(document.getElementById('cm-targetProduct')?.options?.length) document.getElementById('cm-targetProduct').selectedIndex = 0;
+  handleCampaignTargetModeChange();
   document.getElementById('cm-discountType').value='percent';
   const fileInput = document.getElementById('cm-imageFile'); if(fileInput) fileInput.value='';
   const status = document.getElementById('cm-imageUploadStatus'); if(status) status.textContent='Henüz yüklenmedi';
@@ -4194,6 +4437,17 @@ function editCampaign(i){
   document.getElementById('cm-image').value=c.imageUrl || '';
   document.getElementById('cm-buttonLabel').value=c.buttonLabel || 'Kampanyayı İncele';
   document.getElementById('cm-targetPath').value=c.targetPath || '#products';
+  refreshCampaignTargetPresetOptions();
+  const preset = resolveCampaignTargetPresetFromPath(c.targetPath || '#products');
+  document.getElementById('cm-targetMode').value=preset.mode;
+  if(preset.categoryKey && Array.from(document.getElementById('cm-targetCategory')?.options || []).some(o=>o.value===preset.categoryKey)){
+    document.getElementById('cm-targetCategory').value=preset.categoryKey;
+  }
+  if(preset.productId && Array.from(document.getElementById('cm-targetProduct')?.options || []).some(o=>o.value===preset.productId)){
+    document.getElementById('cm-targetProduct').value=preset.productId;
+  }
+  handleCampaignTargetModeChange();
+  if(preset.mode==='manual') document.getElementById('cm-targetPath').value=c.targetPath || '#products';
   document.getElementById('cm-sortOrder').value=String(Number(c.sortOrder)||0);
   const status = document.getElementById('cm-imageUploadStatus'); if(status) status.textContent='Mevcut kayıt yüklü';
   const fileInput = document.getElementById('cm-imageFile'); if(fileInput) fileInput.value='';
@@ -4203,6 +4457,7 @@ function editCampaign(i){
 async function saveCampaign(){
   const name=document.getElementById('cm-name').value.trim();
   if(!name){aToast('⚠️ Kampanya adı zorunlu','error');return;}
+  syncCampaignTargetPathFromSelection({ force:true });
   if(!document.getElementById('cm-image').value.trim() && document.getElementById('cm-imageFile')?.files?.[0]){
     await uploadCampaignImageFromInput();
   }
@@ -4215,7 +4470,7 @@ async function saveCampaign(){
     couponCode:document.getElementById('cm-code').value.trim().toUpperCase(),
     startDate:document.getElementById('cm-start').value,
     endDate:document.getElementById('cm-end').value,
-    targetPath:document.getElementById('cm-targetPath').value.trim(),
+    targetPath:document.getElementById('cm-targetPath').value.trim() || '#products',
     buttonLabel:document.getElementById('cm-buttonLabel').value.trim() || 'Kampanyayı İncele',
     sortOrder:Number(document.getElementById('cm-sortOrder').value)||0,
     isActive:campaignSwState
@@ -5168,6 +5423,12 @@ async function initAdmin(){
   renderTable();
   rebuildCatDropdowns();
   renderCatTable();
+  fillFeaturedProductSelect();
+  fillProductsFeaturedProductSelect();
+  await syncHomeFeaturedProductsFromApi();
+  await syncProductsFeaturedProductsFromApi();
+  renderFeaturedProductsAdminList();
+  renderProductsFeaturedProductsAdminList();
   await renderCampaigns();
   loadSliderItems();
   renderShowcaseAdminPage();

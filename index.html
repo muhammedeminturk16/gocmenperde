@@ -940,7 +940,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 
 
 .hero-ad-slider{margin:20px auto 12px;max-width:1180px;width:100%;display:none;animation:fadeUp 0.8s ease both 0.95s}
-.hero-ad-slider-shell{position:relative;width:100%;margin:0;overflow:hidden;border-radius:22px;border:1px solid rgba(34,45,78,.12);box-shadow:0 16px 34px rgba(17,28,58,.12),inset 0 0 0 1px rgba(255,255,255,.55);background:linear-gradient(135deg,#ffffff,#f5f7fc)}
+.hero-ad-slider-shell{position:relative;width:100%;margin:0;overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 36px rgba(0,0,0,.28)}
 .hero-ad-controls{position:absolute;inset:auto 14px 14px auto;display:flex;align-items:center;gap:8px;z-index:4}
 .hero-ad-btn{width:38px;height:38px;border-radius:999px;border:1px solid rgba(34,45,78,.2);background:rgba(255,255,255,.95);color:#2a3656;cursor:pointer;transition:.25s ease}
 .hero-ad-btn:hover{background:#fff;transform:translateY(-1px)}
@@ -954,7 +954,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .hero-ad-card::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,9,18,.08) 18%,rgba(6,9,18,.66) 100%);z-index:1;pointer-events:none}
 .hero-ad-copy{position:absolute;left:20px;right:88px;bottom:18px;z-index:3;display:grid;gap:8px}
 .hero-ad-title{font-family:var(--ff-display);font-size:clamp(1.45rem,2.4vw,2.4rem);line-height:1.06;font-weight:700;text-shadow:0 10px 24px rgba(0,0,0,.42)}
-.hero-ad-subtitle{font-size:.9rem;color:rgba(255,255,255,.94);max-width:56ch;line-height:1.45;text-shadow:0 6px 18px rgba(0,0,0,.44)}
 .hero-ad-cta{display:inline-flex;align-items:center;justify-content:center;width:fit-content;padding:11px 22px;border-radius:999px;border:1px solid rgba(220,178,88,.7);background:rgba(14,18,28,.5);color:#fff8e9;font-size:1.02rem;font-weight:600;letter-spacing:.2px;backdrop-filter:blur(2px)}
 .hero-ad-dots{display:flex;justify-content:center;gap:6px;margin:10px 0 4px}
 .hero-ad-dot{width:8px;height:8px;border:none;border-radius:999px;background:rgba(255,255,255,.35);cursor:pointer}
@@ -972,7 +971,6 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
   .hero-ad-card,.hero-ad-card img{min-height:230px}
   .hero-ad-copy{left:14px;right:84px;bottom:14px;gap:5px}
   .hero-ad-title{font-size:clamp(1.05rem,5.5vw,1.65rem)}
-  .hero-ad-subtitle{font-size:.78rem;line-height:1.35}
   .hero-ad-cta{padding:9px 16px;font-size:.82rem}
   .hero-promo-cta-wrap{flex-direction:column;gap:10px;width:min(460px,100%)}
   .hero-promo-cta{width:100%}
@@ -2392,14 +2390,12 @@ function renderHomeSlider(){
     const cropY = Number.isFinite(Number(item.cropY)) ? Math.max(0, Math.min(100, Number(item.cropY))) : 50;
     const cropZoom = Number.isFinite(Number(item.cropZoom)) ? Math.max(1, Math.min(1.8, Number(item.cropZoom))) : 1.08;
     const title = escapeHtml(item.title || 'Fon Perde Çeşitlerimiz');
-    const subtitle = escapeHtml(item.subtitle || 'Yaşam alanınıza özgün bir dokunuş.');
     const buttonLabel = escapeHtml(item.buttonLabel || 'Kampanyadan Faydalan');
     return `
     <a class="hero-ad-card" href="${item.targetPath || '#'}" target="_self" rel="noopener">
       <img src="${resolveAssetUrl(item.imageUrl || '')}" ${imageFallbackAttr(item.imageUrl || '')} alt="Kampanya görseli" loading="${idx===0?'eager':'lazy'}" fetchpriority="${idx===0?'high':'auto'}" decoding="async" style="--crop-x:${cropX}%;--crop-y:${cropY}%;--crop-zoom:${cropZoom}">
       <div class="hero-ad-copy">
         <strong class="hero-ad-title">${title}</strong>
-        <span class="hero-ad-subtitle">${subtitle}</span>
         <span class="hero-ad-cta">${buttonLabel}</span>
       </div>
     </a>

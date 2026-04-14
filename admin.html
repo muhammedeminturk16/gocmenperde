@@ -4004,6 +4004,10 @@ function findFeaturedProductRecord(id){
     return false;
   }) || null;
 }
+function removeMissingFeaturedIds(ids = []){
+  const list = Array.isArray(ids) ? ids : [];
+  return list.filter((id)=>!!findFeaturedProductRecord(id));
+}
 function getHomeFeaturedProductIds(){
   if(Array.isArray(homeFeaturedProductIdsCache) && homeFeaturedProductIdsCache.length) return [...homeFeaturedProductIdsCache];
   try{
@@ -4098,6 +4102,14 @@ function renderFeaturedProductsAdminList(){
   if(missingCount > 0){
     box.insertAdjacentHTML('beforeend', `<div class="campaign-card" style="padding:14px">⚠️ ${missingCount} ürün katalogda bulunamadı. Ürünü yeniden seçip ekleyin veya kaldırın.</div>`);
   }
+}
+async function cleanupMissingHomeFeaturedProducts(){
+  const ids = getHomeFeaturedProductIds();
+  if(!ids.length) return false;
+  const nextIds = removeMissingFeaturedIds(ids);
+  if(nextIds.length === ids.length) return false;
+  await saveHomeFeaturedProductIds(nextIds);
+  return true;
 }
 async function addFeaturedProduct(){
   const id = String(document.getElementById('featuredProductSelect')?.value || '').trim();
@@ -4217,6 +4229,14 @@ function renderProductsFeaturedProductsAdminList(){
   if(missingCount > 0){
     box.insertAdjacentHTML('beforeend', `<div class="campaign-card" style="padding:14px">⚠️ ${missingCount} ürün katalogda bulunamadı. Ürünü yeniden seçip ekleyin veya kaldırın.</div>`);
   }
+}
+async function cleanupMissingProductsFeaturedProducts(){
+  const ids = getProductsFeaturedProductIds();
+  if(!ids.length) return false;
+  const nextIds = removeMissingFeaturedIds(ids);
+  if(nextIds.length === ids.length) return false;
+  await saveProductsFeaturedProductIds(nextIds);
+  return true;
 }
 async function addProductsFeaturedProduct(){
   const id = String(document.getElementById('productsFeaturedProductSelect')?.value || '').trim();
@@ -5427,6 +5447,8 @@ async function initAdmin(){
   fillProductsFeaturedProductSelect();
   await syncHomeFeaturedProductsFromApi();
   await syncProductsFeaturedProductsFromApi();
+  await cleanupMissingHomeFeaturedProducts();
+  await cleanupMissingProductsFeaturedProducts();
   renderFeaturedProductsAdminList();
   renderProductsFeaturedProductsAdminList();
   await renderCampaigns();

@@ -2367,7 +2367,8 @@ function getHomeFeaturedProducts(){
     sourceProducts = staleCache.length ? staleCache : legacyCache;
   }
   if(!sourceProducts.length) return [];
-  const selectedIds = getHomeFeaturedProductIds();
+  const selectedIds = cleanupMissingFeaturedIds(getHomeFeaturedProductIds(), sourceProducts);
+  localStorage.setItem(HOME_FEATURED_PRODUCTS_KEY, JSON.stringify(selectedIds));
   const selectedProducts = selectedIds
     .map((id)=>findFeaturedProductById(id, sourceProducts))
     .filter(Boolean);
@@ -2404,6 +2405,12 @@ function findFeaturedProductById(id, productList = PRODUCTS){
     if(compactId && compactProductId && (compactProductId.startsWith(compactId) || compactId.startsWith(compactProductId))) return true;
     return false;
   }) || null;
+}
+function cleanupMissingFeaturedIds(ids = [], productList = PRODUCTS){
+  const list = Array.isArray(ids) ? ids : [];
+  if(!list.length) return [];
+  const source = Array.isArray(productList) ? productList : [];
+  return list.filter((id)=>!!findFeaturedProductById(id, source));
 }
 function bindHomeFeaturedSwipe(){
   if(homeFeaturedTouchBound) return;
@@ -3483,7 +3490,8 @@ function getProductsFeaturedProducts(){
     sourceProducts = staleCache.length ? staleCache : legacyCache;
   }
   if(!sourceProducts.length) return [];
-  const selectedIds = getProductsFeaturedProductIds();
+  const selectedIds = cleanupMissingFeaturedIds(getProductsFeaturedProductIds(), sourceProducts);
+  localStorage.setItem(PRODUCTS_FEATURED_PRODUCTS_KEY, JSON.stringify(selectedIds));
   const selectedProducts = selectedIds
     .map((id)=>findFeaturedProductById(id, sourceProducts))
     .filter((item)=>item && item.active !== false);
@@ -4292,13 +4300,46 @@ function applySectionState(id, {scroll=true} = {}){
 
 function getSectionFromLocation(){
   const rawHash = String(window.location.hash || '').replace(/^#/, '').trim();
-  if(rawHash && document.getElementById(rawHash)) return rawHash;
+  const resolvedHash = resolveSectionId(rawHash);
+  if(resolvedHash && document.getElementById(resolvedHash)) return resolvedHash;
   return 'home';
+}
+
+function resolveSectionId(id){
+  const raw = String(id || '').trim();
+  if(!raw) return 'home';
+  const normalized = raw
+    .toLocaleLowerCase('tr')
+    .replace(/\s+/g, '')
+    .replace(/[^a-z0-9çğıöşü_-]/g, '');
+  const aliasMap = {
+    anasayfa: 'home',
+    home: 'home',
+    urunler: 'products',
+    ürünler: 'products',
+    products: 'products',
+    sepet: 'cart',
+    cart: 'cart',
+    odeme: 'checkout',
+    ödeme: 'checkout',
+    checkout: 'checkout',
+    hakkimizda: 'about',
+    hakkında: 'about',
+    about: 'about',
+    iletisim: 'contact',
+    iletişim: 'contact',
+    contact: 'contact',
+    fromyou: 'from-you',
+    sizdengelenler: 'from-you',
+    'from-you': 'from-you'
+  };
+  const target = aliasMap[normalized] || raw;
+  return document.getElementById(target) ? target : 'home';
 }
 
 function go(id){
   closeAllPopups();
-  const nextId = document.getElementById(id) ? id : 'home';
+  const nextId = resolveSectionId(id);
   if(nextId === 'products') resetCategorySelectionToAll();
   if(window.location.hash !== `#${nextId}`) window.location.hash = nextId;
   applySectionState(nextId, {scroll:true});

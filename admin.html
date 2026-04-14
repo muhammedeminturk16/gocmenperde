@@ -3572,7 +3572,7 @@ function renderBulkCardImagePreview(card){
     return;
   }
   grid.innerHTML=images.map((src,idx)=>`<button type="button" class="bulk-image-preview-item ${current===src?'main':''}" data-src="${src.replace(/"/g,'&quot;')}" onclick="setBulkCardMainImage(this)" title="Ana resim yap">
-    <img src="${resolveAssetUrl(src)}" alt="Ürün görseli ${idx+1}" onerror="this.closest('.bulk-image-preview-item')?.remove()">
+    <img src="${resolveAssetUrl(src)}" ${withImageFallback(src)} loading="lazy" decoding="async" alt="Ürün görseli ${idx+1}">
     <span>${idx+1}</span>
   </button>`).join('');
 }
@@ -3732,6 +3732,9 @@ async function saveProduct(){
       aToast('⚠️ ' + quality.reason, 'error');
       return;
     }
+    if(quality.warning){
+      aToast('⚠️ ' + quality.warning, 'error');
+    }
   }
 
   if(existing){
@@ -3784,7 +3787,7 @@ function previewImg(){
     prev.onerror=()=>{prev.style.display='none';};
     grid.style.display='grid';
     grid.innerHTML = images.map((src,idx)=>`<div style="position:relative">
-      <img src="${resolveAssetUrl(src)}" alt="Görsel ${idx+1}" style="width:100%;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+      <img src="${resolveAssetUrl(src)}" ${withImageFallback(src)} loading="lazy" decoding="async" alt="Görsel ${idx+1}" style="width:100%;height:70px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
       <span style="position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.65);color:white;font-size:0.62rem;padding:2px 6px;border-radius:999px">${idx+1}</span>
       <div style="position:absolute;right:4px;bottom:4px;display:flex;gap:4px">
         ${idx>0?`<button type="button" onclick="setMainImage(${idx})" title="Ana görsel yap" style="width:24px;height:24px;border:none;border-radius:6px;background:rgba(36,113,163,0.9);color:#fff;cursor:pointer"><i class="fas fa-star" style="font-size:0.6rem"></i></button>`:''}
@@ -4321,16 +4324,29 @@ function switchPremiumTab(tab='live'){
 }
 
 async function validatePremiumImageQuality(product){
-  const src = resolveAssetUrl((product?.images?.[0]) || product?.image || '');
-  return new Promise((resolve)=>{
+  const sourcePath = (product?.images?.[0]) || product?.image || '';
+  const variants = resolveAssetVariants(sourcePath);
+  if(!variants.length) return { ok:false, reason:'Premium alanı için görsel zorunludur.' };
+  const loadSize = (src)=>new Promise((resolve)=>{
     const img = new Image();
-    img.onload = ()=>{
-      const ok = Number(img.naturalWidth||0) >= 1920 && Number(img.naturalHeight||0) >= 1080;
-      resolve(ok ? { ok:true } : { ok:false, reason:'Premium görseller en az 1920x1080 (1080p+) olmalıdır.' });
-    };
-    img.onerror = ()=>resolve({ ok:false, reason:'Görsel çözünürlüğü doğrulanamadı.' });
+    const timer=setTimeout(()=>{img.src='';resolve(null);}, 2200);
+    img.onload = ()=>{clearTimeout(timer);resolve({w:Number(img.naturalWidth||0),h:Number(img.naturalHeight||0)});};
+    img.onerror = ()=>{clearTimeout(timer);resolve(null);};
     img.src = src;
   });
+  let size = null;
+  for(const variant of variants){
+    size = await loadSize(variant);
+    if(size) break;
+  }
+  if(!size){
+    if(/^resimler\/\d{13}-/i.test(String(sourcePath||''))){
+      return { ok:true, warning:'Görsel henüz CDN’de görünmüyor olabilir. Kaydetme devam etti; birkaç dakika sonra önizleme dolacaktır.' };
+    }
+    return { ok:false, reason:'Görsel çözünürlüğü doğrulanamadı. Dosya yolu veya erişimi kontrol edin.' };
+  }
+  const ok = size.w >= 1920 && size.h >= 1080;
+  return ok ? { ok:true } : { ok:false, reason:'Premium görseller en az 1920x1080 (1080p+) olmalıdır.' };
 }
 
 function buildPremiumItemCard(p, mode){
@@ -4785,44 +4801,38 @@ function clearField(fid,vid){
 // ════════════════════════════════════
 const REPO_OWNER='gocmenperde',REPO_NAME='gocmenperde',FILE_PATH='products.json';
 const GITHUB_RAW_BASE=`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main`;
-const IMAGE_MAX_WIDTH=1800;
-const IMAGE_QUALITY=0.82;
+const GITHUB_CDN_BASE=`https://cdn.jsdelivr.net/gh/${REPO_OWNER}/${REPO_NAME}@main`;
+const IMAGE_MAX_WIDTH=1600;
+const IMAGE_QUALITY=0.80;
 const MAX_MULTI_UPLOAD_COUNT = 24;
 const IMAGE_PLACEHOLDER_DATA_URI = `data:image/svg+xml,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='420' height='280'><rect width='100%' height='100%' fill='#f1eee7'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#8a8480' font-family='Outfit,Arial' font-size='16'>Görsel yüklenemedi</text></svg>")}`;
-function resolveAssetUrl(path){
+function resolveAssetVariants(path){
   const raw=String(path||'').trim();
-  if(!raw) return '';
-  if(raw.startsWith('data:')) return raw;
-  if(raw.startsWith('blob:')) return raw;
-  if(/^https?:\/\//i.test(raw)) return raw;
+  if(!raw) return [];
+  if(raw.startsWith('data:') || raw.startsWith('blob:')) return [raw];
+  if(/^https?:\/\//i.test(raw)) return [raw];
   const normalized=raw.replace(/^\/+/, '');
-  if(normalized.startsWith('resimler/')){
-    // GitHub API ile yüklenen yeni görseller deploy beklerken yerel /resimler yolunda 404 verebilir.
-    // Timestamp ile başlayan dosyaları doğrudan raw URL'den okuyarak "?" görsel sorununu kökten çözeriz.
-    if(/^resimler\/\d{13}-/i.test(normalized)) return `${GITHUB_RAW_BASE}/${normalized}`;
-    return `/${normalized}`;
-  }
-  return raw;
+  if(!normalized.startsWith('resimler/')) return [raw];
+  const variants=[];
+  const isTimestamped=/^resimler\/\d{13}-/i.test(normalized);
+  if(!isTimestamped) variants.push(`/${normalized}`);
+  variants.push(`${GITHUB_CDN_BASE}/${normalized}`);
+  variants.push(`${GITHUB_RAW_BASE}/${normalized}`);
+  return [...new Set(variants)];
+}
+function resolveAssetUrl(path){
+  return resolveAssetVariants(path)[0] || '';
 }
 function resolveAssetFallbackUrl(path){
-  const raw=String(path||'').trim();
-  if(!raw) return '';
-  if(raw.startsWith('data:') || raw.startsWith('blob:')) return '';
-  if(/^https?:\/\//i.test(raw)) return '';
-  const normalized=raw.replace(/^\/+/, '');
-  if(normalized.startsWith('resimler/')){
-    return `${GITHUB_RAW_BASE}/${normalized}`;
-  }
-  return '';
+  return resolveAssetVariants(path)[1] || '';
 }
 function withImageFallback(path){
-  const main=resolveAssetUrl(path);
-  const fallback=resolveAssetFallbackUrl(path);
-  if(!fallback || fallback===main){
+  const variants=resolveAssetVariants(path);
+  if(!variants.length){
     return `onerror="this.onerror=null;this.src='${IMAGE_PLACEHOLDER_DATA_URI}'"`;
   }
-  const escaped=fallback.replace(/'/g,"\\'");
-  return `onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src='${escaped}';}else{this.onerror=null;this.src='${IMAGE_PLACEHOLDER_DATA_URI}';}"`;
+  const escaped=variants.map(v=>String(v).replace(/'/g,"\\'"));
+  return `onerror="(function(img,list){img.dataset.errIndex=String((parseInt(img.dataset.errIndex||'0',10)||0)+1);const i=parseInt(img.dataset.errIndex,10);if(i<list.length){img.src=list[i];}else{img.onerror=null;img.src='${IMAGE_PLACEHOLDER_DATA_URI}';}})(this,['${escaped.join("','")}'])"`;
 }
 function isInlineImageData(value){
   const raw=String(value||'').trim();
@@ -4960,7 +4970,7 @@ async function handleImageSelect(input){
   try{
     const {uploaded, errors} = await uploadImagesWithConcurrency(token, files, {
       prefix:'product',
-      concurrency:2,
+      concurrency:3,
       onProgress:({done,total,name})=>{
         status.innerHTML=`<i class="fas fa-spinner fa-spin"></i> Yükleniyor (${done}/${total}) — ${name}`;
       }
@@ -5006,7 +5016,7 @@ async function handleBulkImageSelect(input){
     if(fileNameEl) fileNameEl.textContent='Yükleniyor...';
     const {uploaded, errors}=await uploadImagesWithConcurrency(token, files, {
       prefix:'bulk',
-      concurrency:2,
+      concurrency:3,
       onProgress:({done,total})=>{ if(fileNameEl) fileNameEl.textContent=`Yükleniyor... (${done}/${total})`; }
     });
     if(uploaded.length){
@@ -5098,7 +5108,7 @@ async function handleFromYouImageSelect(input){
     if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
     const {uploaded, errors} = await uploadImagesWithConcurrency(token, files, {
       prefix:'from-you',
-      concurrency:2,
+      concurrency:3,
       onProgress:({done,total})=>{ if(fileNameEl) fileNameEl.textContent = `Yükleniyor... (${done}/${total})`; }
     });
     if(pathEl) pathEl.value = uploaded[0] || '';

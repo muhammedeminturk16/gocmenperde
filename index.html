@@ -453,14 +453,14 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 .qty-input.pile-select{width:auto;min-width:112px;padding:0 8px;font-size:0.7rem}
 .qty-help-text{font-size:0.66rem;color:var(--slate);display:block;min-width:150px}
 @media(max-width:600px){
-  .qty-wrap{gap:5px}
+  .qty-wrap{gap:5px;width:100%}
   .qty-input.dimension-input{width:86px;font-size:0.75rem}
   .qty-input.pile-select{min-width:100%;height:34px}
   .qty-help-text{flex:1 1 100%;font-size:0.62rem;line-height:1.45}
   .sort-bar{gap:8px}
   .products-layout{padding:16px 12px 26px}
   .product-bottom{align-items:stretch}
-  .add-btn{width:100%;justify-content:center}
+  .add-btn{width:100%;justify-content:center;min-width:0}
 }
 .add-btn{background:var(--ink);color:white;border:none;cursor:pointer;padding:9px 16px;border-radius:8px;font-size:0.68rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;transition:var(--transition);white-space:nowrap;font-family:var(--ff-body)}
 .add-btn:hover{background:var(--gold);color:var(--ink)}
@@ -4958,8 +4958,8 @@ function addToCartFromProduct(productId, qtyInputId, widthInputId, heightInputId
     showToast('Lütfen en ölçüsünü ve pile seçimini yapın');
     return;
   }
-  if(pleatedMeterProduct && requireHeight && (!Number.isFinite(height) || height <= 0)){
-    showToast('Lütfen boy ölçüsünü metre cinsinden girin');
+  if(pleatedMeterProduct && requireHeight && Number.isFinite(height) && height <= 0){
+    showToast('Boy ölçüsü girildiğinde 0'dan büyük olmalıdır');
     return;
   }
   if(meterDimensionsProduct && (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0)){

@@ -723,11 +723,11 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 }
 @media(max-width:700px){
   .modal-overlay{padding:0;background:#fff;backdrop-filter:none}
-  .modal-box{max-width:none;width:100%;min-height:100dvh;border-radius:0;max-height:none;box-shadow:none;background:#fff;display:flex;flex-direction:column;padding-top:calc(env(safe-area-inset-top) + 74px)}
+  .modal-box{max-width:none;width:100%;min-height:100dvh;border-radius:0;max-height:none;box-shadow:none;background:#fff;display:flex;flex-direction:column}
   .modal-close{display:none}
-  .modal-mobile-header{display:flex;position:fixed;left:0;right:0;top:0;z-index:12380;padding:calc(env(safe-area-inset-top) + 8px) 8px 8px;justify-content:space-between;align-items:center;gap:6px;max-width:100%;overflow-x:hidden;background:linear-gradient(180deg,#f4f5f7 0%,#eceff4 100%);border-bottom:1px solid rgba(34,45,78,.12);box-shadow:0 8px 24px rgba(17,28,58,.14)}
-  .modal-mobile-header .mh-left,.modal-mobile-header .mh-right{display:flex;align-items:center;gap:7px}
-  .modal-mobile-header .mh-left,.modal-mobile-header .mh-right{flex-shrink:0}
+  .modal-mobile-header{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:80;padding:calc(env(safe-area-inset-top) + 8px) 10px 8px;background:linear-gradient(180deg,#f8f9fb 0%,#eff2f8 100%);border-bottom:1px solid rgba(34,45,78,.14);box-shadow:0 6px 16px rgba(17,28,58,.1)}
+  .mh-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+  .mh-back{flex-shrink:0}
   .mh-search{min-width:0}
   .modal-search-input{min-width:0}
   .modal-img-stage{height:38dvh;min-height:250px;max-height:340px}
@@ -776,7 +776,7 @@ nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-
 }
 .modal-search-input{flex:1;height:100%;border:none;background:transparent;padding:0;font-family:var(--ff-body);font-size:0.84rem;color:var(--ink);outline:none}
 .modal-search-input::placeholder{color:#8f8f8f}
-.modal-search-inline-results{position:fixed;top:calc(env(safe-area-inset-top) + 72px);left:10px;right:10px;max-height:min(45dvh,360px);overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:14px;padding:8px 12px 12px;box-shadow:0 20px 42px rgba(0,0,0,0.18);z-index:12370;display:none}
+.modal-search-inline-results{position:fixed;top:calc(env(safe-area-inset-top) + 64px);left:10px;right:10px;max-height:min(45dvh,360px);overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:14px;padding:8px 12px 12px;box-shadow:0 20px 42px rgba(0,0,0,0.18);z-index:12370;display:none}
 .modal-search-inline-results.open{display:flex;flex-direction:column;gap:8px}
 .modal-search-item{display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:8px;cursor:pointer}
 .modal-search-item img{width:52px;height:52px;border-radius:8px;object-fit:cover}
@@ -1787,15 +1787,13 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 <div class="modal-overlay" id="productModal" onclick="closeModalOverlay(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="closeProductModal()"><i class="fas fa-xmark"></i></button>
-    <div class="modal-mobile-header">
-      <div class="mh-left">
-        <button class="mh-btn" type="button" onclick="handleProductModalBack()" title="Geri"><i class="fas fa-chevron-left"></i></button>
-      </div>
+    <div class="modal-mobile-header" role="toolbar" aria-label="Ürün detay hızlı işlemler">
+      <button class="mh-btn mh-back" type="button" onclick="handleProductModalBack()" title="Geri"><i class="fas fa-chevron-left"></i></button>
       <label class="mh-search" for="modalSearchInput">
         <i class="fas fa-search"></i>
         <input type="text" id="modalSearchInput" class="modal-search-input" placeholder="Ürün, kategori veya açıklama ara..." oninput="searchProductsFromModal(this.value)" onfocus="searchProductsFromModal(this.value)">
       </label>
-      <div class="mh-right">
+      <div class="mh-actions">
         <button class="mh-btn" type="button" onclick="window.location.href='/hesabim.html'" title="Hesabım"><i class="fas fa-user"></i></button>
         <button class="mh-btn" type="button" onclick="togglePopup('favoriteBar')" title="Favorilerim"><i class="far fa-heart"></i></button>
         <button class="mh-btn" type="button" onclick="window.location.href='/hesabim.html?tab=orders'" title="Siparişlerim"><i class="fas fa-box-open"></i></button>
@@ -2733,6 +2731,7 @@ function imageFallbackAttr(path){
 const GITHUB_CONTENTS_BASE_URL = 'https://api.github.com/repos/gocmenperde/gocmenperde/contents';
 let productsLoadedOnce = false;
 let lastHandledEntryDeepLink = '';
+let modalReturnState = null;
 let productRequestInFlight = null;
 let PREMIUM_LIVE_PRODUCTS = [];
 let PREMIUM_FEATURED_PRODUCTS = [];
@@ -3986,6 +3985,7 @@ function openModalFromProduct(id){
   switchTab('desc');
   resetImgZoom();
   clearModalSearch();
+  modalReturnState = captureModalReturnState();
   document.getElementById('productModal').classList.add('open');
   document.body.classList.add('product-modal-open');
   lockPageScrollForModal();
@@ -4013,9 +4013,10 @@ function openGalleryModal(src,title,desc){
   document.getElementById('mCare').innerHTML = '';
   document.getElementById('mAddWrap').innerHTML = '<button class="modal-add-btn" onclick="closeProductModal();go(\'contact\')"><i class="fas fa-map-marker-alt" style="margin-right:8px"></i>Mağazamıza Gel</button>';
   document.getElementById('mReviews').innerHTML = '<div class="modal-review-item"><div class="modal-review-text">Ürün yorumu sadece ürün detay ekranında görünür.</div></div>';
-   switchTab('desc');
+  switchTab('desc');
   resetImgZoom();
   clearModalSearch();
+  modalReturnState = captureModalReturnState();
   document.getElementById('productModal').classList.add('open');
   document.body.classList.add('product-modal-open');
   lockPageScrollForModal();
@@ -4101,25 +4102,48 @@ function zoomImg(e){
   img.style.transform='scale(2.4)';
 }
 function resetImgZoom(){ const img=document.getElementById('mImg'); img.style.transform='scale(1)'; img.style.transformOrigin='center center'; }
+function captureModalReturnState(){
+  const section = resolveSectionId(getSectionFromLocation());
+  return { section, scrollY: Math.max(0, window.scrollY || 0) };
+}
+
+function restoreViewAfterModal(state = {}){
+  const section = resolveSectionId(state?.fromSection || state?.section || modalReturnState?.section || getSectionFromLocation());
+  const scrollY = Number(state?.fromScroll);
+  if(getSectionFromLocation() !== section){
+    applySectionState(section, { scroll:false });
+  }
+  if(Number.isFinite(scrollY) && scrollY >= 0){
+    requestAnimationFrame(()=>window.scrollTo({ top: scrollY, behavior:'auto' }));
+  }
+}
+
 function setProductDeepLink(productId){
   const id = String(productId || '').trim();
   if(!id) return;
+  const snapshot = captureModalReturnState();
+  if(!modalReturnState) modalReturnState = snapshot;
+  const fromSection = modalReturnState?.section || snapshot.section;
+  const fromScroll = modalReturnState?.scrollY ?? snapshot.scrollY;
   const url = new URL(window.location.href);
   const currentId = String(url.searchParams.get('product') || '').trim();
-  if(currentId === id && url.hash === '#products'){
+  const currentState = window.history.state || {};
+  if(currentId === id && currentState?.fromSection === fromSection){
     lastHandledEntryDeepLink = `product:${id}`;
     return;
   }
   url.searchParams.set('product', id);
-  if(!url.hash || url.hash === '#home') url.hash = '#products';
-  window.history.pushState({ product:id }, '', `${url.pathname}${url.search}${url.hash}`);
+  window.history.pushState({ ...(currentState || {}), product:id, fromSection, fromScroll }, '', `${url.pathname}${url.search}${url.hash}`);
   lastHandledEntryDeepLink = `product:${id}`;
 }
 function clearProductDeepLink(){
   const url = new URL(window.location.href);
   if(!url.searchParams.has('product')) return;
   url.searchParams.delete('product');
-  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  const currentState = window.history.state || {};
+  const nextState = { ...currentState };
+  delete nextState.product;
+  window.history.replaceState(nextState, '', `${url.pathname}${url.search}${url.hash}`);
   if(lastHandledEntryDeepLink.startsWith('product:')) lastHandledEntryDeepLink = '';
 }
 function handleProductModalBack(){
@@ -4129,22 +4153,24 @@ function handleProductModalBack(){
     return;
   }
   closeProductModal();
-  go('products');
+  restoreViewAfterModal(modalReturnState || {});
 }
 
-window.addEventListener('popstate', ()=>{
+window.addEventListener('popstate', (event)=>{
   const targetId = getSectionFromLocation();
   applySectionState(targetId, {scroll:false});
   const hasProductParam = new URLSearchParams(window.location.search).has('product');
   const modalOpen = document.getElementById('productModal')?.classList.contains('open');
   if(!hasProductParam && modalOpen){
     closeProductModal({syncUrl:false});
+    restoreViewAfterModal(event.state || modalReturnState || {});
   }
   if(hasProductParam){
     if(targetId !== 'products') applySectionState('products', {scroll:false});
     handleInitialProductDeepLink();
   } else if(lastHandledEntryDeepLink.startsWith('product:')){
     lastHandledEntryDeepLink = '';
+    modalReturnState = null;
   }
 });
 

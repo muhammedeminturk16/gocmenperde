@@ -4400,16 +4400,12 @@ function hideLoader(forceImmediate=false){
   setTimeout(()=>l.remove(),380);
 }
 
-function normalizePageScrollState({preserveWhenModalOpen=true} = {}){
-  const modalOpen = document.getElementById('productModal')?.classList.contains('open');
-  if(preserveWhenModalOpen && modalOpen) return;
-  unlockPageScrollForModal();
-  document.body.classList.remove('product-modal-open');
-}
-
 function recoverUIAfterResume(){
   hideLoader(true);
-  normalizePageScrollState({preserveWhenModalOpen:true});
+  if(document.body.classList.contains('product-modal-open') && !document.getElementById('productModal')?.classList.contains('open')){
+    unlockPageScrollForModal();
+    document.body.classList.remove('product-modal-open');
+  }
   if(!document.getElementById('productModal')?.classList.contains('open')){
     unlockPageScrollForModal();
     closeImageViewer();
@@ -4518,8 +4514,6 @@ function runSafely(taskName, fn){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-  normalizePageScrollState({preserveWhenModalOpen:false});
-  setTimeout(()=>hideLoader(true), 2600);
   runSafely('renderHomeSlider (dom ready)', ()=>renderHomeSlider());
   runSafely('loadHomeSlider (dom ready)', ()=>loadHomeSlider());
   runSafely('renderHomeFeaturedProducts (dom ready)', ()=>renderHomeFeaturedProducts());

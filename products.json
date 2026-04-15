@@ -1792,7 +1792,7 @@
     ],
     "price": 300,
     "oldPrice": 400,
-    "cat": "tul-perde",
+    "cat": "ormetulperde",
     "unit": "mt",
     "isMeter": true,
     "isSquareMeter": false,

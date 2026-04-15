@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "fuser -k 5000/tcp 2>/dev/null; sleep 1; node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",

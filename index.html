@@ -1001,17 +1001,23 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .campaign-stream-grid.auto-scroll .campaign-stream-card{flex:0 0 min(320px,78vw)}
 .campaign-stream-grid.auto-scroll .campaign-stream-rail{display:flex;gap:14px;min-width:max-content;animation:campaignRail 28s linear infinite}
 .campaign-stream-grid.auto-scroll:hover .campaign-stream-rail{animation-play-state:paused}
-.campaign-stream-card{position:relative;background:linear-gradient(145deg,#0f1524 0%,#202a3f 62%,#2c3957 100%);border:1px solid rgba(213,163,63,.3);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:12px;align-items:stretch;box-shadow:0 16px 30px rgba(8,12,22,.28)}
+.campaign-stream-card{position:relative;background:linear-gradient(145deg,#0e1320 0%,#1b2640 52%,#273a63 100%);border:1px solid rgba(224,178,82,.38);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:12px;align-items:stretch;box-shadow:0 20px 34px rgba(8,12,22,.32);overflow:hidden}
+.campaign-stream-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 15%,rgba(243,205,120,.22),transparent 48%);pointer-events:none}
 .campaign-stream-media{position:relative;height:200px;border-radius:14px;overflow:hidden;background:#f0f2f7}
 .campaign-stream-media img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
 .campaign-stream-card:hover .campaign-stream-media img{transform:scale(1.04)}
 .campaign-stream-badge{position:absolute;top:10px;left:10px;background:rgba(19,18,26,.76);color:#fff;padding:5px 9px;border-radius:999px;font-size:.58rem;letter-spacing:1px;border:1px solid rgba(213,163,63,.35)}
-.campaign-stream-name{font-size:1.05rem;font-weight:700;color:#fff;line-height:1.35;min-height:44px}
+.campaign-stream-content{display:grid;gap:8px;z-index:1}
+.campaign-stream-name{font-size:1.02rem;font-weight:700;color:#fff;line-height:1.35}
+.campaign-stream-desc{font-size:.78rem;line-height:1.45;color:rgba(241,244,255,.78);min-height:34px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.campaign-stream-meta{display:flex;flex-wrap:wrap;gap:6px}
+.campaign-stream-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;font-size:.62rem;letter-spacing:.4px;color:#f5f7ff;border:1px solid rgba(220,226,255,.24);background:rgba(255,255,255,.08)}
 .campaign-stream-price{display:flex;align-items:flex-end;gap:8px}
 .campaign-stream-price .new{font-size:1.08rem;font-weight:800;color:#f7d58f}
 .campaign-stream-price .old{text-decoration:line-through;font-size:.74rem;color:rgba(255,255,255,.45)}
 .campaign-stream-price .unit{font-size:.68rem;color:rgba(255,255,255,.7)}
-.campaign-stream-btn{border:1px solid rgba(213,163,63,.45);background:rgba(255,255,255,.1);color:#fff;padding:12px 16px;border-radius:10px;font-size:.66rem;font-weight:800;letter-spacing:.8px;cursor:pointer;box-shadow:0 8px 20px rgba(3,6,12,.35);margin-top:auto;min-width:210px;text-align:center}
+.campaign-stream-btn{border:1px solid rgba(221,181,94,.58);background:linear-gradient(125deg,rgba(240,198,103,.96),rgba(191,140,52,.95));color:#20170b;padding:11px 16px;border-radius:12px;font-size:.67rem;font-weight:900;letter-spacing:.8px;cursor:pointer;box-shadow:0 10px 20px rgba(3,6,12,.35);margin-top:auto;min-width:210px;text-align:center;transition:transform .22s ease,box-shadow .22s ease}
+.campaign-stream-btn:hover{transform:translateY(-1px);box-shadow:0 14px 22px rgba(3,6,12,.4)}
 .campaign-stream-empty{border:1px dashed rgba(34,45,78,.25);border-radius:12px;padding:14px;background:rgba(255,255,255,.6);font-size:.82rem;color:#586078}
 @keyframes campaignRail{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 7px))}}
 @keyframes pulseShift{0%{background-position:0 0}100%{background-position:200% 0}}
@@ -1084,6 +1090,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 @media(max-width:760px){
   .pulse-announcement{padding:14px}
   .campaign-stream-media{height:180px}
+  .campaign-stream-desc{min-height:0}
   .gallery-section .section-header{padding:20px;border-radius:16px}
   .live-categories-shell{padding:12px}
   .live-pill{min-width:168px}
@@ -1143,6 +1150,11 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
   .campaign-stream-header{align-items:flex-start;flex-direction:column}
   .campaign-stream-actions{width:100%}
   .campaign-stream-actions .campaign-stream-btn{flex:1;min-width:0}
+  .campaign-stream-card{padding:10px;border-radius:16px}
+  .campaign-stream-content{gap:7px}
+  .campaign-stream-name{font-size:.94rem}
+  .campaign-stream-desc{font-size:.74rem;line-height:1.4}
+  .campaign-stream-chip{font-size:.58rem;padding:4px 7px}
 }
 
 </style>
@@ -1807,7 +1819,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
       <p style="font-size:0.8rem;color:var(--slate)">Arama yaparak ürün adı, açıklama ve kategoriye göre sonuçları görebilirsiniz.</p>
     </div>
     <div class="modal-img-col">
-      <div class="modal-img-stage" id="modalImgCol" onmousemove="zoomImg(event)" onmouseleave="resetImgZoom()" onclick="openImageViewer()">
+      <div class="modal-img-stage" id="modalImgCol" onmousemove="zoomImg(event)" onmouseleave="resetImgZoom()" onclick="openImageViewer(event)">
         <img id="mImg" src="" alt="">
         <div class="modal-discount-badge hidden" id="mDiscountBadge"></div>
         <div class="modal-gallery-controls">
@@ -1826,9 +1838,9 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
       <h2 class="modal-title" id="mTitle"></h2>
       <div class="modal-price-wrap" id="mPriceWrap"></div>
       <div class="modal-tabs">
-        <button class="modal-tab active" onclick="switchTab('desc')">Açıklama</button>
-        <button class="modal-tab" onclick="switchTab('specs')">Özellikler</button>
-        <button class="modal-tab" onclick="switchTab('care')">Bakım</button>
+        <button type="button" class="modal-tab active" onclick="switchTab('desc')">Açıklama</button>
+        <button type="button" class="modal-tab" onclick="switchTab('specs')">Özellikler</button>
+        <button type="button" class="modal-tab" onclick="switchTab('care')">Bakım</button>
       </div>
       <div class="modal-tab-content active" id="tab-desc">
 <p class="modal-desc" id="mDesc"></p>
@@ -3540,7 +3552,7 @@ function buildCard(p, index=0){
   const showCampaignSlot = index % 4 === 1;
 
   return `<div class="product-card" data-cat="${p.cat}" data-price="${p.price}" data-features="${p.features||''}" data-id="${p.id}">
-    <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${p.id}',this)">
+    <button type="button" class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${p.id}',this)">
       <i class="${isFav?'fas':'far'} fa-heart"></i>
     </button>
     <div class="product-img-wrap">
@@ -3550,7 +3562,7 @@ function buildCard(p, index=0){
       ${showCampaignSlot ? '<span class="product-campaign-tint"></span><span class="product-campaign-pill"><i class="fas fa-bullhorn"></i>Kampanya Alanı</span>' : ''}
       ${productImages.length>1?`<span class="product-gallery-meta"><i class="fas fa-images"></i> ${productImages.length} fotoğraf</span>`:''}
       ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
-      <button class="product-zoom" onclick="event.stopPropagation();openModalFromProduct('${p.id}');trackRecentlyViewed('${p.id}')"><i class="fas fa-expand-alt"></i></button>
+      <button type="button" class="product-zoom" onclick="event.stopPropagation();openModalFromProduct('${p.id}');trackRecentlyViewed('${p.id}')"><i class="fas fa-expand-alt"></i></button>
     </div>
     <div class="product-info">
       <button type="button" class="product-name product-name-btn" onclick="openModalFromProduct('${p.id}');trackRecentlyViewed('${p.id}')">${p.name}</button>
@@ -4109,7 +4121,11 @@ function switchTab(tabId){
   document.querySelectorAll('.modal-tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+tabId).classList.add('active');
 }
-function openImageViewer(){
+function openImageViewer(event){
+  if(event){
+    event.preventDefault();
+    event.stopPropagation();
+  }
   if(Date.now() < modalSwipePreventOpenUntil) return;
   if(!currentModalImages.length) return;
   imageViewerOpen = true;
@@ -4178,12 +4194,20 @@ function handleModalImageLoadError(){
   }
 }
 function zoomImg(e){
-  if(window.innerWidth<=700) return;
-  const img=document.getElementById('mImg'),col=document.getElementById('modalImgCol'),rect=col.getBoundingClientRect();
+  if(window.innerWidth<=700 || !e) return;
+  const img=document.getElementById('mImg'),col=document.getElementById('modalImgCol');
+  if(!img || !col) return;
+  const rect=col.getBoundingClientRect();
+  if(!rect.width || !rect.height) return;
   img.style.transformOrigin=((e.clientX-rect.left)/rect.width*100)+'% '+((e.clientY-rect.top)/rect.height*100)+'%';
   img.style.transform='scale(2.4)';
 }
-function resetImgZoom(){ const img=document.getElementById('mImg'); img.style.transform='scale(1)'; img.style.transformOrigin='center center'; }
+function resetImgZoom(){
+  const img=document.getElementById('mImg');
+  if(!img) return;
+  img.style.transform='scale(1)';
+  img.style.transformOrigin='center center';
+}
 function captureModalReturnState(){
   const section = resolveSectionId(getSectionFromLocation());
   return { section, scrollY: Math.max(0, window.scrollY || 0) };
@@ -5819,6 +5843,14 @@ function formatCampaignDiscount(campaign){
   return `%${Number(campaign.discountValue || 0).toLocaleString('tr-TR')}`;
 }
 
+function formatCampaignDateLabel(value){
+  const raw = String(value || '').trim();
+  if(!raw) return '';
+  const d = new Date(raw);
+  if(Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('tr-TR', { day:'2-digit', month:'2-digit' });
+}
+
 function renderCampaignCards(containerId, { compact=false } = {}){
   const box = document.getElementById(containerId);
   if(!box) return;
@@ -5838,6 +5870,13 @@ function renderCampaignCards(containerId, { compact=false } = {}){
   box.innerHTML = campaigns.map((campaign)=>{
     const coupon = campaign.couponCode ? `<span class="campaign-stream-badge"><i class="fas fa-ticket"></i> ${campaign.couponCode}</span>` : '';
     const btnLabel = compact ? 'Sepete Uygula' : (campaign.buttonLabel || 'Kampanyayı İncele');
+    const desc = String(campaign.description || '').trim();
+    const startLabel = formatCampaignDateLabel(campaign.startDate);
+    const endLabel = formatCampaignDateLabel(campaign.endDate);
+    const validity = startLabel || endLabel
+      ? `<span class="campaign-stream-chip"><i class="fas fa-calendar-days"></i> ${startLabel || 'Bugün'}${endLabel ? ` - ${endLabel}` : ''}</span>`
+      : '';
+    const couponChip = campaign.couponCode ? `<span class="campaign-stream-chip"><i class="fas fa-ticket"></i> Kupon aktif</span>` : '';
     const action = campaign.couponCode
       ? `applyCoupon('${String(campaign.couponCode || '').replace(/'/g, "\\'")}')`
       : `navigateToCampaign(decodeURIComponent('${encodeURIComponent(campaign.targetPath || '#products')}'))`;
@@ -5846,8 +5885,15 @@ function renderCampaignCards(containerId, { compact=false } = {}){
         <img src="${campaign.imageUrl || 'resimler/foto8.jpg'}" alt="${campaign.name || 'Kampanya'}" loading="lazy" decoding="async">
         ${coupon}
       </div>
-      <div class="campaign-stream-name">${campaign.name || 'Kampanya'}</div>
-      <div class="campaign-stream-price"><span class="new">${formatCampaignDiscount(campaign)} İndirim</span></div>
+      <div class="campaign-stream-content">
+        <div class="campaign-stream-name">${campaign.name || 'Kampanya'}</div>
+        ${desc ? `<div class="campaign-stream-desc">${desc}</div>` : ''}
+        <div class="campaign-stream-meta">
+          <span class="campaign-stream-chip"><i class="fas fa-bolt"></i> ${formatCampaignDiscount(campaign)} indirim</span>
+          ${validity}
+          ${couponChip}
+        </div>
+      </div>
       <button class="campaign-stream-btn" type="button" onclick="${action}">${btnLabel}</button>
     </article>`;
   }).join('');

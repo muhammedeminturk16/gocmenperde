@@ -4325,28 +4325,10 @@ function switchPremiumTab(tab='live'){
 
 async function validatePremiumImageQuality(product){
   const sourcePath = (product?.images?.[0]) || product?.image || '';
-  const variants = resolveAssetVariants(sourcePath);
-  if(!variants.length) return { ok:false, reason:'Premium alanı için görsel zorunludur.' };
-  const loadSize = (src)=>new Promise((resolve)=>{
-    const img = new Image();
-    const timer=setTimeout(()=>{img.src='';resolve(null);}, 2200);
-    img.onload = ()=>{clearTimeout(timer);resolve({w:Number(img.naturalWidth||0),h:Number(img.naturalHeight||0)});};
-    img.onerror = ()=>{clearTimeout(timer);resolve(null);};
-    img.src = src;
-  });
-  let size = null;
-  for(const variant of variants){
-    size = await loadSize(variant);
-    if(size) break;
+  if(!String(sourcePath || '').trim()){
+    return { ok:false, reason:'Premium alanı için görsel zorunludur.' };
   }
-  if(!size){
-    if(/^resimler\/\d{13}-/i.test(String(sourcePath||''))){
-      return { ok:true, warning:'Görsel henüz CDN’de görünmüyor olabilir. Kaydetme devam etti; birkaç dakika sonra önizleme dolacaktır.' };
-    }
-    return { ok:false, reason:'Görsel çözünürlüğü doğrulanamadı. Dosya yolu veya erişimi kontrol edin.' };
-  }
-  const ok = size.w >= 1920 && size.h >= 1080;
-  return ok ? { ok:true } : { ok:false, reason:'Premium görseller en az 1920x1080 (1080p+) olmalıdır.' };
+  return { ok:true };
 }
 
 function buildPremiumItemCard(p, mode){

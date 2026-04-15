@@ -2145,6 +2145,33 @@ function handleTargetPathNavigation(targetPath=''){
     go('home');
     return false;
   }
+  let resolvedUrl = null;
+  try{
+    resolvedUrl = new URL(cleanPath, window.location.origin);
+  }catch(_){}
+
+  if(resolvedUrl && resolvedUrl.origin === window.location.origin){
+    const currentUrl = new URL(window.location.href);
+    const normalizedPath = resolvedUrl.pathname === '/index.html' ? '/' : resolvedUrl.pathname;
+    const sameSpaDocument = normalizedPath === '/' || normalizedPath === currentUrl.pathname || (currentUrl.pathname === '/index.html' && normalizedPath === '/');
+    if(sameSpaDocument){
+      const search = resolvedUrl.search || '';
+      const hash = resolvedUrl.hash || '';
+      if(search === currentUrl.search && hash === currentUrl.hash){
+        return false;
+      }
+      if(search && (search.includes('category=') || search.includes('product='))){
+        const nextPath = `${normalizedPath}${search}${hash || ''}`;
+        window.history.pushState({ ...(window.history.state || {}) }, '', nextPath);
+        handleInitialProductDeepLink();
+      }else if(hash){
+        go(hash.replace(/^#/, '') || 'home');
+      }else{
+        go('home');
+      }
+      return false;
+    }
+  }
   if(cleanPath.includes('category=')){
     const match = cleanPath.match(/category=([^#&]+)/);
     if(match && match[1]){
@@ -2898,7 +2925,10 @@ function handleInitialProductDeepLink(){
 
   if(productId){
     const target = PRODUCTS.find(p=>String(p.id) === productId);
-    if(!target) return;
+    if(!target){
+      lastHandledEntryDeepLink = deepLinkSignature;
+      return;
+    }
     const modalOpen = document.getElementById('productModal')?.classList.contains('open');
     if(modalOpen && String(currentModalProductId) === String(target.id)){
       lastHandledEntryDeepLink = deepLinkSignature;

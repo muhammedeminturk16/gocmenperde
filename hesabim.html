@@ -1401,6 +1401,35 @@
 <div class="gp-toast" id="gpToast"></div>
 
 <script>
+function bindSmartBackLink(selector, fallback='/'){
+    const backLink=document.querySelector(selector);
+    if(!backLink) return;
+    const isSameOriginReferrer=(()=>{
+        if(!document.referrer) return false;
+        try{ return new URL(document.referrer).origin===window.location.origin; }catch(_){ return false; }
+    })();
+    if(isSameOriginReferrer){
+        try{
+            const refUrl=new URL(document.referrer);
+            const samePage = refUrl.pathname===window.location.pathname && refUrl.search===window.location.search && refUrl.hash===window.location.hash;
+            if(!samePage){
+                backLink.setAttribute('href', `${refUrl.pathname}${refUrl.search}${refUrl.hash}` || fallback);
+            }
+        }catch(_){
+            backLink.setAttribute('href', fallback);
+        }
+    }else{
+        backLink.setAttribute('href', fallback);
+    }
+    backLink.addEventListener('click',(event)=>{
+        if(isSameOriginReferrer && window.history.length>1){
+            event.preventDefault();
+            window.history.back();
+        }
+    });
+}
+bindSmartBackLink('.gp-back','/');
+
 const token = localStorage.getItem('token') || localStorage.getItem('gp_token');
 const user = (() => { try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch(e) { return null; } })();
 

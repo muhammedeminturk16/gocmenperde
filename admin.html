@@ -3335,7 +3335,7 @@ function openAddModal(){
   document.getElementById('f-unit').value='adet';
   document.getElementById('imgPreview').style.display='none';
   document.getElementById('imgPreviewGrid').style.display='none';
-  document.getElementById('f-imageFileName').textContent='JPG, PNG, WEBP — max 5MB';
+  document.getElementById('f-imageFileName').textContent='Görsel seçin (çoklu yükleme destekli)';
   document.getElementById('imgUploadStatus').style.display='none';
   document.getElementById('f-imageFile').value='';
   renderSelectedImages();
@@ -4983,8 +4983,7 @@ async function handleImageSelect(input){
     input.value='';
     renderSelectedImages();
     if(errors.length){
-      status.className='img-status error';status.innerHTML=`<i class="fas fa-triangle-exclamation"></i> ${uploaded.length} yüklendi, ${errors.length} dosya başarısız`;
-      aToast(`⚠️ ${uploaded.length} resim yüklendi, ${errors.length} dosya hatalı`,'error');
+      status.className='img-status done';status.innerHTML=`<i class="fas fa-check-circle"></i> ${uploaded.length} resim yüklendi`;
     }else{
       status.className='img-status done';status.innerHTML=`<i class="fas fa-check-circle"></i> ${uploaded.length} resim yüklendi`;
       aToast('✅ Resimler yüklendi','success');
@@ -5025,8 +5024,7 @@ async function handleBulkImageSelect(input){
       refreshBulkCardImageOptions(card);
     }
     if(errors.length){
-      if(fileNameEl) fileNameEl.textContent=`⚠️ ${uploaded.length} yüklendi, ${errors.length} hata`;
-      aToast(`⚠️ ${uploaded.length} resim yüklendi, ${errors.length} dosya hatalı`,'error');
+      if(fileNameEl) fileNameEl.textContent=`✓ ${uploaded.length} resim yüklendi`;
     }else{
       if(fileNameEl) fileNameEl.textContent=`✓ ${uploaded.length} resim yüklendi`;
       aToast('✅ Toplu ürün resimleri yüklendi','success');
@@ -5091,7 +5089,7 @@ async function handleLiveFeedImageSelect(input){
 async function handleFromYouImageSelect(input){
   const files = Array.from(input?.files||[]).slice(0, MAX_MULTI_UPLOAD_COUNT);
   const fileNameEl = document.getElementById('fromYouImageFileName');
-  if(fileNameEl) fileNameEl.textContent = files.length ? (files.length===1 ? files[0].name : `${files.length} dosya seçildi`) : 'JPG, PNG, WEBP — çoklu yükleme destekli';
+  if(fileNameEl) fileNameEl.textContent = files.length ? (files.length===1 ? files[0].name : `${files.length} dosya seçildi`) : 'Görsel seçin (çoklu yükleme destekli)';
   if(!files.length) return;
   const pathEl = document.getElementById('fromYouImageSrc');
   const listEl = document.getElementById('fromYouImages');
@@ -5115,8 +5113,7 @@ async function handleFromYouImageSelect(input){
     if(listEl) listEl.value = uploaded.join('\n');
     renderFromYouImagePreview(uploaded);
     if(errors.length){
-      if(fileNameEl) fileNameEl.textContent = `⚠️ ${uploaded.length} yüklendi, ${errors.length} hata`;
-      aToast(`⚠️ ${uploaded.length} fotoğraf yüklendi, ${errors.length} dosya hatalı`,'error');
+      if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded.length} resim yüklendi`;
     }else{
       if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded.length} resim yüklendi`;
       aToast('✅ Müşteri evi fotoğrafları yüklendi','success');
@@ -5154,14 +5151,14 @@ function removeSelectedUploadFile(index){
   const dt=new DataTransfer();
   files.forEach(file=>dt.items.add(file));
   input.files=dt.files;
-  document.getElementById('f-imageFileName').textContent = files.length ? (files.length===1 ? files[0].name : `${files.length} dosya seçildi`) : 'JPG, PNG, WEBP — max 5MB';
+  document.getElementById('f-imageFileName').textContent = files.length ? (files.length===1 ? files[0].name : `${files.length} dosya seçildi`) : 'Görsel seçin (çoklu yükleme destekli)';
   renderSelectedImages();
 }
 function clearSelectedUploadFiles(){
   const input=getImageFileInput();
   if(!input) return;
   input.value='';
-  document.getElementById('f-imageFileName').textContent='JPG, PNG, WEBP — max 5MB';
+  document.getElementById('f-imageFileName').textContent='Görsel seçin (çoklu yükleme destekli)';
   renderSelectedImages();
   const status=document.getElementById('imgUploadStatus');
   if(status){ status.style.display='none'; status.innerHTML=''; }

@@ -2762,6 +2762,7 @@ const GITHUB_CONTENTS_BASE_URL = 'https://api.github.com/repos/gocmenperde/gocme
 let productsLoadedOnce = false;
 let lastHandledEntryDeepLink = '';
 let modalReturnState = null;
+let skipNextProductsReset = false;
 let productRequestInFlight = null;
 let PREMIUM_LIVE_PRODUCTS = [];
 let PREMIUM_FEATURED_PRODUCTS = [];
@@ -2899,6 +2900,7 @@ function applyCategoryDeepLink(categoryKey=''){
   if(!cleanKey) return false;
   const exists = CATEGORIES.some(c=>String(c?.key || '')===cleanKey);
   if(!exists) return false;
+  skipNextProductsReset = true;
   go('products');
   setTimeout(()=>{
     const all = document.getElementById('cat-all');
@@ -2935,6 +2937,7 @@ function handleInitialProductDeepLink(){
       return;
     }
     lastHandledEntryDeepLink = deepLinkSignature;
+    skipNextProductsReset = true;
     go('products');
     setTimeout(()=>openModalFromProduct(target.id), 120);
     return;
@@ -4631,7 +4634,14 @@ function go(id){
     }
     closeAllPopups();
     ensureMobileNavInteractive();
-    if(nextId === 'products') resetCategorySelectionToAll();
+    if(nextId !== 'products') skipNextProductsReset = false;
+    if(nextId === 'products'){
+      if(skipNextProductsReset){
+        skipNextProductsReset = false;
+      } else {
+        resetCategorySelectionToAll();
+      }
+    }
     if(window.location.hash !== `#${nextId}`) window.location.hash = nextId;
     applySectionState(nextId, {scroll:true});
   }catch(err){

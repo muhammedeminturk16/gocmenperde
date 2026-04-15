@@ -68,42 +68,6 @@
     }
   },
   {
-    "id": "tul-perde-1776118956932-199",
-    "name": "Tül Perde",
-    "desc": "Şık tasarımı ve kaliteli kumaşıyla yaşam alanınıza uyum sağlar. Ölçü ve kullanım ihtiyacınıza göre güvenle tercih edebilirsiniz.",
-    "image": "https://cdn.jsdelivr.net/gh/gocmenperde/gocmenperde@main/resimler/1776118914162-product-0-c2dc7fe1-b1ab-41de-935b-1dd71ddf0fe3-IMG_2661.jpeg",
-    "images": [
-      "https://cdn.jsdelivr.net/gh/gocmenperde/gocmenperde@main/resimler/1776118914162-product-0-c2dc7fe1-b1ab-41de-935b-1dd71ddf0fe3-IMG_2661.jpeg"
-    ],
-    "price": 299,
-    "oldPrice": 399,
-    "cat": "tul-perde",
-    "unit": "mt",
-    "isMeter": true,
-    "isSquareMeter": false,
-    "features": "",
-    "badge": "%25 İNDİRİM",
-    "discountType": "manual",
-    "discountValue": null,
-    "stock": 86,
-    "serialNumber": "tül-bambu",
-    "isLiveShowcase": false,
-    "isFeatured": false,
-    "active": true,
-    "specs": {
-      "• Malzeme": "%100 Polyester ipliklerden dokunmuştur. Bu sayede buruşmaz, leke tutmaz ve uzun ömürlüdür.",
-      "• Tasarım": "Modern ve şık deseniyle her türlü dekorasyona uyum sağlar.",
-      "• Ölçüler": "Standart ölçülerde veya isteğe göre özel ölçülerde üretilebilir.",
-      "• Işık Geçirgenliği": "Odanın aydınlık kalmasını sağlarken, güneş ışığını süzerek rahat bir ortam oluşturur."
-    },
-    "care": {
-      "• Yıkama": "Maksimum 30 derecede, hassas programda veya elde yıkanması önerilir. Ağartıcı kullanılmamalıdır.",
-      "• Sıkma": "Hafif sıkma yapılması veya sıkılmadan asılması tavsiye edilir.",
-      "• Ütüleme": "Gerekirse düşük sıcaklıkta tersten ütülenebilir.",
-      "• Kurulama": "Güneş ışığına maruz bırakmadan, gölgede kurutulması daha uygundur."
-    }
-  },
-  {
     "id": "zebra-perde-beyaz-1774990805411-347",
     "name": "Zebra Perde Beyaz",
     "desc": "Modern ve şık görünümüyle evlerin vazgeçilmezi olan Zebra Perde, çift katmanlı dokusu sayesinde hem tül hem de güneşlik görevini aynı anda üstlenir.",

@@ -102,9 +102,9 @@
 <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"></noscript>
 <style>
 :root{
-  --gold:#c9a84c;--gold-light:#e8d5a3;--gold-dark:#8c6d2f;
-  --ink:#0f0e0d;--cream:#f7f4ef;--warm-white:#fdfcf9;
-  --slate:#4a4743;--border:rgba(201,168,76,0.2);
+  --gold:#d4af53;--gold-light:#f2dfb4;--gold-dark:#8f6b2b;
+  --ink:#0b1220;--cream:#f4f7ff;--warm-white:#fdfcf9;
+  --slate:#3b4b66;--border:rgba(95,126,196,0.24);
   --shadow:0 20px 60px rgba(0,0,0,0.08);
   --ff-display:'Cormorant Garamond',serif;--ff-body:'DM Sans',sans-serif;
   --radius:12px;--transition:0.4s cubic-bezier(0.25,0.46,0.45,0.94)
@@ -112,7 +112,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;background:#fff}
 body{background:#fff;color:#1a1a1a;font-family:var(--ff-body);font-weight:400;overflow-x:hidden;width:100%;max-width:100%}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 8% 10%, rgba(201,168,76,0.16), transparent 30%),radial-gradient(circle at 90% 20%, rgba(201,168,76,0.12), transparent 33%),radial-gradient(circle at 50% 100%, rgba(255,255,255,0.45), transparent 40%)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 7% 10%, rgba(84,120,216,0.17), transparent 32%),radial-gradient(circle at 92% 15%, rgba(212,175,83,0.15), transparent 33%),radial-gradient(circle at 50% 100%, rgba(255,255,255,0.6), transparent 44%)}
 img,video,canvas,svg{max-width:100%}
 @media(min-width:768px){body{cursor:none}.cursor-dot,.cursor-ring{display:block}body.native-cursor-mode{cursor:auto}.native-cursor-mode .cursor-dot,.native-cursor-mode .cursor-ring{opacity:0}}
 @media(max-width:767px){body{cursor:auto}.cursor-dot,.cursor-ring{display:none}button,a,[onclick]{cursor:pointer!important}}
@@ -174,7 +174,7 @@ img,video,canvas,svg{max-width:100%}
 #mobileCategoryMenu{display:flex;flex-direction:column;gap:10px}
 #menuOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.28);z-index:12470;display:none}
 @media(max-width:640px){#mobileMenu{width:min(82vw,320px);top:0;bottom:calc(8px + env(safe-area-inset-bottom) + 72px);height:auto;max-height:none;padding:28px 22px calc(18px + env(safe-area-inset-bottom));border-bottom-right-radius:22px}}
-header{position:fixed;top:0;left:0;right:0;z-index:12240;padding:0 5%;background:rgba(255,255,255,0.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,0.2);transition:var(--transition)}
+header{position:fixed;top:0;left:0;right:0;z-index:12240;padding:0 5%;background:linear-gradient(120deg,rgba(255,255,255,0.76),rgba(244,248,255,0.8));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(95,126,196,0.2);transition:var(--transition)}
 .header-inner{max-width:100%;margin:auto;height:75px;display:flex;align-items:center;justify-content:space-between}
 .logo-mark{display:flex;align-items:center;gap:14px;text-decoration:none;cursor:pointer}
 .logo-icon{width:44px;height:44px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0}
@@ -943,6 +943,15 @@ header{background:rgba(255,255,255,.95);border-bottom:1px solid rgba(34,45,78,.0
 .features-strip{background:linear-gradient(120deg,#ffffff,#f7f7f5)}
 .feature-item{padding:14px 12px;border:1px solid rgba(34,45,78,.1);border-radius:14px;background:rgba(255,255,255,.92)}
 .feature-icon{background:linear-gradient(135deg,rgba(213,163,63,.15),rgba(61,79,128,.1));border:1px solid rgba(34,45,78,.14)}
+.conversion-trust-band{padding:28px 5% 18px;background:linear-gradient(145deg,#f6f9ff,#fff8ed 58%,#f0f5ff)}
+.conversion-trust-shell{max-width:1400px;margin:0 auto;border:1px solid rgba(95,126,196,.22);border-radius:18px;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);padding:18px;display:grid;grid-template-columns:1.1fr .9fr;gap:14px;align-items:center;box-shadow:0 14px 30px rgba(14,26,48,.09)}
+.conversion-copy small{font-size:.64rem;letter-spacing:2.5px;text-transform:uppercase;color:#4d6798;font-weight:700}
+.conversion-copy h3{font-size:clamp(1.1rem,2vw,1.45rem);color:#16243f;margin:6px 0}
+.conversion-copy p{font-size:.86rem;color:#4b5870}
+.conversion-points{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.conversion-point{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;border:1px solid rgba(95,126,196,.2);background:#fff;font-size:.77rem;color:#1d3558}
+.conversion-point i{color:#2b6ad7}
+@media(max-width:900px){.conversion-trust-shell{grid-template-columns:1fr}.conversion-points{grid-template-columns:1fr}}
 .local-seo-box,.trust-card,.trust-kpi-item,.process-step,.top-product-slider{border-color:rgba(34,45,78,.14)!important}
 .section-tag{background:linear-gradient(135deg,#1a2131 0%,#2d3a58 100%);color:#f3cf82;border:1px solid rgba(213,163,63,.42);padding:7px 14px;border-radius:999px;display:inline-flex;box-shadow:0 8px 18px rgba(12,16,28,.2)}
 .product-card{border:1px solid rgba(34,45,78,.14);background:linear-gradient(164deg,#ffffff 0%,#fbfbfd 56%,#f6f8ff 100%);box-shadow:0 14px 32px rgba(17,28,58,.11)}
@@ -1357,6 +1366,21 @@ footer p{font-size:.76rem;letter-spacing:1.4px}
       <div class="feature-item"><div class="feature-icon"><i class="fas fa-truck"></i></div><div class="feature-text"><h4>Bursa İçi Teslimat</h4><p>Kapınıza kadar</p></div></div>
       <div class="feature-item"><div class="feature-icon"><i class="fas fa-award"></i></div><div class="feature-text"><h4>Zeynel Bey Güvencesi</h4><p>30 yıllık ustadan</p></div></div>
       <div class="feature-item"><div class="feature-icon"><i class="fas fa-rotate-left"></i></div><div class="feature-text"><h4>Memnuniyet Garantisi</h4><p>Kaliteli hizmet</p></div></div>
+    </div>
+  </div>
+  <div class="conversion-trust-band" aria-label="Müşteri güven göstergeleri">
+    <div class="conversion-trust-shell">
+      <div class="conversion-copy">
+        <small>Karar Vermeyi Kolaylaştırır</small>
+        <h3>Şeffaf teklif, söz verilen tarihte montaj, güçlü satış sonrası destek.</h3>
+        <p>Müşterilerimizin tekrar tercih etme nedeni; net fiyatlandırma, anlaşılır süreç yönetimi ve işi teslim ettikten sonra da ulaşılabilir olmamızdır.</p>
+      </div>
+      <div class="conversion-points">
+        <div class="conversion-point"><i class="fas fa-user-shield"></i><span>KVKK uyumlu güvenli sipariş &amp; ödeme akışı</span></div>
+        <div class="conversion-point"><i class="fas fa-file-signature"></i><span>Net teklif: sürpriz maliyet yok</span></div>
+        <div class="conversion-point"><i class="fas fa-calendar-check"></i><span>Randevulu teslim ve montaj planlaması</span></div>
+        <div class="conversion-point"><i class="fas fa-headset"></i><span>Satış sonrası hızlı destek ekibi</span></div>
+      </div>
     </div>
   </div>
   <div class="live-categories" aria-label="Hızlı kategori geçişleri">
@@ -1847,7 +1871,7 @@ footer p{font-size:.76rem;letter-spacing:1.4px}
   <div class="modal-box">
     <button class="modal-close" onclick="closeProductModal()"><i class="fas fa-xmark"></i></button>
     <div class="modal-mobile-header" role="toolbar" aria-label="Ürün detay hızlı işlemler">
-      <button class="mh-btn mh-back" type="button" onclick="handleProductModalBack()" title="Geri"><i class="fas fa-chevron-left"></i></button>
+      <button class="mh-btn mh-back" type="button" onclick="goBackSmart('products')" title="Geri"><i class="fas fa-chevron-left"></i></button>
       <label class="mh-search" for="modalSearchInput">
         <i class="fas fa-search"></i>
         <input type="text" id="modalSearchInput" class="modal-search-input" placeholder="Ürün, kategori veya açıklama ara..." oninput="searchProductsFromModal(this.value)" onfocus="searchProductsFromModal(this.value)">
@@ -4672,6 +4696,13 @@ window.addEventListener('storage',(event)=>{
 // ── Navigasyon ──
 function applySectionState(id, {scroll=true} = {}){
   const targetId = document.getElementById(id) ? id : 'home';
+  const currentActive = document.querySelector('.section.active')?.id;
+  if(currentActive === targetId && !scroll){
+    updateCartActionPanel();
+    updateFloatingCta(targetId);
+    syncHomePromoVisibility(targetId);
+    return;
+  }
   document.querySelectorAll('.section').forEach(s=>{ s.classList.remove('active'); s.style.display='none'; });
   const t=document.getElementById(targetId);
   if(!t) return;
@@ -4742,9 +4773,28 @@ function ensureMobileNavInteractive(){
   }
 }
 
+function goBackSmart(fallback='home'){
+  const targetFallback = resolveSectionId(fallback);
+  const currentSection = document.querySelector('.section.active')?.id || getSectionFromLocation();
+  const previousSection = sessionStorage.getItem('gp_prev_section') || '';
+  if(previousSection && previousSection !== currentSection && document.getElementById(previousSection)){
+    go(previousSection);
+    return;
+  }
+  if(window.history.length > 1){
+    window.history.back();
+    return;
+  }
+  go(targetFallback);
+}
+
 function go(id){
   try{
     const nextId = resolveSectionId(id);
+    const activeSectionId = document.querySelector('.section.active')?.id || getSectionFromLocation();
+    if(activeSectionId && activeSectionId !== nextId){
+      sessionStorage.setItem('gp_prev_section', activeSectionId);
+    }
     const modalOpen = document.getElementById('productModal')?.classList.contains('open');
     if(modalOpen && nextId !== 'products'){
       closeProductModal();

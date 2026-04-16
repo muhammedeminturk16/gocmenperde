@@ -3039,7 +3039,13 @@ function handleInitialProductDeepLink(){
     }
     lastHandledEntryDeepLink = deepLinkSignature;
     skipNextProductsReset = true;
-    go('products');
+    const activeSectionId = document.querySelector('.section.active')?.id || '';
+    if(activeSectionId !== 'products'){
+      if(window.location.hash !== '#products'){
+        window.history.replaceState({ ...(window.history.state || {}) }, '', `${window.location.pathname}${window.location.search}#products`);
+      }
+      applySectionState('products', { scroll:false });
+    }
     setTimeout(()=>openModalFromProduct(target.id), 120);
     return;
   }

@@ -1,5 +1,42 @@
 [
   {
+    "id": "fon-perde-modern-cizgili-desen-1776356477425-51",
+    "name": "Fon Perde Modern Çizgili Desen",
+    "desc": "Evinizin atmosferini anında değiştirecek, modern hatları ve özgün dokusuyla öne çıkan bu fon perde; zarafeti ve kaliteyi bir araya getiriyor. Kumaş üzerindeki yatay dalga formundaki özel saçak (püskül) detayları, mekanınıza derinlik ve dinamizm katar.",
+    "image": "resimler/1776356467084-product-0-dd73411d-2efa-4ba7-86ea-72237ad39d9e-IMG_2945.png",
+    "images": [
+      "resimler/1776356467084-product-0-dd73411d-2efa-4ba7-86ea-72237ad39d9e-IMG_2945.png"
+    ],
+    "price": 4999,
+    "oldPrice": 7999,
+    "cat": "fonperdeler",
+    "unit": "adet",
+    "isMeter": false,
+    "isSquareMeter": false,
+    "features": "",
+    "badge": "%38 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": 26,
+    "serialNumber": null,
+    "isLiveShowcase": true,
+    "isFeatured": true,
+    "active": true,
+    "specs": {
+      "• Materyal": "%100 Birinci Sınıf Polyester (Dokuma kumaş)",
+      "• Desen": "Kabartmalı dalga formu ve mikro saçak detaylı",
+      "• Gramaj": "Yüksek gramajlı, dökümlü kumaş (Ütü istemeyen yapı)",
+      "• Montaj": "Korniş sistemine uygun (Düğmeleri takılı gönderilmektedir) veya isteğe bağlı olarak rustik boru geçişine uygundur."
+    },
+    "care": {
+      "1.Yıkama": "Çamaşır makinesinde 30 derecede, hassas programda yıkayınız.",
+      "2.Deterjan": "Renkli veya beyazlara özel sıvı deterjan kullanılması, ağartıcı (çamaşır suyu) kullanılmaması tavsiye edilir.",
+      "3.Sıkma": "Kumaşın formunu koruması için düşük devirde sıkma yapınız veya sıkma yapmadan nemli asınız.",
+      "4.Ütüleme": "Kumaşın ütü istemeyen özelliği mevcuttur; ancak ihtiyaç halinde düşük ısıda tersten hafifçe ütülenebilir.",
+      "5.Kurutma": "Tamburlu kurutma makinesinde kurutulmamalıdır."
+    }
+  },
+  {
     "id": "dalga-desenli-sacakli-modern-fon-perde-krem-1776348667554-49",
     "name": "Dalga Desenli Saçaklı Modern Fon Perde Krem",
     "desc": "Evinizin atmosferini anında değiştirecek, modern hatları ve özgün dokusuyla öne çıkan bu fon perde; zarafeti ve kaliteyi bir araya getiriyor. Kumaş üzerindeki yatay dalga formundaki özel saçak (püskül) detayları, mekanınıza derinlik ve dinamizm katar.",

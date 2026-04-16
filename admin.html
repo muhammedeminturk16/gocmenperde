@@ -312,6 +312,19 @@ tbody tr:hover td{background:#fdfcf8}
 .slider-preview-copy b{display:block;font-size:.95rem;line-height:1.2;margin-bottom:4px}
 .slider-preview-copy small{display:inline-flex;border:1px solid rgba(255,215,149,.6);padding:4px 8px;border-radius:999px;background:rgba(8,10,17,.44);font-size:0.62rem}
 #sliderCropPreviewButton{display:inline-flex;margin-top:8px;padding:6px 11px;font-size:0.6rem;font-weight:700;letter-spacing:.2px;background:rgba(5,8,15,.58);border-color:rgba(247,210,128,.85)}
+.entry-promo-preview{position:relative;min-height:220px;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#111}
+.entry-promo-preview-bg{position:absolute;inset:0;background:center/cover no-repeat;transform:scale(var(--crop-zoom,1.02));transform-origin:center}
+.entry-promo-preview-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,.2),rgba(8,8,8,.66))}
+.entry-promo-preview-card{position:relative;z-index:2;margin:14px;max-width:420px;background:rgba(16,19,30,.74);border:1px solid rgba(255,255,255,.24);border-radius:14px;padding:14px;color:#fff;backdrop-filter:blur(6px)}
+.entry-promo-preview-card h4{font-size:1.02rem;line-height:1.2;margin-bottom:6px}
+.entry-promo-preview-card p{font-size:.8rem;line-height:1.45;opacity:.95}
+.entry-promo-preview-badge{display:inline-flex;align-items:center;gap:6px;font-size:.62rem;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.16);margin-bottom:8px;letter-spacing:.8px;text-transform:uppercase}
+.entry-promo-preview-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
+.entry-promo-preview-features span{font-size:.63rem;padding:7px 6px;border-radius:9px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);text-align:center}
+.entry-promo-preview-features span.muted{opacity:.45;text-decoration:line-through}
+.entry-promo-preview-btn{margin-top:10px;padding:8px 11px;border-radius:10px;border:1px solid rgba(255,255,255,.58);font-size:.65rem;font-weight:700;letter-spacing:.65px;background:rgba(255,255,255,.9);color:#111;display:inline-flex}
+.feature-toggle-wrap{display:flex;align-items:center;gap:8px;margin-top:5px}
+.feature-toggle-wrap input{accent-color:#0e6fbe}
 @media(max-width:700px){.crop-grid{grid-template-columns:1fr}}
 .discount-helper{margin-top:8px;padding:10px 12px;border:1px dashed var(--border-2);border-radius:9px;background:#faf8f2;font-size:0.77rem;color:var(--slate);line-height:1.5}
 .template-builder{margin-top:10px;border:1px dashed var(--border-2);border-radius:10px;padding:10px;background:#fff}
@@ -1123,9 +1136,9 @@ Işık: Yarı Geçirgen"></textarea></div>
       <div class="fg"><label>Ana Başlık</label><input type="text" id="homePromoTitle" placeholder="NİSAN'DA ZAM YOK!"></div>
       <div class="fg"><label>Alt Metin</label><textarea id="homePromoSubtitle" placeholder="Tüm ürünlerde 2025 fiyatları devam ediyor!"></textarea></div>
       <div class="form-row-3">
-        <div class="fg"><label>Özellik 1</label><input type="text" id="homePromoFeature1" placeholder="Ücretsiz Teslimat"></div>
-        <div class="fg"><label>Özellik 2</label><input type="text" id="homePromoFeature2" placeholder="Ücretsiz Kurulum"></div>
-        <div class="fg"><label>Özellik 3</label><input type="text" id="homePromoFeature3" placeholder="Taksit Seçenekleri"></div>
+        <div class="fg"><label>Özellik 1</label><input type="text" id="homePromoFeature1" placeholder="Ücretsiz Teslimat"><label class="feature-toggle-wrap"><input type="checkbox" id="homePromoFeature1Enabled" checked> Görünsün</label></div>
+        <div class="fg"><label>Özellik 2</label><input type="text" id="homePromoFeature2" placeholder="Ücretsiz Kurulum"><label class="feature-toggle-wrap"><input type="checkbox" id="homePromoFeature2Enabled" checked> Görünsün</label></div>
+        <div class="fg"><label>Özellik 3</label><input type="text" id="homePromoFeature3" placeholder="Taksit Seçenekleri"><label class="feature-toggle-wrap"><input type="checkbox" id="homePromoFeature3Enabled" checked> Görünsün</label></div>
       </div>
       <div class="fg"><label>Arka Plan Görseli</label><input type="text" id="homePromoImage" placeholder="Yüklenen görsel yolu otomatik oluşur" readonly style="background:#f7f7f7"></div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
@@ -1136,7 +1149,15 @@ Işık: Yarı Geçirgen"></textarea></div>
       </div>
       <div style="border:1px solid var(--border);border-radius:12px;padding:12px;background:#fcfbf8">
         <div style="font-size:0.72rem;color:var(--slate-light);margin-bottom:8px">Önizleme</div>
-        <img id="homePromoPreview" src="" alt="Reklam paneli önizleme" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;border:1px solid var(--border)">
+        <div class="entry-promo-preview">
+          <div id="homePromoPreview" class="entry-promo-preview-bg"></div>
+          <div class="entry-promo-preview-card">
+            <div class="entry-promo-preview-badge" id="homePromoPreviewBadge"></div>
+            <h4 id="homePromoPreviewTitle"></h4>
+            <p id="homePromoPreviewSubtitle"></p>
+            <div class="entry-promo-preview-features" id="homePromoPreviewFeatures"></div>
+          </div>
+        </div>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <button class="btn btn-primary btn-sm" onclick="saveHomePromoSettings()"><i class="fas fa-floppy-disk"></i> Kaydet</button>
@@ -1172,7 +1193,29 @@ Işık: Yarı Geçirgen"></textarea></div>
         </label>
         <button class="btn btn-outline btn-sm" onclick="clearSurpriseCampaignImage()"><i class="fas fa-eraser"></i> Görseli Temizle</button>
       </div>
-      <img id="surpriseCampaignPreview" src="" alt="Sürpriz kampanya önizleme" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;border:1px solid var(--border);background:#f7f7f7">
+      <div class="crop-grid">
+        <div class="crop-field">
+          <label>Yatay Kadraj <output id="surpriseCropXVal">50%</output></label>
+          <input type="range" id="surpriseCampaignCropX" min="0" max="100" step="1" value="50" oninput="updateSurpriseCampaignPreview()">
+        </div>
+        <div class="crop-field">
+          <label>Dikey Kadraj <output id="surpriseCropYVal">50%</output></label>
+          <input type="range" id="surpriseCampaignCropY" min="0" max="100" step="1" value="50" oninput="updateSurpriseCampaignPreview()">
+        </div>
+        <div class="crop-field">
+          <label>Zoom <output id="surpriseCropZoomVal">1.02x</output></label>
+          <input type="range" id="surpriseCampaignCropZoom" min="1" max="1.8" step="0.01" value="1.02" oninput="updateSurpriseCampaignPreview()">
+        </div>
+      </div>
+      <div class="entry-promo-preview">
+        <div id="surpriseCampaignPreview" class="entry-promo-preview-bg"></div>
+        <div class="entry-promo-preview-card">
+          <div class="entry-promo-preview-badge" id="surpriseCampaignPreviewBadge"></div>
+          <h4 id="surpriseCampaignPreviewTitle"></h4>
+          <p id="surpriseCampaignPreviewContent"></p>
+          <button type="button" class="entry-promo-preview-btn" id="surpriseCampaignPreviewButton">Kampanyayı İncele</button>
+        </div>
+      </div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <button class="btn btn-primary btn-sm" onclick="saveSurpriseCampaignSettings()"><i class="fas fa-floppy-disk"></i> Kaydet</button>
         <button class="btn btn-outline btn-sm" onclick="resetSurpriseCampaignSettings()"><i class="fas fa-rotate-left"></i> Varsayılana Dön</button>
@@ -1715,9 +1758,9 @@ const DEFAULT_HOME_PROMO_PANEL = {
   subtitle:'Tüm ürünlerde 2025 fiyatları devam ediyor!',
   image:'resimler/tulperde.WEBP',
   features:[
-    {icon:'fas fa-truck-fast',text:'Ücretsiz Teslimat'},
-    {icon:'fas fa-screwdriver-wrench',text:'Ücretsiz Kurulum'},
-    {icon:'fas fa-credit-card',text:'Taksit Seçenekleri'}
+    {icon:'fas fa-truck-fast',text:'Ücretsiz Teslimat',enabled:true},
+    {icon:'fas fa-screwdriver-wrench',text:'Ücretsiz Kurulum',enabled:true},
+    {icon:'fas fa-credit-card',text:'Taksit Seçenekleri',enabled:true}
   ]
 };
 const DEFAULT_HOME_FEATURED_PRODUCTS = {
@@ -1745,6 +1788,9 @@ const DEFAULT_SURPRISE_CAMPAIGN = {
   content:'Sitede geçirdiğiniz süreye özel kampanyalı ürünleri şimdi keşfedin.',
   image:'resimler/foto8.jpg',
   buttonText:'Kampanyayı İncele',
+  cropX:50,
+  cropY:50,
+  cropZoom:1.02,
   targetMode:'products',
   targetCategory:'',
   targetProduct:'',
@@ -1904,14 +1950,36 @@ function renderHomePromoSettings(){
   if(byId('homePromoFeature1')) byId('homePromoFeature1').value = features[0]?.text || '';
   if(byId('homePromoFeature2')) byId('homePromoFeature2').value = features[1]?.text || '';
   if(byId('homePromoFeature3')) byId('homePromoFeature3').value = features[2]?.text || '';
+  if(byId('homePromoFeature1Enabled')) byId('homePromoFeature1Enabled').checked = features[0]?.enabled !== false;
+  if(byId('homePromoFeature2Enabled')) byId('homePromoFeature2Enabled').checked = features[1]?.enabled !== false;
+  if(byId('homePromoFeature3Enabled')) byId('homePromoFeature3Enabled').checked = features[2]?.enabled !== false;
   if(byId('homePromoImage')) byId('homePromoImage').value = cfg.image || '';
   updateHomePromoPreview();
 }
 function updateHomePromoPreview(){
-  const src = (document.getElementById('homePromoImage')?.value || '').trim();
-  const img = document.getElementById('homePromoPreview');
-  if(!img) return;
-  img.src = src || DEFAULT_HOME_PROMO_PANEL.image;
+  const src = (document.getElementById('homePromoImage')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.image;
+  const bg = document.getElementById('homePromoPreview');
+  if(bg) bg.style.backgroundImage = `url('${src}')`;
+  const badge = document.getElementById('homePromoPreviewBadge');
+  const title = document.getElementById('homePromoPreviewTitle');
+  const subtitle = document.getElementById('homePromoPreviewSubtitle');
+  const features = document.getElementById('homePromoPreviewFeatures');
+  if(badge) badge.innerHTML = `<i class="fas fa-bullhorn"></i> ${(document.getElementById('homePromoCampaignLabel')?.value || DEFAULT_HOME_PROMO_PANEL.campaignLabel).trim()}`;
+  if(title) title.textContent = (document.getElementById('homePromoTitle')?.value || DEFAULT_HOME_PROMO_PANEL.title).trim();
+  if(subtitle) subtitle.textContent = (document.getElementById('homePromoSubtitle')?.value || DEFAULT_HOME_PROMO_PANEL.subtitle).trim();
+  if(features){
+    const labels = [
+      (document.getElementById('homePromoFeature1')?.value || DEFAULT_HOME_PROMO_PANEL.features[0].text).trim(),
+      (document.getElementById('homePromoFeature2')?.value || DEFAULT_HOME_PROMO_PANEL.features[1].text).trim(),
+      (document.getElementById('homePromoFeature3')?.value || DEFAULT_HOME_PROMO_PANEL.features[2].text).trim()
+    ];
+    const states = [
+      document.getElementById('homePromoFeature1Enabled')?.checked !== false,
+      document.getElementById('homePromoFeature2Enabled')?.checked !== false,
+      document.getElementById('homePromoFeature3Enabled')?.checked !== false
+    ];
+    features.innerHTML = labels.map((label, idx)=>`<span class="${states[idx] ? '' : 'muted'}">${label || `Özellik ${idx+1}`}</span>`).join('');
+  }
 }
 function handleHomePromoImageUpload(input){
   const file = input?.files?.[0];
@@ -1943,9 +2011,9 @@ function saveHomePromoSettings(){
     subtitle: (document.getElementById('homePromoSubtitle')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.subtitle,
     image: (document.getElementById('homePromoImage')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.image,
     features: [
-      {icon:'fas fa-truck-fast',text:(document.getElementById('homePromoFeature1')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[0].text},
-      {icon:'fas fa-screwdriver-wrench',text:(document.getElementById('homePromoFeature2')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[1].text},
-      {icon:'fas fa-credit-card',text:(document.getElementById('homePromoFeature3')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[2].text}
+      {icon:'fas fa-truck-fast',text:(document.getElementById('homePromoFeature1')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[0].text,enabled:document.getElementById('homePromoFeature1Enabled')?.checked !== false},
+      {icon:'fas fa-screwdriver-wrench',text:(document.getElementById('homePromoFeature2')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[1].text,enabled:document.getElementById('homePromoFeature2Enabled')?.checked !== false},
+      {icon:'fas fa-credit-card',text:(document.getElementById('homePromoFeature3')?.value || '').trim() || DEFAULT_HOME_PROMO_PANEL.features[2].text,enabled:document.getElementById('homePromoFeature3Enabled')?.checked !== false}
     ]
   };
   localStorage.setItem(HOME_PROMO_PANEL_KEY, JSON.stringify(cfg));
@@ -2001,10 +2069,30 @@ function renderSurpriseTargetOptions(){
   }
 }
 function updateSurpriseCampaignPreview(){
-  const src = (document.getElementById('surpriseCampaignImage')?.value || '').trim();
-  const img = document.getElementById('surpriseCampaignPreview');
-  if(!img) return;
-  img.src = src || DEFAULT_SURPRISE_CAMPAIGN.image;
+  const src = (document.getElementById('surpriseCampaignImage')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.image;
+  const cropX = Number(document.getElementById('surpriseCampaignCropX')?.value || 50);
+  const cropY = Number(document.getElementById('surpriseCampaignCropY')?.value || 50);
+  const cropZoom = Number(document.getElementById('surpriseCampaignCropZoom')?.value || 1.02);
+  const bg = document.getElementById('surpriseCampaignPreview');
+  if(bg){
+    bg.style.backgroundImage = `url('${src}')`;
+    bg.style.backgroundPosition = `${cropX}% ${cropY}%`;
+    bg.style.setProperty('--crop-zoom', String(cropZoom));
+  }
+  const badge = document.getElementById('surpriseCampaignPreviewBadge');
+  const title = document.getElementById('surpriseCampaignPreviewTitle');
+  const content = document.getElementById('surpriseCampaignPreviewContent');
+  const button = document.getElementById('surpriseCampaignPreviewButton');
+  if(badge) badge.innerHTML = `<i class="fas fa-gift"></i> ${(document.getElementById('surpriseCampaignBadge')?.value || DEFAULT_SURPRISE_CAMPAIGN.badge).trim()}`;
+  if(title) title.textContent = (document.getElementById('surpriseCampaignTitle')?.value || DEFAULT_SURPRISE_CAMPAIGN.title).trim();
+  if(content) content.textContent = (document.getElementById('surpriseCampaignContent')?.value || DEFAULT_SURPRISE_CAMPAIGN.content).trim();
+  if(button) button.textContent = (document.getElementById('surpriseCampaignButton')?.value || DEFAULT_SURPRISE_CAMPAIGN.buttonText).trim();
+  const xVal = document.getElementById('surpriseCropXVal');
+  const yVal = document.getElementById('surpriseCropYVal');
+  const zVal = document.getElementById('surpriseCropZoomVal');
+  if(xVal) xVal.textContent = `${Math.round(cropX)}%`;
+  if(yVal) yVal.textContent = `${Math.round(cropY)}%`;
+  if(zVal) zVal.textContent = `${cropZoom.toFixed(2)}x`;
 }
 function renderSurpriseCampaignSettings(){
   const cfg = getSurpriseCampaignSettings();
@@ -2016,6 +2104,9 @@ function renderSurpriseCampaignSettings(){
   if(document.getElementById('surpriseCampaignContent')) document.getElementById('surpriseCampaignContent').value = cfg.content || '';
   if(document.getElementById('surpriseCampaignImage')) document.getElementById('surpriseCampaignImage').value = cfg.image || '';
   if(document.getElementById('surpriseCampaignButton')) document.getElementById('surpriseCampaignButton').value = cfg.buttonText || '';
+  if(document.getElementById('surpriseCampaignCropX')) document.getElementById('surpriseCampaignCropX').value = String(Number.isFinite(Number(cfg.cropX)) ? Number(cfg.cropX) : 50);
+  if(document.getElementById('surpriseCampaignCropY')) document.getElementById('surpriseCampaignCropY').value = String(Number.isFinite(Number(cfg.cropY)) ? Number(cfg.cropY) : 50);
+  if(document.getElementById('surpriseCampaignCropZoom')) document.getElementById('surpriseCampaignCropZoom').value = String(Number.isFinite(Number(cfg.cropZoom)) ? Number(cfg.cropZoom) : 1.02);
   if(document.getElementById('surpriseCampaignTargetMode')) document.getElementById('surpriseCampaignTargetMode').value = cfg.targetMode || 'products';
   if(document.getElementById('surpriseCampaignTargetCategory')) document.getElementById('surpriseCampaignTargetCategory').value = cfg.targetCategory || '';
   if(document.getElementById('surpriseCampaignTargetProduct')) document.getElementById('surpriseCampaignTargetProduct').value = cfg.targetProduct || '';
@@ -2057,6 +2148,9 @@ function saveSurpriseCampaignSettings(){
     content: (document.getElementById('surpriseCampaignContent')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.content,
     image: (document.getElementById('surpriseCampaignImage')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.image,
     buttonText: (document.getElementById('surpriseCampaignButton')?.value || '').trim() || DEFAULT_SURPRISE_CAMPAIGN.buttonText,
+    cropX: Math.max(0, Math.min(100, Number(document.getElementById('surpriseCampaignCropX')?.value) || 50)),
+    cropY: Math.max(0, Math.min(100, Number(document.getElementById('surpriseCampaignCropY')?.value) || 50)),
+    cropZoom: Math.max(1, Math.min(1.8, Number(document.getElementById('surpriseCampaignCropZoom')?.value) || 1.02)),
     targetMode,
     targetCategory,
     targetProduct,
@@ -5339,7 +5433,19 @@ document.addEventListener('DOMContentLoaded',()=>{
     zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag');const files=Array.from(e.dataTransfer.files||[]);if(files.length){const input=document.getElementById('f-imageFile');const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));input.files=dt.files;handleImageSelect(input);}});
   }
   document.getElementById('homePromoImage')?.addEventListener('input', updateHomePromoPreview);
+  ['homePromoCampaignLabel','homePromoTitle','homePromoSubtitle','homePromoFeature1','homePromoFeature2','homePromoFeature3','homePromoFeature1Enabled','homePromoFeature2Enabled','homePromoFeature3Enabled'].forEach((id)=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', updateHomePromoPreview);
+    el.addEventListener('change', updateHomePromoPreview);
+  });
   document.getElementById('surpriseCampaignImage')?.addEventListener('input', updateSurpriseCampaignPreview);
+  ['surpriseCampaignBadge','surpriseCampaignTitle','surpriseCampaignContent','surpriseCampaignButton','surpriseCampaignCropX','surpriseCampaignCropY','surpriseCampaignCropZoom'].forEach((id)=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', updateSurpriseCampaignPreview);
+    el.addEventListener('change', updateSurpriseCampaignPreview);
+  });
   document.getElementById('surpriseCampaignTargetMode')?.addEventListener('change', refreshSurpriseTargetPath);
   document.getElementById('surpriseCampaignTargetCategory')?.addEventListener('change', refreshSurpriseTargetPath);
   document.getElementById('surpriseCampaignTargetProduct')?.addEventListener('change', refreshSurpriseTargetPath);

@@ -1146,6 +1146,15 @@
     }
 
 .payment-logo-img{height:30px;width:auto;max-width:none;display:block;border:1px solid rgba(201,168,76,.34);border-radius:999px;background:#fff;padding:4px 9px;box-shadow:0 8px 16px rgba(34,28,20,0.08)}
+
+    .account-premium-strip{padding:12px 5% 4px;background:linear-gradient(180deg,rgba(255,255,255,0.55),rgba(255,255,255,0));display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .account-premium-chip{border:1px solid rgba(255,255,255,0.78);border-radius:14px;padding:10px;background:linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,255,255,0.62));box-shadow:0 12px 24px rgba(48,39,26,0.08);font-size:0.72rem;color:#4f463a;display:flex;align-items:center;gap:8px}
+    .account-premium-chip i{color:#a8843c}
+    .account-premium-chip b{display:block;color:#1f1a14;font-size:0.76rem}
+    .tabs-wrap{margin-top:8px;border-top:1px solid rgba(255,255,255,0.64)}
+    .section-shell,.orders-shell{border:1px solid rgba(255,255,255,0.92);box-shadow:0 30px 62px rgba(55,46,34,0.12)}
+    @media (max-width:760px){.account-premium-strip{grid-template-columns:1fr;gap:8px;padding-top:8px}}
+
 </style>
 
 </head>
@@ -1174,6 +1183,12 @@
         </div>
     </div>
     <div class="user-bar-badge"><i class="fas fa-star" style="margin-right:4px"></i> Üye</div>
+</div>
+
+<div class="account-premium-strip" aria-label="Premium hesap özet kartları">
+    <div class="account-premium-chip"><i class="fas fa-crown"></i><span><b>VIP Sipariş Takibi</b>Anlık durum güncellemesi</span></div>
+    <div class="account-premium-chip"><i class="fas fa-shield-heart"></i><span><b>Güvenli Hesap</b>Verileriniz korumalı altyapıda</span></div>
+    <div class="account-premium-chip"><i class="fas fa-headset"></i><span><b>Özel Destek</b>Hızlı geri dönüş ayrıcalığı</span></div>
 </div>
 
 <!-- TABS -->

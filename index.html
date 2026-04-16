@@ -950,6 +950,13 @@ header{background:rgba(255,255,255,.95);border-bottom:1px solid rgba(34,45,78,.0
 .sort-bar{border:1px solid rgba(34,45,78,.13);background:linear-gradient(135deg,#fff,#f8f9fc)}
 footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255,.74)}
 
+footer{position:relative;overflow:hidden;background:linear-gradient(130deg,#0d111a,#1b2740 48%,#25385a)!important;color:rgba(245,248,255,.86)!important;border-top:1px solid rgba(218,176,88,.34)!important;padding:34px 5% 30px;border-radius:26px 26px 0 0;margin-top:22px;box-shadow:0 -12px 34px rgba(8,12,22,.2)}
+footer::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 18% 10%,rgba(214,168,73,.2),transparent 42%),radial-gradient(circle at 80% 20%,rgba(126,153,222,.2),transparent 45%);pointer-events:none}
+footer > *{position:relative;z-index:1}
+footer p{font-size:.76rem;letter-spacing:1.4px}
+.footer-links a{color:rgba(246,212,141,.95)!important;font-weight:600}
+.payment-logo-strip{margin-top:14px}
+
 
 .hero-ad-slider{margin:20px auto 12px;max-width:1180px;width:100%;display:none;animation:fadeUp 0.55s ease both 0.08s}
 .hero-ad-slider-shell{position:relative;width:100%;margin:0;overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 36px rgba(0,0,0,.28)}
@@ -1049,7 +1056,24 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .home-featured-head h3{font-size:clamp(1.35rem,2.8vw,2rem);color:#fff;line-height:1.18;margin-top:8px}
 .home-featured-head p{font-size:.82rem;color:rgba(255,255,255,.74);margin-top:6px;max-width:62ch}
 .home-featured-cta{border:none;border-radius:12px;background:linear-gradient(120deg,#ffd982,#f0ba58);color:#312109;padding:12px 18px;font-weight:800;letter-spacing:.9px;cursor:pointer;box-shadow:0 10px 22px rgba(0,0,0,.28)}
-.home-featured-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+
+.premium-panel-shell{position:relative}
+.premium-panel-viewport{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;scroll-behavior:smooth;padding:4px 2px 8px}
+.premium-panel-viewport::-webkit-scrollbar{display:none}
+.premium-panel-track{display:flex;gap:14px;min-width:max-content}
+.premium-panel-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:42px;height:42px;border:none;border-radius:999px;background:rgba(11,17,32,.84);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(2,6,16,.35)}
+.premium-panel-nav:hover{background:#fff;color:#10182a}
+.premium-panel-nav.prev{left:-12px}
+.premium-panel-nav.next{right:-12px}
+.premium-panel-shell[data-tone="light"] .premium-panel-nav{background:rgba(255,255,255,.95);color:#1b2741;border:1px solid rgba(34,45,78,.16)}
+.premium-panel-shell[data-tone="light"] .premium-panel-nav:hover{background:#1e2d4b;color:#fff}
+.home-featured-grid{display:flex;gap:12px;min-width:max-content}
+.home-featured-card{flex:0 0 clamp(220px,25vw,285px);scroll-snap-align:start}
+.home-live-track{display:flex;gap:12px;min-width:max-content}
+.home-live-item{flex:0 0 min(270px,76vw);scroll-snap-align:start}
+.campaign-stream-grid{display:flex;gap:16px;min-width:max-content}
+.campaign-stream-card{flex:0 0 min(340px,78vw);scroll-snap-align:start}
+@media(max-width:760px){.premium-panel-nav{display:none}.home-featured-card{flex-basis:min(230px,76vw)}.campaign-stream-card{flex-basis:min(290px,84vw)}}
 .home-featured-card{border:none;background:rgba(255,255,255,.96);border-radius:16px;overflow:hidden;box-shadow:0 14px 30px rgba(6,8,16,.2);cursor:pointer;text-align:left;display:flex;flex-direction:column;min-height:100%}
 .home-featured-card img{width:100%;height:180px;object-fit:cover;display:block}
 .home-featured-card-body{padding:12px 12px 14px;display:flex;flex-direction:column;gap:6px}
@@ -1072,7 +1096,7 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
 .home-live-item strong{font-size:.84rem;color:#1d2942;line-height:1.3;display:block}
 .home-live-item span{font-size:.73rem;color:#54607b;display:block;margin-top:4px}
 .home-live-item em{font-style:normal;font-size:.7rem;color:#8a93a7;text-transform:uppercase;letter-spacing:.8px;display:block;margin-top:5px}
-@media(max-width:760px){.home-featured-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-featured-card img{height:132px}.home-live-shell{padding:12px}}
+@media(max-width:760px){.home-featured-card img{height:132px}.home-live-shell{padding:12px}}
 .products-featured-banner{margin-bottom:16px;padding:14px;border-radius:16px;background:linear-gradient(130deg,#141b2d,#2c3e66);border:1px solid rgba(214,168,73,.45);box-shadow:0 12px 28px rgba(0,0,0,.22)}
 .products-featured-banner h3{color:#fff;font-size:1.05rem;margin-bottom:10px}
 .products-featured-track{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
@@ -1366,7 +1390,13 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
         </div>
         <button class="home-featured-cta" type="button" onclick="go('products')">Tüm Ürünleri Keşfet</button>
       </div>
-      <div class="home-featured-grid" id="homeFeaturedGrid"></div>
+      <div class="premium-panel-shell" data-tone="dark">
+        <button class="premium-panel-nav prev" type="button" data-panel-prev="homeFeaturedViewport" aria-label="Öne çıkan ürünleri sola kaydır"><i class="fas fa-chevron-left"></i></button>
+        <div class="premium-panel-viewport" id="homeFeaturedViewport">
+          <div class="home-featured-grid premium-panel-track" id="homeFeaturedGrid"></div>
+        </div>
+        <button class="premium-panel-nav next" type="button" data-panel-next="homeFeaturedViewport" aria-label="Öne çıkan ürünleri sağa kaydır"><i class="fas fa-chevron-right"></i></button>
+      </div>
     </div>
   </section>
   <section class="home-live-vitrine" aria-label="Canlı ürün vitrini">
@@ -1376,7 +1406,13 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
           <b id="homeLiveLabel"><i class="fas fa-bolt"></i> Ana Sayfa Canlı Ürün Vitrini</b>
           </div>
       </div>
-      <div class="home-live-track" id="homeLiveShowcaseTrack"></div>
+      <div class="premium-panel-shell" data-tone="light">
+        <button class="premium-panel-nav prev" type="button" data-panel-prev="homeLiveShowcaseViewport" aria-label="Canlı vitrini sola kaydır"><i class="fas fa-chevron-left"></i></button>
+        <div class="premium-panel-viewport" id="homeLiveShowcaseViewport">
+          <div class="home-live-track premium-panel-track" id="homeLiveShowcaseTrack"></div>
+        </div>
+        <button class="premium-panel-nav next" type="button" data-panel-next="homeLiveShowcaseViewport" aria-label="Canlı vitrini sağa kaydır"><i class="fas fa-chevron-right"></i></button>
+      </div>
     </div>
   </section>
   <div class="local-seo-section">
@@ -1515,7 +1551,13 @@ footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255
             <div class="campaign-stream-sub">Kuponlu kampanyaları tek tıkla sepete uygulayın.</div>
           </div>
         </div>
-        <div class="campaign-stream-grid" id="homeCampaignGrid"></div>
+        <div class="premium-panel-shell" data-tone="light">
+          <button class="premium-panel-nav prev" type="button" data-panel-prev="homeCampaignViewport" aria-label="Kampanyaları sola kaydır"><i class="fas fa-chevron-left"></i></button>
+          <div class="premium-panel-viewport" id="homeCampaignViewport">
+            <div class="campaign-stream-grid premium-panel-track" id="homeCampaignGrid"></div>
+          </div>
+          <button class="premium-panel-nav next" type="button" data-panel-next="homeCampaignViewport" aria-label="Kampanyaları sağa kaydır"><i class="fas fa-chevron-right"></i></button>
+        </div>
       </section>
       <div class="sort-bar">
         <input type="text" id="searchInput" placeholder="🔍 Ürün ara..." oninput="applyFilters()">
@@ -2516,12 +2558,45 @@ function getRenderableProductsByIds(ids=[]){
     .filter((p)=>p && p.active);
   return list.length ? list : PRODUCTS.filter(p=>p.active).slice(0, 8);
 }
+
+function scrollPremiumPanel(panelId, direction=1){
+  const viewport = document.getElementById(panelId);
+  if(!viewport) return;
+  const amount = Math.max(260, Math.round(viewport.clientWidth * 0.84)) * direction;
+  viewport.scrollBy({ left: amount, behavior:'smooth' });
+}
+
+function refreshPremiumPanel(panelId){
+  const viewport = document.getElementById(panelId);
+  if(!viewport) return;
+  const prevBtn = document.querySelector(`[data-panel-prev="${panelId}"]`);
+  const nextBtn = document.querySelector(`[data-panel-next="${panelId}"]`);
+  const updateState = ()=>{
+    const canScroll = viewport.scrollWidth - viewport.clientWidth > 8;
+    const atStart = viewport.scrollLeft <= 8;
+    const atEnd = viewport.scrollLeft + viewport.clientWidth >= viewport.scrollWidth - 8;
+    if(prevBtn){ prevBtn.style.display = canScroll ? 'flex' : 'none'; prevBtn.disabled = atStart; }
+    if(nextBtn){ nextBtn.style.display = canScroll ? 'flex' : 'none'; nextBtn.disabled = atEnd; }
+  };
+  updateState();
+  viewport.removeEventListener('scroll', viewport.__panelListener || (()=>{}));
+  viewport.__panelListener = updateState;
+  viewport.addEventListener('scroll', viewport.__panelListener, { passive:true });
+}
+
+function initPremiumPanelControls(){
+  document.querySelectorAll('[data-panel-prev]').forEach((btn)=>{ btn.onclick = ()=>scrollPremiumPanel(btn.getAttribute('data-panel-prev'), -1); });
+  document.querySelectorAll('[data-panel-next]').forEach((btn)=>{ btn.onclick = ()=>scrollPremiumPanel(btn.getAttribute('data-panel-next'), 1); });
+  ['homeFeaturedViewport','homeLiveShowcaseViewport','homeCampaignViewport'].forEach(refreshPremiumPanel);
+}
+
 function renderHomeFeaturedProducts(){
   const featuredCfg = readHomeFeaturedConfig();
   const liveCfg = readHomeLiveShowcaseConfig();
   const featuredGrid = document.getElementById('homeFeaturedGrid');
   const liveTrack = document.getElementById('homeLiveShowcaseTrack');
   if(!featuredGrid || !liveTrack) return;
+  initPremiumPanelControls();
 
   const titleEl = document.getElementById('homeFeaturedTitle');
   const subtitleEl = document.getElementById('homeFeaturedSubtitle');
@@ -2569,6 +2644,8 @@ function renderHomeFeaturedProducts(){
       </article>
     `).join('');
   }
+  refreshPremiumPanel('homeFeaturedViewport');
+  refreshPremiumPanel('homeLiveShowcaseViewport');
 }
 function loadHomeFeaturedProductIds(){
   renderHomeFeaturedProducts();
@@ -5897,6 +5974,7 @@ function renderCampaignCards(containerId, { compact=false } = {}){
       <button class="campaign-stream-btn" type="button" onclick="${action}">${btnLabel}</button>
     </article>`;
   }).join('');
+  if(containerId === 'homeCampaignGrid') refreshPremiumPanel('homeCampaignViewport');
 }
 
 function renderCampaignCouponHints(){

@@ -1,5 +1,44 @@
 [
   {
+    "id": "dalga-desenli-sacakli-modern-fon-perde-krem-1776348667554-49",
+    "name": "Dalga Desenli Saçaklı Modern Fon Perde Krem",
+    "desc": "Evinizin atmosferini anında değiştirecek, modern hatları ve özgün dokusuyla öne çıkan bu fon perde; zarafeti ve kaliteyi bir araya getiriyor. Kumaş üzerindeki yatay dalga formundaki özel saçak (püskül) detayları, mekanınıza derinlik ve dinamizm katar.",
+    "image": "resimler/1776348496279-product-0-0a8dda55-8635-49cb-ae22-db428247ca9c-55032988-4f62-4fa6-8805-f0397fe337d2.jpeg",
+    "images": [
+      "resimler/1776348496279-product-0-0a8dda55-8635-49cb-ae22-db428247ca9c-55032988-4f62-4fa6-8805-f0397fe337d2.jpeg",
+      "resimler/1776348492988-product-1-4545be26-336d-42a5-989a-22496ea38b5a-acb6dffb-b4f4-4e74-bab9-b734a55a6ee2.jpeg"
+    ],
+    "price": 1499,
+    "oldPrice": 1899,
+    "cat": "fonperdeler",
+    "unit": "adet",
+    "isMeter": false,
+    "isSquareMeter": false,
+    "features": "",
+    "badge": "%21 İNDİRİM",
+    "discountType": "percent",
+    "discountValue": null,
+    "stock": 54,
+    "serialNumber": null,
+    "isLiveShowcase": true,
+    "isFeatured": true,
+    "active": true,
+    "specs": {
+      "• Özgün Tasarım": "Yatay şeritler halinde uzanan dalga desenli kabartma dokusuyla standart perdelerden ayrılır.",
+      "• Kumaş Yapısı": "Tok ve dökümlü bir yapıya sahiptir. Işığı soft bir şekilde kırarak odanıza sıcak bir hava verir.",
+      "• Renk": "Zamansız krem/ekru tonu sayesinde her türlü mobilya ve duvar rengiyle kusursuz uyum sağlar.",
+      "• Kullanım Alanı": "Salon, yatak odası ve misafir odaları için idealdir. Hem klasik hem de modern dekorasyon tarzlarına hitap eder.",
+      "• Dikiş Kalitesi": "Pilesi düzgün duran, ağır gramajlı ve yüksek kaliteli işçilikle üretilmiştir."
+    },
+    "care": {
+      "1.Yıkama": "Çamaşır makinesinde 30 derecede, hassas programda yıkayınız.",
+      "2.Deterjan": "Renkli veya beyazlara özel sıvı deterjan kullanılması, ağartıcı (çamaşır suyu) kullanılmaması tavsiye edilir.",
+      "3.Sıkma": "Kumaşın formunu koruması için düşük devirde sıkma yapınız veya sıkma yapmadan nemli asınız.",
+      "4.Ütüleme": "Kumaşın ütü istemeyen özelliği mevcuttur; ancak ihtiyaç halinde düşük ısıda tersten hafifçe ütülenebilir.",
+      "5.Kurutma": "Tamburlu kurutma makinesinde kurutulmamalıdır."
+    }
+  },
+  {
     "id": "tul-perde-1776261310862-572",
     "name": "Tül Perde",
     "desc": "Şık tasarımı ve kaliteli kumaşıyla yaşam alanınıza uyum sağlar. Ölçü ve kullanım ihtiyacınıza göre güvenle tercih edebilirsiniz.",

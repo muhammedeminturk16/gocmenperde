@@ -2618,7 +2618,13 @@ async function sendLiveSupportReply(id){
     if(!res.ok){
       throw new Error(payload?.error || 'Yanıt gönderilemedi');
     }
-    aToast(payload?.mailSent ? '✓ Müşteriye e-posta ile yanıt gönderildi.' : 'Yanıt kaydedildi ancak mail servisinde sorun olabilir.','success');
+    const mailError = payload?.mailError ? ` (${payload.mailError})` : '';
+    aToast(
+      payload?.mailSent
+        ? '✓ Müşteriye e-posta ile yanıt gönderildi.'
+        : `Yanıt kaydedildi ancak mail servisinde sorun olabilir${mailError}.`,
+      'success'
+    );
     await loadLiveSupportMessages();
   }catch(err){
     aToast(err.message || 'Yanıt gönderilemedi');

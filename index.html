@@ -2417,7 +2417,9 @@ async function submitLiveSupport(event){
     }
     if(statusEl){
       statusEl.className = 'live-support-status success';
-      statusEl.textContent = `Mesajınız alındı. Talep numaranız: ${payload.ticketNo || '-'}. En kısa sürede e-posta ile dönüş yapacağız.`;
+      statusEl.textContent = payload?.mailSent
+        ? `Mesajınız alındı. Talep numaranız: ${payload.ticketNo || '-'}. En kısa sürede e-posta ile dönüş yapacağız.`
+        : `Mesajınız kaydedildi (Talep No: ${payload.ticketNo || '-'}), ancak bildirim e-postasında sorun var. Lütfen yöneticiye bilgi verin.`;
     }
     document.getElementById('liveSupportForm')?.reset();
   }catch(err){

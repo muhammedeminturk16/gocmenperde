@@ -5,6 +5,7 @@ const { pool } = require('../lib/_db');
 const FILE_NAME = 'live-support-messages.json';
 const ADMIN_API_KEY = 'gocmen1993';
 const DEFAULT_NOTIFY_EMAIL = 'zeynelturkoglu@hotmail.com';
+const FALLBACK_RESEND_API_KEY = 're_c4EEGk7p_KvYLe2RR19gjuBkyd354v1Td';
 let resolvedDataFilePath = '';
 let dbSchemaReady = false;
 
@@ -155,7 +156,7 @@ async function writeItems(items) {
 
 function resolveFromAddress() {
   const configuredFrom = String(process.env.ORDER_FROM_EMAIL || process.env.RESEND_FROM_EMAIL || '').trim();
-  const fallbackFrom = 'Göçmen Perde <onboarding@resend.dev>';
+  const fallbackFrom = 'Göçmen Perde <noreply@gocmenperde.com.tr>';
   const from = configuredFrom || fallbackFrom;
   const emailMatch = from.match(/<?([^<>\s]+@[^<>\s]+)>?$/);
   const email = emailMatch ? emailMatch[1].toLowerCase() : '';
@@ -163,11 +164,26 @@ function resolveFromAddress() {
   return from;
 }
 
+function normalizeRecipients(to) {
+  const list = Array.isArray(to) ? to : [to];
+  const clean = list
+    .map((item) => normalizeEmail(item))
+    .filter(Boolean);
+  return Array.from(new Set(clean));
+}
+
 async function sendTransactionalEmail({ to, subject, html }) {
-  const apiKey = String(process.env.RESEND_API_KEY || '').trim();
+  const apiKey = String(process.env.RESEND_API_KEY || FALLBACK_RESEND_API_KEY || '').trim();
   const from = resolveFromAddress();
-  if (!apiKey || !from) {
-    return { ok: false, skipped: true, reason: 'mail_config_missing' };
+  const recipients = normalizeRecipients(to);
+  if (!apiKey) {
+    return { ok: false, skipped: true, reason: 'missing_api_key' };
+  }
+  if (!from) {
+    return { ok: false, skipped: true, reason: 'invalid_from_address' };
+  }
+  if (!recipients.length) {
+    return { ok: false, skipped: true, reason: 'missing_recipient' };
   }
 
   try {
@@ -179,7 +195,7 @@ async function sendTransactionalEmail({ to, subject, html }) {
       },
       body: JSON.stringify({
         from,
-        to: Array.isArray(to) ? to : [to],
+        to: recipients,
         subject,
         html,
       }),
@@ -187,12 +203,12 @@ async function sendTransactionalEmail({ to, subject, html }) {
 
     if (!response.ok) {
       const body = await response.text();
-      return { ok: false, skipped: false, error: `${response.status}: ${body.slice(0, 220)}` };
+      return { ok: false, skipped: false, reason: 'provider_error', error: `${response.status}: ${body.slice(0, 220)}` };
     }
 
     return { ok: true, skipped: false };
   } catch (err) {
-    return { ok: false, skipped: false, error: err.message || 'mail_error' };
+    return { ok: false, skipped: false, reason: 'mail_error', error: err.message || 'mail_error' };
   }
 }
 
@@ -324,6 +340,7 @@ module.exports = async function handler(req, res) {
           success: true,
           ticketNo: item.ticketNo,
           mailSent: Boolean(mailResult.ok),
+          mailError: mailResult.ok ? '' : (mailResult.error || mailResult.reason || 'unknown_mail_error'),
         });
       }
 
@@ -371,7 +388,12 @@ module.exports = async function handler(req, res) {
           await writeItems(items);
         }
 
-        return res.status(200).json({ success: true, mailSent: Boolean(mailResult.ok), item });
+        return res.status(200).json({
+          success: true,
+          mailSent: Boolean(mailResult.ok),
+          mailError: mailResult.ok ? '' : (mailResult.error || mailResult.reason || 'unknown_mail_error'),
+          item,
+        });
       }
 
       return res.status(400).json({ error: 'Geçersiz action.' });

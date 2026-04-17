@@ -73,7 +73,8 @@ function normalizeEmail(value) {
 function normalizePhone(value) {
   const digits = String(value || '').replace(/\D+/g, '');
   if (!digits) return '';
-  if (digits.length >= 10 && digits.length <= 13) return digits;
+  if (digits.length === 10) return `0${digits}`;
+  if (digits.length === 11 && digits.startsWith('0')) return digits;
   return '';
 }
 

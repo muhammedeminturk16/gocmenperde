@@ -18,6 +18,7 @@ const ORDER_STATUS_ALIASES = {
 const DEFAULT_ADMIN_EMAIL = 'muhammedeminturk.16@gmail.com';
 const TRACKING_DIR = path.join(process.cwd(), 'server', '.data');
 const TRACKING_FILE = path.join(TRACKING_DIR, 'order-tracking.json');
+const ORDER_NO_DIGITS = 14;
 
 let cachedEmailColumn = null;
 let cachedCustomerEmailColumns = null;
@@ -61,9 +62,16 @@ module.exports = async function handler(req, res) {
         total: validation.value.total,
         note: validation.value.note,
       });
+      const createdOrder = insertResult.rows[0] || {};
+      const orderId = Number(createdOrder.id || 0);
+      const orderNo = (await ensureOrderTrackingRecord({
+        orderId,
+        createdAt: createdOrder.created_at,
+      })) || String(orderId);
 
       const emailResult = await sendOrderCreatedEmails({
-        orderId: insertResult.rows[0].id,
+        orderId,
+        orderNo,
         customer: { name: validation.value.name, phone: validation.value.phone, email: cleanEmail, address: validation.value.address },
         note: validation.value.note,
         payment: validation.value.payment,
@@ -73,7 +81,8 @@ module.exports = async function handler(req, res) {
 
       return res.status(201).json({
         success: true,
-        order_id: insertResult.rows[0].id,
+        order_id: orderId,
+        order_no: orderNo,
         email: emailResult,
       });
     }
@@ -100,14 +109,14 @@ module.exports = async function handler(req, res) {
 
     if (action === 'track' && req.method === 'GET') {
       const rawOrderNo = String(req.query?.orderNo || '').trim();
-      const orderId = Number(rawOrderNo.replace(/[^\d]/g, ''));
-      if (!Number.isInteger(orderId) || orderId <= 0) {
+      const resolved = await resolveOrderLookup(rawOrderNo);
+      if (!resolved.ok) {
         return res.status(400).json({ error: 'Geçerli bir sipariş numarası girin.' });
       }
 
       const result = await pool.query(
         'SELECT id, musteri_adi, durum, created_at FROM siparisler WHERE id = $1 LIMIT 1',
-        [orderId]
+        [resolved.orderId]
       );
       if (!result.rows.length) {
         return res.status(404).json({ error: 'Sipariş bulunamadı.' });
@@ -195,11 +204,12 @@ async function getOrderEmailColumn() {
   }
 }
 
-async function sendOrderCreatedEmails({ orderId, customer, note, payment, items, total }) {
+async function sendOrderCreatedEmails({ orderId, orderNo, customer, note, payment, items, total }) {
   const customerHtml = buildOrderEmailHtml({
     title: 'Siparişiniz Alındı',
-    subtitle: 'Sipariş özetiniz hazır. Detayları aşağıda görebilirsiniz.',
+    subtitle: `Sipariş numaranız: ${orderNo}. Bu numarayla siparişinizi kolayca sorgulayabilirsiniz.`,
     accent: '#c9a84c',
+    orderNo,
     customer,
     payment,
     items,
@@ -209,8 +219,9 @@ async function sendOrderCreatedEmails({ orderId, customer, note, payment, items,
 
   const adminHtml = buildOrderEmailHtml({
     title: 'Yeni Sipariş Geldi',
-    subtitle: `Yeni sipariş numarası: #${orderId}`,
+    subtitle: `Yeni sipariş numarası: ${orderNo} (DB #${orderId})`,
     accent: '#0f0e0d',
+    orderNo,
     customer,
     payment,
     items,
@@ -445,7 +456,7 @@ function paymentLabel(payment) {
   return labels[payment] || payment || 'Belirtilmedi';
 }
 
-function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items, total, note, extra = '' }) {
+function buildOrderEmailHtml({ title, subtitle, accent, orderNo = '', customer, payment, items, total, note, extra = '' }) {
   const siteUrl = resolveSiteUrl();
   const customerOrdersUrl = `${siteUrl}/hesabim.html?tab=orders`;
   const accentColor = String(accent || '#1f4f7a').trim() || '#1f4f7a';
@@ -511,6 +522,7 @@ function buildOrderEmailHtml({ title, subtitle, accent, customer, payment, items
         <h2 style="margin:0 0 10px;font-size:18px;color:#111827 !important">Müşteri Bilgileri</h2>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:0 8px;margin-bottom:14px">
           <tr><td style="width:130px;color:#4b5563 !important;font-size:13px">Ad Soyad</td><td style="font-size:14px;font-weight:700;color:#111827 !important">${escapeHtml(customer?.name || '-')}</td></tr>
+          <tr><td style="color:#4b5563 !important;font-size:13px">Sipariş No</td><td style="font-size:14px;font-weight:800;color:#111827 !important">${escapeHtml(orderNo || '-')}</td></tr>
           <tr><td style="color:#4b5563 !important;font-size:13px">Telefon</td><td style="font-size:14px;color:#1f2937 !important">${escapeHtml(customer?.phone || '-')}</td></tr>
           <tr><td style="color:#4b5563 !important;font-size:13px">E-posta</td><td style="font-size:14px;color:#1d4ed8 !important;text-decoration:underline">${escapeHtml(customer?.email || '-')}</td></tr>
           <tr><td style="color:#4b5563 !important;font-size:13px">Ödeme</td><td style="font-size:14px;color:#1f2937 !important">${escapeHtml(paymentLabel(payment))}</td></tr>
@@ -639,11 +651,15 @@ function resolveFromAddress() {
 async function withTrackingData(orders = []) {
   if (!Array.isArray(orders) || !orders.length) return [];
   const store = await readTrackingStore();
-  return orders.map((order) => {
+  let storeDirty = false;
+  const mapped = orders.map((order) => {
     const key = String(order.id || '');
-    const record = store[key] || {};
+    const ensured = ensureOrderNoRecord(store, key, Number(order.id || 0));
+    const record = ensured.record;
+    if (ensured.changed) storeDirty = true;
     return {
       ...order,
+      order_no: String(record.orderNo || ''),
       tracking: {
         code: String(record.code || ''),
         history: buildTrackingHistory({
@@ -654,6 +670,8 @@ async function withTrackingData(orders = []) {
       },
     };
   });
+  if (storeDirty) await writeTrackingStore(store);
+  return mapped;
 }
 
 function buildTrackingHistory({ createdAt, currentStatus, storedHistory }) {
@@ -670,7 +688,7 @@ async function upsertTracking({ orderId, newStatus, createdAt, trackingNote, tra
   if (!Number.isInteger(orderId) || orderId <= 0) return;
   const store = await readTrackingStore();
   const key = String(orderId);
-  const record = store[key] || {};
+  const record = ensureOrderNoRecord(store, key, orderId).record;
   const prevHistory = Array.isArray(record.history) ? record.history : [];
   const safeNote = String(trackingNote || '').trim().slice(0, 350);
   const safeCode = String(trackingCode || '').trim().slice(0, 80);
@@ -694,6 +712,68 @@ async function upsertTracking({ orderId, newStatus, createdAt, trackingNote, tra
   record.history = prevHistory.slice(-40);
   store[key] = record;
   await writeTrackingStore(store);
+}
+
+async function ensureOrderTrackingRecord({ orderId, createdAt }) {
+  if (!Number.isInteger(orderId) || orderId <= 0) return '';
+  const store = await readTrackingStore();
+  const key = String(orderId);
+  const record = ensureOrderNoRecord(store, key, orderId).record;
+  if (!Array.isArray(record.history) || !record.history.length) {
+    record.history = [{
+      status: 'Beklemede',
+      note: 'Sipariş kaydı oluşturuldu.',
+      at: createdAt || new Date().toISOString(),
+    }];
+  }
+  store[key] = record;
+  await writeTrackingStore(store);
+  return String(record.orderNo || '');
+}
+
+async function resolveOrderLookup(rawValue) {
+  const digits = String(rawValue || '').replace(/\D+/g, '');
+  if (!digits) return { ok: false, orderId: 0 };
+  const store = await readTrackingStore();
+  const matchByOrderNo = Object.entries(store).find(([, record]) => String(record?.orderNo || '') === digits);
+  if (matchByOrderNo) {
+    return { ok: true, orderId: Number(matchByOrderNo[0]) };
+  }
+  const maybeId = Number(digits);
+  if (!Number.isInteger(maybeId) || maybeId <= 0) return { ok: false, orderId: 0 };
+  return { ok: true, orderId: maybeId };
+}
+
+function ensureOrderNoRecord(store, key, orderId) {
+  const record = store[key] && typeof store[key] === 'object' ? store[key] : {};
+  const current = String(record.orderNo || '').replace(/\D+/g, '');
+  let changed = false;
+  if (current.length !== ORDER_NO_DIGITS) {
+    record.orderNo = generateOrderNo(orderId, store, key);
+    changed = true;
+  }
+  if (!store[key] || store[key] !== record) changed = true;
+  store[key] = record;
+  return { record, changed };
+}
+
+function generateOrderNo(orderId, store, currentKey) {
+  const used = new Set(
+    Object.entries(store || {})
+      .filter(([key]) => String(key) !== String(currentKey))
+      .map(([, value]) => String(value?.orderNo || '').replace(/\D+/g, ''))
+      .filter((value) => value.length === ORDER_NO_DIGITS)
+  );
+  const suffix = String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+  const timePart = Date.now().toString().slice(-7);
+  const idPart = String(Math.max(1, Number(orderId) || 1)).padStart(2, '0').slice(-2);
+  let candidate = `${timePart}${idPart}${suffix}`;
+  let tries = 0;
+  while (used.has(candidate) && tries < 20) {
+    tries += 1;
+    candidate = `${Date.now().toString().slice(-7)}${String(Math.floor(Math.random() * 10000000)).padStart(7, '0')}`;
+  }
+  return candidate.slice(0, ORDER_NO_DIGITS);
 }
 
 async function readTrackingStore() {

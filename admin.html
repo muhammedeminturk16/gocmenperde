@@ -942,7 +942,7 @@ Işık: Yarı Geçirgen"></textarea></div>
     <div class="premium-list" id="premiumFeaturedList" style="display:none"></div>
   </div>
   <div class="toolbar">
-    <input type="text" class="search-box" placeholder="🔍 Ürün ara..." id="adminSearch" oninput="filterTable()">
+    <input type="text" class="search-box" placeholder="🔍 Ürün / barkod / SEO kelime ara..." id="adminSearch" oninput="filterTable()">
     <select class="filter-sel" id="catFilter" onchange="filterTable()">
       <option value="">Tüm Kategoriler</option>
     </select>
@@ -1355,6 +1355,10 @@ Işık: Yarı Geçirgen"></textarea></div>
       <div class="form-row">
         <div class="fg"><label>Stok Miktarı</label><input type="number" id="f-stock" placeholder="Sınırsız = boş bırak"></div>
         <div class="fg"><label>Seri Numarası (opsiyonel)</label><input type="text" id="f-serial" placeholder="Örn: GP-2026-001"></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Barkod (GTIN/EAN/UPC)</label><input type="text" id="f-barcode" placeholder="Örn: 8681234567890"></div>
+        <div class="fg"><label>SEO Anahtar Kelimeler (virgülle)</label><input type="text" id="f-seoKeywords" placeholder="örn: fon perde, modern fon perde, mavi fon perde"></div>
       </div>
       <div class="form-row">
         <div class="fg"><label><input type="checkbox" id="f-isLiveShowcase"> Canlı Ürün Vitrininde göster</label></div>
@@ -2542,6 +2546,10 @@ function normalizeProductCatalog(product){
   }
   next.isLiveShowcase = Boolean(next.isLiveShowcase);
   next.isFeatured = Boolean(next.isFeatured);
+  next.barcode = String(next.barcode || next.barkod || '').trim() || null;
+  next.seoKeywords = Array.isArray(next.seoKeywords)
+    ? next.seoKeywords.map(x=>String(x||'').trim()).filter(Boolean)
+    : String(next.seoKeywords || '').split(',').map(x=>x.trim()).filter(Boolean);
   return next;
 }
 function getPileMeta(pileType){
@@ -3409,7 +3417,7 @@ function renderTable(list){
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:12px">
         <img src="${mainImage || placeholder}" class="product-thumb" onerror="this.src='${placeholder}'" alt="${p.name}">
-        <div class="product-name-cell">${p.name}<small>${p.id}</small></div>
+        <div class="product-name-cell">${p.name}<small>${p.id}</small>${p.barcode?`<small>Barkod: ${p.barcode}</small>`:''}</div>
       </div></td>
       <td><span class="badge badge-cat">${getCatLabel(p.cat)}</span></td>
       <td class="price-cell">${Number(p.price).toLocaleString('tr-TR')} ₺${p.unit&&p.unit!=='adet'?'<span class="price-old" style="text-decoration:none;font-size:0.72rem">/ '+p.unit+'</span>':''}${p.oldPrice?`<span class="price-old">${Number(p.oldPrice).toLocaleString('tr-TR')} ₺</span>`:''}</td>
@@ -3432,7 +3440,10 @@ function filterTable(){
   const cat = document.getElementById('catFilter').value;
   const status = document.getElementById('statusFilter').value;
   renderTable(PRODUCTS.filter(p=>{
-    if(q && !p.name.toLowerCase().includes(q) && !(p.id||'').toLowerCase().includes(q)) return false;
+    if(q){
+      const haystack = `${p.name||''} ${p.id||''} ${p.serialNumber||''} ${p.barcode||''} ${Array.isArray(p.seoKeywords)?p.seoKeywords.join(' '):(p.seoKeywords||'')}`.toLocaleLowerCase('tr');
+      if(!haystack.includes(q)) return false;
+    }
     if(cat && p.cat!==cat) return false;
     if(status==='active' && !p.active) return false;
     if(status==='inactive' && p.active) return false;
@@ -3453,7 +3464,7 @@ function addFavFromProduct(idx){
 function openAddModal(){
   document.getElementById('formModalTitle').innerText='Yeni Ürün Ekle';
   document.getElementById('editIndex').value='';
-  ['f-name','f-desc','f-price','f-oldprice','f-image','f-images','f-badge','f-features','f-specs','f-care','f-stock','f-serial','f-discountValue'].forEach(id=>document.getElementById(id).value='');
+  ['f-name','f-desc','f-price','f-oldprice','f-image','f-images','f-badge','f-features','f-specs','f-care','f-stock','f-serial','f-barcode','f-seoKeywords','f-discountValue'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-isLiveShowcase').checked=false;
   document.getElementById('f-isFeatured').checked=false;
   document.getElementById('f-discountType').value='manual';
@@ -3493,6 +3504,8 @@ function editProduct(idx){
   document.getElementById('f-features').value=p.features||'';
   document.getElementById('f-stock').value=p.stock!=null?p.stock:'';
   document.getElementById('f-serial').value=p.serialNumber||'';
+  document.getElementById('f-barcode').value=p.barcode||'';
+  document.getElementById('f-seoKeywords').value=Array.isArray(p.seoKeywords)?p.seoKeywords.join(', '):(p.seoKeywords||'');
   document.getElementById('f-isLiveShowcase').checked=!!p.isLiveShowcase;
   document.getElementById('f-isFeatured').checked=!!p.isFeatured;
   document.getElementById('f-specs').value=p.specs&&Object.keys(p.specs).length?objectToLinePairs(p.specs):'';
@@ -3589,6 +3602,14 @@ function addBulkItemCard(initialData={}){
       <div class="fg">
         <label>Seri Numarası (ops.)</label>
         <input type="text" class="bulk-serial" placeholder="Örn: GP-2026-001" value="${(initialData.serialNumber||'').replace(/"/g,'&quot;')}">
+      </div>
+      <div class="fg">
+        <label>Barkod (ops.)</label>
+        <input type="text" class="bulk-barcode" placeholder="Örn: 8681234567890" value="${(initialData.barcode||'').replace(/"/g,'&quot;')}">
+      </div>
+      <div class="fg">
+        <label>SEO Kelimeler (ops.)</label>
+        <input type="text" class="bulk-seo" placeholder="örn: zebra perde, stor perde" value="${(Array.isArray(initialData.seoKeywords)?initialData.seoKeywords.join(', '):(initialData.seoKeywords||'')).replace(/"/g,'&quot;')}">
       </div>
       <div class="fg">
         <label>Görsel Yükleme</label>
@@ -3775,6 +3796,8 @@ function saveBulkProducts(){
     const priceRaw=cards[i].querySelector('.bulk-price')?.value||'';
     const imageRaw=cards[i].querySelector('.bulk-image')?.value.trim()||'';
     const serialNumber=cards[i].querySelector('.bulk-serial')?.value.trim()||null;
+    const barcode=cards[i].querySelector('.bulk-barcode')?.value.trim()||null;
+    const seoKeywords=String(cards[i].querySelector('.bulk-seo')?.value||'').split(',').map(x=>x.trim()).filter(Boolean);
     const price=parseFloat(String(priceRaw).replace(',','.'));
     if(!name || !(price>0) || !imageRaw){aToast(`⚠️ ${i+1}. ürün panelinde ad/fiyat/resim zorunlu`, 'error');return;}
     const images=getBulkCardImages(cards[i]);
@@ -3788,6 +3811,8 @@ function saveBulkProducts(){
       features:sharedFeatures,badge,discountType:sharedDiscountType,discountValue:Number.isFinite(sharedDiscountValue)?sharedDiscountValue:null,
       stock:sharedStock!==''?parseInt(sharedStock):null,
       serialNumber,
+      barcode,
+      seoKeywords,
       isLiveShowcase:false,isFeatured:false,
       active:sharedActive,specs:sharedSpecs,care:sharedCare
     });
@@ -3846,6 +3871,8 @@ async function saveProduct(){
     discountValue: getVal('f-discountValue') ? Number.parseFloat(getVal('f-discountValue')) : null,
     stock: stockVal !== '' ? Number.parseInt(stockVal, 10) : null,
     serialNumber: String(getVal('f-serial')).trim() || null,
+    barcode: String(getVal('f-barcode')).trim() || null,
+    seoKeywords: String(getVal('f-seoKeywords')).split(',').map(x=>x.trim()).filter(Boolean),
     isLiveShowcase: document.getElementById('f-isLiveShowcase')?.checked || false,
     isFeatured: document.getElementById('f-isFeatured')?.checked || false,
     active: activeSwitchState,

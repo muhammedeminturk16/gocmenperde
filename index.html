@@ -4,8 +4,8 @@
 <meta name="google-site-verification" content="4fU9nd_ZSO0GTHVDdpMuHk-tI7NE26mjVLU_gWoz2As" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Bursa perdeci aramalarında güvenle tercih edilen Göçmen Perde: tül perde, zebra perde, stor perde, plise perde ve fon perde modelleri. Osmangazi'de keşif, özel ölçü, dikim ve montaj hizmeti.">
-<meta name="keywords" content="perde, perdeci, Bursa perde, Bursa perdeci, osmangazi perdeci, tül perde, zebra perde, stor perde, plise perde, fon perde, koltuk örtüsü">
+<meta name="description" id="metaDescription" content="Bursa perdeci aramalarında güvenle tercih edilen Göçmen Perde: tül perde, zebra perde, stor perde, plise perde ve fon perde modelleri. Osmangazi'de keşif, özel ölçü, dikim ve montaj hizmeti.">
+<meta name="keywords" id="metaKeywords" content="perde, perdeci, Bursa perde, Bursa perdeci, osmangazi perdeci, tül perde, zebra perde, stor perde, plise perde, fon perde, koltuk örtüsü">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://gocmenperde.com.tr/">
 <meta property="og:type" content="website">
@@ -2949,12 +2949,91 @@ async function fetchGithubContentsJSON(filePath){
   return JSON.parse(decoded);
 }
 
+
+function buildSeoKeywordPool(products=[]){
+  const set = new Set();
+  const add = (v='')=>{ const clean = String(v || '').trim(); if(clean) set.add(clean); };
+  products.forEach((p)=>{
+    add(p?.name);
+    add(p?.cat);
+    add(p?.serialNumber);
+    add(p?.barcode);
+    (Array.isArray(p?.seoKeywords) ? p.seoKeywords : []).forEach(add);
+  });
+  return [...set].slice(0, 120);
+}
+
+function updateProductSeoArtifacts(products=[]){
+  const activeProducts = (Array.isArray(products) ? products : []).filter(p=>p?.active !== false);
+  const pool = buildSeoKeywordPool(activeProducts);
+  const keywordsMeta = document.getElementById('metaKeywords');
+  if(keywordsMeta && pool.length){
+    keywordsMeta.setAttribute('content', pool.join(', '));
+  }
+
+  const descMeta = document.getElementById('metaDescription');
+  if(descMeta && activeProducts.length){
+    const sample = activeProducts.slice(0, 3).map((p)=>p.name).filter(Boolean).join(', ');
+    if(sample){
+      descMeta.setAttribute('content', `Göçmen Perde ürünleri: ${sample}. Barkod ve ürün kodu ile hızlı arama, Bursa içi ölçü ve montaj hizmeti.`);
+    }
+  }
+
+  const ldId = 'productStructuredData';
+  let ldNode = document.getElementById(ldId);
+  if(!ldNode){
+    ldNode = document.createElement('script');
+    ldNode.type = 'application/ld+json';
+    ldNode.id = ldId;
+    document.head.appendChild(ldNode);
+  }
+
+  const itemList = activeProducts.slice(0, 200).map((p, idx)=>{
+    const image = getPrimaryImage(p) || '';
+    const productUrl = `https://gocmenperde.com.tr/?product=${encodeURIComponent(String(p.id || ''))}#products`;
+    const data = {
+      '@type':'Product',
+      name: p.name || 'Ürün',
+      description: p.desc || '',
+      sku: p.serialNumber || p.id || undefined,
+      gtin: p.barcode || undefined,
+      category: p.cat || undefined,
+      image: image || undefined,
+      keywords: (Array.isArray(p.seoKeywords) && p.seoKeywords.length) ? p.seoKeywords.join(', ') : undefined,
+      url: productUrl,
+      brand: { '@type':'Brand', name:'Göçmen Perde' },
+      offers: {
+        '@type':'Offer',
+        priceCurrency: 'TRY',
+        price: Number(p.price) || 0,
+        availability: (Number(p.stock) > 0 || p.stock == null) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        url: productUrl
+      }
+    };
+    return {
+      '@type':'ListItem',
+      position: idx + 1,
+      url: productUrl,
+      item: Object.fromEntries(Object.entries(data).filter(([,v])=>v !== undefined && v !== ''))
+    };
+  });
+
+  const graph = {
+    '@context':'https://schema.org',
+    '@type':'ItemList',
+    name:'Göçmen Perde Ürün Kataloğu',
+    itemListElement: itemList
+  };
+  ldNode.textContent = JSON.stringify(graph);
+}
+
 function renderProductState(list, {withObserver=true} = {}){
   PRODUCTS = (Array.isArray(list) ? list : []).map(normalizeProductCatalog);
   processRestockNotifications(PRODUCTS);
   hydrateProductSocialData();
   syncCategoriesFromAdmin();
   renderProducts(PRODUCTS);
+  updateProductSeoArtifacts(PRODUCTS);
   renderHomeFeaturedProducts();
   renderProductsFeaturedBanner();
   renderHomePromoPanel();
@@ -3366,6 +3445,10 @@ function normalizeProductCatalog(product){
     next.isSquareMeter = true;
     next.isMeter = false;
   }
+  next.barcode = String(next.barcode || next.barkod || '').trim() || null;
+  next.seoKeywords = Array.isArray(next.seoKeywords)
+    ? next.seoKeywords.map(x=>String(x || '').trim()).filter(Boolean)
+    : String(next.seoKeywords || '').split(',').map(x=>x.trim()).filter(Boolean);
   return next;
 }
 function isSquareMeterProduct(product){
@@ -3688,6 +3771,7 @@ function buildCard(p, index=0){
       <div class="product-desc">${p.desc}</div>
       <div class="product-meta-row">
         ${variantLabel ? `<span class="meta-chip"><i class="fas fa-palette"></i>${variantLabel}</span>` : ''}
+        ${p.barcode ? `<span class="meta-chip"><i class="fas fa-barcode"></i>${p.barcode}</span>` : ''}
         <span class="meta-chip ${stockClass}"><i class="fas fa-box"></i>${stockLabel}</span>
       </div>
       <div class="product-rating"><span class="stars">${renderStarText(social.avgRating)}</span><b>${social.avgRating.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1})}</b><span>(${social.reviewCount} yorum)</span></div>
@@ -3844,7 +3928,7 @@ function applyFilters(){
   let filtered = PRODUCTS.filter(p => {
     const social = getProductSocial(p.id);
     if(!p.active) return false;
-    const haystack = `${p.name || ''} ${p.desc || ''} ${p.cat || ''} ${p.features || ''} ${p.serialNumber || ''}`.toLocaleLowerCase('tr');
+    const haystack = `${p.name || ''} ${p.desc || ''} ${p.cat || ''} ${p.features || ''} ${p.serialNumber || ''} ${p.barcode || ''} ${Array.isArray(p.seoKeywords)?p.seoKeywords.join(' '):''}`.toLocaleLowerCase('tr');
     if(search && !haystack.includes(search)) return false;
     if(p.price < minP || p.price > maxP) return false;
     if(!catAll && activeCats.length > 0 && !activeCats.includes(p.cat)) return false;
@@ -4145,6 +4229,7 @@ function openModalFromProduct(id){
         <span class="modal-commerce-label">Stok Durumu</span>
         <span class="modal-commerce-value">${stockText}</span>
       </div>
+      ${p.barcode ? `<div class="modal-commerce-item"><span class="modal-commerce-label">Barkod</span><span class="modal-commerce-value">${p.barcode}</span></div>` : ''}
     </div>
   `;
   const feats = [

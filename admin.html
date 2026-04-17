@@ -773,7 +773,9 @@ tbody tr:hover td{background:#fdfcf8}
       <option value="">Tüm Durumlar</option>
       <option value="Beklemede">Beklemede</option>
       <option value="Hazırlanıyor">Hazırlanıyor</option>
-      <option value="Kargoda">Kargoda</option>
+      <option value="Kargoya Verildi">Kargoya Verildi</option>
+      <option value="Yolda">Yolda</option>
+      <option value="Dağıtımda">Dağıtımda</option>
       <option value="Teslim Edildi">Teslim Edildi</option>
       <option value="İptal">İptal</option>
     </select>
@@ -1320,8 +1322,10 @@ Işık: Yarı Geçirgen"></textarea></div>
     <div class="form-modal-body" id="orderModalBody"></div>
     <div class="form-modal-footer" style="flex-wrap:wrap;gap:10px">
       <select id="orderStatusSelect" style="flex:1;min-width:150px;padding:10px 14px;border:1.5px solid var(--border-2);border-radius:9px;font-size:0.85rem;background:var(--cream);outline:none">
-        <option>Beklemede</option><option>Hazırlanıyor</option><option>Kargoda</option><option>Teslim Edildi</option><option>İptal</option>
+        <option>Beklemede</option><option>Hazırlanıyor</option><option>Kargoya Verildi</option><option>Yolda</option><option>Dağıtımda</option><option>Teslim Edildi</option><option>İptal</option>
       </select>
+      <input id="orderTrackingCode" type="text" placeholder="Kargo Takip Kodu" style="flex:1;min-width:170px;padding:10px 14px;border:1.5px solid var(--border-2);border-radius:9px;font-size:0.84rem;background:var(--cream);outline:none">
+      <input id="orderTrackingNote" type="text" placeholder="Durum notu (opsiyonel)" style="flex:1;min-width:170px;padding:10px 14px;border:1.5px solid var(--border-2);border-radius:9px;font-size:0.84rem;background:var(--cream);outline:none">
       <button class="btn btn-success" onclick="updateOrderStatus()"><i class="fas fa-save"></i> Güncelle</button>
       <button class="btn btn-wa" id="orderWaBtn"><i class="fab fa-whatsapp"></i> WA</button>
     </div>
@@ -3150,7 +3154,7 @@ function getSampleOrders(){
   return [
     {id:1001,musteri_adi:'Ayşe Kaya',telefon:'0532 111 2233',adres:'Nilüfer, Bursa',urunler:JSON.stringify([{name:'Blackout Perde',quantity:2,price:450},{name:'Koltuk Örtüsü',quantity:1,price:320}]),toplam:1220,odeme_yontemi:'Havale',durum:'Beklemede',created_at:new Date(Date.now()-3600000).toISOString(),siparis_notu:'Kapıya bırakabilirsiniz'},
     {id:1002,musteri_adi:'Mehmet Demir',telefon:'0541 223 4455',adres:'Osmangazi, Bursa',urunler:JSON.stringify([{name:'Pamuklu Çarşaf',quantity:3,price:280}]),toplam:840,odeme_yontemi:'Kapıda Ödeme',durum:'Hazırlanıyor',created_at:new Date(Date.now()-86400000).toISOString(),siparis_notu:''},
-    {id:1003,musteri_adi:'Fatma Yıldız',telefon:'0555 334 5566',adres:'Yıldırım, Bursa',urunler:JSON.stringify([{name:'Blackout Perde',quantity:1,price:450}]),toplam:450,odeme_yontemi:'Kredi Kartı',durum:'Kargoda',created_at:new Date(Date.now()-172800000).toISOString(),siparis_notu:''},
+    {id:1003,musteri_adi:'Fatma Yıldız',telefon:'0555 334 5566',adres:'Yıldırım, Bursa',urunler:JSON.stringify([{name:'Blackout Perde',quantity:1,price:450}]),toplam:450,odeme_yontemi:'Kredi Kartı',durum:'Yolda',created_at:new Date(Date.now()-172800000).toISOString(),siparis_notu:''},
     {id:1004,musteri_adi:'Ali Çelik',telefon:'0505 445 6677',adres:'Gemlik, Bursa',urunler:JSON.stringify([{name:'Koltuk Örtüsü Seti',quantity:1,price:320}]),toplam:320,odeme_yontemi:'Havale',durum:'Teslim Edildi',created_at:new Date(Date.now()-345600000).toISOString(),siparis_notu:''},
     {id:1005,musteri_adi:'Zeynep Arslan',telefon:'0533 556 7788',adres:'Mudanya, Bursa',urunler:JSON.stringify([{name:'Pamuklu Çarşaf',quantity:2,price:280}]),toplam:560,odeme_yontemi:'Kapıda Ödeme',durum:'İptal',created_at:new Date(Date.now()-432000000).toISOString(),siparis_notu:'Renk beğenmedi'}
   ];
@@ -3178,7 +3182,9 @@ function filterOrders(){
 const ORDER_STATUS_STYLES = {
   'Beklemede':   {bg:'#fff3cd',color:'#856404'},
   'Hazırlanıyor':{bg:'#cff4fc',color:'#055160'},
-  'Kargoda':     {bg:'#d1ecf1',color:'#0c5460'},
+  'Kargoya Verildi': {bg:'#dbeafe',color:'#1e40af'},
+  'Yolda':       {bg:'#d1ecf1',color:'#0c5460'},
+  'Dağıtımda':   {bg:'#ede9fe',color:'#5b21b6'},
   'Teslim Edildi':{bg:'#d4edda',color:'#155724'},
   'İptal':       {bg:'#f8d7da',color:'#721c24'}
 };
@@ -3245,6 +3251,8 @@ function openOrderModal(id){
     <div class="info-row highlight"><label>Toplam Tutar</label><span>${Number(o.toplam).toLocaleString('tr-TR')} ₺</span></div>
     <div style="margin-top:8px"><span style="padding:5px 12px;border-radius:20px;font-size:0.72rem;font-weight:700;background:${ss.bg};color:${ss.color}">Mevcut Durum: ${o.durum||'Beklemede'}</span></div>`;
   document.getElementById('orderStatusSelect').value = o.durum||'Beklemede';
+  document.getElementById('orderTrackingCode').value = o?.tracking?.code || '';
+  document.getElementById('orderTrackingNote').value = '';
   document.getElementById('orderWaBtn').onclick = ()=>waOrder(id);
   document.getElementById('orderModal').classList.add('open');
 }
@@ -3266,10 +3274,12 @@ function waOrder(id){
 
 async function updateOrderStatus(){
   const durum = document.getElementById('orderStatusSelect').value;
+  const trackingCode = document.getElementById('orderTrackingCode')?.value?.trim() || '';
+  const trackingNote = document.getElementById('orderTrackingNote')?.value?.trim() || '';
   try{
     const r = await apiFetch('/api/orders?action=update-status',{
       method:'POST',headers:{'Content-Type':'application/json','x-admin-key':getAdminApiKey()},
-      body:JSON.stringify({id:currentOrderId,durum})
+      body:JSON.stringify({id:currentOrderId,durum,trackingCode,trackingNote})
     });
     const data = await r.json();
     if(data.success){

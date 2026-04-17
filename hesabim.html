@@ -1234,7 +1234,7 @@
                 <button class="order-pill active" data-status="all" onclick="setOrderFilter('all', this)">Tümü</button>
                 <button class="order-pill" data-status="Beklemede" onclick="setOrderFilter('Beklemede', this)">Beklemede</button>
                 <button class="order-pill" data-status="Hazırlanıyor" onclick="setOrderFilter('Hazırlanıyor', this)">Hazırlanıyor</button>
-                <button class="order-pill" data-status="Kargoda" onclick="setOrderFilter('Kargoda', this)">Kargoda</button>
+                <button class="order-pill" data-status="Kargo Süreci" onclick="setOrderFilter('Kargo Süreci', this)">Kargo Süreci</button>
                 <button class="order-pill" data-status="Teslim Edildi" onclick="setOrderFilter('Teslim Edildi', this)">Teslim</button>
             </div>
         </div>
@@ -1691,7 +1691,7 @@ async function loadOrders() {
 
 function updateOrderStats(orders = []) {
     const total = orders.length;
-    const active = orders.filter(o => ['Beklemede', 'Hazırlanıyor', 'Kargoda'].includes(o.durum)).length;
+    const active = orders.filter(o => ['Beklemede', 'Hazırlanıyor', 'Kargoya Verildi', 'Yolda', 'Dağıtımda'].includes(o.durum)).length;
     const spent = orders.reduce((acc, o) => acc + Number(o.toplam || 0), 0);
     document.getElementById('statTotalOrders').textContent = String(total);
     document.getElementById('statActiveOrders').textContent = String(active);
@@ -1707,7 +1707,11 @@ function setOrderFilter(status, btn) {
 
 function applyOrderFilters() {
     const query = (document.getElementById('orderSearchInput')?.value || '').trim().toLocaleLowerCase('tr-TR');
-    let filtered = allOrders.filter(o => activeOrderFilter === 'all' ? true : (o.durum === activeOrderFilter));
+    let filtered = allOrders.filter(o => {
+        if (activeOrderFilter === 'all') return true;
+        if (activeOrderFilter === 'Kargo Süreci') return ['Kargoya Verildi', 'Yolda', 'Dağıtımda'].includes(o.durum);
+        return o.durum === activeOrderFilter;
+    });
     if (query) {
         filtered = filtered.filter(o => {
             const items = safeJsonParse(o.urunler, o.urunler || []);
@@ -1721,11 +1725,11 @@ function applyOrderFilters() {
 }
 
 function getStatusClass(durum) {
-    const map = { 'Beklemede': 'beklemede', 'Hazırlanıyor': 'hazirlaniyor', 'Kargoda': 'kargoda', 'Teslim Edildi': 'teslim', 'İptal': 'iptal' };
+    const map = { 'Beklemede': 'beklemede', 'Hazırlanıyor': 'hazirlaniyor', 'Kargoya Verildi': 'kargoda', 'Yolda': 'kargoda', 'Dağıtımda': 'hazirlaniyor', 'Teslim Edildi': 'teslim', 'İptal': 'iptal' };
     return map[durum] || 'beklemede';
 }
 function getStatusIcon(durum) {
-    const map = { 'Beklemede': 'fas fa-clock', 'Hazırlanıyor': 'fas fa-box', 'Kargoda': 'fas fa-truck', 'Teslim Edildi': 'fas fa-check-circle', 'İptal': 'fas fa-times-circle' };
+    const map = { 'Beklemede': 'fas fa-clock', 'Hazırlanıyor': 'fas fa-box', 'Kargoya Verildi': 'fas fa-dolly', 'Yolda': 'fas fa-truck', 'Dağıtımda': 'fas fa-truck-fast', 'Teslim Edildi': 'fas fa-check-circle', 'İptal': 'fas fa-times-circle' };
     return map[durum] || 'fas fa-clock';
 }
 
@@ -1879,7 +1883,7 @@ function openOrderDetail(orderId) {
 
 function buildTimeline(order, orderDate) {
     const durum = order.durum || 'Beklemede';
-    const statusOrder = ['Beklemede', 'Hazırlanıyor', 'Kargoda', 'Teslim Edildi'];
+    const statusOrder = ['Beklemede', 'Hazırlanıyor', 'Kargoya Verildi', 'Yolda', 'Dağıtımda', 'Teslim Edildi'];
     const isCancelled = durum === 'İptal';
 
     if (isCancelled) {
@@ -1908,7 +1912,9 @@ function buildTimeline(order, orderDate) {
     const stepDefs = [
         { icon: 'fas fa-file-alt', label: 'Sipariş Verildi', desc: 'Siparişiniz tarafımıza ulaştı.' },
         { icon: 'fas fa-box', label: 'Hazırlanıyor', desc: 'Ürününüz özenle hazırlanıyor.' },
-        { icon: 'fas fa-truck', label: 'Kargoya Teslim Edildi', desc: 'Siparişiniz kargo şirketine verildi.' },
+        { icon: 'fas fa-dolly', label: 'Kargoya Verildi', desc: 'Siparişiniz kargo firmasına teslim edildi.' },
+        { icon: 'fas fa-truck', label: 'Yolda', desc: 'Kargonuz transfer sürecinde.' },
+        { icon: 'fas fa-truck-fast', label: 'Dağıtımda', desc: 'Kargonuz gün içinde teslim edilmek üzere dağıtıma çıktı.' },
         { icon: 'fas fa-check-circle', label: 'Teslim Edildi', desc: 'Siparişiniz teslim edildi. İyi günler!' }
     ];
 
@@ -1952,7 +1958,7 @@ function getEstimatedDeliveryDate(order, orderDate){
     }
     if (durum === 'İptal') return 'İptal edildi';
     const eta = new Date(orderDate);
-    eta.setDate(eta.getDate() + (durum === 'Kargoda' ? 1 : 3));
+    eta.setDate(eta.getDate() + ((durum === 'Dağıtımda') ? 0 : ((durum === 'Yolda' || durum === 'Kargoya Verildi') ? 1 : 3)));
     return eta.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 

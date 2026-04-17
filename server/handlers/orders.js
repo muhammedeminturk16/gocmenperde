@@ -1,16 +1,23 @@
 const { verifyAuthToken } = require('../lib/_auth-utils');
+const fs = require('fs/promises');
+const path = require('path');
 
 const { pool } = require('../lib/_db');
 const ADMIN_API_KEY = 'gocmen1993';
-const ORDER_STATUSES = ['Beklemede', 'Hazırlanıyor', 'Kargoda', 'Teslim Edildi', 'İptal'];
+const ORDER_STATUSES = ['Beklemede', 'Hazırlanıyor', 'Kargoya Verildi', 'Yolda', 'Dağıtımda', 'Teslim Edildi', 'İptal'];
 const ORDER_STATUS_ALIASES = {
   beklemede: 'Beklemede',
   hazirlaniyor: 'Hazırlanıyor',
-  kargoda: 'Kargoda',
+  kargoyaverildi: 'Kargoya Verildi',
+  kargoda: 'Yolda',
+  yolda: 'Yolda',
+  dagitimda: 'Dağıtımda',
   teslimedildi: 'Teslim Edildi',
   iptal: 'İptal',
 };
 const DEFAULT_ADMIN_EMAIL = 'muhammedeminturk.16@gmail.com';
+const TRACKING_DIR = path.join(process.cwd(), 'server', '.data');
+const TRACKING_FILE = path.join(TRACKING_DIR, 'order-tracking.json');
 
 let cachedEmailColumn = null;
 let cachedCustomerEmailColumns = null;
@@ -78,7 +85,8 @@ module.exports = async function handler(req, res) {
         'SELECT id, musteri_adi, telefon, adres, odeme_yontemi, urunler, toplam, durum, siparis_notu, created_at FROM siparisler WHERE musteri_id = $1 ORDER BY created_at DESC',
         [user.id]
       );
-      return res.status(200).json({ success: true, orders: result.rows });
+      const orders = await withTrackingData(result.rows);
+      return res.status(200).json({ success: true, orders });
     }
 
     if (action === 'all' && req.method === 'GET') {
@@ -86,14 +94,33 @@ module.exports = async function handler(req, res) {
         return res.status(403).json({ error: 'Yetkisiz.' });
       }
       const result = await pool.query('SELECT * FROM siparisler ORDER BY created_at DESC');
-      return res.status(200).json({ success: true, orders: result.rows });
+      const orders = await withTrackingData(result.rows);
+      return res.status(200).json({ success: true, orders });
+    }
+
+    if (action === 'track' && req.method === 'GET') {
+      const rawOrderNo = String(req.query?.orderNo || '').trim();
+      const orderId = Number(rawOrderNo.replace(/[^\d]/g, ''));
+      if (!Number.isInteger(orderId) || orderId <= 0) {
+        return res.status(400).json({ error: 'Geçerli bir sipariş numarası girin.' });
+      }
+
+      const result = await pool.query(
+        'SELECT id, musteri_adi, durum, created_at FROM siparisler WHERE id = $1 LIMIT 1',
+        [orderId]
+      );
+      if (!result.rows.length) {
+        return res.status(404).json({ error: 'Sipariş bulunamadı.' });
+      }
+      const order = (await withTrackingData(result.rows))[0];
+      return res.status(200).json({ success: true, order });
     }
 
     if (action === 'update-status' && req.method === 'POST') {
       if (req.headers['x-admin-key'] !== ADMIN_API_KEY) {
         return res.status(403).json({ error: 'Yetkisiz.' });
       }
-      const { id, durum } = req.body || {};
+      const { id, durum, trackingNote, trackingCode } = req.body || {};
       const normalizedStatus = normalizeOrderStatus(durum);
       if (!id || !normalizedStatus || !ORDER_STATUSES.includes(normalizedStatus)) {
         return res.status(400).json({ error: 'Geçersiz veri.' });
@@ -107,6 +134,13 @@ module.exports = async function handler(req, res) {
       const oldStatus = order.durum || 'Beklemede';
 
       await pool.query('UPDATE siparisler SET durum = $1 WHERE id = $2', [normalizedStatus, id]);
+      await upsertTracking({
+        orderId: Number(id),
+        newStatus: normalizedStatus,
+        createdAt: order.created_at,
+        trackingNote,
+        trackingCode,
+      });
 
       if (oldStatus !== normalizedStatus) {
         await sendOrderStatusEmail({
@@ -599,4 +633,86 @@ function resolveFromAddress() {
   }
 
   return from;
+}
+
+
+async function withTrackingData(orders = []) {
+  if (!Array.isArray(orders) || !orders.length) return [];
+  const store = await readTrackingStore();
+  return orders.map((order) => {
+    const key = String(order.id || '');
+    const record = store[key] || {};
+    return {
+      ...order,
+      tracking: {
+        code: String(record.code || ''),
+        history: buildTrackingHistory({
+          createdAt: order.created_at,
+          currentStatus: order.durum || 'Beklemede',
+          storedHistory: record.history,
+        }),
+      },
+    };
+  });
+}
+
+function buildTrackingHistory({ createdAt, currentStatus, storedHistory }) {
+  const timeline = Array.isArray(storedHistory) ? storedHistory.filter(Boolean) : [];
+  if (timeline.length) return timeline;
+  return [{
+    status: currentStatus || 'Beklemede',
+    note: 'Sipariş kaydı oluşturuldu.',
+    at: createdAt || new Date().toISOString(),
+  }];
+}
+
+async function upsertTracking({ orderId, newStatus, createdAt, trackingNote, trackingCode }) {
+  if (!Number.isInteger(orderId) || orderId <= 0) return;
+  const store = await readTrackingStore();
+  const key = String(orderId);
+  const record = store[key] || {};
+  const prevHistory = Array.isArray(record.history) ? record.history : [];
+  const safeNote = String(trackingNote || '').trim().slice(0, 350);
+  const safeCode = String(trackingCode || '').trim().slice(0, 80);
+
+  if (safeCode) record.code = safeCode;
+  if (!prevHistory.length) {
+    prevHistory.push({
+      status: 'Beklemede',
+      note: 'Sipariş kaydı oluşturuldu.',
+      at: createdAt || new Date().toISOString(),
+    });
+  }
+  const lastStatus = String(prevHistory[prevHistory.length - 1]?.status || '');
+  if (lastStatus !== newStatus || safeNote) {
+    prevHistory.push({
+      status: newStatus,
+      note: safeNote || `${newStatus} olarak güncellendi.`,
+      at: new Date().toISOString(),
+    });
+  }
+  record.history = prevHistory.slice(-40);
+  store[key] = record;
+  await writeTrackingStore(store);
+}
+
+async function readTrackingStore() {
+  try {
+    const raw = await fs.readFile(TRACKING_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (err) {
+    if (err.code === 'ENOENT') return {};
+    console.warn('Tracking verisi okunamadı:', err.message);
+    return {};
+  }
+}
+
+async function writeTrackingStore(store) {
+  try {
+    await fs.mkdir(TRACKING_DIR, { recursive: true });
+    await fs.writeFile(TRACKING_FILE, JSON.stringify(store, null, 2), 'utf8');
+  } catch (err) {
+    console.warn('Tracking verisi yazılamadı:', err.message);
+  }
 }

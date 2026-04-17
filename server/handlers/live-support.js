@@ -251,16 +251,16 @@ function buildCustomerReplyTemplate({ item, subject, message }) {
           </tr>
         </table>
         <div style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12)">Yanıtınız Hazır</div>
-        <h2 style="margin:12px 0 0;font-size:26px;line-height:1.34;color:#ffffff;text-shadow:0 1px 1px rgba(0,0,0,.12)">${escapeHtml(subject)}</h2>
+        <h2 style="margin:12px 0 0;font-size:26px;line-height:1.34;color:#ffffff !important;text-shadow:0 1px 1px rgba(0,0,0,.12)">${escapeHtml(subject)}</h2>
       </div>
-      <div style="padding:26px 26px 28px;color:#0f172a;line-height:1.78;font-size:15px;background:linear-gradient(145deg,rgba(245,248,255,.9),rgba(255,255,255,.95))">
-        <p style="margin:0 0 12px;color:#1e293b">Merhaba <b>${escapeHtml(item.fullName)}</b>,</p>
-        <p style="margin:0 0 14px;color:#334155">Talebiniz için teşekkür ederiz. Ekibimizin yanıtı aşağıda yer alıyor:</p>
-        <div style="padding:16px;border-radius:16px;background:#ffffff;border:1px solid #cfdcf9;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);white-space:pre-wrap;color:#0f172a;font-size:16px;line-height:1.7">${escapeHtml(message)}</div>
-        <div style="margin-top:18px;padding:14px 16px;border-radius:14px;background:#f1f5ff;border:1px dashed #c2d3ff;font-size:13px;color:#475569">
+      <div style="padding:26px 26px 28px;color:#0b1220 !important;line-height:1.78;font-size:15px;background:#f8fbff">
+        <p style="margin:0 0 12px;color:#0f172a !important">Merhaba <b>${escapeHtml(item.fullName)}</b>,</p>
+        <p style="margin:0 0 14px;color:#1e293b !important">Talebiniz için teşekkür ederiz. Ekibimizin yanıtı aşağıda yer alıyor:</p>
+        <div style="padding:16px;border-radius:16px;background:#ffffff;border:1px solid #cfdcf9;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);white-space:pre-wrap;color:#0b1220 !important;font-size:16px;line-height:1.7">${escapeHtml(message)}</div>
+        <div style="margin-top:18px;padding:14px 16px;border-radius:14px;background:#ecf3ff;border:1px dashed #9cb8f7;font-size:13px;color:#1f2a44 !important">
           Talep No: <b style="color:#0f172a;font-size:15px">${escapeHtml(item.ticketNo)}</b>
         </div>
-        <div style="margin-top:14px;font-size:12px;color:#64748b">
+        <div style="margin-top:14px;font-size:12px;color:#334155 !important">
           Bu e-posta otomatik bilgilendirme amaçlı gönderilmiştir.
         </div>
       </div>
@@ -359,6 +359,32 @@ module.exports = async function handler(req, res) {
           ticketNo: item.ticketNo,
           mailSent: Boolean(mailResult.ok),
           mailError: mailResult.ok ? '' : (mailResult.error || mailResult.reason || 'unknown_mail_error'),
+        });
+      }
+
+
+      if (action === 'query') {
+        const ticketNo = ensureText(req.body?.ticketNo, 40).toUpperCase();
+        if (!ticketNo || !/^DS-\d{4}-\d{5}$/.test(ticketNo)) {
+          return res.status(400).json({ error: 'Geçerli bir talep numarası girin (örn: DS-2026-00004).' });
+        }
+
+        const items = await readItems();
+        const item = items.find((entry) => String(entry.ticketNo || '').toUpperCase() === ticketNo);
+        if (!item) {
+          return res.status(404).json({ error: 'Talep bulunamadı.' });
+        }
+
+        return res.status(200).json({
+          success: true,
+          item: {
+            ticketNo: item.ticketNo,
+            status: item.status,
+            createdAt: item.createdAt,
+            repliedAt: item.repliedAt,
+            replySubject: item.replySubject,
+            replyMessage: item.replyMessage,
+          },
         });
       }
 

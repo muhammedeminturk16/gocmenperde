@@ -1343,7 +1343,7 @@
                     </div>
                     <div>
                         <label class="form-label">Telefon</label>
-                        <input type="text" id="pPhone" class="gp-input" placeholder="05xx xxx xx xx">
+                        <input type="text" id="pPhone" class="gp-input" placeholder="5xxxxxxxxx" maxlength="10" inputmode="numeric" oninput="sanitizeProfilePhone(this)">
                     </div>
                     <button class="gp-btn" onclick="updateProfile()"><i class="fas fa-save"></i> Güncelle</button>
                 </div>
@@ -2227,15 +2227,23 @@ async function loadProfile() {
         if (data.user) {
             document.getElementById('pName').value = data.user.ad_soyad || '';
             document.getElementById('pEmail').value = data.user.email || '';
-            document.getElementById('pPhone').value = data.user.telefon || '';
+            document.getElementById('pPhone').value = String(data.user.telefon || '').replace(/\D/g, '').replace(/^0/, '').slice(0, 10);
         }
     } catch(e) {}
 }
 
+function sanitizeProfilePhone(inputEl){
+    if(!inputEl) return;
+    const digits = String(inputEl.value || '').replace(/\D/g, '').slice(0,10);
+    if(inputEl.value !== digits) inputEl.value = digits;
+}
+
 async function updateProfile() {
     const ad_soyad = document.getElementById('pName').value.trim();
-    const telefon = document.getElementById('pPhone').value.trim();
+    const telefonDigits = document.getElementById('pPhone').value.trim().replace(/\D/g, '').slice(0,10);
+    const telefon = telefonDigits ? `0${telefonDigits}` : '';
     if (!ad_soyad) { showToast('⚠️ Ad soyad zorunlu'); return; }
+    if (telefonDigits && telefonDigits.length !== 10) { showToast('⚠️ Telefon numarasının 0’dan sonraki 10 hanesini girin'); return; }
     const r = await apiFetch('/api/auth?action=update', { method: 'PUT', headers: authHeaders(), body: JSON.stringify({ ad_soyad, telefon }) });
     const data = await r.json();
     if (data.success) {

@@ -1710,7 +1710,13 @@ footer p{font-size:.76rem;letter-spacing:1.4px}
       </div>
       <div class="form-grid">
         <div class="form-group"><label>Ad Soyad *</label><input type="text" id="f-name" class="form-input" placeholder="Adınız Soyadınız"></div>
-        <div class="form-group"><label>Telefon *</label><input type="tel" id="f-phone" class="form-input" placeholder="05xx xxx xx xx" inputmode="numeric" autocomplete="tel" oninput="sanitizePhoneInput(this)"></div>
+        <div class="form-group">
+          <label>Telefon *</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:46px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.04);font-weight:700;color:var(--gold)">0</span>
+            <input type="tel" id="f-phone" class="form-input" placeholder="5xx xxx xx xx" maxlength="10" inputmode="numeric" autocomplete="tel-national" oninput="sanitizePhoneInput(this)">
+          </div>
+        </div>
         <div class="form-group"><label>E-posta *</label><input type="email" id="f-email" class="form-input" placeholder="ornek@gmail.com"></div>
         <div class="form-group full"><label>Ödeme Yöntemi *</label>
           <select id="f-payment" class="form-input" onchange="togglePaymentFields()">
@@ -4961,6 +4967,12 @@ let districtsApiLoadingPromise = null;
 let STREET_MAP = {};
 let STREET_FETCH_CACHE = {};
 let neighborhoodStreetLoadingPromise = null;
+let neighborhoodRequestSeq = 0;
+let activeNeighborhoodRequestSeq = 0;
+let streetsRequestSeq = 0;
+let activeStreetsRequestSeq = 0;
+let neighborhoodFetchController = null;
+let streetFetchController = null;
 
 function toComparableCityName(value){
   return String(value || '').trim().toLocaleLowerCase('tr-TR');
@@ -5440,7 +5452,7 @@ function prefillOrderForm(){
   try{
     const u = JSON.parse(localStorage.getItem('user')||'{}');
     if(u.ad_soyad) document.getElementById('f-name').value = u.ad_soyad;
-    if(u.telefon) document.getElementById('f-phone').value = u.telefon;
+    if(u.telefon) document.getElementById('f-phone').value = String(u.telefon).replace(/\D/g, '').replace(/^0/, '').slice(0, 10);
     if(u.email) document.getElementById('f-email').value = u.email;
     if(u.adres) document.getElementById('f-addr').value = u.adres;
     updateCheckoutMembershipState(Boolean(u && u.id));
@@ -5532,6 +5544,16 @@ function resetNeighborhoodAndStreetSelectors(){
   STREET_MAP = {};
   STREET_FETCH_CACHE = {};
   neighborhoodStreetLoadingPromise = null;
+  activeNeighborhoodRequestSeq = 0;
+  activeStreetsRequestSeq = 0;
+  if(neighborhoodFetchController){
+    neighborhoodFetchController.abort();
+    neighborhoodFetchController = null;
+  }
+  if(streetFetchController){
+    streetFetchController.abort();
+    streetFetchController = null;
+  }
   const neighborhoodEl = document.getElementById('f-neighborhood');
   const neighborhoodOtherEl = document.getElementById('f-neighborhood-other');
   const avenueEl = document.getElementById('f-avenue');
@@ -5685,19 +5707,46 @@ async function loadNeighborhoodAndStreetData(){
     resetNeighborhoodAndStreetSelectors();
     return;
   }
+  const neighborhoodEl = document.getElementById('f-neighborhood');
+  const avenueEl = document.getElementById('f-avenue');
+  const streetEl = document.getElementById('f-street');
+  const requestSeq = ++neighborhoodRequestSeq;
+  activeNeighborhoodRequestSeq = requestSeq;
+  if(neighborhoodFetchController) neighborhoodFetchController.abort();
+  neighborhoodFetchController = new AbortController();
+  if(neighborhoodEl){
+    neighborhoodEl.innerHTML = '<option value="">Mahalleler yükleniyor...</option>';
+    neighborhoodEl.disabled = true;
+  }
+  if(avenueEl){
+    avenueEl.innerHTML = '<option value="">Cadde seçin</option><option value="diger">Diğeri</option>';
+    avenueEl.disabled = true;
+  }
+  if(streetEl){
+    streetEl.innerHTML = '<option value="">Sokak seçin</option><option value="diger">Diğeri</option>';
+    streetEl.disabled = true;
+  }
   neighborhoodStreetLoadingPromise = (async ()=>{
     try{
       const endpoint = `/api/address-data?city=${encodeURIComponent(city)}&district=${encodeURIComponent(district)}`;
-      const res = await fetch(endpoint);
+      const res = await fetch(endpoint, { signal: neighborhoodFetchController.signal });
       if(!res.ok) throw new Error('Mahalle/sokak verisi alınamadı');
       const payload = await res.json();
+      if(requestSeq !== activeNeighborhoodRequestSeq) return;
       STREET_MAP = payload?.streetsByNeighborhood || {};
       populateNeighborhoodOptions(payload?.neighborhoods || []);
       populateStreetOptions([]);
+      if(neighborhoodEl) neighborhoodEl.disabled = false;
+      if(avenueEl) avenueEl.disabled = false;
+      if(streetEl) streetEl.disabled = false;
     }catch(_){
+      if(requestSeq !== activeNeighborhoodRequestSeq) return;
       STREET_MAP = {};
       populateNeighborhoodOptions([]);
       populateStreetOptions([]);
+      if(neighborhoodEl) neighborhoodEl.disabled = false;
+      if(avenueEl) avenueEl.disabled = false;
+      if(streetEl) streetEl.disabled = false;
     }
   })();
   await neighborhoodStreetLoadingPromise;
@@ -5721,26 +5770,51 @@ async function fetchLatestStreetsForNeighborhood(neighborhoodName){
   if(Array.isArray(STREET_FETCH_CACHE[cacheKey])){
     return STREET_FETCH_CACHE[cacheKey];
   }
+  const requestSeq = ++streetsRequestSeq;
+  activeStreetsRequestSeq = requestSeq;
+  if(streetFetchController) streetFetchController.abort();
+  streetFetchController = new AbortController();
+  const avenueEl = document.getElementById('f-avenue');
+  const streetEl = document.getElementById('f-street');
+  if(avenueEl){
+    avenueEl.disabled = true;
+    avenueEl.innerHTML = '<option value="">Caddeler yükleniyor...</option>';
+  }
+  if(streetEl){
+    streetEl.disabled = true;
+    streetEl.innerHTML = '<option value="">Sokaklar yükleniyor...</option>';
+  }
 
   try{
     const endpoint = `/api/address-data?city=${encodeURIComponent(city)}&district=${encodeURIComponent(district)}&neighborhood=${encodeURIComponent(neighborhoodName)}`;
-    const res = await fetch(endpoint);
+    const res = await fetch(endpoint, { signal: streetFetchController.signal });
     if(!res.ok) throw new Error('Mahalle cadde/sokak verisi alınamadı');
     const payload = await res.json();
+    if(requestSeq !== activeStreetsRequestSeq) return [];
     const streets = uniqTrimmedStrings(payload?.streets || []);
     STREET_FETCH_CACHE[cacheKey] = streets;
     STREET_MAP[neighborhoodName] = streets;
+    if(avenueEl) avenueEl.disabled = false;
+    if(streetEl) streetEl.disabled = false;
     return streets;
   }catch(_){
+    if(requestSeq !== activeStreetsRequestSeq) return [];
     STREET_FETCH_CACHE[cacheKey] = [];
+    if(avenueEl) avenueEl.disabled = false;
+    if(streetEl) streetEl.disabled = false;
     return [];
   }
 }
 
 function sanitizePhoneInput(inputEl){
   if(!inputEl) return;
-  const cleaned = String(inputEl.value || '').replace(/[^\d\s()+-]/g, '');
+  const cleaned = String(inputEl.value || '').replace(/\D/g, '').slice(0, 10);
   if(cleaned !== inputEl.value) inputEl.value = cleaned;
+}
+
+function formatPhoneWithLeadingZero(value=''){
+  const digits = String(value || '').replace(/\D/g, '').slice(0, 10);
+  return digits ? `0${digits}` : '';
 }
 
 function syncAddressFromParts(){
@@ -6255,7 +6329,7 @@ async function safeReadJson(response){
 async function submitOrder(){
   if(!validateCheckoutForm()) return;
   const name=document.getElementById('f-name').value.trim();
-  const phone=document.getElementById('f-phone').value.trim();
+  const phone=formatPhoneWithLeadingZero(document.getElementById('f-phone').value.trim());
   const email=document.getElementById('f-email').value.trim().toLowerCase();
   const addr=document.getElementById('f-addr').value.trim();
   const note=document.getElementById('f-note').value.trim();
@@ -6474,7 +6548,7 @@ function validateCheckoutForm(){
   const phoneRaw = document.getElementById('f-phone')?.value || '';
   if(/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(phoneRaw)){ showToast('Telefon numarası alanına harf giremezsiniz'); return false; }
   const phone = phoneRaw.replace(/\D/g, '');
-  if(phone.length < 10){ showToast('Telefon numarası en az 10 haneli olmalı'); return false; }
+  if(phone.length !== 10){ showToast('Telefon numarasının 0’dan sonraki 10 hanesini girin'); return false; }
   const district = document.getElementById('f-district')?.value || '';
   const districtOther = document.getElementById('f-district-other')?.value.trim() || '';
   if(district === 'diger' && !districtOther){

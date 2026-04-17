@@ -104,7 +104,7 @@
         <div id="registerForm" class="form-group">
             <input type="text" id="rName" placeholder="Ad Soyad">
             <input type="email" id="rEmail" placeholder="E-posta (@gmail.com / @hotmail.com)">
-            <input type="text" id="rPhone" placeholder="Telefon (05xx...)">
+            <input type="text" id="rPhone" placeholder="Telefon (5xxxxxxxxx)" maxlength="10" inputmode="numeric" oninput="sanitizeRegisterPhone(this)">
             <input type="password" id="rPass" placeholder="Şifre (en az 6 karakter, harf + sayı)">
             <button class="btn" onclick="submitForm('register')" id="rBtn">HESAP OLUŞTUR</button>
         </div>
@@ -165,11 +165,22 @@
         document.getElementById(type + 'Form').classList.add('active');
     }
 
+    function sanitizeRegisterPhone(input){
+        if(!input) return;
+        const digits = String(input.value || '').replace(/\D/g, '').slice(0,10);
+        if(input.value !== digits) input.value = digits;
+    }
+
+    function registerPhoneWithLeadingZero(value=''){
+        const digits = String(value || '').replace(/\D/g, '').slice(0,10);
+        return digits ? `0${digits}` : '';
+    }
+
     async function submitForm(type) {
         const btn = document.getElementById(type === 'login' ? 'lBtn' : 'rBtn');
         const data = type === 'login' 
             ? { email: document.getElementById('lEmail').value, sifre: document.getElementById('lPass').value }
-            : { ad_soyad: document.getElementById('rName').value, email: document.getElementById('rEmail').value, telefon: document.getElementById('rPhone').value, sifre: document.getElementById('rPass').value };
+            : { ad_soyad: document.getElementById('rName').value, email: document.getElementById('rEmail').value, telefon: registerPhoneWithLeadingZero(document.getElementById('rPhone').value), sifre: document.getElementById('rPass').value };
 
         if (type === 'register') {
             const email = (data.email || '').trim().toLowerCase();
@@ -184,6 +195,11 @@
 
             if (!validPassword) {
                 alert('Şifre en az 6 karakter olmalı ve en az 1 harf ile 1 sayı içermelidir.');
+                return;
+            }
+            const phoneDigits = String(document.getElementById('rPhone').value || '').replace(/\D/g, '');
+            if (phoneDigits.length !== 10) {
+                alert('Telefon numarasının 0’dan sonraki 10 hanesini girin.');
                 return;
             }
         }

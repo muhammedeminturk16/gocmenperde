@@ -2087,7 +2087,7 @@
     ],
     "price": 300,
     "oldPrice": 400,
-    "cat": "tul-perde",
+    "cat": "ormetulperde",
     "unit": "mt",
     "isMeter": true,
     "isSquareMeter": false,
@@ -2097,6 +2097,8 @@
     "discountValue": null,
     "stock": 132,
     "serialNumber": null,
+    "barcode": null,
+    "seoKeywords": [],
     "isLiveShowcase": false,
     "isFeatured": false,
     "active": true,
@@ -2111,9 +2113,7 @@
       "• Sıkma": "Hafif sıkma yapılması veya sıkılmadan asılması tavsiye edilir.",
       "• Ütüleme": "Gerekirse düşük sıcaklıkta tersten ütülenebilir.",
       "• Kurulama": "Güneş ışığına maruz bırakmadan, gölgede kurutulması daha uygundur."
-    },
-    "barcode": null,
-    "seoKeywords": []
+    }
   },
   {
     "id": "plise-perde-gok-mavisi---opak-1774732878586",

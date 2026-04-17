@@ -1,10 +1,16 @@
 const fs = require('fs/promises');
 const path = require('path');
+const { pool } = require('../lib/_db');
 
 const FILE_NAME = 'live-support-messages.json';
 const ADMIN_API_KEY = 'gocmen1993';
 const DEFAULT_NOTIFY_EMAIL = 'zeynelturkoglu@hotmail.com';
 let resolvedDataFilePath = '';
+let dbSchemaReady = false;
+
+function isDbEnabled() {
+  return Boolean(String(process.env.DATABASE_URL || '').trim());
+}
 
 function getDataDirectoryCandidates() {
   const customDir = String(process.env.LIVE_SUPPORT_DATA_DIR || process.env.DATA_DIR || '').trim();
@@ -75,7 +81,63 @@ function ensureText(value, maxLength = 500) {
   return text.slice(0, maxLength);
 }
 
+function mapRowToItem(row = {}) {
+  return {
+    id: Number(row.id) || 0,
+    ticketNo: String(row.ticket_no || ''),
+    firstName: String(row.first_name || ''),
+    lastName: String(row.last_name || ''),
+    fullName: String(row.full_name || ''),
+    phone: String(row.phone || ''),
+    email: String(row.email || ''),
+    message: String(row.message || ''),
+    channel: String(row.channel || 'live-support'),
+    status: String(row.status || 'new'),
+    createdAt: row.created_at ? new Date(row.created_at).toISOString() : null,
+    repliedAt: row.replied_at ? new Date(row.replied_at).toISOString() : null,
+    replySubject: String(row.reply_subject || ''),
+    replyMessage: String(row.reply_message || ''),
+  };
+}
+
+async function ensureDbSchema() {
+  if (dbSchemaReady || !isDbEnabled()) return;
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS live_support_messages (
+      id SERIAL PRIMARY KEY,
+      ticket_no TEXT NOT NULL UNIQUE,
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      full_name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      email TEXT NOT NULL,
+      message TEXT NOT NULL,
+      channel TEXT NOT NULL DEFAULT 'live-support',
+      status TEXT NOT NULL DEFAULT 'new',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      replied_at TIMESTAMPTZ,
+      reply_subject TEXT NOT NULL DEFAULT '',
+      reply_message TEXT NOT NULL DEFAULT ''
+    )
+  `);
+  await pool.query('CREATE INDEX IF NOT EXISTS idx_live_support_created_at ON live_support_messages (created_at DESC)');
+  dbSchemaReady = true;
+}
+
 async function readItems() {
+  if (isDbEnabled()) {
+    try {
+      await ensureDbSchema();
+      const result = await pool.query(`
+        SELECT id, ticket_no, first_name, last_name, full_name, phone, email, message, channel, status, created_at, replied_at, reply_subject, reply_message
+        FROM live_support_messages
+        ORDER BY created_at DESC, id DESC
+      `);
+      return result.rows.map(mapRowToItem);
+    } catch (err) {
+      console.error('live-support db read fallback:', err.message);
+    }
+  }
   try {
     const filePath = await resolveReadableDataFilePath();
     const raw = await fs.readFile(filePath, 'utf8');
@@ -93,7 +155,7 @@ async function writeItems(items) {
 
 function resolveFromAddress() {
   const configuredFrom = String(process.env.ORDER_FROM_EMAIL || process.env.RESEND_FROM_EMAIL || '').trim();
-  const fallbackFrom = 'Göçmen Perde <noreply@gocmenperde.com.tr>';
+  const fallbackFrom = 'Göçmen Perde <onboarding@resend.dev>';
   const from = configuredFrom || fallbackFrom;
   const emailMatch = from.match(/<?([^<>\s]+@[^<>\s]+)>?$/);
   const email = emailMatch ? emailMatch[1].toLowerCase() : '';
@@ -205,40 +267,62 @@ module.exports = async function handler(req, res) {
         }
 
         const now = new Date();
-        const items = await readItems();
-        const nextId = items.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1;
-        const ticketNo = `DS-${now.getFullYear()}-${String(nextId).padStart(5, '0')}`;
+        let item;
+        if (isDbEnabled()) {
+          try {
+            await ensureDbSchema();
+            const sequenceResult = await pool.query(
+              `SELECT nextval(pg_get_serial_sequence('live_support_messages', 'id')) AS id`
+            );
+            const nextId = Number(sequenceResult.rows[0]?.id || 0);
+            const ticketNo = `DS-${now.getFullYear()}-${String(nextId).padStart(5, '0')}`;
+            const insertResult = await pool.query(
+              `INSERT INTO live_support_messages
+                (id, ticket_no, first_name, last_name, full_name, phone, email, message, channel, status, created_at, replied_at, reply_subject, reply_message)
+               VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'new', $10, NULL, '', '')
+               RETURNING id, ticket_no, first_name, last_name, full_name, phone, email, message, channel, status, created_at, replied_at, reply_subject, reply_message`,
+              [nextId, ticketNo, firstName, lastName, fullName, phone, email, message, channel, now.toISOString()]
+            );
+            item = mapRowToItem(insertResult.rows[0]);
+          } catch (err) {
+            console.error('live-support db create fallback:', err.message);
+          }
+        }
 
-        const item = {
-          id: nextId,
-          ticketNo,
-          firstName,
-          lastName,
-          fullName,
-          phone,
-          email,
-          message,
-          channel,
-          status: 'new',
-          createdAt: now.toISOString(),
-          repliedAt: null,
-          replySubject: '',
-          replyMessage: '',
-        };
-
-        items.unshift(item);
-        await writeItems(items);
+        if (!item) {
+          const items = await readItems();
+          const nextId = items.reduce((max, entry) => Math.max(max, Number(entry.id) || 0), 0) + 1;
+          const ticketNo = `DS-${now.getFullYear()}-${String(nextId).padStart(5, '0')}`;
+          item = {
+            id: nextId,
+            ticketNo,
+            firstName,
+            lastName,
+            fullName,
+            phone,
+            email,
+            message,
+            channel,
+            status: 'new',
+            createdAt: now.toISOString(),
+            repliedAt: null,
+            replySubject: '',
+            replyMessage: '',
+          };
+          items.unshift(item);
+          await writeItems(items);
+        }
 
         const notifyEmail = String(process.env.LIVE_SUPPORT_NOTIFY_EMAIL || process.env.ORDER_NOTIFY_EMAIL || DEFAULT_NOTIFY_EMAIL).trim();
         const mailResult = await sendTransactionalEmail({
           to: notifyEmail,
-          subject: `Yeni canlı destek talebi · ${ticketNo}`,
+          subject: `Yeni canlı destek talebi · ${item.ticketNo}`,
           html: buildAdminNotifyTemplate(item),
         });
 
         return res.status(201).json({
           success: true,
-          ticketNo,
+          ticketNo: item.ticketNo,
           mailSent: Boolean(mailResult.ok),
         });
       }
@@ -270,7 +354,22 @@ module.exports = async function handler(req, res) {
         item.replySubject = subject;
         item.replyMessage = replyMessage;
 
-        await writeItems(items);
+        if (isDbEnabled()) {
+          try {
+            await ensureDbSchema();
+            await pool.query(
+              `UPDATE live_support_messages
+               SET status = $1, replied_at = $2::timestamptz, reply_subject = $3, reply_message = $4
+               WHERE id = $5`,
+              [item.status, item.repliedAt, item.replySubject, item.replyMessage, id]
+            );
+          } catch (err) {
+            console.error('live-support db reply fallback:', err.message);
+            await writeItems(items);
+          }
+        } else {
+          await writeItems(items);
+        }
 
         return res.status(200).json({ success: true, mailSent: Boolean(mailResult.ok), item });
       }

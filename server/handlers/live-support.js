@@ -1,9 +1,52 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const FILE_PATH = path.join(__dirname, '..', 'data', 'live-support-messages.json');
+const FILE_NAME = 'live-support-messages.json';
 const ADMIN_API_KEY = 'gocmen1993';
 const DEFAULT_NOTIFY_EMAIL = 'zeynelturkoglu@hotmail.com';
+let resolvedDataFilePath = '';
+
+function getDataDirectoryCandidates() {
+  const customDir = String(process.env.LIVE_SUPPORT_DATA_DIR || process.env.DATA_DIR || '').trim();
+  const cwd = process.cwd();
+  const list = [
+    customDir,
+    path.join(cwd, 'server', 'data'),
+    path.join(cwd, 'data'),
+    path.join('/tmp', 'gocmenperde-data'),
+  ].filter(Boolean);
+  return Array.from(new Set(list));
+}
+
+async function resolveWritableDataFilePath() {
+  if (resolvedDataFilePath) return resolvedDataFilePath;
+  const candidates = getDataDirectoryCandidates();
+  for (const dir of candidates) {
+    try {
+      await fs.mkdir(dir, { recursive: true });
+      const filePath = path.join(dir, FILE_NAME);
+      resolvedDataFilePath = filePath;
+      return filePath;
+    } catch (_) {
+      // Bir sonraki adayı dene
+    }
+  }
+  throw new Error('Canlı destek verisi için yazılabilir dizin bulunamadı');
+}
+
+async function resolveReadableDataFilePath() {
+  const writablePath = await resolveWritableDataFilePath();
+  const candidates = [writablePath, ...getDataDirectoryCandidates().map((dir) => path.join(dir, FILE_NAME))];
+  for (const filePath of candidates) {
+    try {
+      await fs.access(filePath);
+      return filePath;
+    } catch (_) {
+      // Dosya yoksa sıradaki adaya geç
+    }
+  }
+  return writablePath;
+}
 
 function escapeHtml(value) {
   return String(value || '')
@@ -34,7 +77,8 @@ function ensureText(value, maxLength = 500) {
 
 async function readItems() {
   try {
-    const raw = await fs.readFile(FILE_PATH, 'utf8');
+    const filePath = await resolveReadableDataFilePath();
+    const raw = await fs.readFile(filePath, 'utf8');
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
   } catch (_) {
@@ -43,8 +87,8 @@ async function readItems() {
 }
 
 async function writeItems(items) {
-  await fs.mkdir(path.dirname(FILE_PATH), { recursive: true });
-  await fs.writeFile(FILE_PATH, JSON.stringify(items, null, 2), 'utf8');
+  const filePath = await resolveWritableDataFilePath();
+  await fs.writeFile(filePath, JSON.stringify(items, null, 2), 'utf8');
 }
 
 function resolveFromAddress() {

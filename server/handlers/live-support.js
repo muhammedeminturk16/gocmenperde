@@ -236,18 +236,32 @@ function buildAdminNotifyTemplate(item) {
 
 function buildCustomerReplyTemplate({ item, subject, message }) {
   return `
-  <div style="font-family:Inter,Segoe UI,Arial,sans-serif;background:#eef2ff;padding:28px 14px">
-    <div style="max-width:720px;margin:0 auto;background:#fff;border:1px solid #dbe3ff;border-radius:20px;overflow:hidden;box-shadow:0 24px 48px rgba(38,52,90,.14)">
-      <div style="padding:24px 26px;background:radial-gradient(circle at 85% 2%,rgba(201,168,76,.26),transparent 38%),linear-gradient(130deg,#111827,#1e3a8a);color:#fff">
-        <div style="display:inline-block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08)">Göçmen Perde · Canlı Destek</div>
-        <h2 style="margin:12px 0 0;font-size:24px;line-height:1.35">${escapeHtml(subject)}</h2>
+  <div style="font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#edf2ff 0%,#f8fafd 100%);padding:30px 14px">
+    <div style="max-width:720px;margin:0 auto;background:#ffffff;border:1px solid #d8e2ff;border-radius:24px;overflow:hidden;box-shadow:0 20px 54px rgba(34,58,124,.14)">
+      <div style="padding:28px 26px 26px;background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.32),transparent 34%),radial-gradient(circle at 78% 35%,rgba(255,255,255,.22),transparent 42%),linear-gradient(132deg,#10213f 0%,#1f3f84 52%,#325cc2 100%);color:#fff">
+        <table role="presentation" style="border-collapse:collapse;margin:0 0 14px">
+          <tr>
+            <td style="vertical-align:middle">
+              <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.48);text-align:center;line-height:44px;font-size:15px;font-weight:800;letter-spacing:.4px">GP</div>
+            </td>
+            <td style="padding-left:10px;vertical-align:middle">
+              <div style="font-size:15px;font-weight:700;line-height:1.2">Göçmen Perde</div>
+              <div style="font-size:11px;opacity:.9;letter-spacing:1.2px;text-transform:uppercase">Canlı Destek Ekibi</div>
+            </td>
+          </tr>
+        </table>
+        <div style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12)">Yanıtınız Hazır</div>
+        <h2 style="margin:12px 0 0;font-size:26px;line-height:1.34;color:#ffffff;text-shadow:0 1px 1px rgba(0,0,0,.12)">${escapeHtml(subject)}</h2>
       </div>
-      <div style="padding:24px 26px;color:#1f2937;line-height:1.8;font-size:15px">
-        <p style="margin-top:0">Merhaba ${escapeHtml(item.fullName)},</p>
-        <p style="margin:0 0 12px;color:#334155">Talebiniz için teşekkür ederiz. Ekibimizin yanıtı aşağıdadır:</p>
-        <div style="padding:16px 17px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0;white-space:pre-wrap;color:#0f172a">${escapeHtml(message)}</div>
-        <div style="margin-top:18px;padding-top:12px;border-top:1px dashed #cbd5e1;font-size:13px;color:#64748b">
-          Talep No: <b style="color:#0f172a">${escapeHtml(item.ticketNo)}</b>
+      <div style="padding:26px 26px 28px;color:#0f172a;line-height:1.78;font-size:15px;background:linear-gradient(145deg,rgba(245,248,255,.9),rgba(255,255,255,.95))">
+        <p style="margin:0 0 12px;color:#1e293b">Merhaba <b>${escapeHtml(item.fullName)}</b>,</p>
+        <p style="margin:0 0 14px;color:#334155">Talebiniz için teşekkür ederiz. Ekibimizin yanıtı aşağıda yer alıyor:</p>
+        <div style="padding:16px;border-radius:16px;background:#ffffff;border:1px solid #cfdcf9;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);white-space:pre-wrap;color:#0f172a;font-size:16px;line-height:1.7">${escapeHtml(message)}</div>
+        <div style="margin-top:18px;padding:14px 16px;border-radius:14px;background:#f1f5ff;border:1px dashed #c2d3ff;font-size:13px;color:#475569">
+          Talep No: <b style="color:#0f172a;font-size:15px">${escapeHtml(item.ticketNo)}</b>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:#64748b">
+          Bu e-posta otomatik bilgilendirme amaçlı gönderilmiştir.
         </div>
       </div>
     </div>

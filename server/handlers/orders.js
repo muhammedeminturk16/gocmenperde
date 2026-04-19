@@ -735,7 +735,10 @@ async function resolveOrderLookup(rawValue) {
   const digits = String(rawValue || '').replace(/\D+/g, '');
   if (!digits) return { ok: false, orderId: 0 };
   const store = await readTrackingStore();
-  const matchByOrderNo = Object.entries(store).find(([, record]) => String(record?.orderNo || '') === digits);
+  const matchByOrderNo = Object.entries(store).find(([, record]) => {
+    const normalizedOrderNo = String(record?.orderNo || '').replace(/\D+/g, '');
+    return normalizedOrderNo && normalizedOrderNo === digits;
+  });
   if (matchByOrderNo) {
     return { ok: true, orderId: Number(matchByOrderNo[0]) };
   }

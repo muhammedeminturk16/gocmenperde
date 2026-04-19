@@ -1,5 +1,34 @@
 [
   {
+    "id": "lazer-1776629516107-323",
+    "name": "Lazer",
+    "desc": "",
+    "image": "resimler/1776629512653-product-0-748dee73-38fb-4391-9bf3-2ab6c89a5064-1ebe3453-b1bc-48b5-8ff5-2ff17e418348.jpeg",
+    "images": [
+      "resimler/1776629512653-product-0-748dee73-38fb-4391-9bf3-2ab6c89a5064-1ebe3453-b1bc-48b5-8ff5-2ff17e418348.jpeg",
+      "resimler/1776629510321-product-1-5ffd5e7b-c4e4-48a4-9f3c-763a1038fa89-c7f19fef-c689-48e6-860e-4c45f65febb2.jpeg"
+    ],
+    "price": 600,
+    "oldPrice": 800,
+    "cat": "stor-perde",
+    "unit": "m2",
+    "isMeter": false,
+    "isSquareMeter": true,
+    "features": "",
+    "badge": "",
+    "discountType": "manual",
+    "discountValue": null,
+    "stock": null,
+    "serialNumber": null,
+    "barcode": null,
+    "seoKeywords": [],
+    "isLiveShowcase": false,
+    "isFeatured": false,
+    "active": true,
+    "specs": {},
+    "care": {}
+  },
+  {
     "id": "lazer-kesim-stor-perde-1776627830510-562",
     "name": "Lazer Kesim Stor Perde",
     "desc": "Şık tasarımı ve kaliteli kumaşıyla yaşam alanınıza uyum sağlar. Ölçü ve kullanım ihtiyacınıza göre güvenle tercih edebilirsiniz.",

@@ -1322,6 +1322,7 @@ footer p{font-size:.76rem;letter-spacing:1.4px}
       <button class="nav-link" onclick="go('about')">Hakkımızda</button>
       <button class="nav-link" onclick="go('from-you')">Sizden Gelenler</button>
       <button class="nav-link" onclick="go('contact')">İletişim</button>
+      <button class="nav-link" onclick="go('support')">Destek</button>
       <button class="nav-icon" onclick="togglePopup('searchBar')"><i class="fas fa-search"></i></button>
       <button class="nav-icon" onclick="togglePopup('favoriteBar')" title="Favorilerim">
         <i class="far fa-heart"></i><span class="badge" id="favoriteCount">0</span>
@@ -1781,8 +1782,8 @@ footer p{font-size:.76rem;letter-spacing:1.4px}
 
       <h3><i class="fas fa-file-contract" style="color:var(--gold);margin-right:10px"></i>Cayma Koşulları ve Mesafeli Satış Sözleşmesi</h3>
       <div class="contracts-scroll-wrap">
-        <div class="contract-box"><h4>Mesafeli Satış Sözleşmesi</h4><iframe src="/mesafeli-satis.html" title="Mesafeli Satış Sözleşmesi"></iframe></div>
-        <div class="contract-box"><h4>Cayma Koşulları</h4><iframe src="/iade-politikasi.html" title="Cayma Koşulları"></iframe></div>
+        <div class="contract-box"><h4>Mesafeli Satış Sözleşmesi</h4><iframe data-lazy-src="/mesafeli-satis.html" title="Mesafeli Satış Sözleşmesi"></iframe></div>
+        <div class="contract-box"><h4>Cayma Koşulları</h4><iframe data-lazy-src="/iade-politikasi.html" title="Cayma Koşulları"></iframe></div>
       </div>
       <label class="contract-accept"><input type="checkbox" id="f-contract-accept"> Mesafeli satış sözleşmesi ve cayma koşullarını kabul ediyorum. *</label>
       <div style="display:none">
@@ -1813,9 +1814,31 @@ footer p{font-size:.76rem;letter-spacing:1.4px}
       </div>
     </div>
     <div class="contact-right">
+      <div class="map-placeholder">
+        <iframe class="map-embed" data-lazy-src="https://maps.google.com/maps?q=Ba%C4%9Flarba%C5%9F%C4%B1+Mah.+M%C3%BCmin+Gen%C3%A7o%C4%9Flu+Cad.+Osmangazi+Bursa&output=embed" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="map-cta"><p>Osmangazi, Bursa</p><a class="map-link" href="https://maps.google.com/?cid=4728389541117294908" target="_blank">Yol Tarifi Al <i class="fas fa-arrow-right"></i></a></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <p>© 2026 <span>Göçmen Perde</span> — Tüm Hakları Saklıdır · Osmangazi, Bursa</p>
+    <div class="payment-logo-strip" aria-label="Güvenli ödeme logoları"></div>
+    <div class="footer-links"><a href="/gizlilik-politikasi.html">Gizlilik Politikası</a><span style="opacity:0.3">·</span><a href="/mesafeli-satis.html">Mesafeli Satış Sözleşmesi</a><span style="opacity:0.3">·</span><a href="/iade-politikasi.html">İade &amp; İptal</a></div>
+  </footer>
+</section>
+
+<!-- DESTEK -->
+<section id="support" class="section">
+  <div class="contact-container">
+    <div class="contact-left">
+      <div class="section-tag">Destek</div>
+      <h2 class="section-title">Destek <em>Merkezi</em></h2>
+      <p>Canlı destek talebi bırakabilir, sipariş ve talep numaralarınızı ayrı ekrandan hızlıca takip edebilirsiniz.</p>
+    </div>
+    <div class="contact-right">
       <div class="live-support-card">
-        <h3>Canlı Destek Hattı</h3>
-        <p>Ad soyad, telefon ve e-posta bilgilerinizle mesajınızı bırakın. Ekibimiz size premium destekle e-posta üzerinden dönüş yapsın.</p>
+        <h3>Destek Talebi</h3>
+        <p>Ad soyad, telefon ve e-posta bilgilerinizle mesajınızı bırakın. Ekibimiz size e-posta üzerinden dönüş yapsın.</p>
         <form id="liveSupportForm" onsubmit="submitLiveSupport(event)">
           <div class="live-support-grid">
             <input class="live-support-input" id="lsFirstName" type="text" placeholder="Adınız" required>
@@ -1841,16 +1864,11 @@ footer p{font-size:.76rem;letter-spacing:1.4px}
         </div>
         <div class="support-query-result" id="supportQueryResult"></div>
       </div>
-      <div class="map-placeholder">
-        <iframe class="map-embed" src="https://maps.google.com/maps?q=Ba%C4%9Flarba%C5%9F%C4%B1+Mah.+M%C3%BCmin+Gen%C3%A7o%C4%9Flu+Cad.+Osmangazi+Bursa&output=embed" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        <div class="map-cta"><p>Osmangazi, Bursa</p><a class="map-link" href="https://maps.google.com/?cid=4728389541117294908" target="_blank">Yol Tarifi Al <i class="fas fa-arrow-right"></i></a></div>
-      </div>
     </div>
   </div>
-  <footer>
-    <p>© 2026 <span>Göçmen Perde</span> — Tüm Hakları Saklıdır · Osmangazi, Bursa</p>
+  <footer style="background:var(--warm-white);border-top:1px solid var(--border);color:var(--slate)">
+    <p>© 2026 <span>Göçmen Perde</span></p>
     <div class="payment-logo-strip" aria-label="Güvenli ödeme logoları"></div>
-    <div class="footer-links"><a href="/gizlilik-politikasi.html">Gizlilik Politikası</a><span style="opacity:0.3">·</span><a href="/mesafeli-satis.html">Mesafeli Satış Sözleşmesi</a><span style="opacity:0.3">·</span><a href="/iade-politikasi.html">İade &amp; İptal</a></div>
   </footer>
 </section>
 
@@ -2027,6 +2045,8 @@ footer p{font-size:.76rem;letter-spacing:1.4px}
   <button onclick="go('about');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-book-open"></i></span>HİKAYEMİZ</button>
   <button onclick="go('from-you');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-camera-retro"></i></span>SİZDEN GELENLER</button>
   <button onclick="go('contact');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-phone"></i></span>İLETİŞİM</button>
+  <button onclick="go('support');closeMobileMenuWrapper()"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-headset"></i></span>DESTEK TALEBİ</button>
+  <button onclick="go('support');closeMobileMenuWrapper();setTimeout(()=>document.getElementById('orderTrackNo')?.focus(),120)"><span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-truck-fast"></i></span>SİPARİŞ & DESTEK TAKİBİ</button>
   <button onclick="togglePopup('miniCart');closeMobileMenuWrapper()">
     <span class="menu-entry-icon" aria-hidden="true"><i class="fas fa-bag-shopping"></i></span>SEPETİM
     <span id="cartCountMobile" style="background:#c9a84c;color:#0f0e0d;font-size:0.65rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:6px">0</span>
@@ -2533,7 +2553,7 @@ function escapeHtmlForSupport(value){
 
 function openLiveSupportFromCta(event){
   if(event) event.preventDefault();
-  go('contact');
+  go('support');
   setTimeout(()=>{
     const card = document.querySelector('.live-support-card');
     if(card){
@@ -4990,6 +5010,8 @@ window.addEventListener('storage',(event)=>{
 });
 
 // ── Navigasyon ──
+let suppressNextHashChange = false;
+
 function applySectionState(id, {scroll=true} = {}){
   const targetId = document.getElementById(id) ? id : 'home';
   const currentActive = document.querySelector('.section.active')?.id;
@@ -5010,6 +5032,7 @@ function applySectionState(id, {scroll=true} = {}){
   if(scroll) window.scrollTo({top:0,behavior:'smooth'});
   if(targetId==='cart') renderCart();
   if(targetId==='checkout') renderCheckout();
+  hydrateLazyIframes(targetId);
   if(targetId==='products' && PRODUCTS.length===0) loadProducts();
   if(targetId==='products') renderRecentlyViewed();
   document.querySelectorAll('.mbn-item').forEach(b=>b.classList.remove('active-nav'));
@@ -5051,12 +5074,24 @@ function resolveSectionId(id){
     iletisim: 'contact',
     iletişim: 'contact',
     contact: 'contact',
+    destek: 'support',
+    support: 'support',
     fromyou: 'from-you',
     sizdengelenler: 'from-you',
     'from-you': 'from-you'
   };
   const target = aliasMap[normalized] || raw;
   return document.getElementById(target) ? target : 'home';
+}
+
+function hydrateLazyIframes(sectionId=''){
+  const scope = sectionId ? document.getElementById(sectionId) : document;
+  if(!scope) return;
+  scope.querySelectorAll('iframe[data-lazy-src]').forEach((frame)=>{
+    if(frame.getAttribute('src')) return;
+    const nextSrc = frame.getAttribute('data-lazy-src');
+    if(nextSrc) frame.setAttribute('src', nextSrc);
+  });
 }
 
 function ensureMobileNavInteractive(){
@@ -5107,7 +5142,10 @@ function go(id){
         resetCategorySelectionToAll();
       }
     }
-    if(window.location.hash !== `#${nextId}`) window.location.hash = nextId;
+    if(window.location.hash !== `#${nextId}`){
+      suppressNextHashChange = true;
+      window.location.hash = nextId;
+    }
     applySectionState(nextId, {scroll:true});
   }catch(err){
     console.error('[nav] go failed:', err);
@@ -5138,6 +5176,10 @@ function safeApplyFilters(){
 }
 
 window.addEventListener('hashchange',()=>{
+  if(suppressNextHashChange){
+    suppressNextHashChange = false;
+    return;
+  }
   applySectionState(getSectionFromLocation(), {scroll:false});
   sendVisitEvent({heartbeat:false});
 });

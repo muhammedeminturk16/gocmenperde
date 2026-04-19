@@ -22,6 +22,7 @@ const ORDER_NO_DIGITS = 14;
 
 let cachedEmailColumn = null;
 let cachedCustomerEmailColumns = null;
+let cachedOrderNoColumn = null;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -201,6 +202,56 @@ async function getOrderEmailColumn() {
     console.warn('Siparisler tablosu kolonları okunamadı:', err.message);
     cachedEmailColumn = '';
     return cachedEmailColumn;
+  }
+}
+
+async function getOrderNoColumn() {
+  if (cachedOrderNoColumn !== null) return cachedOrderNoColumn;
+  const candidates = ['order_no', 'siparis_no', 'siparis_numarasi'];
+  try {
+    const result = await pool.query(
+      "SELECT column_name FROM information_schema.columns WHERE table_name='siparisler'"
+    );
+    const available = new Set(result.rows.map((r) => String(r.column_name || '').toLowerCase()));
+    cachedOrderNoColumn = candidates.find((c) => available.has(c)) || '';
+    return cachedOrderNoColumn;
+  } catch (err) {
+    console.warn('Siparisler tablosu sipariş no kolonları okunamadı:', err.message);
+    cachedOrderNoColumn = '';
+    return cachedOrderNoColumn;
+  }
+}
+
+async function persistOrderNo(orderId, orderNo) {
+  if (!Number.isInteger(orderId) || orderId <= 0) return;
+  const normalizedOrderNo = String(orderNo || '').replace(/\D+/g, '');
+  if (normalizedOrderNo.length !== ORDER_NO_DIGITS) return;
+  const orderNoColumn = await getOrderNoColumn();
+  if (!orderNoColumn) return;
+  try {
+    await pool.query(
+      `UPDATE siparisler SET ${orderNoColumn} = $1 WHERE id = $2 AND (COALESCE(${orderNoColumn}::text, '') = '' OR ${orderNoColumn}::text <> $1)`,
+      [normalizedOrderNo, orderId]
+    );
+  } catch (err) {
+    console.warn(`Sipariş #${orderId} için sipariş no DB'ye yazılamadı:`, err.message);
+  }
+}
+
+async function findOrderIdByPersistedOrderNo(rawValue) {
+  const digits = String(rawValue || '').replace(/\D+/g, '');
+  if (!digits) return 0;
+  const orderNoColumn = await getOrderNoColumn();
+  if (!orderNoColumn) return 0;
+  try {
+    const result = await pool.query(
+      `SELECT id FROM siparisler WHERE ${orderNoColumn}::text = $1 LIMIT 1`,
+      [digits]
+    );
+    return Number(result.rows?.[0]?.id || 0);
+  } catch (err) {
+    console.warn('DB üzerinden sipariş no sorgusu başarısız:', err.message);
+    return 0;
   }
 }
 
@@ -671,6 +722,9 @@ async function withTrackingData(orders = []) {
     };
   });
   if (storeDirty) await writeTrackingStore(store);
+  await Promise.all(
+    mapped.map((order) => persistOrderNo(Number(order.id || 0), order.order_no))
+  );
   return mapped;
 }
 
@@ -728,6 +782,7 @@ async function ensureOrderTrackingRecord({ orderId, createdAt }) {
   }
   store[key] = record;
   await writeTrackingStore(store);
+  await persistOrderNo(orderId, record.orderNo);
   return String(record.orderNo || '');
 }
 
@@ -741,6 +796,10 @@ async function resolveOrderLookup(rawValue) {
   });
   if (matchByOrderNo) {
     return { ok: true, orderId: Number(matchByOrderNo[0]) };
+  }
+  const persistedOrderId = await findOrderIdByPersistedOrderNo(digits);
+  if (persistedOrderId > 0) {
+    return { ok: true, orderId: persistedOrderId };
   }
   const PG_INT_MAX = 2147483647;
   if (digits.length > String(PG_INT_MAX).length) {

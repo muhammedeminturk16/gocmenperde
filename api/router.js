@@ -26,6 +26,7 @@ const campaigns = require('../server/handlers/campaigns');
 const adminCampaigns = require('../server/handlers/admin/campaigns');
 const premiumShowcase = require('../server/handlers/premium-showcase');
 const liveSupport = require('../server/handlers/live-support');
+const mediaUpload = require('../server/handlers/media-upload');
 
 const ROUTES = {
   'auth': auth,
@@ -49,6 +50,7 @@ const ROUTES = {
   'admin/campaigns': adminCampaigns,
   'premium-showcase': premiumShowcase,
   'live-support': liveSupport,
+  'media-upload': mediaUpload,
 };
 
 module.exports = async function handler(req, res) {

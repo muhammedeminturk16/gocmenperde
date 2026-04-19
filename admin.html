@@ -2948,12 +2948,6 @@ function handleSliderImageFileSelect(input){
 
 async function uploadSliderImage(){
   const status = document.getElementById('sliderImageUploadStatus');
-  const token = getGithubToken();
-  if(!token){
-    aToast('⚠️ Önce geçerli bir GitHub token girin','error');
-    resetGithubToken();
-    return;
-  }
   if(!sliderSelectedDataUrl && !sliderSelectedFileName){
     aToast('⚠️ Önce bir görsel seçin','error');
     return;
@@ -2965,7 +2959,7 @@ async function uploadSliderImage(){
     if(!file){
       throw new Error('Yüklenecek dosya bulunamadı');
     }
-    const uploadedPath = await uploadImageWithRetry(token, file, { prefix:'slider' });
+    const uploadedPath = await uploadImageWithRetry(file, { prefix:'slider' });
     document.getElementById('sliderImage').value = uploadedPath || '';
     if(status) status.textContent = `Yüklendi: ${uploadedPath}`;
     aToast('✅ Slider görseli yüklendi','success');
@@ -2974,6 +2968,7 @@ async function uploadSliderImage(){
     aToast('❌ '+err.message,'error');
   }
 }
+
 
 async function loadSliderItems(){
   const body = document.getElementById('sliderTableBody');
@@ -4196,41 +4191,11 @@ function previewCategoryImage(){
 async function handleCategoryImageSelect(input){
   const file=input?.files?.[0];
   if(!file) return;
-  const token=getGithubToken();
   const imagePathInput=document.getElementById('c-image');
   if(!imagePathInput) return;
-  if(!token){
-    const preview = await new Promise(resolve=>{
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
-      reader.readAsDataURL(file);
-    });
-    imagePathInput.value = preview || '';
-    previewCategoryImage();
-    aToast('⚠️ GitHub Token yok — görsel yalnızca önizleme olarak eklendi','error');
-    input.value='';
-    return;
-  }
   try{
-    const sanitize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[ğ]/g,'g').replace(/[ü]/g,'u').replace(/[ş]/g,'s').replace(/[ı]/g,'i').replace(/[ö]/g,'o').replace(/[ç]/g,'c').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9._-]/g,'');
-    const uniqueSuffix=()=>{
-      if(window.crypto?.randomUUID) return window.crypto.randomUUID();
-      return `${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
-    };
-    const content = await new Promise(resolve=>{
-      const reader=new FileReader();
-      reader.onload=e=>resolve(e.target.result.split(',')[1]);
-      reader.readAsDataURL(file);
-    });
-    const fileName=`resimler/${Date.now()}-cat-${uniqueSuffix()}-${sanitize(file.name)}`;
-    const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
-    const payload={message:'Admin: Kategori görseli yüklendi',content};
-    const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
-    if(!res.ok){
-      const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
-      throw new Error(err.message||'GitHub yükleme hatası');
-    }
-    imagePathInput.value=fileName;
+    const uploadedPath = await uploadImageWithRetry(file, {prefix:'category'});
+    imagePathInput.value=uploadedPath || '';
     previewCategoryImage();
     aToast('✅ Kategori görseli yüklendi','success');
   }catch(err){
@@ -4239,6 +4204,7 @@ async function handleCategoryImageSelect(input){
     input.value='';
   }
 }
+
 
 function renderCatTable(){
   document.getElementById('catTableBody').innerHTML=CATEGORIES.map((c,i)=>{
@@ -4476,11 +4442,9 @@ async function uploadCampaignImageFromInput(){
   const status = document.getElementById('cm-imageUploadStatus');
   const file = fileInput?.files?.[0];
   if(!file){ if(status) status.textContent='Dosya seçilmedi'; return ''; }
-  const token = localStorage.getItem('gh_token');
-  if(!token){ aToast('⚠️ Önce GitHub token girin','error'); if(status) status.textContent='Token eksik'; return ''; }
   try{
     if(status) status.textContent='Yükleniyor...';
-    const uploadedPath = await uploadImageWithRetry(token, file, { prefix:'campaign' });
+    const uploadedPath = await uploadImageWithRetry(file, { prefix:'campaign' });
     document.getElementById('cm-image').value = uploadedPath || '';
     if(status) status.textContent='✓ Yüklendi';
     return uploadedPath || '';
@@ -4490,6 +4454,7 @@ async function uploadCampaignImageFromInput(){
     return '';
   }
 }
+
 function openAddCampaignModal(){
   document.getElementById('campaignModalTitle').innerText='Yeni Kampanya';
   document.getElementById('editCampaignIdx').value='';
@@ -5152,31 +5117,37 @@ async function optimizeImageFile(file,{maxWidth=IMAGE_MAX_WIDTH,quality=IMAGE_QU
   const base=file.name.replace(/\.[^.]+$/,'')||'image';
   return new File([blob], `${base}.webp`, {type:'image/webp'});
 }
-async function uploadImageToGithub(token,file,{prefix=''}={}){
-  const sanitize=v=>v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[ğ]/g,'g').replace(/[ü]/g,'u').replace(/[ş]/g,'s').replace(/[ı]/g,'i').replace(/[ö]/g,'o').replace(/[ç]/g,'c').replace(/\s+/g,'-').replace(/[^a-zA-Z0-9._-]/g,'');
-  const uniqueSuffix=()=>window.crypto?.randomUUID?window.crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2,10)}`;
+async function uploadImageToCloudinary(file,{prefix=''}={}){
   const optimized=await optimizeImageFile(file);
-  const content=await fileToBase64(optimized);
-  const fileName=`resimler/${Date.now()}-${prefix?`${prefix}-`:''}${uniqueSuffix()}-${sanitize(optimized.name||file.name)}`;
-  const url=`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
-  const payload={message:'Admin: Ürün resmi yüklendi',content};
-  const res=await fetch(url,{method:'PUT',headers:githubHeaders(token),body:JSON.stringify(payload)});
-  if(!res.ok){
-    const err=await res.json().catch(()=>({message:'GitHub yükleme hatası'}));
-    throw new Error(err.message||'GitHub yükleme hatası');
+  const fileBase64=await fileToBase64(optimized);
+  const res=await apiFetch('/api/media-upload',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-admin-key': getAdminApiKey()
+    },
+    body:JSON.stringify({
+      fileBase64,
+      mimeType: optimized.type || file.type || 'image/jpeg',
+      prefix
+    })
+  });
+  const payload=await res.json().catch(()=>({error:'Cloudinary yükleme hatası'}));
+  if(!res.ok || !payload?.url){
+    throw new Error(payload?.error || 'Cloudinary yükleme hatası');
   }
-  return fileName;
+  return payload.url;
 }
-async function uploadImageWithRetry(token,file,opts={},attempt=1){
+async function uploadImageWithRetry(file,opts={},attempt=1){
   try{
-    return await uploadImageToGithub(token,file,opts);
+    return await uploadImageToCloudinary(file,opts);
   }catch(err){
     if(attempt>=2) throw err;
     await new Promise(resolve=>setTimeout(resolve, 350*attempt));
-    return uploadImageWithRetry(token,file,opts,attempt+1);
+    return uploadImageWithRetry(file,opts,attempt+1);
   }
 }
-async function uploadImagesWithConcurrency(token, files, {prefix='image', concurrency=2, onProgress} = {}){
+async function uploadImagesWithConcurrency(files, {prefix='image', concurrency=2, onProgress} = {}){
   const queue = files.map((file,idx)=>({file,idx}));
   const uploaded = new Array(files.length);
   const errors = [];
@@ -5187,7 +5158,7 @@ async function uploadImagesWithConcurrency(token, files, {prefix='image', concur
       if(!current) continue;
       const {file, idx} = current;
       try{
-        uploaded[idx] = await uploadImageWithRetry(token, file, {prefix:`${prefix}-${idx}`});
+        uploaded[idx] = await uploadImageWithRetry(file, {prefix:`${prefix}-${idx}`});
         if(typeof onProgress === 'function'){
           onProgress({done:uploaded.filter(Boolean).length,total:files.length,name:file.name});
         }
@@ -5199,6 +5170,7 @@ async function uploadImagesWithConcurrency(token, files, {prefix='image', concur
   await Promise.all(workers);
   return {uploaded:uploaded.filter(Boolean), errors};
 }
+
 function getGithubToken(){return localStorage.getItem('gh_token');}
 function resetGithubToken(){const t=prompt('Yeni GitHub Token girin:');if(t){localStorage.setItem('gh_token',t);aToast('✓ Token güncellendi','success');}updateTokenStatus();}
 function utf8ToBase64(value){return btoa(unescape(encodeURIComponent(value)));}
@@ -5239,21 +5211,10 @@ async function handleImageSelect(input){
   if(!files.length) return;
   document.getElementById('f-imageFileName').textContent = files.length===1 ? files[0].name : `${files.length} dosya seçildi`;
   renderSelectedImages();
-  const token=getGithubToken();
-  if(!token){
-    const previews = files.map(file => URL.createObjectURL(file));
-    document.getElementById('f-image').value = previews[0] || '';
-    document.getElementById('f-images').value = previews.join('\n');
-    previewImg();
-    input.value='';
-    renderSelectedImages();
-    aToast('⚠️ GitHub Token yok — yalnızca önizleme','error');
-    return;
-  }
   const status=document.getElementById('imgUploadStatus');
-  status.className='img-status loading';status.innerHTML='<i class="fas fa-spinner fa-spin"></i> GitHub\'a yükleniyor...';status.style.display='flex';
+  status.className='img-status loading';status.innerHTML='<i class="fas fa-spinner fa-spin"></i> Cloudinary\'ye yükleniyor...';status.style.display='flex';
   try{
-    const {uploaded, errors} = await uploadImagesWithConcurrency(token, files, {
+    const {uploaded, errors} = await uploadImagesWithConcurrency(files, {
       prefix:'product',
       concurrency:3,
       onProgress:({done,total,name})=>{
@@ -5284,21 +5245,9 @@ async function handleBulkImageSelect(input){
   const fileNameEl=card?.querySelector('.bulk-image-file-name');
   if(fileNameEl) fileNameEl.textContent=`${files.length} dosya seçildi`;
   if(!imageInput||!imagesArea) return;
-  const token=getGithubToken();
-  if(!token){
-    const previews=files.map(file=>URL.createObjectURL(file));
-    if(previews.length){
-      imageInput.value = previews[0];
-      imagesArea.value = previews.join('\n');
-      refreshBulkCardImageOptions(card);
-    }
-    input.value='';
-    aToast('⚠️ GitHub Token yok — seçilen görsel önizleme olarak eklendi','error');
-    return;
-  }
   try{
     if(fileNameEl) fileNameEl.textContent='Yükleniyor...';
-    const {uploaded, errors}=await uploadImagesWithConcurrency(token, files, {
+    const {uploaded, errors}=await uploadImagesWithConcurrency(files, {
       prefix:'bulk',
       concurrency:3,
       onProgress:({done,total})=>{ if(fileNameEl) fileNameEl.textContent=`Yükleniyor... (${done}/${total})`; }
@@ -5327,15 +5276,9 @@ async function handleShowcaseImageSelect(input){
   if(fileNameEl) fileNameEl.textContent = file ? file.name : 'JPG, PNG, WEBP';
   if(!file) return;
   const pathEl = document.getElementById('showcaseImageSrc');
-  const token = getGithubToken();
-  if(!token){
-    if(pathEl) pathEl.value = URL.createObjectURL(file);
-    aToast('⚠️ GitHub Token yok — sadece önizleme yolu atandı','error');
-    return;
-  }
   try{
     if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
-    const uploaded = await uploadImageWithRetry(token, file, {prefix:'showcase'});
+    const uploaded = await uploadImageWithRetry(file, {prefix:'showcase'});
     if(pathEl) pathEl.value = uploaded;
     if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded}`;
     aToast('✅ Montaj görseli yüklendi','success');
@@ -5352,15 +5295,9 @@ async function handleLiveFeedImageSelect(input){
   if(fileNameEl) fileNameEl.textContent = file ? file.name : 'JPG, PNG, WEBP';
   if(!file) return;
   const pathEl = document.getElementById('liveFeedImage');
-  const token = getGithubToken();
-  if(!token){
-    if(pathEl) pathEl.value = URL.createObjectURL(file);
-    aToast('⚠️ GitHub Token yok — sadece önizleme yolu atandı','error');
-    return;
-  }
   try{
     if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
-    const uploaded = await uploadImageWithRetry(token, file, {prefix:'live-feed'});
+    const uploaded = await uploadImageWithRetry(file, {prefix:'live-feed'});
     if(pathEl) pathEl.value = uploaded;
     if(fileNameEl) fileNameEl.textContent = `✓ ${uploaded}`;
     aToast('✅ Vitrin görseli yüklendi','success');
@@ -5378,18 +5315,9 @@ async function handleFromYouImageSelect(input){
   if(!files.length) return;
   const pathEl = document.getElementById('fromYouImageSrc');
   const listEl = document.getElementById('fromYouImages');
-  const token = getGithubToken();
-  if(!token){
-    const previews = files.map(file=>URL.createObjectURL(file));
-    if(pathEl) pathEl.value = previews[0] || '';
-    if(listEl) listEl.value = previews.join('\n');
-    renderFromYouImagePreview(previews);
-    aToast('⚠️ GitHub Token yok — sadece önizleme yolu atandı','error');
-    return;
-  }
   try{
     if(fileNameEl) fileNameEl.textContent = 'Yükleniyor...';
-    const {uploaded, errors} = await uploadImagesWithConcurrency(token, files, {
+    const {uploaded, errors} = await uploadImagesWithConcurrency(files, {
       prefix:'from-you',
       concurrency:3,
       onProgress:({done,total})=>{ if(fileNameEl) fileNameEl.textContent = `Yükleniyor... (${done}/${total})`; }
@@ -5410,6 +5338,7 @@ async function handleFromYouImageSelect(input){
     input.value='';
   }
 }
+
 function getImageFileInput(){ return document.getElementById('f-imageFile'); }
 function renderSelectedImages(){
   const wrap=document.getElementById('selectedImageList');

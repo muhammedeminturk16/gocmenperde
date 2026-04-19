@@ -998,6 +998,17 @@ header{background:rgba(255,255,255,.95);border-bottom:1px solid rgba(34,45,78,.0
 .product-info{background:linear-gradient(180deg,rgba(255,255,255,0),rgba(250,251,255,.92))}
 .current-price{color:#1d2f5f}
 .sort-bar{border:1px solid rgba(34,45,78,.13);background:linear-gradient(135deg,#fff,#f8f9fc)}
+.filters-panel{background:linear-gradient(168deg,rgba(255,255,255,.96),rgba(247,250,255,.96));box-shadow:0 18px 36px rgba(17,28,58,.08);border:1px solid rgba(70,94,150,.18)}
+.filter-option{padding:8px 10px;border-radius:10px;transition:background .22s ease,color .22s ease}
+.filter-option:hover{background:rgba(54,76,130,.06)}
+.price-inputs input:focus,#searchInput:focus,#sortSelect:focus{outline:none;border-color:rgba(213,163,63,.78);box-shadow:0 0 0 3px rgba(213,163,63,.17);background:#fff}
+.products-featured-banner{background:linear-gradient(132deg,#10192e,#253a66 55%,#2e4c86);box-shadow:0 16px 34px rgba(8,12,24,.22)}
+.products-featured-item{border:1px solid rgba(34,45,78,.14)}
+.products-featured-item:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(9,18,38,.2)}
+.product-img-wrap::after{content:'';position:absolute;inset:auto 0 0;height:52%;background:linear-gradient(180deg,rgba(8,11,20,0),rgba(8,11,20,.34));opacity:.65;pointer-events:none}
+.product-meta-row .meta-chip{backdrop-filter:blur(1px)}
+.product-name-btn:hover{color:#294a86}
+@media(max-width:900px){.filters-panel.open{border-radius:16px;box-shadow:0 16px 30px rgba(17,28,58,.14)}}
 footer{background:linear-gradient(140deg,#202737,#29334a);color:rgba(255,255,255,.74)}
 
 footer{position:relative;overflow:hidden;background:linear-gradient(130deg,#0d111a,#1b2740 48%,#25385a)!important;color:rgba(245,248,255,.86)!important;border-top:1px solid rgba(218,176,88,.34)!important;padding:34px 5% 30px;border-radius:26px 26px 0 0;margin-top:22px;box-shadow:0 -12px 34px rgba(8,12,22,.2)}
@@ -4654,15 +4665,20 @@ function resetImgZoom(){
   img.style.transform='scale(1)';
   img.style.transformOrigin='center center';
 }
+function getCurrentSectionForState(){
+  const activeSection = document.querySelector('.section.active')?.id;
+  return resolveSectionId(activeSection || getSectionFromLocation());
+}
+
 function captureModalReturnState(){
-  const section = resolveSectionId(getSectionFromLocation());
+  const section = getCurrentSectionForState();
   return { section, scrollY: Math.max(0, window.scrollY || 0) };
 }
 
 function restoreViewAfterModal(state = {}){
-  const section = resolveSectionId(state?.fromSection || state?.section || modalReturnState?.section || getSectionFromLocation());
-  const scrollY = Number(state?.fromScroll);
-  if(getSectionFromLocation() !== section){
+  const section = resolveSectionId(state?.fromSection || state?.section || modalReturnState?.section || getCurrentSectionForState());
+  const scrollY = Number(state?.fromScroll ?? state?.scrollY ?? modalReturnState?.scrollY);
+  if(getCurrentSectionForState() !== section){
     applySectionState(section, { scroll:false });
   }
   if(Number.isFinite(scrollY) && scrollY >= 0){

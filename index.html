@@ -3425,8 +3425,13 @@ function handleInitialProductDeepLink(){
   }
 
   if(categoryKey){
-    applyCategoryDeepLink(categoryKey);
-    lastHandledEntryDeepLink = deepLinkSignature;
+    const applied = applyCategoryDeepLink(categoryKey);
+    if(applied){
+      lastHandledEntryDeepLink = deepLinkSignature;
+    }else{
+      // Kategori listesi henüz senkronize edilmediyse bir sonraki denemede tekrar uygula.
+      lastHandledEntryDeepLink = '';
+    }
   }
 }
 
@@ -3629,6 +3634,7 @@ function rebuildCategoryFilters(){
   if(!container) return;
   container.innerHTML = `<div class="filter-option"><input type="checkbox" id="cat-all" checked onchange="applyFilters()"><label for="cat-all">Tümü</label></div>` +
     CATEGORIES.map(c => `<div class="filter-option"><input type="checkbox" id="cat-${c.key}" onchange="applyFilters()"><label for="cat-${c.key}">${c.label}</label></div>`).join('');
+  syncCategoryQueryParamWithFilters();
 }
 function getCategoryIconClass(catKey){
   const category = CATEGORIES.find(c=>c.key===catKey);
@@ -4237,6 +4243,7 @@ function applyFilters(){
   renderProducts(filtered);
   updateTopProductRail(filtered);
   initObserver();
+  syncCategoryQueryParamWithFilters();
 }
 
 // ── Modal ──
@@ -4733,6 +4740,10 @@ function setProductDeepLink(productId){
   if(resolveSectionId(url.hash.replace(/^#/, '')) !== 'products'){
     url.hash = 'products';
   }
+  const selectedCategory = getSingleSelectedCategoryKey();
+  if(selectedCategory){
+    url.searchParams.set('category', selectedCategory);
+  }
   const currentId = String(url.searchParams.get('product') || '').trim();
   const currentState = window.history.state || {};
   const nextState = { ...(currentState || {}), product:id, fromSection, fromScroll };
@@ -4756,6 +4767,31 @@ function clearProductDeepLink(){
   delete nextState.product;
   window.history.replaceState(nextState, '', `${url.pathname}${url.search}${url.hash}`);
   if(lastHandledEntryDeepLink.startsWith('product:')) lastHandledEntryDeepLink = '';
+}
+
+function getSingleSelectedCategoryKey(){
+  const allChecked = document.getElementById('cat-all')?.checked ?? true;
+  if(allChecked) return '';
+  const selected = CATEGORIES
+    .filter(c => document.getElementById('cat-' + c.key)?.checked)
+    .map(c => c.key);
+  return selected.length === 1 ? selected[0] : '';
+}
+
+function syncCategoryQueryParamWithFilters(){
+  const activeSection = document.querySelector('.section.active')?.id || getSectionFromLocation();
+  if(activeSection !== 'products') return;
+  const url = new URL(window.location.href);
+  const selectedCategory = getSingleSelectedCategoryKey();
+  const currentCategory = normalizeCategoryKey(url.searchParams.get('category') || '');
+  if(selectedCategory){
+    if(currentCategory === selectedCategory) return;
+    url.searchParams.set('category', selectedCategory);
+  }else{
+    if(!url.searchParams.has('category')) return;
+    url.searchParams.delete('category');
+  }
+  window.history.replaceState(window.history.state || {}, '', `${url.pathname}${url.search}${url.hash}`);
 }
 function handleProductModalBack(){
   const hasProductParam = new URLSearchParams(window.location.search).has('product');
@@ -5277,7 +5313,10 @@ function go(id){
       if(skipNextProductsReset){
         skipNextProductsReset = false;
       } else {
-        resetCategorySelectionToAll();
+        const hasCategoryParam = new URLSearchParams(window.location.search || '').has('category');
+        if(!hasCategoryParam){
+          resetCategorySelectionToAll();
+        }
       }
     }
     if(window.location.hash !== `#${nextId}`){

@@ -3065,7 +3065,7 @@ let homeSlideIndex = 0;
 let HOME_SLIDER_AUTOPLAY = null;
 let HOME_SLIDER_EVENTS_BOUND = false;
 const HOME_SLIDES_FALLBACK = [
-  { imageUrl:'resimler/foto1.jpg', targetPath:'#contact', title:'Fon Perde Çeşitlerimiz', subtitle:'Yaşam alanınızda özgün bir dokunuş için premium koleksiyon.', buttonLabel:'Kampanyadan Faydalan' },
+  { imageUrl:'resimler/foto1.jpg', targetPath:'#products', title:'Fon Perde Çeşitlerimiz', subtitle:'Yaşam alanınızda özgün bir dokunuş için premium koleksiyon.', buttonLabel:'Kampanyadan Yararlan' },
   { imageUrl:'resimler/1774687325299-IMG_1471.jpeg', targetPath:'#products', title:'Zebra Perde Koleksiyonu', subtitle:'Işık kontrolünü şıklıkla buluşturan modern modeller.', buttonLabel:'Ürünleri İncele' },
   { imageUrl:'resimler/1774694045163-IMG_9907.jpeg', targetPath:'#products', title:'Stor Perde Serisi', subtitle:'Sade çizgiler, uzun ömürlü mekanik, kusursuz görünüm.', buttonLabel:'Hemen Keşfet' }
 ];
@@ -4769,7 +4769,7 @@ function handleProductModalBack(){
 
 window.addEventListener('popstate', (event)=>{
   const targetId = getSectionFromLocation();
-  applySectionState(targetId, {scroll:false});
+  applySectionState(targetId, {scroll:'restore'});
   const hasProductParam = new URLSearchParams(window.location.search).has('product');
   const modalOpen = document.getElementById('productModal')?.classList.contains('open');
   if(!hasProductParam && modalOpen){
@@ -5085,6 +5085,7 @@ window.addEventListener('storage',(event)=>{
 // ── Navigasyon ──
 let suppressNextHashChange = false;
 const LAST_SECTION_STORAGE_KEY = 'gp_last_section';
+const SECTION_SCROLL_STORAGE_KEY = 'gp_section_scroll_positions';
 
 function getRememberedSection(){
   try{
@@ -5095,6 +5096,37 @@ function getRememberedSection(){
   return 'home';
 }
 
+function readSectionScrollMap(){
+  try{
+    const parsed = JSON.parse(sessionStorage.getItem(SECTION_SCROLL_STORAGE_KEY) || '{}');
+    if(parsed && typeof parsed === 'object') return parsed;
+  }catch(_){}
+  return {};
+}
+
+function writeSectionScrollMap(map){
+  try{
+    sessionStorage.setItem(SECTION_SCROLL_STORAGE_KEY, JSON.stringify(map || {}));
+  }catch(_){}
+}
+
+function saveSectionScroll(sectionId, scrollY){
+  const sid = resolveSectionId(sectionId);
+  if(!sid || !document.getElementById(sid)) return;
+  const safeY = Math.max(0, Number(scrollY) || 0);
+  const map = readSectionScrollMap();
+  map[sid] = safeY;
+  writeSectionScrollMap(map);
+}
+
+function getSavedSectionScroll(sectionId){
+  const sid = resolveSectionId(sectionId);
+  if(!sid) return 0;
+  const map = readSectionScrollMap();
+  const y = Number(map[sid] || 0);
+  return Number.isFinite(y) && y >= 0 ? y : 0;
+}
+
 function applySectionState(id, {scroll=true} = {}){
   const targetId = document.getElementById(id) ? id : 'home';
   try{
@@ -5102,7 +5134,19 @@ function applySectionState(id, {scroll=true} = {}){
     localStorage.setItem(LAST_SECTION_STORAGE_KEY, targetId);
   }catch(_){}
   const currentActive = document.querySelector('.section.active')?.id;
-  if(currentActive === targetId && !scroll){
+  if(currentActive){
+    saveSectionScroll(currentActive, window.scrollY || 0);
+  }
+  const scrollMode = scroll === false ? 'none' : (scroll === 'restore' ? 'restore' : 'top');
+  if(currentActive === targetId && scrollMode === 'none'){
+    updateCartActionPanel();
+    updateFloatingCta(targetId);
+    syncHomePromoVisibility(targetId);
+    return;
+  }
+  if(currentActive === targetId && scrollMode === 'restore'){
+    const savedY = getSavedSectionScroll(targetId);
+    window.scrollTo({top:savedY,behavior:'auto'});
     updateCartActionPanel();
     updateFloatingCta(targetId);
     syncHomePromoVisibility(targetId);
@@ -5116,7 +5160,12 @@ function applySectionState(id, {scroll=true} = {}){
   t.classList.remove('fade-in');
   void t.offsetWidth;
   t.classList.add('fade-in');
-  if(scroll) window.scrollTo({top:0,behavior:'smooth'});
+  if(scrollMode === 'top'){
+    window.scrollTo({top:0,behavior:'smooth'});
+  }else if(scrollMode === 'restore'){
+    const savedY = getSavedSectionScroll(targetId);
+    window.scrollTo({top:savedY,behavior:'auto'});
+  }
   if(targetId==='cart') renderCart();
   if(targetId==='checkout') renderCheckout();
   hydrateLazyIframes(targetId);
@@ -5269,7 +5318,7 @@ window.addEventListener('hashchange',()=>{
     suppressNextHashChange = false;
     return;
   }
-  applySectionState(getSectionFromLocation(), {scroll:false});
+  applySectionState(getSectionFromLocation(), {scroll:'restore'});
   sendVisitEvent({heartbeat:false});
 });
 

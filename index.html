@@ -4895,6 +4895,8 @@ function shouldRefreshProductsOnForeground({force=false} = {}){
 
 function refreshCatalogOnForeground({force=false} = {}){
   if(document.visibilityState !== 'visible') return;
+  const activeSection = document.querySelector('.section.active')?.id || '';
+  if(activeSection === 'checkout' || activeSection === 'cart' || orderSubmissionInFlight) return;
   if(document.getElementById('productModal')?.classList.contains('open') || imageViewerOpen) return;
   if(!shouldRefreshProductsOnForeground({force})) return;
   lastForegroundRefreshAt = Date.now();
@@ -6546,7 +6548,28 @@ async function safeReadJson(response){
   }
 }
 
+async function fetchWithTimeout(url, options={}, timeoutMs=15000){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
+  try{
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch(err){
+    if(err?.name === 'AbortError'){
+      throw new Error('Sunucu yanıt vermedi, lütfen tekrar deneyin.');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+let orderSubmissionInFlight = false;
+
 async function submitOrder(){
+  if(orderSubmissionInFlight){
+    showToast('Siparişiniz işleniyor, lütfen bekleyin.');
+    return;
+  }
   if(!validateCheckoutForm()) return;
   const name=document.getElementById('f-name').value.trim();
   const phone=formatPhoneWithLeadingZero(document.getElementById('f-phone').value.trim());
@@ -6572,80 +6595,92 @@ async function submitOrder(){
   }
   const btnId = method==='havale'?'paymentSentBtn':'submitOrderBtn';
   const btn = document.getElementById(btnId);
-  const orig = btn.innerHTML;
-  btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...'; btn.disabled=true;
+  const orig = btn?.innerHTML || '';
+  if(btn){
+    btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+    btn.disabled=true;
+  }
 
-  const finalTotal = Math.max(0, roundTo2(total - couponDiscountAmount));
-  const savedBasket=[...basket], savedTotal=finalTotal;
+  orderSubmissionInFlight = true;
+  let shouldKeepButtonLocked = false;
 
-  if(method==='kredikarti'){
-    try{
+  try{
+    const finalTotal = Math.max(0, roundTo2(total - couponDiscountAmount));
+    const savedBasket=[...basket], savedTotal=finalTotal;
+
+    if(method==='kredikarti'){
       const successUrl = `${window.location.origin}${window.location.pathname}?payment=success#checkout`;
       const cancelUrl = `${window.location.origin}${window.location.pathname}?payment=cancel#checkout`;
       sessionStorage.setItem('gp_pending_order', JSON.stringify({
         name, phone, email, addr, note, method, items: savedBasket, total: savedTotal
       }));
-      const response = await fetch('/api/payment?action=create-paytr-token',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          items: savedBasket.map(item=>({
-            name: item.name,
-            price: Number(item.price || 0),
-            qty: Number(item.qty || 1),
-            variant: getDimensionSummary(item,{prefix:''})
-          })),
-          customer:{
-            email,
-            name,
-            phone
-          },
-          successUrl,
-          cancelUrl,
-          currency:'TL',
-          orderNote: note,
-          shippingAddress: addr,
-          userName: name
-        })
-      });
-      const data = await safeReadJson(response);
-      if(!response.ok || !data?.checkout_url){
-        throw new Error(data?.error || `PayTR ödeme oturumu oluşturulamadı (HTTP ${response.status}).`);
+      try{
+        const response = await fetchWithTimeout('/api/payment?action=create-paytr-token',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            items: savedBasket.map(item=>({
+              name: item.name,
+              price: Number(item.price || 0),
+              qty: Number(item.qty || 1),
+              variant: getDimensionSummary(item,{prefix:''})
+            })),
+            customer:{
+              email,
+              name,
+              phone
+            },
+            successUrl,
+            cancelUrl,
+            currency:'TL',
+            orderNote: note,
+            shippingAddress: addr,
+            userName: name
+          })
+        }, 20000);
+        const data = await safeReadJson(response);
+        if(!response.ok || !data?.checkout_url){
+          throw new Error(data?.error || `PayTR ödeme oturumu oluşturulamadı (HTTP ${response.status}).`);
+        }
+        shouldKeepButtonLocked = true;
+        window.location.href = data.checkout_url;
+        return;
+      } catch(err){
+        sessionStorage.removeItem('gp_pending_order');
+        showToast(`Online ödeme başlatılamadı: ${err.message}`);
+        return;
       }
-      window.location.href = data.checkout_url;
-      return;
-    } catch(err){
-      btn.innerHTML=orig; btn.disabled=false;
-      sessionStorage.removeItem('gp_pending_order');
-      showToast(`Online ödeme başlatılamadı: ${err.message}`);
-      return;
+    }
+
+    saveOrderToLocalStorage(name,phone,email,method,addr,note,savedBasket,savedTotal);
+
+    let orderApiResult = null;
+    try{
+      const response = await fetchWithTimeout('/api/orders?action=create',{
+        method:'POST',
+        headers:{'Content-Type':'application/json',...(getAuthToken()?{'Authorization':'Bearer '+getAuthToken()}:{})},
+        body:JSON.stringify({name,phone,email,address:addr,note,payment:method,items:savedBasket,total:savedTotal})
+      }, 15000);
+      if(response.ok){
+        orderApiResult = await response.json();
+      } else {
+        console.warn('Sipariş API başarısız:', response.status);
+      }
+    } catch(e){ console.warn('API hatası, devam ediyor'); }
+
+    await sendOrderEmailNotification({name,phone,email,addr,note,method,items:savedBasket,total:savedTotal,apiResult:orderApiResult});
+
+    basket=[]; total=0; appliedCouponCode=''; couponDiscountAmount=0; updateCartCount(); saveCartToStorage();
+    const createdOrderNo = String(orderApiResult?.order_no || '').replace(/\D/g,'');
+    showOrderSuccessModal(createdOrderNo);
+    setTimeout(()=>sendWhatsApp(name,phone,method,addr,note,savedBasket,savedTotal),1200);
+  } finally {
+    orderSubmissionInFlight = false;
+    if(btn && !shouldKeepButtonLocked){
+      btn.innerHTML = orig;
+      btn.disabled = false;
     }
   }
-
- // LocalStorage'a kaydet (admin paneli buradan okur)
-  saveOrderToLocalStorage(name,phone,email,method,addr,note,savedBasket,savedTotal);
-
-  let orderApiResult = null;
-  try{
-    const response = await fetch('/api/orders?action=create',{
-      method:'POST',
-      headers:{'Content-Type':'application/json',...(getAuthToken()?{'Authorization':'Bearer '+getAuthToken()}:{})},
-      body:JSON.stringify({name,phone,email,address:addr,note,payment:method,items:savedBasket,total:savedTotal})
-    });
-    if(response.ok){
-      orderApiResult = await response.json();
-    } else {
-      console.warn('Sipariş API başarısız:', response.status);
-    }
-  } catch(e){ console.warn('API hatası, devam ediyor'); }
-
-  await sendOrderEmailNotification({name,phone,email,addr,note,method,items:savedBasket,total:savedTotal,apiResult:orderApiResult});
-
-  btn.innerHTML=orig; btn.disabled=false;
-  basket=[]; total=0; appliedCouponCode=''; couponDiscountAmount=0; updateCartCount(); saveCartToStorage();
-  const createdOrderNo = String(orderApiResult?.order_no || '').replace(/\D/g,'');
-  showOrderSuccessModal(createdOrderNo);
-  setTimeout(()=>sendWhatsApp(name,phone,method,addr,note,savedBasket,savedTotal),1200);
 }
 
 async function finalizePendingOnlinePaymentOrder(){
@@ -6676,7 +6711,7 @@ async function finalizePendingOnlinePaymentOrder(){
 
   let orderApiResult = null;
   try{
-    const response = await fetch('/api/orders?action=create',{
+    const response = await fetchWithTimeout('/api/orders?action=create',{
       method:'POST',
       headers:{'Content-Type':'application/json',...(getAuthToken()?{'Authorization':'Bearer '+getAuthToken()}:{})},
       body:JSON.stringify({

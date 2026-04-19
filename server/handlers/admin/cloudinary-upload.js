@@ -2,6 +2,12 @@ const crypto = require('crypto');
 
 const ADMIN_API_KEY = 'gocmen1993';
 
+const HARDCODED_CLOUDINARY_CONFIG = {
+  cloudName: 'ddb9lvapm',
+  apiKey: '865239885512461',
+  apiSecret: 'XGicTHwIFg_XOK4d8IfkC4lsSXY',
+};
+
 function parseCloudinaryUrl(value) {
   const raw = String(value || '').trim();
   if (!raw) return null;
@@ -44,18 +50,18 @@ function readCloudinaryConfig() {
   const cloudName = pickFirstEnvValue([
     'CLOUDINARY_CLOUD_NAME',
     'CLOUD_NAME',
-  ]) || parsedFromUrl?.cloudName || '';
+  ]) || parsedFromUrl?.cloudName || HARDCODED_CLOUDINARY_CONFIG.cloudName || '';
 
   const apiKey = pickFirstEnvValue([
     'CLOUDINARY_API_KEY',
     'API_KEY',
-  ]) || parsedFromUrl?.apiKey || '';
+  ]) || parsedFromUrl?.apiKey || HARDCODED_CLOUDINARY_CONFIG.apiKey || '';
 
   const apiSecret = pickFirstEnvValue([
     'CLOUDINARY_API_SECRET',
     'CLOUDINARY_SECRET',
     'API_SECRET',
-  ]) || parsedFromUrl?.apiSecret || '';
+  ]) || parsedFromUrl?.apiSecret || HARDCODED_CLOUDINARY_CONFIG.apiSecret || '';
 
   return { cloudName, apiKey, apiSecret, hasCloudinaryUrl: Boolean(parsedFromUrl) };
 }

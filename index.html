@@ -5054,9 +5054,23 @@ window.addEventListener('storage',(event)=>{
 
 // ── Navigasyon ──
 let suppressNextHashChange = false;
+const LAST_SECTION_STORAGE_KEY = 'gp_last_section';
+
+function getRememberedSection(){
+  try{
+    const remembered = localStorage.getItem(LAST_SECTION_STORAGE_KEY) || sessionStorage.getItem(LAST_SECTION_STORAGE_KEY) || '';
+    const resolved = resolveSectionId(remembered);
+    if(resolved && document.getElementById(resolved)) return resolved;
+  }catch(_){}
+  return 'home';
+}
 
 function applySectionState(id, {scroll=true} = {}){
   const targetId = document.getElementById(id) ? id : 'home';
+  try{
+    sessionStorage.setItem(LAST_SECTION_STORAGE_KEY, targetId);
+    localStorage.setItem(LAST_SECTION_STORAGE_KEY, targetId);
+  }catch(_){}
   const currentActive = document.querySelector('.section.active')?.id;
   if(currentActive === targetId && !scroll){
     updateCartActionPanel();
@@ -5092,7 +5106,7 @@ function getSectionFromLocation(){
   const rawHash = String(window.location.hash || '').replace(/^#/, '').trim();
   const resolvedHash = resolveSectionId(rawHash);
   if(resolvedHash && document.getElementById(resolvedHash)) return resolvedHash;
-  return 'home';
+  return getRememberedSection();
 }
 
 function resolveSectionId(id){

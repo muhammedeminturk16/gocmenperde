@@ -3,12 +3,12 @@
     "id": "lazer-kesim-stor-perde-1776627830510-562",
     "name": "Lazer Kesim Stor Perde",
     "desc": "Şık tasarımı ve kaliteli kumaşıyla yaşam alanınıza uyum sağlar. Ölçü ve kullanım ihtiyacınıza göre güvenle tercih edebilirsiniz.",
-    "image": "resimler/1776627720485-product-0-728e9313-eefa-4d2c-8fbc-509234b4cfb5-1ebe3453-b1bc-48b5-8ff5-2ff17e418348.jpeg",
+    "image": "https://cdn.jsdelivr.net/gh/gocmenperde/gocmenperde@main/resimler/1776627720485-product-0-728e9313-eefa-4d2c-8fbc-509234b4cfb5-1ebe3453-b1bc-48b5-8ff5-2ff17e418348.jpeg",
     "images": [
-      "resimler/1776627720485-product-0-728e9313-eefa-4d2c-8fbc-509234b4cfb5-1ebe3453-b1bc-48b5-8ff5-2ff17e418348.jpeg",
-      "resimler/1776627722709-product-1-400c3510-0d5d-41e0-88a2-0d72e4155eba-c7f19fef-c689-48e6-860e-4c45f65febb2.jpeg"
+      "https://cdn.jsdelivr.net/gh/gocmenperde/gocmenperde@main/resimler/1776627720485-product-0-728e9313-eefa-4d2c-8fbc-509234b4cfb5-1ebe3453-b1bc-48b5-8ff5-2ff17e418348.jpeg",
+      "https://cdn.jsdelivr.net/gh/gocmenperde/gocmenperde@main/resimler/1776627722709-product-1-400c3510-0d5d-41e0-88a2-0d72e4155eba-c7f19fef-c689-48e6-860e-4c45f65febb2.jpeg"
     ],
-    "price": 650,
+    "price": 600,
     "oldPrice": 900,
     "cat": "stor-perde",
     "unit": "m2",
@@ -16,7 +16,7 @@
     "isSquareMeter": true,
     "features": "",
     "badge": "%28 İNDİRİM",
-    "discountType": "percent",
+    "discountType": "manual",
     "discountValue": null,
     "stock": 53,
     "serialNumber": null,

@@ -16,6 +16,7 @@ const paytrRefund = require('../server/handlers/paytr-refund');
 const paytrReport = require('../server/handlers/paytr-report');
 const sliderAds = require('../server/handlers/slider-ads');
 const adminSliderAds = require('../server/handlers/admin/slider-ads');
+const cloudinaryUpload = require('../server/handlers/admin/cloudinary-upload');
 const fromYouShowcase = require('../server/handlers/from-you-showcase');
 const adminFromYouShowcase = require('../server/handlers/admin/from-you-showcase');
 const slider = require('../server/handlers/slider');
@@ -39,6 +40,7 @@ const ROUTES = {
   'paytr-report': paytrReport,
   'slider-ads': sliderAds,
   'admin/slider-ads': adminSliderAds,
+  'admin/cloudinary-upload': cloudinaryUpload,
   'from-you-showcase': fromYouShowcase,
   'admin/from-you-showcase': adminFromYouShowcase,
   'slider': slider,

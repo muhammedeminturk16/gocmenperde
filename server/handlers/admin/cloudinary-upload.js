@@ -2,12 +2,47 @@ const crypto = require('crypto');
 
 const ADMIN_API_KEY = 'gocmen1993';
 
-function readCloudinaryConfig() {
-  const cloudName = String(process.env.CLOUDINARY_CLOUD_NAME || '').trim();
-  const apiKey = String(process.env.CLOUDINARY_API_KEY || '').trim();
-  const apiSecret = String(process.env.CLOUDINARY_API_SECRET || '').trim();
+function parseCloudinaryUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return null;
 
-  return { cloudName, apiKey, apiSecret };
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== 'cloudinary:') return null;
+
+    const apiKey = decodeURIComponent(parsed.username || '').trim();
+    const apiSecret = decodeURIComponent(parsed.password || '').trim();
+    const cloudName = decodeURIComponent(parsed.hostname || '').trim();
+
+    return { cloudName, apiKey, apiSecret };
+  } catch (_) {
+    return null;
+  }
+}
+
+function readCloudinaryConfig() {
+  const parsedFromUrl = parseCloudinaryUrl(process.env.CLOUDINARY_URL);
+
+  const cloudName = String(
+    process.env.CLOUDINARY_CLOUD_NAME
+    || parsedFromUrl?.cloudName
+    || ''
+  ).trim();
+
+  const apiKey = String(
+    process.env.CLOUDINARY_API_KEY
+    || parsedFromUrl?.apiKey
+    || ''
+  ).trim();
+
+  const apiSecret = String(
+    process.env.CLOUDINARY_API_SECRET
+    || process.env.API_SECRET
+    || parsedFromUrl?.apiSecret
+    || ''
+  ).trim();
+
+  return { cloudName, apiKey, apiSecret, hasCloudinaryUrl: Boolean(parsedFromUrl) };
 }
 
 function getMissingConfigKeys(cloudinaryConfig) {
@@ -93,8 +128,10 @@ module.exports = async function handler(req, res) {
       vercelEnv: process.env.VERCEL_ENV || null,
       hasCloudName: Boolean(process.env.CLOUDINARY_CLOUD_NAME),
       hasApiKey: Boolean(process.env.CLOUDINARY_API_KEY),
-      hasApiSecret: Boolean(process.env.CLOUDINARY_API_SECRET),
-      hint: 'Vercel Project Settings > Environment Variables alanındaki değerlerin ilgili ortama (Production/Preview) atanıp redeploy edildiğini doğrulayın.',
+      hasApiSecret: Boolean(process.env.CLOUDINARY_API_SECRET || process.env.API_SECRET),
+      hasCloudinaryUrl: Boolean(process.env.CLOUDINARY_URL),
+      cloudinaryUrlParsable: cloudinaryConfig.hasCloudinaryUrl,
+      hint: 'Vercel Project Settings > Environment Variables alanındaki değerlerin ilgili ortama (Production/Preview) atanıp redeploy edildiğini doğrulayın. CLOUDINARY_URL kullanıyorsanız format cloudinary://API_KEY:API_SECRET@CLOUD_NAME olmalıdır.',
     });
 
     return res.status(503).json({

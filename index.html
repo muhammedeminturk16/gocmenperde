@@ -4680,12 +4680,16 @@ function setProductDeepLink(productId){
   const url = new URL(window.location.href);
   const currentId = String(url.searchParams.get('product') || '').trim();
   const currentState = window.history.state || {};
-  if(currentId === id && currentState?.fromSection === fromSection){
+  const nextState = { ...(currentState || {}), product:id, fromSection, fromScroll };
+
+  if(currentId === id){
+    window.history.replaceState(nextState, '', `${url.pathname}${url.search}${url.hash}`);
     lastHandledEntryDeepLink = `product:${id}`;
     return;
   }
+
   url.searchParams.set('product', id);
-  window.history.pushState({ ...(currentState || {}), product:id, fromSection, fromScroll }, '', `${url.pathname}${url.search}${url.hash}`);
+  window.history.pushState(nextState, '', `${url.pathname}${url.search}${url.hash}`);
   lastHandledEntryDeepLink = `product:${id}`;
 }
 function clearProductDeepLink(){

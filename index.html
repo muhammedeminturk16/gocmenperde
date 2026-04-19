@@ -4537,6 +4537,10 @@ function openModalFromProduct(id){
   resetImgZoom();
   clearModalSearch();
   modalReturnState = captureModalReturnState();
+  modalReturnState = {
+    ...modalReturnState,
+    section: 'products'
+  };
   document.getElementById('productModal').classList.add('open');
   document.body.classList.add('product-modal-open');
   lockPageScrollForModal();
@@ -4676,7 +4680,8 @@ function captureModalReturnState(){
 }
 
 function restoreViewAfterModal(state = {}){
-  const section = resolveSectionId(state?.fromSection || state?.section || modalReturnState?.section || getCurrentSectionForState());
+  const preferredSection = state?.forceProducts ? 'products' : (state?.fromSection || state?.section || modalReturnState?.section || getCurrentSectionForState());
+  const section = resolveSectionId(preferredSection);
   const scrollY = Number(state?.fromScroll ?? state?.scrollY ?? modalReturnState?.scrollY);
   if(getCurrentSectionForState() !== section){
     applySectionState(section, { scroll:false });
@@ -4744,7 +4749,7 @@ window.addEventListener('popstate', (event)=>{
   const modalOpen = document.getElementById('productModal')?.classList.contains('open');
   if(!hasProductParam && modalOpen){
     closeProductModal({syncUrl:false});
-    restoreViewAfterModal(event.state || modalReturnState || {});
+    restoreViewAfterModal({ ...(event.state || modalReturnState || {}), forceProducts:true });
   }
   if(hasProductParam){
     if(targetId !== 'products') applySectionState('products', {scroll:false});

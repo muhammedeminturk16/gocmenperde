@@ -3,24 +3,28 @@ const crypto = require('crypto');
 const ADMIN_API_KEY = 'gocmen1993';
 
 function readCloudinaryConfig() {
-  const cloudName = String(process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD || '').trim();
-  const apiKey = String(process.env.CLOUDINARY_API_KEY || process.env.CLOUDINARY_KEY || '').trim();
-  const apiSecret = String(
-    process.env.CLOUDINARY_API_SECRET
-    || process.env.API_SECRET
-    || process.env.CLOUDINARY_SECRET
-    || ''
-  ).trim();
+  const cloudName = String(process.env.CLOUDINARY_CLOUD_NAME || '').trim();
+  const apiKey = String(process.env.CLOUDINARY_API_KEY || '').trim();
+  const apiSecret = String(process.env.CLOUDINARY_API_SECRET || '').trim();
 
   return { cloudName, apiKey, apiSecret };
 }
 
-function getMissingConfigKeys(config) {
+function getMissingConfigKeys(cloudinaryConfig) {
   const missing = [];
-  if (!config.cloudName) missing.push('CLOUDINARY_CLOUD_NAME');
-  if (!config.apiKey) missing.push('CLOUDINARY_API_KEY');
-  if (!config.apiSecret) missing.push('CLOUDINARY_API_SECRET (veya API_SECRET)');
+  if (!cloudinaryConfig.cloudName) missing.push('CLOUDINARY_CLOUD_NAME');
+  if (!cloudinaryConfig.apiKey) missing.push('CLOUDINARY_API_KEY');
+  if (!cloudinaryConfig.apiSecret) missing.push('CLOUDINARY_API_SECRET');
   return missing;
+}
+
+function buildCloudinaryConnection(cloudinaryConfig) {
+  return {
+    cloud_name: cloudinaryConfig.cloudName,
+    api_key: cloudinaryConfig.apiKey,
+    api_secret: cloudinaryConfig.apiSecret,
+    upload_endpoint: `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
+  };
 }
 
 function resolveUploadBody(reqBody) {
@@ -79,11 +83,22 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Desteklenmeyen method.' });
   }
 
-  const config = readCloudinaryConfig();
-  const missingConfig = getMissingConfigKeys(config);
+  const cloudinaryConfig = readCloudinaryConfig();
+  const missingConfig = getMissingConfigKeys(cloudinaryConfig);
   if (missingConfig.length) {
-    return res.status(500).json({
-      error: `Cloudinary ortam değişkenleri eksik: ${missingConfig.join(', ')}`,
+    const nodeEnv = String(process.env.NODE_ENV || 'unknown').trim();
+    console.error('[cloudinary-upload] Cloudinary env değişkenleri eksik veya undefined.', {
+      missing: missingConfig,
+      nodeEnv,
+      vercelEnv: process.env.VERCEL_ENV || null,
+      hasCloudName: Boolean(process.env.CLOUDINARY_CLOUD_NAME),
+      hasApiKey: Boolean(process.env.CLOUDINARY_API_KEY),
+      hasApiSecret: Boolean(process.env.CLOUDINARY_API_SECRET),
+      hint: 'Vercel Project Settings > Environment Variables alanındaki değerlerin ilgili ortama (Production/Preview) atanıp redeploy edildiğini doğrulayın.',
+    });
+
+    return res.status(503).json({
+      error: 'Görsel yükleme servisi şu an yapılandırılamadı. Sunucu loglarını kontrol edin.',
     });
   }
 
@@ -98,17 +113,18 @@ module.exports = async function handler(req, res) {
     const folder = 'gocmenperde';
     const publicId = buildPublicId(prefix, fileName);
     const signParams = { folder, public_id: publicId, timestamp };
-    const signature = createSignature(signParams, config.apiSecret);
+    const cloudinaryConnection = buildCloudinaryConnection(cloudinaryConfig);
+    const signature = createSignature(signParams, cloudinaryConnection.api_secret);
 
     const formData = new FormData();
     formData.append('file', dataUrl);
-    formData.append('api_key', config.apiKey);
+    formData.append('api_key', cloudinaryConnection.api_key);
     formData.append('timestamp', String(timestamp));
     formData.append('folder', folder);
     formData.append('public_id', publicId);
     formData.append('signature', signature);
 
-    const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, {
+    const cloudinaryRes = await fetch(cloudinaryConnection.upload_endpoint, {
       method: 'POST',
       body: formData,
     });

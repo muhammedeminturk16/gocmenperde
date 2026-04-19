@@ -5078,6 +5078,8 @@ function applySectionState(id, {scroll=true} = {}){
 }
 
 function getSectionFromLocation(){
+  const params = new URLSearchParams(window.location.search || '');
+  if(params.has('product') || params.has('category')) return 'products';
   const rawHash = String(window.location.hash || '').replace(/^#/, '').trim();
   const resolvedHash = resolveSectionId(rawHash);
   if(resolvedHash && document.getElementById(resolvedHash)) return resolvedHash;

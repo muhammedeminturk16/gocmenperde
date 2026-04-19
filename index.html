@@ -3347,12 +3347,15 @@ async function loadProducts({forceRefresh=false} = {}){
 }
 
 function applyCategoryDeepLink(categoryKey=''){
-  const cleanKey = String(categoryKey || '').trim();
+  const cleanKey = normalizeCategoryKey(categoryKey);
   if(!cleanKey) return false;
   const exists = CATEGORIES.some(c=>String(c?.key || '')===cleanKey);
   if(!exists) return false;
   skipNextProductsReset = true;
-  go('products');
+  const activeSectionId = document.querySelector('.section.active')?.id || '';
+  if(activeSectionId !== 'products'){
+    go('products');
+  }
   setTimeout(()=>{
     const all = document.getElementById('cat-all');
     if(all) all.checked = false;
@@ -3365,10 +3368,31 @@ function applyCategoryDeepLink(categoryKey=''){
   return true;
 }
 
+function normalizeCategoryKey(input=''){
+  const raw = String(input || '').trim();
+  if(!raw) return '';
+  const decoded = decodeURIComponent(raw);
+  const simplify = (value='') => String(value || '')
+    .toLocaleLowerCase('tr')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+  const exact = CATEGORIES.find(c=>String(c?.key || '').trim() === decoded);
+  if(exact) return String(exact.key);
+  const token = simplify(decoded);
+  if(!token) return '';
+  const matched = CATEGORIES.find(c=>{
+    const key = simplify(c?.key || '');
+    const label = simplify(c?.label || '');
+    return key === token || label === token;
+  });
+  return matched ? String(matched.key) : decoded;
+}
+
 function handleInitialProductDeepLink(){
   const params = new URLSearchParams(window.location.search);
   const productId = String(params.get('product') || '').trim();
-  const categoryKey = String(params.get('category') || '').trim();
+  const categoryKey = normalizeCategoryKey(params.get('category') || '');
   const deepLinkSignature = productId ? `product:${productId}` : (categoryKey ? `category:${categoryKey}` : '');
   if(!deepLinkSignature){
     lastHandledEntryDeepLink = '';
@@ -3400,7 +3424,8 @@ function handleInitialProductDeepLink(){
     return;
   }
 
-  if(categoryKey && applyCategoryDeepLink(categoryKey)){
+  if(categoryKey){
+    applyCategoryDeepLink(categoryKey);
     lastHandledEntryDeepLink = deepLinkSignature;
   }
 }
@@ -7045,6 +7070,7 @@ window.addEventListener('scroll',()=>{
 
 
 function setCategory(categorySlug){
+  const normalizedSlug = normalizeCategoryKey(categorySlug);
   const allToggle=document.getElementById('cat-all');
   if(allToggle) allToggle.checked=false;
   const allIds = Array.isArray(CATEGORIES) && CATEGORIES.length
@@ -7052,7 +7078,7 @@ function setCategory(categorySlug){
     : ['carsaf','tul-perde','plise-perde','stor-perde','zebra-perde','koltuk'];
   allIds.forEach(id=>{
     const el=document.getElementById(`cat-${id}`);
-    if(el) el.checked=(id===categorySlug);
+    if(el) el.checked=(id===normalizedSlug);
   });
   applyFilters();
 }
